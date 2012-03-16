@@ -1,0 +1,14 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+<h2>{{ page.glob.langa.authors }}</h2>
+<ul class="ca unstyled">	
+	{% for author in authors %}
+		<li>
+			{# author.sort|slice(0,1)|upper #}
+  		<a href="{{page.rot}}/authors/{{ author.id }}"><i class="icon-user"></i> {{ author.sort }}</a>
+  	</li>
+  {% endfor %}
+</ul>
+{% endblock %}

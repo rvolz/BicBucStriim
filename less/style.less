@@ -1,0 +1,57 @@
+@import "bootstrap/bootstrap.less";
+
+body {  
+  padding-top: 60px;
+  padding-bottom: 40px;
+}
+
+@import "bootstrap/responsive.less";
+
+
+/* ===== Primary Styles ========================================================
+   Author:
+   ========================================================================== */
+
+footer a {color: @black;}
+.container a {color: @black;}
+
+.title_detail {
+  header h2 {
+    text-align: center;
+  }
+}
+
+.multicol (@cc: 1, @cgap: 20px) {
+  -webkit-column-count: @cc;
+  -webkit-column-gap: @cgap;	
+  -moz-column-count: @cc; 
+  -moz-column-gap: @cgap;
+	column-count: @cc;
+	column-gap: @cgap;
+}
+
+// body {font-size: 1.2em; line-height: 1.4em;}
+@media (max-width: 480px) {
+  .ct {.multicol;}
+  .ca {.multicol;}
+}
+@media (max-width: 768px) {
+  .ct {.multicol;}
+  .ca {.multicol(2);} 
+}
+@media (min-width: 768px) and (max-width: 980px) {
+  .ct {.multicol;}
+  .ca {.multicol(3);}   
+}
+@media (min-width: 1200px) {
+  .ct {
+    .multicol(2);
+  }
+  .ca {
+    .multicol(4);
+  }
+}
+
+
+
+

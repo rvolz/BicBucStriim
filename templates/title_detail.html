@@ -1,0 +1,45 @@
+{% extends 'main.html' %}
+
+{% block content %}
+<section class="title_detail row">
+	<header>
+		<h1>{{ book.title }}</h1>		
+	</header>	
+	<aside class="title_detail_image span4 pull_left">
+	{% if book.has_cover %}		
+		<img src="{{page.rot}}/titles/{{ book.id }}/cover/" />
+	{% endif %}		
+	</aside>
+	<section class="title_details span8 pull_right">
+		<p>
+			{{ page.glob.langa.presskey }}
+			<div class="btn-group">
+				{% for format in formats %}							
+					<a class="btn" href="{{page.rot}}/titles/{{book.id}}/file/{{format.name}}.{{format.format|lower}}">
+						<i class="icon-download"></i>	{{ format.format }}
+					</a>
+				{% endfor %}
+			</div>
+		</p>
+		<div id="authors">
+			<p>							
+				<b>{{page.glob.langa.authors}}: </b>
+				{% for author in authors %}
+				<a href="{{page.rot}}/authors/{{author.id}}"><i class="icon-user"></i>{{ author.name }}</a>
+				{% endfor %}				
+			</p>
+			<p>
+				<b>{{page.glob.langa.published}}:</b> {{ book.pubdate | date("Y") }}
+			</p>
+			<h2>{{page.glob.langa.comment}}</h2>			
+			<div>
+				{% autoescape false %}
+				{{ comment }}
+				{% endautoescape %}
+			</div>
+		</div>		
+	</section>
+</section>
+
+
+{% endblock %}

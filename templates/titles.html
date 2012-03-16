@@ -1,0 +1,14 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+<h2>{{ page.glob.langa.titles }}</h2>
+<ul class="ct unstyled">	
+	{% for book in books %}
+		<li>
+			{# book.sort|slice(0,1)|upper #}
+  		<a href="{{page.rot}}/titles/{{ book.id }}"><i class="icon-book"></i> {{ book.sort }}</a>
+  	</li>
+  {% endfor %}
+</ul>
+{% endblock %}

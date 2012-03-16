@@ -1,0 +1,16 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+<section class="author_detail row">
+	<header>
+		<h2>{{ author.name }}</h2>
+	</header>
+	<ul class="unstyled ">
+		{% for book in books %}
+		<li><a href="{{page.rot}}/titles/{{book.id}}"><i class="icon-book"></i> {{ book.title }}</a></li>
+		{% endfor %}	
+	</ul>
+</section>
+
+{% endblock %}
