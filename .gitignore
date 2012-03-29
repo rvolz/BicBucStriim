@@ -2,4 +2,7 @@
 #*.*
 .DS_Store
 logs/*.log
+distrib
 metadata.db
+*.sublime-project
+*.sublime-workspace
