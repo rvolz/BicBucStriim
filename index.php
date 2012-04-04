@@ -60,7 +60,7 @@ $app->get('/authors/', 'authors');
 $app->get('/authors/:id/', 'author');
 
 # Setup the connection to the Calibre metadata db
-if (!file_exists($calibre_dir.'/..'.$metadata_db) || !is_readable($calibre_dir.'/'.$metadata_db)) {
+if (!file_exists($calibre_dir.'/'.$metadata_db) || !is_readable($calibre_dir.'/'.$metadata_db)) {
 	$app->getLog()->error('Exception while opening metadata db '.$calibre_dir.'/'.$metadata_db);	
 	$app->render('error.html', array('page' => mkPage($globalSettings['langa']['error']), 
 		'error' => $globalSettings['langa']['mdb_error'].$calibre_dir.'/'.$metadata_db));
