@@ -31,7 +31,9 @@ $langen = array('titles' => "Books",
 	'dl30' => "Most recent 30",
 	'presskey' => 'Press a button to download the book',
 	'published' => 'Published',
-	'comment' => 'Comment');
+	'comment' => 'Comment',
+	'error' => 'Error',
+	'mdb_error' => 'Calibre database not found or not readable: ');
 
 $globalSettings = array();
 require_once 'config.php';
