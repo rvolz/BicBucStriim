@@ -21,7 +21,9 @@ $langde = array('titles' => "Bücher",
 	'dl30' => "Die letzten 30",
 	'presskey' => 'Taste drücken, um das Buch herunter zu laden',
 	'published' => 'Veröffentlicht',
-	'comment' => 'Kommentar');
+	'comment' => 'Kommentar',
+	'error' => 'Fehler',
+	'mdb_error' => 'Calibre Datenbank existiert nicht oder konnte nicht gelesen werden: ');
 $langen = array('titles' => "Books", 
 	'book_details' => "Book Details",
 	'authors' => "Authors",
@@ -57,20 +59,15 @@ $app->get('/titles/:id/file/:file', 'book');
 $app->get('/authors/', 'authors');
 $app->get('/authors/:id/', 'author');
 
-# Copy the metadata.db if it is newer than our copy, then run the app.
-# In case of problems don't start.
-if (!file_exists($metadata_db) || filemtime($metadata_db) < filemtime($calibre_dir.'/'.$metadata_db)) {
-	$app->getLog()->info('Copying '.$calibre_dir.'/'.$metadata_db);
-	if (copy($calibre_dir.'/'.$metadata_db, $metadata_db)) {
-		$app->getLog()->info('Metdata DB copied');
-		$app->run();
-	}	else {
-		$app->getLog()->error('Error while copying '.$calibre_dir.'/'.$metadata_db);
-	}
+# Setup the connection to the Calibre metadata db
+if (!file_exists($calibre_dir.'/..'.$metadata_db) || !is_readable($calibre_dir.'/'.$metadata_db)) {
+	$app->getLog()->error('Exception while opening metadata db '.$calibre_dir.'/'.$metadata_db);	
+	$app->render('error.html', array('page' => mkPage($globalSettings['langa']['error']), 
+		'error' => $globalSettings['langa']['mdb_error'].$calibre_dir.'/'.$metadata_db));
 } else {
+	R::setup('sqlite:'.$calibre_dir.'/'.$metadata_db);
 	$app->run();
 }
-
 
 function myNotFound() {
 	global $app;
@@ -83,7 +80,6 @@ function myNotFound() {
 function main() {
 	global $app;
 
-	R::setup('sqlite:metadata.db');
 	$books = R::find('books',' 1 ORDER BY timestamp DESC LIMIT 30');		
 	$app->render('index_last30.html',array('page' => mkPage(), 'books' => $books));
 	R::close();
@@ -94,7 +90,6 @@ function titles() {
 	global $app;
 	global $globalSettings;
 
-	R::setup('sqlite:metadata.db');
 	$books = R::find('books',' 1 ORDER BY sort');
 	$app->render('titles.html',array('page' => mkPage($globalSettings['langa']['titles']), 'books' => $books));
 	R::close();
@@ -106,7 +101,6 @@ function title($id) {
 	global $calibre_dir;
 	global $globalSettings;
 
-	R::setup('sqlite:metadata.db');
 	$book = R::findOne('books',' id=?', array(intval($id)));
 	if (is_null($book)) {
 		$app->getLog()->debug("no book");
@@ -136,7 +130,6 @@ function cover($id) {
 	global $calibre_dir;
 
 	$rot = $app->request()->getRootUri();
-	R::setup('sqlite:metadata.db');
 	$book = R::findOne('books',' id=?', array(intval($id)));
 	if (is_null($book)) {
 		$app->getLog()->debug("no cover");
@@ -162,7 +155,6 @@ function book($id, $file) {
 	global $calibre_dir;
 	global $globalSettings;
 
-	R::setup('sqlite:metadata.db');
 	$book = R::findOne('books',' id=?', array(intval($id)));
 	if (is_null($book)) {
 		$app->getLog()->debug("no book file");
@@ -182,7 +174,6 @@ function authors() {
 	global $app;
 	global $globalSettings;
 
-	R::setup('sqlite:metadata.db');
 	$authors = R::find('authors',' 1 ORDER BY sort');		
 	$app->render('authors.html',array( 'page' => mkPage($globalSettings['langa']['authors']), 'authors' => $authors));
 	R::close();
@@ -193,7 +184,6 @@ function author($id) {
 	global $app;
 	global $globalSettings;
 
-	R::setup('sqlite:metadata.db');
 	$author = R::findOne('authors', ' id=?', array($id));
 	if (is_null($author)) {
 		$app->getLog()->debug("no author");
