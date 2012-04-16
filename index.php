@@ -208,7 +208,7 @@ function getMimeType($file_path) {
 	if (preg_match('/epub$/',$file_path) == 1)
 		return 'application/epub+zip';
 	else if (preg_match('/mobi$/', $file_path) == 1) 
-		return 'application/x-mobipocket';
+		return 'application/x-mobipocket-ebook';
 
 	if (function_exists('mime_content_type')){
     	     $mtype = mime_content_type($file_path);
