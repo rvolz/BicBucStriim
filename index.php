@@ -14,7 +14,8 @@ $metadata_db = 'metadata.db';
 $allowedLangs = array('de','en');
 $fallbackLang = 'en';
 
-$langde = array('titles' => "Bücher", 
+$langde = array('home' => "Start",
+	'titles' => "Bücher", 
 	'book_details' => "Buchdetails",
 	'authors' => "Autoren",
 	'author_details' => "Details Autor",
@@ -24,7 +25,8 @@ $langde = array('titles' => "Bücher",
 	'comment' => 'Kommentar',
 	'error' => 'Fehler',
 	'mdb_error' => 'Calibre Datenbank existiert nicht oder konnte nicht gelesen werden: ');
-$langen = array('titles' => "Books", 
+$langen = array('home' => "Home",
+	'titles' => "Books", 
 	'book_details' => "Book Details",
 	'authors' => "Authors",
 	'author_details' => "Author Details",
