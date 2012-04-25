@@ -1,22 +1,33 @@
-@import "bootstrap/bootstrap.less";
+@import "jquery/jquery.mobile-1.1.0.min.css";
 
 body {  
   padding-top: 60px;
   padding-bottom: 40px;
 }
 
-@import "bootstrap/responsive.less";
 
 
 /* ===== Primary Styles ========================================================
    Author:
    ========================================================================== */
 
-footer a {color: @black;}
-.container a {color: @black;}
 
 h1 {
-  text-align: center;
+  text-align: left;
+}
+
+.title_detail_image {
+  width: 40%;
+  float: left;
+  img {
+    max-width: 100%;  
+  }  
+}
+
+.title_details {  
+  width: 59%;
+  float: right;
+  padding-left: 1%;
 }
 
 .multicol (@cc: 1, @cgap: 20px) {
@@ -30,24 +41,29 @@ h1 {
 
 // body {font-size: 1.2em; line-height: 1.4em;}
 @media (max-width: 480px) {
-  .ct {.multicol;}
-  .ca {.multicol;}
+  //.ct {.multicol;}
+  //.ca {.multicol;}
+  .title_detail_image {
+    float: none;
+    width: 100%;
+  }
+  .title_details {  
+    width: 100%;
+    float: none;
+    padding-left: 1%;
+  }
 }
 @media (max-width: 768px) {
-  .ct {.multicol;}
-  .ca {.multicol(2);} 
+  //.ct {.multicol;}
+  //.ca {.multicol(2);} 
 }
 @media (min-width: 768px) and (max-width: 980px) {
-  .ct {.multicol;}
-  .ca {.multicol(3);}   
+  //.ct {.multicol;}
+  //.ca {.multicol(3);}   
 }
 @media (min-width: 1200px) {
-  .ct {
-    .multicol(2);
-  }
-  .ca {
-    .multicol(4);
-  }
+  // .ct {.multicol(2);}
+  // .ca {.multicol(4);}
 }
 
 

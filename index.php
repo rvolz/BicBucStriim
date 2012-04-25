@@ -20,6 +20,7 @@ $langde = array('home' => "Start",
 	'authors' => "Autoren",
 	'author_details' => "Details Autor",
 	'dl30' => "Die letzten 30",
+	'back' => "Zurück",
 	'presskey' => 'Taste drücken, um das Buch herunter zu laden',
 	'published' => 'Veröffentlicht',
 	'comment' => 'Kommentar',
@@ -31,6 +32,7 @@ $langen = array('home' => "Home",
 	'authors' => "Authors",
 	'author_details' => "Author Details",
 	'dl30' => "Most recent 30",
+	'back' => "Back",
 	'presskey' => 'Press a button to download the book',
 	'published' => 'Published',
 	'comment' => 'Comment',
@@ -40,7 +42,7 @@ $langen = array('home' => "Home",
 $globalSettings = array();
 require_once 'config.php';
 $globalSettings['appname'] = 'BicBucStriim';
-$globalSettings['version'] = '0.5.0';
+$globalSettings['version'] = '0.6.0';
 $globalSettings['sep'] = ' :: ';
 $globalSettings['lang'] = getUserLang($allowedLangs, $fallbackLang);
 if ($globalSettings['lang'] == 'de')
@@ -95,7 +97,18 @@ function titles() {
 	global $globalSettings;
 
 	$books = R::find('books',' 1 ORDER BY sort');
-	$app->render('titles.html',array('page' => mkPage($globalSettings['langa']['titles']), 'books' => $books));
+	$grouped_books = array();
+	$initial_book = "";
+	foreach ($books as $book) {
+		$ix = strtoupper(substr($book->sort,0,1));
+		if ($ix != $initial_book) {
+			array_push($grouped_books, array('initial' => $ix));
+			$initial_book = $ix;
+		} 
+		array_push($grouped_books, $book);
+	}
+
+	$app->render('titles.html',array('page' => mkPage($globalSettings['langa']['titles']), 'books' => $grouped_books));
 	R::close();
 }
 
@@ -179,7 +192,17 @@ function authors() {
 	global $globalSettings;
 
 	$authors = R::find('authors',' 1 ORDER BY sort');		
-	$app->render('authors.html',array( 'page' => mkPage($globalSettings['langa']['authors']), 'authors' => $authors));
+	$grouped_authors = array();
+	$initial_author = "";
+	foreach ($authors as $author) {
+		$ix = strtoupper(substr($author->sort,0,1));
+		if ($ix != $initial_author) {
+			array_push($grouped_authors, array('initial' => $ix));
+			$initial_author = $ix;
+		} 
+		array_push($grouped_authors, $author);
+	}
+	$app->render('authors.html',array( 'page' => mkPage($globalSettings['langa']['authors']), 'authors' => $grouped_authors));
 	R::close();
 }
 

@@ -1,44 +1,54 @@
 {% extends 'main.html' %}
 
+{% block nav %}
+<h1>BicBucStriim :: {{ page.glob.langa.titles }}</h1>
+<a href="{{page.rot}}/titles/" data-rel="back" data-icon="back" class="ui-btn-right">{{ page.glob.langa.back }}</a>
+<div data-role="navbar">
+	<ul>
+	  <li><a href="{{page.rot}}/">{{page.glob.langa.home}}</a></li>
+	  <li><a href="{{page.rot}}/titles" class="ui-btn-active">{{page.glob.langa.titles}}</a></li>
+	  <li><a href="{{page.rot}}/authors">{{page.glob.langa.authors}}</a></li>       
+	</ul>
+</div>
+{% endblock %}
+
 {% block content %}
-<section class="title_detail row">
+<section class="title_detail row">	
 	<header>
 		<h1>{{ book.title }}</h1>		
+			<p>											
+				{% for author in authors %}
+				<a href="{{page.rot}}/authors/{{author.id}}">{{ author.name }}</a>
+				{% endfor %} 
+				({{ book.pubdate | date("Y") }})
+			</p>
 	</header>	
-	<aside class="title_detail_image span4 pull_left">
-	{% if book.has_cover %}		
-		<img src="{{page.rot}}/titles/{{ book.id }}/cover/" />
-	{% endif %}		
-	</aside>
-	<section class="title_details span8 pull_right">
+	<div data-role="collapsible">
+		<h2>Download</h2>
 		<p>
 			{{ page.glob.langa.presskey }}
-			<div class="btn-group">
-				{% for format in formats %}							
-					<a class="btn" href="{{page.rot}}/titles/{{book.id}}/file/{{format.name}}.{{format.format|lower}}">
-						<i class="icon-download"></i>	{{ format.format }}
-					</a>
-				{% endfor %}
-			</div>
 		</p>
-		<div id="authors">
-			<p>							
-				<b>{{page.glob.langa.authors}}: </b>
-				{% for author in authors %}
-				<a href="{{page.rot}}/authors/{{author.id}}"><i class="icon-user"></i>{{ author.name }}</a>
-				{% endfor %}				
-			</p>
-			<p>
-				<b>{{page.glob.langa.published}}:</b> {{ book.pubdate | date("Y") }}
-			</p>
-			<h2>{{page.glob.langa.comment}}</h2>			
-			<div>
-				{% autoescape false %}
-				{{ comment }}
-				{% endautoescape %}
-			</div>
-		</div>		
-	</section>
+		<div data-role="controlgroup" data-type="horizontal">
+			{% for format in formats %}							
+				<a data-role="button" href="{{page.rot}}/titles/{{book.id}}/file/{{format.name}}.{{format.format|lower}}">
+					{{ format.format }}
+				</a>
+			{% endfor %}
+		</div>
+	</div>
+	<aside class="title_detail_image">
+			{% if book.has_cover %}		
+				<img src="{{page.rot}}/titles/{{ book.id }}/cover/" />
+			{% endif %}		
+	</aside>
+	<section class="title_details">
+				<h2>{{page.glob.langa.comment}}</h2>			
+				<div>
+					{% autoescape false %}
+					{{ comment }}
+					{% endautoescape %}
+				</div>
+	</section>	
 </section>
 
 

@@ -1,14 +1,25 @@
 {% extends 'main.html' %}
 
-{% block content %}
+{% block nav %}
+<h1>BicBucStriim :: {{ page.glob.langa.titles }}</h1>
+<div data-role="navbar">
+	<ul>
+	  <li><a href="{{page.rot}}/">{{page.glob.langa.home}}</a></li>
+	  <li><a href="{{page.rot}}/titles" class="ui-btn-active">{{page.glob.langa.titles}}</a></li>
+	  <li><a href="{{page.rot}}/authors">{{page.glob.langa.authors}}</a></li>       
+	</ul>
+</div>
+{% endblock %}
 
-<h1>{{ page.glob.langa.titles }}</h1>
-<ul class="ct unstyled">	
+
+{% block content %}
+<ul data-role="listview" data-filter="true">	
 	{% for book in books %}
-		<li>
-			{# book.sort|slice(0,1)|upper #}
-  		<a href="{{page.rot}}/titles/{{ book.id }}"><i class="icon-book"></i> {{ book.sort }}</a>
-  	</li>
+		{% if book.initial != "" %}
+			<li data-role="list-divider"> {{ book.initial }}</li>
+		{% else %}
+			<li><a href="{{page.rot}}/titles/{{ book.id }}">{{ book.sort }}</a></li>
+		{% endif %}
   {% endfor %}
 </ul>
 {% endblock %}

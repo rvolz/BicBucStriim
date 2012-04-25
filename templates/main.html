@@ -10,64 +10,36 @@
 	<title>{{ page.title }}</title>
 
 	<meta name="viewport" content="width=device-width,initial-scale=1">
-
-	
-	<!-- Use SimpLESS (Win/Linux/Mac) or LESS.app (Mac) to compile your .less files
-	to style.css, and replace the 2 lines above by this one:
-  
-  <link rel="stylesheet/less" href="{{page.rot}}/less/style.less">
-  <script src="{{page.rot}}/js/libs/less-1.2.1.min.js"></script>
-  
-	
-	 -->
   <link rel="stylesheet" href="{{page.rot}}/style/style.css">
-
 	<script src="{{page.rot}}/js/libs/modernizr-2.5-respond-1.1.0.min.js"></script>
 </head>
 <body>
-<!--[if lt IE 7]><p class=chromeframe>Your browser is <em>ancient!</em> <a href="http://browsehappy.com/">Upgrade to a different browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to experience this site.</p><![endif]-->
-
-    <div class="navbar navbar-fixed-top">
-      <div class="navbar-inner">
-        <div class="container">
-          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-            <span class="i-bar"></span>
-            <span class="i-bar"></span>
-            <span class="i-bar"></span>
-          </a>
-          <a class="brand" href="{{page.rot}}/">BicBucStriim</a>
-          <div class="nav-collapse">
-            <ul class="nav">
-              <li id="nav_start" class="active"><a href="{{page.rot}}/">{{page.glob.langa.home}}</a></li>
-              <li id="nav_titles" ><a href="{{page.rot}}/titles">{{page.glob.langa.titles}}</a></li>
-              <li id="nav_authors" ><a href="{{page.rot}}/authors">{{page.glob.langa.authors}}</a></li>
-            </ul>
-          </div><!--/.nav-collapse -->
-        </div>
-      </div>
+  <!--[if lt IE 7]><p class=chromeframe>Your browser is <em>ancient!</em> <a href="http://browsehappy.com/">Upgrade to a different browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to experience this site.</p><![endif]-->
+  <div data-role="page" data-title="{{ page.title }}">
+    <div data-role="header" data-position="inline">      
+        {% block nav %}{% endblock %}
     </div>
-
-    <div class="container">
-      
+    <div data-role="content">      
       {% block content %}{% endblock %}
-
+    </div>
+    <div data-role="footer">
       <hr>
-
       <footer>
-        <p><a href="https://github.com/rvolz/BicBucStriim">BicBucStriim {{page.version}}</a>,  &copy; 2012 Rainer Volz</p>
-      </footer>
+        <p><a href="https://github.com/rvolz/BicBucStriim">BicBucStriim {{page.version}}</a>  &copy; 2012 Rainer Volz</p>
+      </footer>      
+    </div>
+  </div> <!-- page -->
 
-    </div> <!-- /container -->
-
-<script src="{{page.rot}}/js/libs/jquery-1.7.1.min.js"></script>
-<script src="{{page.rot}}/js/libs/bootstrap/bootstrap.min.js"></script>
-<script src="{{page.rot}}/js/script.js"></script>
-<!--script>
-	var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
-	(function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
-	g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
-	s.parentNode.insertBefore(g,s)}(document,'script'));
-</script-->
+  <script src="{{page.rot}}/js/libs/jquery-1.7.1.min.js"></script>
+  <script src="{{page.rot}}/js/libs/jquery.mobile-1.1.0.min.js"></script>
+  <!--script src="{{page.rot}}/js/libs/bootstrap/bootstrap.min.js"></script-->
+  <script src="{{page.rot}}/js/script.js"></script>
+  <!--script>
+  	var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
+  	(function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+  	g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+  	s.parentNode.insertBefore(g,s)}(document,'script'));
+  </script-->
 
 </body>
 </html>
