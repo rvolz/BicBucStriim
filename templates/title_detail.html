@@ -30,7 +30,7 @@
 		</p>
 		<div data-role="controlgroup" data-type="horizontal">
 			{% for format in formats %}							
-				<a data-role="button" href="{{page.rot}}/titles/{{book.id}}/file/{{format.name}}.{{format.format|lower}}">
+				<a data-role="button" data-ajax="false" href="{{page.rot}}/titles/{{book.id}}/file/{{format.name}}.{{format.format|lower}}">
 					{{ format.format }}
 				</a>
 			{% endfor %}
