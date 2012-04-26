@@ -156,8 +156,8 @@ function cover($id) {
 		$app->getLog()->debug("no cover");
 		$app->notFound();
 	}	
-	if ($book->has_cover) {
-		$cover = $calibre_dir.'/'.$book->path.'/cover.jpg';
+	if ($book->has_cover) {		
+		$cover = findBookPath($calibre_dir,$book->path,'cover.jpg');
 	} else {
 		$cover = 'img/stdcover.jpg';
 	}
@@ -181,7 +181,7 @@ function book($id, $file) {
 		$app->getLog()->debug("no book file");
 		$app->notFound();
 	}	
-	$book = $calibre_dir.'/'.$book->path.'/'.$file;
+	$book = findBookPath($calibre_dir, $book->path, $file);
 	R::close();
 	$app->response()->status(200);
 	$app->response()->header('Content-type', getMimeType($book));
@@ -228,6 +228,24 @@ function author($id) {
 	}
 	$app->render('author_detail.html',array('page' => mkPage($globalSettings['langa']['author_details']), 'author' => $author, 'books' => $books));
 	R::close();
+}
+
+# Return the true path of a book. Works around a strange feature of Calibre 
+# where middle components of names are capitalized, eg "Aliette de Bodard" -> "Aliette De Bodard".
+# The directory name uses the capitalized form, the book path stored in the DB uses the original form.
+# Legacy problem?
+function findBookPath($cd, $bp, $file) {
+	global $app;
+	try {
+		$path = $cd.'/'.$bp.'/'.$file;
+		stat($path);
+	} catch (Exception $e) {
+		$app->getLog()->debug('findBookPath, path not found: '.$path);
+		$p = explode("/",$bp);
+		$path = $cd.'/'.ucwords($p[0]).'/'.$p[1].'/'.$file;
+		$app->getLog()->debug('findBookPath, new path: '.$path);
+	}
+	return $path;
 }
 
 # Try to find the correct mime type for a book file.
