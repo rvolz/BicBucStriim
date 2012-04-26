@@ -17,12 +17,15 @@ If you are looking for a possibility to publish a larger book collection, or wan
 Status
 ------
 
-BicBucStriim is under development. Version 0.5.0 of BicBucStriim: 
+BicBucStriim is still under development. Version 0.6.0 of BicBucStriim: 
 
 * displays the 30 most recent titles on the index page
 * provides a listing of all books 
 * provides a listing of all authors
 * provides detail pages (including download links) for authors and books
+* includes filtering/searching for books and authors
+* is bilingual, English/German
+* is ready for mobile clients (tested with Kindle, iPhone, iPad)
 
 
 Install
