@@ -7,7 +7,7 @@
 	<ul>
 	  <li><a href="{{page.rot}}/">{{page.glob.langa.home}}</a></li>
 	  <li><a href="{{page.rot}}/titles">{{page.glob.langa.titles}}</a></li>
-	  <li><a href="{{page.rot}}/authors" class="ui-btn-active">{{page.glob.langa.authors}}</a></li>       
+	  <li><a href="{{page.rot}}/authors">{{page.glob.langa.authors}}</a></li>       
 	</ul>
 </div>
 {% endblock %}
@@ -15,7 +15,7 @@
 {% block content %}
 <section class="author_detail row">
 	<header>
-		<h1>{{ author.name }}</h1>
+		<h1>{{page.glob.langa.booksby}} {{ author.name }}:</h1>
 	</header>
 	<ul data-role="listview">
 		{% for book in books %}

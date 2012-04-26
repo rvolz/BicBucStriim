@@ -6,14 +6,14 @@
 <div data-role="navbar">
 	<ul>
 	  <li><a href="{{page.rot}}/">{{page.glob.langa.home}}</a></li>
-	  <li><a href="{{page.rot}}/titles" class="ui-btn-active">{{page.glob.langa.titles}}</a></li>
+	  <li><a href="{{page.rot}}/titles">{{page.glob.langa.titles}}</a></li>
 	  <li><a href="{{page.rot}}/authors">{{page.glob.langa.authors}}</a></li>       
 	</ul>
 </div>
 {% endblock %}
 
 {% block content %}
-<section class="title_detail row">	
+<section class="title_detail">	
 	<header>
 			<h1>{{ book.title }}</h1> 												
 			<p>					
@@ -24,7 +24,7 @@
 			</p>
 	</header>	
 	<div data-role="collapsible">
-		<h2>Download</h2>
+		<h2>{{page.glob.langa.download}}</h2>
 		<p>
 			{{ page.glob.langa.presskey }}
 		</p>
@@ -42,7 +42,7 @@
 			{% endif %}		
 	</aside>
 	<section class="title_details">
-				<h2>Autor</h2>
+				<h2>{{page.glob.langa.authors}}</h2>
 				{% for author in authors %}
 				<a data-role="button" data-icon="info" href="{{page.rot}}/authors/{{author.id}}">{{ author.name }}</a>
 				{% endfor %} 
