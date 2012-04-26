@@ -16,14 +16,13 @@
 <body>
   <!--[if lt IE 7]><p class=chromeframe>Your browser is <em>ancient!</em> <a href="http://browsehappy.com/">Upgrade to a different browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to experience this site.</p><![endif]-->
   <div data-role="page" data-title="{{ page.title }}">
-    <div data-role="header" data-position="inline">      
-        {% block nav %}{% endblock %}
+    <div data-role="header" data-position="inline">            
+      {% block nav %}{% endblock %}
     </div>
     <div data-role="content">      
       {% block content %}{% endblock %}
     </div>
     <div data-role="footer">
-      <hr>
       <footer>
         <p><a href="https://github.com/rvolz/BicBucStriim">BicBucStriim {{page.version}}</a>  &copy; 2012 Rainer Volz</p>
       </footer>      

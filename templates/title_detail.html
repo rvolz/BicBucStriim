@@ -1,7 +1,7 @@
 {% extends 'main.html' %}
 
 {% block nav %}
-<h1>BicBucStriim :: {{ page.glob.langa.titles }}</h1>
+<h1>BicBucStriim :: {{ book.title }}</h1>
 <a href="{{page.rot}}/titles/" data-rel="back" data-icon="back" class="ui-btn-right">{{ page.glob.langa.back }}</a>
 <div data-role="navbar">
 	<ul>
@@ -15,12 +15,12 @@
 {% block content %}
 <section class="title_detail row">	
 	<header>
-		<h1>{{ book.title }}</h1>		
-			<p>											
+			<h1>{{ book.title }}</h1> 												
+			<p>					
 				{% for author in authors %}
-				<a href="{{page.rot}}/authors/{{author.id}}">{{ author.name }}</a>
+				{{ author.name }}, 
 				{% endfor %} 
-				({{ book.pubdate | date("Y") }})
+				{{ book.pubdate | date("Y") }}
 			</p>
 	</header>	
 	<div data-role="collapsible">
@@ -42,6 +42,11 @@
 			{% endif %}		
 	</aside>
 	<section class="title_details">
+				<h2>Autor</h2>
+				{% for author in authors %}
+				<a data-role="button" data-icon="info" href="{{page.rot}}/authors/{{author.id}}">{{ author.name }}</a>
+				{% endfor %} 
+
 				<h2>{{page.glob.langa.comment}}</h2>			
 				<div>
 					{% autoescape false %}
