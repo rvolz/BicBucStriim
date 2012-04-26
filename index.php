@@ -104,7 +104,7 @@ function titles() {
 	$grouped_books = array();
 	$initial_book = "";
 	foreach ($books as $book) {
-		$ix = strtoupper(substr($book->sort,0,1));
+		$ix = mb_strtoupper(mb_substr($book->sort,0,1,'UTF-8'), 'UTF-8');
 		if ($ix != $initial_book) {
 			array_push($grouped_books, array('initial' => $ix));
 			$initial_book = $ix;
@@ -199,7 +199,7 @@ function authors() {
 	$grouped_authors = array();
 	$initial_author = "";
 	foreach ($authors as $author) {
-		$ix = strtoupper(substr($author->sort,0,1));
+		$ix = mb_strtoupper(mb_substr($author->sort,0,1,'UTF-8'), 'UTF-8');
 		if ($ix != $initial_author) {
 			array_push($grouped_authors, array('initial' => $ix));
 			$initial_author = $ix;
