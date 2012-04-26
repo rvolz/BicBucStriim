@@ -8,7 +8,7 @@ require 'rake/packagetask'
 require 'fileutils'
 
 APPNAME = 'BicBucStriim'
-VERSION = '0.5.0'
+VERSION = '0.6.0'
 
 Rake::PackageTask.new(APPNAME, VERSION) do |p|
 	p.need_tar = true
