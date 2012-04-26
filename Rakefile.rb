@@ -16,6 +16,7 @@ Rake::PackageTask.new(APPNAME, VERSION) do |p|
   p.package_files.include("img/**/*.*")  
   p.package_files.include("js/**/*.min.js")
   p.package_files.include("js/script.js")
+  p.package_files.include("style/jquery/**/*.*")
   p.package_files.include("style/style.css")
   p.package_files.include("lib/**/*.*")
   p.package_files.include("templates/**/*.*")
