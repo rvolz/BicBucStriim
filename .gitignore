@@ -1,7 +1,6 @@
 *.*~
 #*.*
 .DS_Store
-logs/*.log
 pkg
 metadata.db
 *.sublime-project

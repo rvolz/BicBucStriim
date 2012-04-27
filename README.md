@@ -17,7 +17,7 @@ If you are looking for a possibility to publish a larger book collection, or wan
 Status
 ------
 
-BicBucStriim is still under development. Version 0.6.0 of BicBucStriim: 
+BicBucStriim is still under development. Version 0.6.1 of BicBucStriim: 
 
 * displays the 30 most recent titles on the index page
 * provides a listing of all books 
@@ -31,14 +31,15 @@ BicBucStriim is still under development. Version 0.6.0 of BicBucStriim:
 Install
 -------
 
-The easy way, assuming that BicBucStriim lives right below the web root of your NAS device, is addressable like `http://<your ip>/bbs/`:
+The easy way assumes that BicBucStriim lives right below the web root of your device and can be addressed like `http://<your ip>/bbs/`:
 
 * Download a installation archive from [GitHub](https://github.com/rvolz/BicBucStriim/downloads).
-* Unarchive the downloaded archive below the web server root of your NAS (e.g. "web" on a Synology device)
+* Unarchive the downloaded archive below the web server root of your NAS (e.g. "/volume1/web" on a Synology device)
 * Rename the newly created directory (e.g. BicBucStriim-0.5.0.zip) to "bbs".
 * NOTE: If you don't want to use the directory name *bbs* simply change the .htaccess file accordingly (the line "RewriteBase /bbs/")
+* Make the "logs" directory writeable for all: `chmod ga+w logs`
 * Enter the full path to your Calibre library directory in config.php
-* BicBucStriim should now be working, the path is `http://<address of your NAS>/bbs/`
+* BicBucStriim should now be working, start your web browser and navigate to `http://<address of your NAS>/bbs/`
 
 Requirements
 ------------

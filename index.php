@@ -2,9 +2,13 @@
 // Copyight 2012 Rainer Volz
 // Licensed under MIT License, see README.MD/License
 
-require_once 'lib/rb.php';
+require 'lib/rb.php';
 require_once 'lib/Slim/Slim.php';
-require_once 'lib/TwigView.php';
+require_once 'lib/Slim/Views/TwigView.php';
+TwigView::$twigDirectory = dirname(__FILE__) . '/lib/Twig';
+TwigView::$twigExtensions = array(
+    'Twig_Extensions_Slim'
+);
 
 # Root dir of Calibre library, should contain the metadata.db
 $calibre_dir = '/volume1/books';
@@ -46,7 +50,7 @@ $langen = array('home' => "Home",
 $globalSettings = array();
 require_once 'config.php';
 $globalSettings['appname'] = 'BicBucStriim';
-$globalSettings['version'] = '0.6.0';
+$globalSettings['version'] = '0.6.1';
 $globalSettings['sep'] = ' :: ';
 $globalSettings['lang'] = getUserLang($allowedLangs, $fallbackLang);
 if ($globalSettings['lang'] == 'de')
@@ -69,6 +73,7 @@ $app->get('/titles/:id/file/:file', 'book');
 $app->get('/authors/', 'authors');
 $app->get('/authors/:id/', 'author');
 
+$app->getLog()->debug("sss");
 # Setup the connection to the Calibre metadata db
 if (!file_exists($calibre_dir.'/'.$metadata_db) || !is_readable($calibre_dir.'/'.$metadata_db)) {
 	$app->getLog()->error('Exception while opening metadata db '.$calibre_dir.'/'.$metadata_db);	
