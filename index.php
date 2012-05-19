@@ -19,6 +19,7 @@ $langde = array('home' => "Start",
 	'book_details' => "Buchdetails",
 	'authors' => "Autoren",
 	'author_details' => "Details Autor",
+	'tags' => "Schlagwörter",
 	'booksby' => "Bücher von",
 	'dl30' => "Die letzten 30",
 	'download' => "Herunterladen",
@@ -33,6 +34,7 @@ $langen = array('home' => "Home",
 	'book_details' => "Book Details",
 	'authors' => "Authors",
 	'author_details' => "Author Details",
+	'tags' => "Tags",
 	'booksby' => "Books by",
 	'dl30' => "Most recent 30",
 	'download' => "Download",
@@ -44,7 +46,7 @@ $langen = array('home' => "Home",
 	'mdb_error' => 'Calibre database not found or not readable: ');
 
 $globalSettings = array();
-$globalSettings['appname'] = 'BicBucStriim';
+$globalSettings['appname'] = $appname;
 $globalSettings['version'] = '0.6.1';
 $globalSettings['sep'] = ' :: ';
 $globalSettings['lang'] = getUserLang($allowedLangs, $fallbackLang);
@@ -133,13 +135,19 @@ function title($id) {
 		$author = R::findOne('authors', ' id=?', array($aid->author));
 		array_push($authors, $author);
 	}
+	$tag_ids = R::find('books_tags_link', ' book=?', array($id));
+	$tags = array();
+	foreach($tag_ids as $tid) {
+		$tag = R::findOne('tags', ' id=?', array($tid->tag));
+		array_push($tags, $tag);
+	}
 	$formats = R::find('data', ' book=?', array($id));
 	$comment = R::findOne('comments', 'book=?', array($id));
 	if (is_null($comment))
 		$comment_text = '';
 	else
 		$comment_text = $comment->text;
-	$app->render('title_detail.html',array('page' => mkPage($globalSettings['langa']['book_details']), 'calibre_dir' => $calibre_dir,'book' => $book, 'authors' => $authors, 'formats'=>$formats, 'comment' => $comment_text));
+	$app->render('title_detail.html',array('page' => mkPage($globalSettings['langa']['book_details']), 'calibre_dir' => $calibre_dir,'book' => $book, 'authors' => $authors, 'tags' => $tags, 'formats'=>$formats, 'comment' => $comment_text));
 	R::close();
 }
 
