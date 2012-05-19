@@ -69,6 +69,8 @@ $app->get('/titles/:id/cover/', 'cover');
 $app->get('/titles/:id/file/:file', 'book');
 $app->get('/authors/', 'authors');
 $app->get('/authors/:id/', 'author');
+$app->get('/tags/', 'tags');
+$app->get('/tag/:id/', 'tag');
 
 $app->getLog()->debug("sss");
 # Setup the connection to the Calibre metadata db
@@ -236,6 +238,32 @@ function author($id) {
 	}
 	$app->render('author_detail.html',array('page' => mkPage($globalSettings['langa']['author_details']), 'author' => $author, 'books' => $books));
 	R::close();
+}
+
+#List of all tags -> /tags
+function tags() {
+
+	global $app;
+	global $globalSettings;
+
+	$tags = R::find('tags', ' 1 ORDER BY name');
+	$grouped_tags = array();
+	$initial_tag = "";
+	foreach ($tags as $tag) {
+		$ix = mb_strtoupper(mb_substr($tag->name,0,1,'UTF-8'), 'UTF-8');
+		if ($ix != $initial_tag) {
+			array_push($grouped_tags, array('initial' => $ix));
+			$initial_tag = $ix;
+		} 
+		array_push($grouped_tags, $tag);
+	}
+	$app->render('tags.html',array('page' => mkPage($globalSettings['langa']['tags']),'tags' => $grouped_tags));
+	R::close();
+
+}
+
+#Details of a single tag -> /tags/:id
+function tag($id) {
 }
 
 # Return the true path of a book. Works around a strange feature of Calibre 
