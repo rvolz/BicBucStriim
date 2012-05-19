@@ -3,17 +3,13 @@
 // Licensed under MIT License, see README.MD/License
 
 require 'lib/rb.php';
+require_once 'config.php';
 require_once 'lib/Slim/Slim.php';
 require_once 'lib/Slim/Views/TwigView.php';
 TwigView::$twigDirectory = dirname(__FILE__) . '/lib/Twig';
 TwigView::$twigExtensions = array(
     'Twig_Extensions_Slim'
 );
-
-# Root dir of Calibre library, should contain the metadata.db
-$calibre_dir = '/volume1/books';
-# Name of the Calibre library file
-$metadata_db = 'metadata.db';
 
 $allowedLangs = array('de','en');
 $fallbackLang = 'en';
@@ -48,7 +44,6 @@ $langen = array('home' => "Home",
 	'mdb_error' => 'Calibre database not found or not readable: ');
 
 $globalSettings = array();
-require_once 'config.php';
 $globalSettings['appname'] = 'BicBucStriim';
 $globalSettings['version'] = '0.6.1';
 $globalSettings['sep'] = ' :: ';
