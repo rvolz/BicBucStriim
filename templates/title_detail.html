@@ -58,7 +58,7 @@
 					<h2>{{page.glob.langa.tags}}</h2>
 					<p>
 						{% for tag in tags %}
-						{{ tag.name }};
+						<a data-role="button" data-mini="true" data-inline="true" href="{{page.rot}}/tags/{{tag.id}}">{{ tag.name }}</a>
 						{% endfor %}
 					</p>
 				</div>

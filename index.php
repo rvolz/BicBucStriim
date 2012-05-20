@@ -20,6 +20,7 @@ $langde = array('home' => "Start",
 	'authors' => "Autoren",
 	'author_details' => "Details Autor",
 	'tags' => "Schlagwörter",
+	'tag_details' => "Details Schlagwort",
 	'booksby' => "Bücher von",
 	'dl30' => "Die letzten 30",
 	'download' => "Herunterladen",
@@ -35,6 +36,7 @@ $langen = array('home' => "Home",
 	'authors' => "Authors",
 	'author_details' => "Author Details",
 	'tags' => "Tags",
+	'tag_details' => "Tag Details",
 	'booksby' => "Books by",
 	'dl30' => "Most recent 30",
 	'download' => "Download",
@@ -70,7 +72,7 @@ $app->get('/titles/:id/file/:file', 'book');
 $app->get('/authors/', 'authors');
 $app->get('/authors/:id/', 'author');
 $app->get('/tags/', 'tags');
-$app->get('/tag/:id/', 'tag');
+$app->get('/tags/:id/', 'tag');
 
 $app->getLog()->debug("sss");
 # Setup the connection to the Calibre metadata db
@@ -264,6 +266,22 @@ function tags() {
 
 #Details of a single tag -> /tags/:id
 function tag($id) {
+	global $app;
+	global $globalSettings;
+	
+	$tag = R::findOne('tags', ' id=?', array($id));
+	if (is_null($tag)) {
+		$app->getLog()->debug("no tag");
+		$app->notFound();		
+	}
+	$book_ids = R::find('books_tags_link', ' tag=?', array($id));
+	$books = array();
+	foreach($book_ids as $bid) {
+		$book = R::findOne('books', ' id=?', array($bid->book));
+		array_push($books, $book);
+	}
+	$app->render('tag_detail.html',array('page' => mkPage($globalSettings['langa']['tag_details']), 'tag' => $tag, 'books' => $books));
+	R::close();
 }
 
 # Return the true path of a book. Works around a strange feature of Calibre 
