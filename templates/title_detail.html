@@ -1,13 +1,14 @@
 {% extends 'main.html' %}
 
 {% block nav %}
-<h1>BicBucStriim :: {{ book.title }}</h1>
+<h1>{{ page.glob.appname }} :: {{ book.title }}</h1>
 <a href="{{page.rot}}/titles/" data-rel="back" data-icon="back" class="ui-btn-right">{{ page.glob.langa.back }}</a>
 <div data-role="navbar">
 	<ul>
 	  <li><a href="{{page.rot}}/">{{page.glob.langa.home}}</a></li>
 	  <li><a href="{{page.rot}}/titles">{{page.glob.langa.titles}}</a></li>
-	  <li><a href="{{page.rot}}/authors">{{page.glob.langa.authors}}</a></li>       
+	  <li><a href="{{page.rot}}/authors">{{page.glob.langa.authors}}</a></li>
+	  <li><a href="{{page.rot}}/tags">{{page.glob.langa.tags}}</a></li>       
 	</ul>
 </div>
 {% endblock %}
@@ -52,6 +53,14 @@
 					{% autoescape false %}
 					{{ comment }}
 					{% endautoescape %}
+				</div>
+				<div data-role="collapsible">
+					<h2>{{page.glob.langa.tags}}</h2>
+					<p>
+						{% for tag in tags %}
+						<a data-role="button" data-mini="true" data-inline="true" href="{{page.rot}}/tags/{{tag.id}}">{{ tag.name }}</a>
+						{% endfor %}
+					</p>
 				</div>
 	</section>	
 </section>
