@@ -195,11 +195,14 @@ function book($id, $file) {
 	}	
 	$book = findBookPath($calibre_dir, $book->path, $file);
 	R::close();
-	$app->response()->status(200);
-	$app->response()->header('Content-type', getMimeType($book));
-	$app->response()->header('Content-Length',filesize($book));
-	#$app->response()->write(base64_encode($cover));
-	readfile($book);
+	/** readfile has problems with large files (e.g. PDF) caused by php memory limit
+	 * to avoid this the function readfile_chunked() is used. app->response() is not
+	 * working with this solution.
+	**/
+	//TODO: Use new streaming functions in SLIM 1.7.0 when released
+	header("Content-length: ".filesize($book));
+	header("Content-type: ".getMimeType($book));
+	readfile_chunked($book);
 }
 
 # List of all authors -> /authors
@@ -384,5 +387,24 @@ function getUserLang($allowedLangs, $fallbackLang) {
     return $fallbackLang;
 }
 
+#Utility function to server files
+function readfile_chunked($filename) {
+	global $app;
+	$app->getLog()->debug('readfile_chunked '.$filename);
+	$buffer = '';
+	$handle = fopen($filename, 'rb');
+	if ($handle === false) {
+		return false;
+	}
+	while (!feof($handle)) {
+		$buffer = fread($handle, 1024*1024);
+		echo $buffer;
+		ob_flush();
+		flush();
+	}
+	$status = fclose($handle);
+	return $status;
+	
+}
 
 ?>
