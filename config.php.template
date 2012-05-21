@@ -1,10 +1,18 @@
 <?php
+# Configuration file for BicBucStriim_
+# Copy this file to "config.php" and change the defaults if necessary.
 
-# Root dir of Calibre library, should contain the metadata.db
-$calibre_dir = '/volume1/library';
+#### Per user configuration - please change
+
+# Root directory of the Calibre library. It should contain the metadata.db
+$calibre_dir = '/volume1/books';
+
+
+#### App configuration -- only change if you know what you are doing
+
 # Name of the Calibre library file
 $metadata_db = 'metadata.db';
 # Application Name
-$appname = 'Calibre';
+$appname = 'BicBucStriim';
 
 ?>
