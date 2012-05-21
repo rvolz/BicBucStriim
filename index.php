@@ -158,29 +158,34 @@ function title($id) {
 }
 
 # Return the cover for the book with ID. Calibre generates only JPEGs, so we always return a JPEG.
-# If there is no cover, return the standard cover image.
+# If there is no cover, return 404.
 # Route: /titles/:id/cover
 function cover($id) {
 	global $app;
 	global $calibre_dir;
 
+	$has_cover = false;
 	$rot = $app->request()->getRootUri();
 	$book = R::findOne('books',' id=?', array(intval($id)));
 	if (is_null($book)) {
-		$app->getLog()->debug("no cover");
-		$app->notFound();
-	}	
+		$app->getLog()->debug("cover: book not found: "+$id);
+		$app->response()->status(404);
+		return;
+	}
+	
 	if ($book->has_cover) {		
 		$cover = findBookPath($calibre_dir,$book->path,'cover.jpg');
-	} else {
-		$cover = 'img/stdcover.jpg';
+		$has_cover = true;
 	}
 	R::close();
-	$app->response()->status(200);
-	$app->response()->header('Content-type','image/jpeg;base64');
-	$app->response()->header('Content-Length',filesize($cover));
-	#$app->response()->write(base64_encode($cover));
-	readfile($cover);
+	if ($has_cover) {
+		$app->response()->status(200);
+		$app->response()->header('Content-type','image/jpeg;base64');
+		$app->response()->header('Content-Length',filesize($cover));
+		readfile($cover);		
+	} else {
+		$app->response()->status(404);
+	}
 }
 
 # Return the selected file for the book with ID. 
