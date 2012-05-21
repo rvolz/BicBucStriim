@@ -3,17 +3,13 @@
 // Licensed under MIT License, see README.MD/License
 
 require 'lib/rb.php';
+require_once 'config.php';
 require_once 'lib/Slim/Slim.php';
 require_once 'lib/Slim/Views/TwigView.php';
 TwigView::$twigDirectory = dirname(__FILE__) . '/lib/Twig';
 TwigView::$twigExtensions = array(
     'Twig_Extensions_Slim'
 );
-
-# Root dir of Calibre library, should contain the metadata.db
-$calibre_dir = '/volume1/books';
-# Name of the Calibre library file
-$metadata_db = 'metadata.db';
 
 $allowedLangs = array('de','en');
 $fallbackLang = 'en';
@@ -23,6 +19,8 @@ $langde = array('home' => "Start",
 	'book_details' => "Buchdetails",
 	'authors' => "Autoren",
 	'author_details' => "Details Autor",
+	'tags' => "Schlagwörter",
+	'tag_details' => "Details Schlagwort",
 	'booksby' => "Bücher von",
 	'dl30' => "Die letzten 30",
 	'download' => "Herunterladen",
@@ -37,6 +35,8 @@ $langen = array('home' => "Home",
 	'book_details' => "Book Details",
 	'authors' => "Authors",
 	'author_details' => "Author Details",
+	'tags' => "Tags",
+	'tag_details' => "Tag Details",
 	'booksby' => "Books by",
 	'dl30' => "Most recent 30",
 	'download' => "Download",
@@ -48,8 +48,7 @@ $langen = array('home' => "Home",
 	'mdb_error' => 'Calibre database not found or not readable: ');
 
 $globalSettings = array();
-require_once 'config.php';
-$globalSettings['appname'] = 'BicBucStriim';
+$globalSettings['appname'] = $appname;
 $globalSettings['version'] = '0.6.1';
 $globalSettings['sep'] = ' :: ';
 $globalSettings['lang'] = getUserLang($allowedLangs, $fallbackLang);
@@ -72,6 +71,8 @@ $app->get('/titles/:id/cover/', 'cover');
 $app->get('/titles/:id/file/:file', 'book');
 $app->get('/authors/', 'authors');
 $app->get('/authors/:id/', 'author');
+$app->get('/tags/', 'tags');
+$app->get('/tags/:id/', 'tag');
 
 $app->getLog()->debug("sss");
 # Setup the connection to the Calibre metadata db
@@ -138,13 +139,19 @@ function title($id) {
 		$author = R::findOne('authors', ' id=?', array($aid->author));
 		array_push($authors, $author);
 	}
+	$tag_ids = R::find('books_tags_link', ' book=?', array($id));
+	$tags = array();
+	foreach($tag_ids as $tid) {
+		$tag = R::findOne('tags', ' id=?', array($tid->tag));
+		array_push($tags, $tag);
+	}
 	$formats = R::find('data', ' book=?', array($id));
 	$comment = R::findOne('comments', 'book=?', array($id));
 	if (is_null($comment))
 		$comment_text = '';
 	else
 		$comment_text = $comment->text;
-	$app->render('title_detail.html',array('page' => mkPage($globalSettings['langa']['book_details']), 'calibre_dir' => $calibre_dir,'book' => $book, 'authors' => $authors, 'formats'=>$formats, 'comment' => $comment_text));
+	$app->render('title_detail.html',array('page' => mkPage($globalSettings['langa']['book_details']), 'calibre_dir' => $calibre_dir,'book' => $book, 'authors' => $authors, 'tags' => $tags, 'formats'=>$formats, 'comment' => $comment_text));
 	R::close();
 }
 
@@ -188,11 +195,14 @@ function book($id, $file) {
 	}	
 	$book = findBookPath($calibre_dir, $book->path, $file);
 	R::close();
-	$app->response()->status(200);
-	$app->response()->header('Content-type', getMimeType($book));
-	$app->response()->header('Content-Length',filesize($book));
-	#$app->response()->write(base64_encode($cover));
-	readfile($book);
+	/** readfile has problems with large files (e.g. PDF) caused by php memory limit
+	 * to avoid this the function readfile_chunked() is used. app->response() is not
+	 * working with this solution.
+	**/
+	//TODO: Use new streaming functions in SLIM 1.7.0 when released
+	header("Content-length: ".filesize($book));
+	header("Content-type: ".getMimeType($book));
+	readfile_chunked($book);
 }
 
 # List of all authors -> /authors
@@ -232,6 +242,48 @@ function author($id) {
 		array_push($books, $book);
 	}
 	$app->render('author_detail.html',array('page' => mkPage($globalSettings['langa']['author_details']), 'author' => $author, 'books' => $books));
+	R::close();
+}
+
+#List of all tags -> /tags
+function tags() {
+
+	global $app;
+	global $globalSettings;
+
+	$tags = R::find('tags', ' 1 ORDER BY name');
+	$grouped_tags = array();
+	$initial_tag = "";
+	foreach ($tags as $tag) {
+		$ix = mb_strtoupper(mb_substr($tag->name,0,1,'UTF-8'), 'UTF-8');
+		if ($ix != $initial_tag) {
+			array_push($grouped_tags, array('initial' => $ix));
+			$initial_tag = $ix;
+		} 
+		array_push($grouped_tags, $tag);
+	}
+	$app->render('tags.html',array('page' => mkPage($globalSettings['langa']['tags']),'tags' => $grouped_tags));
+	R::close();
+
+}
+
+#Details of a single tag -> /tags/:id
+function tag($id) {
+	global $app;
+	global $globalSettings;
+	
+	$tag = R::findOne('tags', ' id=?', array($id));
+	if (is_null($tag)) {
+		$app->getLog()->debug("no tag");
+		$app->notFound();		
+	}
+	$book_ids = R::find('books_tags_link', ' tag=?', array($id));
+	$books = array();
+	foreach($book_ids as $bid) {
+		$book = R::findOne('books', ' id=?', array($bid->book));
+		array_push($books, $book);
+	}
+	$app->render('tag_detail.html',array('page' => mkPage($globalSettings['langa']['tag_details']), 'tag' => $tag, 'books' => $books));
 	R::close();
 }
 
@@ -335,5 +387,24 @@ function getUserLang($allowedLangs, $fallbackLang) {
     return $fallbackLang;
 }
 
+#Utility function to server files
+function readfile_chunked($filename) {
+	global $app;
+	$app->getLog()->debug('readfile_chunked '.$filename);
+	$buffer = '';
+	$handle = fopen($filename, 'rb');
+	if ($handle === false) {
+		return false;
+	}
+	while (!feof($handle)) {
+		$buffer = fread($handle, 1024*1024);
+		echo $buffer;
+		ob_flush();
+		flush();
+	}
+	$status = fclose($handle);
+	return $status;
+	
+}
 
 ?>

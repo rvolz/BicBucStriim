@@ -1,7 +1,7 @@
 {% extends 'main.html' %}
 
 {% block nav %}
-<h1>{{ page.glob.appname }} :: {{ author.name }}</h1>
+<h1>{{ page.glob.appname }} :: {{ tag.name }}</h1>
 <a href="{{page.rot}}/authors/" data-rel="back" data-icon="back" class="ui-btn-right">{{ page.glob.langa.back }}</a>
 <div data-role="navbar">
 	<ul>
@@ -16,7 +16,7 @@
 {% block content %}
 <section class="author_detail row">
 	<header>
-		<h1>{{page.glob.langa.booksby}} {{ author.name }}:</h1>
+		<h1>{{page.glob.langa.booksby}} {{ tag.name }}:</h1>
 	</header>
 	<ul data-role="listview">
 		{% for book in books %}
