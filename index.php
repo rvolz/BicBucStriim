@@ -13,6 +13,9 @@ TwigView::$twigExtensions = array(
 
 $allowedLangs = array('de','en');
 $fallbackLang = 'en';
+# Application Name
+$appname = 'BicBucStriim';
+
 
 $langde = array('authors' => "Autoren",
 	'author_details' => "Details Autor",

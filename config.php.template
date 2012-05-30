@@ -12,7 +12,4 @@ $calibre_dir = '/volume1/books';
 
 # Name of the Calibre library file
 $metadata_db = 'metadata.db';
-# Application Name
-$appname = 'BicBucStriim';
-
 ?>
