@@ -23,18 +23,34 @@
 				{% endfor %} 
 				{{ book.pubdate | date("Y") }}
 			</p>
-	</header>	
+			<p class="ui-state-error">{{ flash.error }}</p>	
+	</header>		
 	<div data-role="collapsible">
 		<h2>{{page.glob.langa.download}}</h2>
-		<p>
-			{{ page.glob.langa.presskey }}
-		</p>
-		<div data-role="controlgroup" data-type="horizontal">
-			{% for format in formats %}							
-				<a data-role="button" data-ajax="false" href="{{page.rot}}/titles/{{book.id}}/file/{{format.name}}.{{format.format|lower}}">
-					{{ format.format }}
-				</a>
-			{% endfor %}
+		{% if (protect_dl == true) %} 
+		<div class="dl_access">
+			<p>
+				{{ page.glob.langa.check_access_info }}
+			</p>
+			<a data-role="button" data-rel="dialog" href="{{page.rot}}/titles/{{book.id}}/showaccess/">
+				{{ page.glob.langa.check_access }}
+			</a>
+		</div>
+		{% endif %}	
+		<div class ="dl_download" {% if protect_dl == true %} hidden="true" {% endif %}>
+			<p>
+				{{ page.glob.langa.presskey }}
+			</p>
+			<div data-role="controlgroup" data-type="horizontal">
+				{% for format in formats %}				
+						<a data-role="button" 
+							{% if page.glob.glob_dl_toggle == true %} disabled="true" {% endif %} 
+							data-ajax="false" 
+							href="{{page.rot}}/titles/{{book.id}}/file/{{format.name}}.{{format.format|lower}}">
+								{{ format.format }}
+						</a>
+				{% endfor %}
+			</div>
 		</div>
 	</div>
 	<aside class="title_detail_image">

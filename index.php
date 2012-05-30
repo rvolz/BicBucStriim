@@ -17,7 +17,8 @@ $allowedLangs = array('de','en');
 $fallbackLang = 'en';
 # Application Name
 $appname = 'BicBucStriim';
-
+# Cookie name for global download protection
+define('GLOBAL_DL_COOKIE', 'glob_dl_access');
 
 $langde = array('authors' => "Autoren",
 	'author_details' => "Details Autor",
@@ -25,11 +26,14 @@ $langde = array('authors' => "Autoren",
 	'booksby' => "Bücher von",
 	'booksbytag' => "Bücher mit Schlagwort",
 	'book_details' => "Buchdetails",
+	'check_access' => "Freischalten",
+	'check_access_info' => "Diese Buch ist passwortgeschützt. Bitte freischalten, um es herunter zu laden.",
 	'comment' => 'Beschreibung',
 	'dl30' => "Die letzten 30",
 	'download' => "Herunterladen",
 	'error' => 'Fehler',
 	'home' => "Start",
+	'invalid_password' => "Ungültiges Passwort",
 	'mdb_error' => 'Calibre Datenbank existiert nicht oder konnte nicht gelesen werden: ',
 	'presskey' => 'Taste drücken, um das Buch im betreffenden Format herunter zu laden.',
 	'published' => 'Veröffentlicht',
@@ -42,17 +46,27 @@ $langen = array('authors' => "Authors",
 	'booksby' => "Books by",
 	'booksbytag' => "Books tagged with",
 	'book_details' => "Book Details",
+	'check_access' => "Enter Password",
+	'check_access_info' => "This book is protected. Please enter your password to enable the book download.",
 	'comment' => 'Description',
 	'dl30' => "Most recent 30",
 	'download' => "Download",
 	'error' => 'Error',
 	'home' => "Home",
+	'invalid_password' => "Invalid Password",
 	'mdb_error' => 'Calibre database not found or not readable: ',
 	'presskey' => 'Press a button to download the book in the respective format.',
 	'published' => 'Published',
 	'tags' => "Tags",
 	'tag_details' => "Tag Details",
 	'titles' => "Books");
+
+# Init app and routes
+$app = new Slim(array(
+	'log.enable' => true, 
+	'log.path' => './logs',
+	'log.level' => 4,
+	'view' => new TwigView()));
 
 $globalSettings = array();
 $globalSettings['appname'] = $appname;
@@ -63,19 +77,17 @@ if ($globalSettings['lang'] == 'de')
 	$globalSettings['langa'] = $langde;
 else
 	$globalSettings['langa'] = $langen;
-$globalSettings['glob_dl_toggle'] |= false;
-$globalSettings['glob_dl_password'] |= '7094e7dc2feb759758884333c2f4a6bdc9a16bb2';
+$globalSettings['glob_dl_toggle'] = isset($glob_dl_toggle) ? $glob_dl_toggle : false;
+$app->getLog()->debug('Global Download Toggle: '.$globalSettings['glob_dl_toggle']);	
+$globalSettings['glob_dl_password'] = isset($glob_dl_password) ? $glob_dl_password : '7094e7dc2feb759758884333c2f4a6bdc9a16bb2';
+$app->getLog()->debug('Global Download Password: '.$globalSettings['glob_dl_password']);	
 
-# Init app and routes
-$app = new Slim(array(
-	'log.enable' => true, 
-	'log.path' => './logs',
-	'log.level' => 4,
-	'view' => new TwigView()));
 $app->notFound('myNotFound');
 $app->get('/', 'main');
 $app->get('/titles/', 'titles');
 $app->get('/titles/:id/', 'title');
+$app->get('/titles/:id/showaccess/', 'showaccess');
+$app->post('/titles/:id/checkaccess/', 'checkaccess');
 $app->get('/titles/:id/cover/', 'cover');
 $app->get('/titles/:id/file/:file', 'book');
 $app->get('/authors/', 'authors');
@@ -159,8 +171,86 @@ function title($id) {
 		$comment_text = '';
 	else
 		$comment_text = $comment->text;
-	$app->render('title_detail.html',array('page' => mkPage($globalSettings['langa']['book_details']), 'calibre_dir' => $calibre_dir,'book' => $book, 'authors' => $authors, 'tags' => $tags, 'formats'=>$formats, 'comment' => $comment_text));
+
+		
+	$app->render('title_detail.html',
+		array('page' => mkPage($globalSettings['langa']['book_details']), 
+			'calibre_dir' => $calibre_dir,
+			'book' => $book, 
+			'authors' => $authors, 
+			'tags' => $tags, 
+			'formats'=>$formats, 
+			'comment' => $comment_text,
+			'protect_dl' => is_protected($id))
+	);
 	R::close();
+}
+
+# Check whether the book download must be protected. 
+# Returns:
+#  true - the user must enter a password
+#  false - no password necessary
+#
+function is_protected($id) {
+	global $app;
+	global $globalSettings;
+	global $global_dl_cookie_name;
+
+	# Get the cookie
+	# TBD more checks
+	$glob_dl_cookie = $app->getCookie(GLOBAL_DL_COOKIE);
+	if (isset($glob_dl_cookie)) {
+		$app->getLog()->debug('Cookie glob_dl_access value: '.$glob_dl_cookie);		
+	} else {
+		$app->getLog()->debug('No cookie glob_dl_access');		
+	}
+	if ($globalSettings['glob_dl_toggle'] && !isset($glob_dl_cookie))
+		return true;
+	else 
+		return false;
+}
+
+
+# Show the password dialog
+# Route: /titles/:id/showaccess/
+function showaccess($id) {
+	global $app;
+	global $calibre_dir;
+	global $globalSettings;
+
+	$app->render('password_dialog.html',array('page' => mkPage(''), 'bookid' => $id));
+}
+
+# Check the access rights for a book and set a cookie
+# Route: /titles/:id/checkaccess/
+function checkaccess($id) {
+	global $app;
+	global $calibre_dir;
+	global $globalSettings;
+
+	$rot = $app->request()->getRootUri();
+	$book = R::findOne('books',' id=?', array(intval($id)));
+	if (is_null($book)) {
+		$app->getLog()->debug("checkaccess: book not found: "+$id);
+		$app->response()->status(404);
+		R::close();
+		return;
+	}		
+	R::close();	
+	$app->deleteCookie(GLOBAL_DL_COOKIE);
+	$password = $app->request()->post('password');
+	$app->getLog()->debug('checkaccess input: '.$password);
+	if ($password == $globalSettings['glob_dl_password']) {
+		$app->getLog()->debug('checkaccess succeded');
+		$app->setCookie(GLOBAL_DL_COOKIE,$password);
+		# $app->response()->status(200);
+		$app->redirect("/bbs/titles/".$id);
+	} else {		
+		$app->getLog()->debug('checkaccess failed');
+		$app->flash('error', $globalSettings['langa']['invalid_password']);
+		$app->response()->redirect("/bbs/titles/".$id,301);
+		#$app->response()->status(404);
+	}
 }
 
 # Return the cover for the book with ID. Calibre generates only JPEGs, so we always return a JPEG.
@@ -208,6 +298,12 @@ function book($id, $file) {
 	}	
 	$book = findBookPath($calibre_dir, $book->path, $file);
 	R::close();
+
+	if (is_protected($id)) {
+		$app->getLog()->warning("book: attempt to download a protected book, "+$id);
+		$app->response()->status(404);	
+	}
+
 	/** readfile has problems with large files (e.g. PDF) caused by php memory limit
 	 * to avoid this the function readfile_chunked() is used. app->response() is not
 	 * working with this solution.
