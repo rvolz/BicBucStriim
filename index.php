@@ -11,7 +11,9 @@ TwigView::$twigExtensions = array(
     'Twig_Extensions_Slim'
 );
 
+# Allowed languages, i.e. languages with translations
 $allowedLangs = array('de','en');
+# Fallback language if the browser prefers other than the allowed languages
 $fallbackLang = 'en';
 # Application Name
 $appname = 'BicBucStriim';
