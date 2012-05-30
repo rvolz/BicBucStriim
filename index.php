@@ -64,7 +64,7 @@ if ($globalSettings['lang'] == 'de')
 else
 	$globalSettings['langa'] = $langen;
 $globalSettings['glob_dl_toggle'] |= false;
-$globalSettings['glob_dl_password'] |= '';
+$globalSettings['glob_dl_password'] |= '7094e7dc2feb759758884333c2f4a6bdc9a16bb2';
 
 # Init app and routes
 $app = new Slim(array(
