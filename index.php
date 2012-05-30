@@ -101,7 +101,7 @@ if (!file_exists($calibre_dir.'/'.$metadata_db) || !is_readable($calibre_dir.'/'
 	$app->render('error.html', array('page' => mkPage($globalSettings['langa']['error']), 
 		'error' => $globalSettings['langa']['mdb_error'].$calibre_dir.'/'.$metadata_db));
 } else {
-	R::setup('sqlite:'.$calibre_dir.'/'.$metadata_db);
+	R::setup('sqlite:'.$calibre_dir.'/'.$metadata_db, NULL, NULL, true);
 	$app->run();
 }
 
