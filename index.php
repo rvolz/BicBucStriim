@@ -110,8 +110,6 @@ function myNotFound() {
 	$app->render('404.html');
 }
 
-
-
 # Index page -> /
 function main() {
 	global $app;
@@ -127,17 +125,7 @@ function titles() {
 	global $globalSettings;
 
 	$books = R::find('books',' 1 ORDER BY sort');
-	$grouped_books = array();
-	$initial_book = "";
-	foreach ($books as $book) {
-		$ix = mb_strtoupper(mb_substr($book->sort,0,1,'UTF-8'), 'UTF-8');
-		if ($ix != $initial_book) {
-			array_push($grouped_books, array('initial' => $ix));
-			$initial_book = $ix;
-		} 
-		array_push($grouped_books, $book);
-	}
-
+	$grouped_books = mkInitialedList($books);
 	$app->render('titles.html',array('page' => mkPage($globalSettings['langa']['titles']), 'books' => $grouped_books));
 	R::close();
 }
@@ -171,7 +159,6 @@ function title($id) {
 		$comment_text = '';
 	else
 		$comment_text = $comment->text;
-
 		
 	$app->render('title_detail.html',
 		array('page' => mkPage($globalSettings['langa']['book_details']), 
@@ -186,39 +173,15 @@ function title($id) {
 	R::close();
 }
 
-# Check whether the book download must be protected. 
-# Returns:
-#  true - the user must enter a password
-#  false - no password necessary
-#
-function is_protected($id) {
-	global $app;
-	global $globalSettings;
-	global $global_dl_cookie_name;
-
-	# Get the cookie
-	# TBD more checks
-	$glob_dl_cookie = $app->getCookie(GLOBAL_DL_COOKIE);
-	if (isset($glob_dl_cookie)) {
-		$app->getLog()->debug('Cookie glob_dl_access value: '.$glob_dl_cookie);		
-	} else {
-		$app->getLog()->debug('No cookie glob_dl_access');		
-	}
-	if ($globalSettings['glob_dl_toggle'] && !isset($glob_dl_cookie))
-		return true;
-	else 
-		return false;
-}
-
-
 # Show the password dialog
 # Route: /titles/:id/showaccess/
 function showaccess($id) {
 	global $app;
-	global $calibre_dir;
-	global $globalSettings;
 
-	$app->render('password_dialog.html',array('page' => mkPage(''), 'bookid' => $id));
+	R::close();
+	$app->render('password_dialog.html',
+		array('page' => mkPage($globalSettings['langa']['check_access']), 
+					'bookid' => $id));
 }
 
 # Check the access rights for a book and set a cookie
@@ -243,13 +206,11 @@ function checkaccess($id) {
 	if ($password == $globalSettings['glob_dl_password']) {
 		$app->getLog()->debug('checkaccess succeded');
 		$app->setCookie(GLOBAL_DL_COOKIE,$password);
-		# $app->response()->status(200);
 		$app->redirect("/bbs/titles/".$id);
 	} else {		
 		$app->getLog()->debug('checkaccess failed');
 		$app->flash('error', $globalSettings['langa']['invalid_password']);
-		$app->response()->redirect("/bbs/titles/".$id,301);
-		#$app->response()->status(404);
+		$app->redirect("/bbs/titles/".$id);
 	}
 }
 
@@ -320,16 +281,7 @@ function authors() {
 	global $globalSettings;
 
 	$authors = R::find('authors',' 1 ORDER BY sort');		
-	$grouped_authors = array();
-	$initial_author = "";
-	foreach ($authors as $author) {
-		$ix = mb_strtoupper(mb_substr($author->sort,0,1,'UTF-8'), 'UTF-8');
-		if ($ix != $initial_author) {
-			array_push($grouped_authors, array('initial' => $ix));
-			$initial_author = $ix;
-		} 
-		array_push($grouped_authors, $author);
-	}
+	$grouped_authors = mkInitialedList($authors);
 	$app->render('authors.html',array( 'page' => mkPage($globalSettings['langa']['authors']), 'authors' => $grouped_authors));
 	R::close();
 }
@@ -361,16 +313,7 @@ function tags() {
 	global $globalSettings;
 
 	$tags = R::find('tags', ' 1 ORDER BY name');
-	$grouped_tags = array();
-	$initial_tag = "";
-	foreach ($tags as $tag) {
-		$ix = mb_strtoupper(mb_substr($tag->name,0,1,'UTF-8'), 'UTF-8');
-		if ($ix != $initial_tag) {
-			array_push($grouped_tags, array('initial' => $ix));
-			$initial_tag = $ix;
-		} 
-		array_push($grouped_tags, $tag);
-	}
+	$grouped_tags = mkInitialedList($tags);
 	$app->render('tags.html',array('page' => mkPage($globalSettings['langa']['tags']),'tags' => $grouped_tags));
 	R::close();
 
@@ -395,6 +338,13 @@ function tag($id) {
 	$app->render('tag_detail.html',array('page' => mkPage($globalSettings['langa']['tag_details']), 'tag' => $tag, 'books' => $books));
 	R::close();
 }
+
+
+
+#####
+##### Utility and helper functions, private
+#####
+
 
 # Return the true path of a book. Works around a strange feature of Calibre 
 # where middle components of names are capitalized, eg "Aliette de Bodard" -> "Aliette De Bodard".
@@ -437,7 +387,52 @@ function getMimeType($file_path) {
 	return $mtype;
 }
 
-# Utulity function to fill the page array
+# Check whether the book download must be protected. 
+# Returns:
+#  true - the user must enter a password
+#  false - no password necessary
+#
+function is_protected($id) {
+	global $app;
+	global $globalSettings;
+	global $global_dl_cookie_name;
+
+	# Get the cookie
+	# TBD more checks
+	$glob_dl_cookie = $app->getCookie(GLOBAL_DL_COOKIE);
+	if (isset($glob_dl_cookie)) {
+		$app->getLog()->debug('Cookie glob_dl_access value: '.$glob_dl_cookie);		
+	} else {
+		$app->getLog()->debug('No cookie glob_dl_access');		
+	}
+	if ($globalSettings['glob_dl_toggle'] && !isset($glob_dl_cookie))
+		return true;
+	else 
+		return false;
+}
+
+# Generate a list where the items are grouped and separated by 
+# the initial character.
+# If the item has a 'sort' field that is used, else the name.
+function mkInitialedList($items) {
+	$grouped_items = array();
+	$initial_item = "";
+	foreach ($items as $item) {
+		if (isset($item->sort))
+			$is = $item->sort;
+		else 
+			$is = $item->name;
+		$ix = mb_strtoupper(mb_substr($is,0,1,'UTF-8'), 'UTF-8');
+		if ($ix != $initial_item) {
+			array_push($grouped_items, array('initial' => $ix));
+			$initial_item = $ix;
+		} 
+		array_push($grouped_items, $item);
+	}
+	return $grouped_items;
+}
+
+# Utility function to fill the page array
 function mkPage($subtitle='') {
 	global $app;
 	global $globalSettings;
