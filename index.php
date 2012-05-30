@@ -76,7 +76,6 @@ $app->get('/authors/:id/', 'author');
 $app->get('/tags/', 'tags');
 $app->get('/tags/:id/', 'tag');
 
-$app->getLog()->debug("sss");
 # Setup the connection to the Calibre metadata db
 if (!file_exists($calibre_dir.'/'.$metadata_db) || !is_readable($calibre_dir.'/'.$metadata_db)) {
 	$app->getLog()->error('Exception while opening metadata db '.$calibre_dir.'/'.$metadata_db);	
