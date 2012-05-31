@@ -178,6 +178,7 @@ function title($id) {
 # Route: /titles/:id/showaccess/
 function showaccess($id) {
 	global $app;
+	global $globalSettings;
 
 	R::close();
 	$app->render('password_dialog.html',
