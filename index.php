@@ -79,9 +79,9 @@ if ($globalSettings['lang'] == 'de')
 else
 	$globalSettings['langa'] = $langen;
 $globalSettings['glob_dl_toggle'] = isset($glob_dl_toggle) ? $glob_dl_toggle : false;
-$app->getLog()->debug('Global Download Toggle: '.$globalSettings['glob_dl_toggle']);	
+#$app->getLog()->debug('Global Download Toggle: '.$globalSettings['glob_dl_toggle']);	
 $globalSettings['glob_dl_password'] = isset($glob_dl_password) ? $glob_dl_password : '7094e7dc2feb759758884333c2f4a6bdc9a16bb2';
-$app->getLog()->debug('Global Download Password: '.$globalSettings['glob_dl_password']);	
+#$app->getLog()->debug('Global Download Password: '.$globalSettings['glob_dl_password']);	
 
 $app->notFound('myNotFound');
 $app->get('/', 'main');
@@ -196,11 +196,11 @@ function checkaccess($id) {
 	$rot = $app->request()->getRootUri();
 	$book = R::findOne('books',' id=?', array(intval($id)));
 	if (is_null($book)) {
-		$app->getLog()->debug("checkaccess: book not found: "+$id);
+		$app->getLog()->debug("checkaccess: book not found: ".$id);
 		$app->response()->status(404);
 		R::close();
 		return;
-	}		
+	}	
 	R::close();	
 	$app->deleteCookie(GLOBAL_DL_COOKIE);
 	$password = $app->request()->post('password');
@@ -208,11 +208,11 @@ function checkaccess($id) {
 	if ($password == $globalSettings['glob_dl_password']) {
 		$app->getLog()->debug('checkaccess succeded');
 		$app->setCookie(GLOBAL_DL_COOKIE,$password);
-		$app->redirect("/bbs/titles/".$id);
+		$app->response()->redirect("/bbs/titles/".$id, 303);
 	} else {		
 		$app->getLog()->debug('checkaccess failed');
 		$app->flash('error', $globalSettings['langa']['invalid_password']);
-		$app->redirect("/bbs/titles/".$id);
+		$app->response()->redirect("/bbs/titles/".$id, 303);
 	}
 }
 
@@ -403,9 +403,9 @@ function is_protected($id) {
 	# TBD more checks
 	$glob_dl_cookie = $app->getCookie(GLOBAL_DL_COOKIE);
 	if (isset($glob_dl_cookie)) {
-		$app->getLog()->debug('Cookie glob_dl_access value: '.$glob_dl_cookie);		
+		$app->getLog()->debug('is_protected: Cookie glob_dl_access value: '.$glob_dl_cookie);		
 	} else {
-		$app->getLog()->debug('No cookie glob_dl_access');		
+		$app->getLog()->debug('is_protected: No cookie glob_dl_access');		
 	}
 	if ($globalSettings['glob_dl_toggle'] && !isset($glob_dl_cookie))
 		return true;
