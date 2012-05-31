@@ -46,7 +46,7 @@ $langen = array('authors' => "Authors",
 	'booksby' => "Books by",
 	'booksbytag' => "Books tagged with",
 	'book_details' => "Book Details",
-	'check_access' => "Enter Password",
+	'check_access' => "Submit Password",
 	'check_access_info' => "This book is protected. Please enter your password to enable the book download.",
 	'comment' => 'Description',
 	'dl30' => "Most recent 30",
@@ -186,7 +186,8 @@ function showaccess($id) {
 					'bookid' => $id));
 }
 
-# Check the access rights for a book and set a cookie
+# Check the access rights for a book and set a cookie if successful.
+# Sends 404 if unsuccessful.
 # Route: /titles/:id/checkaccess/
 function checkaccess($id) {
 	global $app;
@@ -208,11 +209,11 @@ function checkaccess($id) {
 	if ($password == $globalSettings['glob_dl_password']) {
 		$app->getLog()->debug('checkaccess succeded');
 		$app->setCookie(GLOBAL_DL_COOKIE,$password);
-		$app->response()->redirect("/bbs/titles/".$id, 303);
+		$app->response()->status(200);
 	} else {		
 		$app->getLog()->debug('checkaccess failed');
 		$app->flash('error', $globalSettings['langa']['invalid_password']);
-		$app->response()->redirect("/bbs/titles/".$id, 303);
+		$app->response()->status(404);
 	}
 }
 
