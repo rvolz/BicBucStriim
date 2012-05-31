@@ -17,6 +17,8 @@ $allowedLangs = array('de','en');
 $fallbackLang = 'en';
 # Application Name
 $appname = 'BicBucStriim';
+# App version
+$appversion = '0.7.0';
 # Cookie name for global download protection
 define('GLOBAL_DL_COOKIE', 'glob_dl_access');
 
@@ -71,7 +73,7 @@ $app = new Slim(array(
 
 $globalSettings = array();
 $globalSettings['appname'] = $appname;
-$globalSettings['version'] = '0.6.1';
+$globalSettings['version'] = $appversion;
 $globalSettings['sep'] = ' :: ';
 $globalSettings['lang'] = getUserLang($allowedLangs, $fallbackLang);
 if ($globalSettings['lang'] == 'de')
