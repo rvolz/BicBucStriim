@@ -63,8 +63,9 @@ $langen = array('authors' => "Authors",
 
 # Init app and routes
 $app = new Slim(array(
-	'log.enable' => true, 
-	'log.path' => './logs',
+	'debug' => true,
+	'log.enabled' => true, 
+	'log.writer' => new Slim_LogFileWriter(fopen('./logs/bbs.log','a')),
 	'log.level' => 4,
 	'view' => new TwigView()));
 
