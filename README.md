@@ -17,15 +17,16 @@ If you are looking for a possibility to publish a larger book collection, or wan
 Status
 ------
 
-BicBucStriim is still under development. Version 0.6.1 of BicBucStriim: 
+BicBucStriim is still under development. Version 0.7.0 of BicBucStriim: 
 
 * displays the 30 most recent titles on the index page
-* provides a listing of all books 
-* provides a listing of all authors
-* provides detail pages (including download links) for authors and books
-* includes filtering/searching for books and authors
+* provides listing/filtering/searching of book titles
+* provides listing/filtering/searching of authors
+* provides listing/filtering/searching of tags
+* shows detail pages (including download links) for authors and books
 * is bilingual, English/German
 * is ready for mobile clients (tested with Kindle, iPhone, iPad)
+* provides a download protection for books (optional, think "parental control")
 
 
 Install
@@ -38,8 +39,12 @@ The easy way assumes that BicBucStriim lives right below the web root of your de
 * Rename the newly created directory (e.g. BicBucStriim-0.5.0.zip) to "bbs".
 * NOTE: If you don't want to use the directory name *bbs* simply change the .htaccess file accordingly (the line "RewriteBase /bbs/")
 * Make the "logs" directory writeable for all: `chmod ga+w logs`
-* Enter the full path to your Calibre library directory in config.php
+* Copy the file `config.php.template` to `config.php` and edit the latter:
+  * Enter the full path to your Calibre library directory, e.g. `$calibre_dir = '/volume1/books';`
+  * Optional: change the value of `$glob_dl_toggle = false;` to `true` if you want a password protection for book downloads
+  * Optional: enter a password of your choice in `$glob_dl_password = '7094e7dc2feb759758884333c2f4a6bdc9a16bb2';` if you enabled the global password protection
 * BicBucStriim should now be working, start your web browser and navigate to `http://<address of your NAS>/bbs/`
+
 
 Requirements
 ------------
