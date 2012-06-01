@@ -1,0 +1,7 @@
+2012-05-31 Version 0.7.0
+
+* new: support for Calibre book tags, code donated by mapero (https://github.com/mapero)
+* new: optional download protection (password) 
+* updated dependencies (Slim 162, Redbean PHP 3.2.1)
+
+
