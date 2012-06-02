@@ -8,7 +8,7 @@ require 'rake/packagetask'
 require 'fileutils'
 
 APPNAME = 'BicBucStriim'
-VERSION = '0.7.0'
+VERSION = '0.8.0'
 
 
 
@@ -30,6 +30,7 @@ task :package2 do |t|
   p.package_files.include("logs/**/*.*")
   p.package_files.include("index.php")
   p.package_files.include("config.php.template")
+  p.package_files.include("ChangeLog")
   p.package_files.include(".htaccess")
   p.package_files.include("NOTICE")
   p.package_files.include("README.md")
