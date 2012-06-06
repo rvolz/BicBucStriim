@@ -5,3 +5,4 @@ pkg
 metadata.db
 *.sublime-project
 *.sublime-workspace
+tests/work
