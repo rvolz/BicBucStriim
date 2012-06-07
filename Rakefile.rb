@@ -12,6 +12,7 @@ VERSION = '0.8.0'
 
 begin
   require 'vagrant'
+  # Needs also 'vagrant-sync' !
   # tests/env contains the integration testing environment with the Vagrantfile
   env = Vagrant::Environment.new(:cwd => "tests/env")
 rescue
@@ -30,12 +31,14 @@ task :package2 do |t|
     p.need_zip = true
     p.package_files.include("img/**/*.*")  
     p.package_files.include("js/**/*.min.js")
+    p.package_files.include("js/libs/jquery.cookie.js")
     p.package_files.include("js/script.js")
     p.package_files.include("style/jquery/**/*.*")
     p.package_files.include("style/style.css")
     p.package_files.include("lib/**/*.*")
     p.package_files.include("templates/**/*.*")
     p.package_files.include("logs/**/*.*")
+    p.package_files.include("bicbucstriim.php")
     p.package_files.include("index.php")
     p.package_files.include("config.php.template")
     p.package_files.include("ChangeLog")
@@ -52,8 +55,12 @@ if env
   # Starts the VM. It will be created and provisioned if necessary.
   desc "Start the VM for integration testing"
   task :itest_up do |t|  
-    puts "About to run vagrant-up..."  
-    env.cli("up")
+    puts "About to run vagrant-up..." 
+    if File.exists?("tests/env/.vagrant") 
+      env.cli("up --no-provision")
+    else
+      env.cli("up")
+    end
     puts "Finished running vagrant-up"
   end
 
@@ -69,7 +76,7 @@ if env
   end
 
   desc "Deploy the current code for testing to the VM dirs"
-  task :itest_deploy => [:package2] do |t|    
+  task :itest_deploy2 => [:package2] do |t|    
     code_target = "./tests/work/src"
     lib_target = "./tests/work/calibre"
 
@@ -80,6 +87,16 @@ if env
     rm_rf lib_target+"/."
     cp "tests/fixtures/metadata_empty.db", "#{lib_target}/metadata.db"
     cp "tests/fixtures/config.php", code_target
+  end
+
+  desc "Deploy the current code for testing, via rsync"
+  task :itest_deploy => [:itest_deploy2] do |t|    
+
+    code_target = "./tests/work/src"
+    lib_target = "./tests/work/calibre"
+
+    env.cli("sync","-f#{code_target}/", "-t/var/www/bbs")    
+    env.cli("sync","-f#{lib_target}/","-t/tmp/calibre")    
   end
 
   desc "Starts a ssh shell in the VM"

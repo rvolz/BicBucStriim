@@ -1,6 +1,7 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
+
 Vagrant::Config.run do |config|
   # All Vagrant configuration is done here. The most common configuration
   # options are documented and commented below. For a complete reference,
@@ -16,10 +17,20 @@ Vagrant::Config.run do |config|
 
   # Provisioning via shell, only the basics fo BicBucStriim
   config.vm.provision :shell, :inline => "sudo apt-get -y install apache2 php5 sqlite3 php5-sqlite tmux"
+  # Enable mod_rewrite
+  config.vm.provision :shell, :inline => "sudo a2enmod rewrite"
+  # Send a host config with "AllowOverride All" to enable .htaccess/mod_rewrite
+  # By default AllowOverride is set to None
+  config.vm.provision :shell, :inline => "sudo cp /vagrant/default /etc/apache2/sites-available"
+  config.vm.provision :shell, :inline => "sudo service apache2 restart"
+  # Make the dir for the calibre library
+  config.vm.provision :shell, :inline => "sudo mkdir /tmp/calibre; sudo chown vagrant:vagrant /tmp/calibre"
+  # Make the dir for the app
+  config.vm.provision :shell, :inline => "sudo mkdir /var/www/bbs; sudo chown vagrant:vagrant /var/www/bbs"
 
   # Create the environment for BicBucStrim on the server.
   # The web server path "/bbs" is mapped to the local directory "tests/work/src". 
   # The Calibre library for the tests is in "tests/work/calibre" and will be mapped to "/tmp/calibre"
-  config.vm.share_folder "code", "/var/www/bbs", "../work/src", {:create => true}
-  config.vm.share_folder "calibre", "/tmp/calibre", "../work/calibre", {:create => true}
+  #config.vm.share_folder "code", "/var/www/bbs", "../work/src", {:create => true, :transient => true}
+  #config.vm.share_folder "calibre", "/tmp/calibre", "../work/calibre", {:create => true, :transient => true}
 end
