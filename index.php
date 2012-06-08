@@ -11,7 +11,20 @@ TwigView::$twigExtensions = array(
 
 require_once 'lib/BicBucStriim/bicbucstriim.php';
 require_once 'lib/BicBucStriim/langs.php';
-require_once 'config.php';
+
+# Load config.php and check for the existence of valid entries
+$we_have_config = false;
+try {
+	include 'config.php';	
+	if (isset($calibre_dir))
+		$we_have_config = true;
+	else
+		$we_have_config = false;
+} catch (Exception $e) {
+	$we_have_config = false;
+}
+if (!isset($metadata_db))
+	$metadata_db = 'metadata.db';
 
 # Allowed languages, i.e. languages with translations
 $allowedLangs = array('de','en');
@@ -23,8 +36,6 @@ $appname = 'BicBucStriim';
 $appversion = '0.8.0';
 # Cookie name for global download protection
 define('GLOBAL_DL_COOKIE', 'glob_dl_access');
-
-
 
 # Init app and routes
 $app = new Slim(array(
@@ -62,6 +73,16 @@ $app->get('/authors/:id/', 'author');
 $app->get('/tags/', 'tags');
 $app->get('/tags/:id/', 'tag');
 
+
+# No config.php --> error
+if (!$we_have_config) {
+	$app->getLog()->error('No config.php found');	
+	$app->render('error.html', array(
+		'page' => mkPage($globalSettings['langa']['error']), 
+		'title' => $globalSettings['langa']['error'], 
+		'error' => $globalSettings['langa']['no_config']));
+}
+
 # Setup the connection to the Calibre metadata db
 $bbs = new BicBucStriim($calibre_dir.'/'.$metadata_db);
 if (!$bbs->libraryOk()) {
@@ -75,8 +96,7 @@ if (!$bbs->libraryOk()) {
 }
 
 function myNotFound() {
-	global $app;
-	global $globalSettings;
+	global $app, $globalSettings;
 	$app->render('error.html', array(
 		'page' => mkPage($globalSettings['langa']['not_found1']), 
 		'title' => $globalSettings['langa']['not_found1'], 
@@ -93,9 +113,7 @@ function main() {
 
 # A list of all titles -> /titles/
 function titles() {
-	global $app;
-	global $globalSettings;
-	global $bbs;
+	global $app, $globalSettings, $bbs;
 
 	$grouped_books = $bbs->allTitles();
 	$app->render('titles.html',array('page' => mkPage($globalSettings['langa']['titles']), 'books' => $grouped_books));
@@ -103,10 +121,7 @@ function titles() {
 
 # Show a single title > /titles/:id. The ID ist the Calibre ID
 function title($id) {
-	global $app;
-	global $calibre_dir;
-	global $globalSettings;
-	global $bbs;
+	global $app, $calibre_dir, $globalSettings, $bbs;
 	
 	$details = $bbs->titleDetails($id);	
 	if (is_null($details)) {
@@ -130,8 +145,7 @@ function title($id) {
 # Show the password dialog
 # Route: /titles/:id/showaccess/
 function showaccess($id) {
-	global $app;
-	global $globalSettings;
+	global $app, $globalSettings;
 
 	$app->render('password_dialog.html',
 		array('page' => mkPage($globalSettings['langa']['check_access']), 
@@ -142,10 +156,7 @@ function showaccess($id) {
 # Sends 404 if unsuccessful.
 # Route: /titles/:id/checkaccess/
 function checkaccess($id) {
-	global $app;
-	global $calibre_dir;
-	global $globalSettings;
-	global $bbs;
+	global $app, $calibre_dir, $globalSettings, $bbs;
 
 	$rot = $app->request()->getRootUri();
 	$book = $bbs->title($id);
@@ -172,9 +183,7 @@ function checkaccess($id) {
 # If there is no cover, return 404.
 # Route: /titles/:id/cover
 function cover($id) {
-	global $app;
-	global $calibre_dir;
-	global $bbs;
+	global $app, $calibre_dir, $bbs;
 
 	$has_cover = false;
 	$rot = $app->request()->getRootUri();
@@ -202,8 +211,7 @@ function cover($id) {
 # Return the selected file for the book with ID. 
 # Route: /titles/:id/file/:file
 function book($id, $file) {
-	global $app;
-	global $bbs;
+	global $app, $bbs;
 
 	$book = $bbs->title($id);
 	if (is_null($book)) {
@@ -230,9 +238,7 @@ function book($id, $file) {
 
 # List of all authors -> /authors
 function authors() {
-	global $app;
-	global $globalSettings;
-	global $bbs;
+	global $app, $globalSettings, $bbs;
 
 	$grouped_authors = $bbs->allAuthors();		
 	$app->render('authors.html',array( 'page' => mkPage($globalSettings['langa']['authors']), 'authors' => $grouped_authors));
@@ -240,9 +246,7 @@ function authors() {
 
 # Details for a single author -> /authors/:id
 function author($id) {
-	global $app;
-	global $globalSettings;
-	global $bbs;
+	global $app, $globalSettings, $bbs;
 
 	$details = $bbs->authorDetails($id);
 	if (is_null($details)) {
@@ -256,9 +260,7 @@ function author($id) {
 
 #List of all tags -> /tags
 function tags() {
-	global $app;
-	global $globalSettings;
-	global $bbs;
+	global $app, $globalSettings, $bbs;
 
 	$grouped_tags = $bbs->allTags();
 	$app->render('tags.html',array('page' => mkPage($globalSettings['langa']['tags']),'tags' => $grouped_tags));
@@ -266,9 +268,7 @@ function tags() {
 
 #Details of a single tag -> /tags/:id
 function tag($id) {
-	global $app;
-	global $globalSettings;
-	global $bbs;
+	global $app, $globalSettings, $bbs;
 
 	$details = $bbs->tagDetails($id);
 	if (is_null($details)) {
@@ -316,9 +316,7 @@ function getMimeType($file_path) {
 #  false - no password necessary
 #
 function is_protected($id) {
-	global $app;
-	global $globalSettings;
-	global $global_dl_cookie_name;
+	global $app, $globalSettings;
 
 	# Get the cookie
 	# TBD more checks
@@ -337,8 +335,7 @@ function is_protected($id) {
 
 # Utility function to fill the page array
 function mkPage($subtitle='') {
-	global $app;
-	global $globalSettings;
+	global $app, $globalSettings;
 
 	if ($subtitle == '') 
 		$title = $globalSettings['appname'];
