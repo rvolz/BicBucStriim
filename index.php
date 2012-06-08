@@ -2,14 +2,15 @@
 // Copyight 2012 Rainer Volz
 // Licensed under MIT License, see README.MD/License
 
-require 'lib/rb.php';
-require_once 'config.php';
 require_once 'lib/Slim/Slim.php';
 require_once 'lib/Slim/Views/TwigView.php';
 TwigView::$twigDirectory = dirname(__FILE__) . '/lib/Twig';
 TwigView::$twigExtensions = array(
     'Twig_Extensions_Slim'
 );
+
+require_once 'bicbucstriim.php';
+require_once 'config.php';
 
 # Allowed languages, i.e. languages with translations
 $allowedLangs = array('de','en');
@@ -67,7 +68,7 @@ $langen = array('authors' => "Authors",
 $app = new Slim(array(
 	'debug' => true,
 	'log.enabled' => true, 
-	'log.writer' => new Slim_LogFileWriter(fopen('./logs/bbs.log','a')),
+	#'log.writer' => new Slim_LogFileWriter(fopen('./logs/bbs.log','a')),
 	'log.level' => 4,
 	'view' => new TwigView()));
 
@@ -99,12 +100,12 @@ $app->get('/tags/', 'tags');
 $app->get('/tags/:id/', 'tag');
 
 # Setup the connection to the Calibre metadata db
-if (!file_exists($calibre_dir.'/'.$metadata_db) || !is_readable($calibre_dir.'/'.$metadata_db)) {
+$bbs = new BicBucStriim($calibre_dir.'/'.$metadata_db);
+if (!$bbs->libraryOk()) {
 	$app->getLog()->error('Exception while opening metadata db '.$calibre_dir.'/'.$metadata_db);	
 	$app->render('error.html', array('page' => mkPage($globalSettings['langa']['error']), 
 		'error' => $globalSettings['langa']['mdb_error'].$calibre_dir.'/'.$metadata_db));
 } else {
-	R::setup('sqlite:'.$calibre_dir.'/'.$metadata_db, NULL, NULL, true);
 	$app->run();
 }
 
@@ -116,21 +117,20 @@ function myNotFound() {
 # Index page -> /
 function main() {
 	global $app;
+	global $bbs;
 
-	$books = R::find('books',' 1 ORDER BY timestamp DESC LIMIT 30');		
-	$app->render('index_last30.html',array('page' => mkPage(), 'books' => $books));
-	R::close();
+	$books = $bbs->last30Books();
+	$app->render('index_last30.html',array('page' => mkPage(), 'books' => $books));	
 }
 
 # A list of all titles -> /titles/
 function titles() {
 	global $app;
 	global $globalSettings;
+	global $bbs;
 
-	$books = R::find('books',' 1 ORDER BY sort');
-	$grouped_books = mkInitialedList($books);
+	$grouped_books = $bbs->allTitles();
 	$app->render('titles.html',array('page' => mkPage($globalSettings['langa']['titles']), 'books' => $grouped_books));
-	R::close();
 }
 
 # Show a single title > /titles/:id. The ID ist the Calibre ID
@@ -138,42 +138,25 @@ function title($id) {
 	global $app;
 	global $calibre_dir;
 	global $globalSettings;
+	global $bbs;
+	
+	$details = $bbs->titleDetails($id);	
+	if (is_null($details)) {
+		$app->getLog()->debug("title: book not found: ".$id);
+		$app->response()->status(404);
+		return;
+	}	
 
-	$book = R::findOne('books',' id=?', array(intval($id)));
-	if (is_null($book)) {
-		$app->getLog()->debug("no book");
-		$app->notFound();		
-	}
-	$author_ids = R::find('books_authors_link', ' book=?', array($id));
-	$authors = array();
-	foreach($author_ids as $aid) {
-		$author = R::findOne('authors', ' id=?', array($aid->author));
-		array_push($authors, $author);
-	}
-	$tag_ids = R::find('books_tags_link', ' book=?', array($id));
-	$tags = array();
-	foreach($tag_ids as $tid) {
-		$tag = R::findOne('tags', ' id=?', array($tid->tag));
-		array_push($tags, $tag);
-	}
-	$formats = R::find('data', ' book=?', array($id));
-	$comment = R::findOne('comments', 'book=?', array($id));
-	if (is_null($comment))
-		$comment_text = '';
-	else
-		$comment_text = $comment->text;
-		
 	$app->render('title_detail.html',
 		array('page' => mkPage($globalSettings['langa']['book_details']), 
 			'calibre_dir' => $calibre_dir,
-			'book' => $book, 
-			'authors' => $authors, 
-			'tags' => $tags, 
-			'formats'=>$formats, 
-			'comment' => $comment_text,
+			'book' => $details['book'], 
+			'authors' => $details['authors'], 
+			'tags' => $details['tags'], 
+			'formats'=>$details['formats'], 
+			'comment' => $details['comment'],
 			'protect_dl' => is_protected($id))
 	);
-	R::close();
 }
 
 # Show the password dialog
@@ -182,7 +165,6 @@ function showaccess($id) {
 	global $app;
 	global $globalSettings;
 
-	R::close();
 	$app->render('password_dialog.html',
 		array('page' => mkPage($globalSettings['langa']['check_access']), 
 					'bookid' => $id));
@@ -195,16 +177,15 @@ function checkaccess($id) {
 	global $app;
 	global $calibre_dir;
 	global $globalSettings;
+	global $bbs;
 
 	$rot = $app->request()->getRootUri();
-	$book = R::findOne('books',' id=?', array(intval($id)));
+	$book = $bbs->title($id);
 	if (is_null($book)) {
 		$app->getLog()->debug("checkaccess: book not found: ".$id);
 		$app->response()->status(404);
-		R::close();
 		return;
 	}	
-	R::close();	
 	$app->deleteCookie(GLOBAL_DL_COOKIE);
 	$password = $app->request()->post('password');
 	$app->getLog()->debug('checkaccess input: '.$password);
@@ -225,10 +206,11 @@ function checkaccess($id) {
 function cover($id) {
 	global $app;
 	global $calibre_dir;
+	global $bbs;
 
 	$has_cover = false;
 	$rot = $app->request()->getRootUri();
-	$book = R::findOne('books',' id=?', array(intval($id)));
+	$book = $bbs->title($id);
 	if (is_null($book)) {
 		$app->getLog()->debug("cover: book not found: "+$id);
 		$app->response()->status(404);
@@ -236,10 +218,9 @@ function cover($id) {
 	}
 	
 	if ($book->has_cover) {		
-		$cover = findBookPath($calibre_dir,$book->path,'cover.jpg');
+		$cover = $bbs->titleCover($id);
 		$has_cover = true;
 	}
-	R::close();
 	if ($has_cover) {
 		$app->response()->status(200);
 		$app->response()->header('Content-type','image/jpeg;base64');
@@ -254,94 +235,81 @@ function cover($id) {
 # Route: /titles/:id/file/:file
 function book($id, $file) {
 	global $app;
-	global $calibre_dir;
-	global $globalSettings;
+	global $bbs;
 
-	$book = R::findOne('books',' id=?', array(intval($id)));
+	$book = $bbs->title($id);
 	if (is_null($book)) {
 		$app->getLog()->debug("no book file");
 		$app->notFound();
 	}	
-	$book = findBookPath($calibre_dir, $book->path, $file);
-	R::close();
-
 	if (is_protected($id)) {
 		$app->getLog()->warning("book: attempt to download a protected book, "+$id);
 		$app->response()->status(404);	
 	}
-
+	$app->getLog()->debug("book: file ".$file);
+	$bookpath = $bbs->titleFile($id, $file);
+	$app->getLog()->debug("book: path ".$bookpath);
+	
 	/** readfile has problems with large files (e.g. PDF) caused by php memory limit
 	 * to avoid this the function readfile_chunked() is used. app->response() is not
 	 * working with this solution.
 	**/
 	//TODO: Use new streaming functions in SLIM 1.7.0 when released
-	header("Content-length: ".filesize($book));
-	header("Content-type: ".getMimeType($book));
-	readfile_chunked($book);
+	header("Content-length: ".filesize($bookpath));
+	header("Content-type: ".getMimeType($bookpath));
+	readfile_chunked($bookpath);
 }
 
 # List of all authors -> /authors
 function authors() {
 	global $app;
 	global $globalSettings;
+	global $bbs;
 
-	$authors = R::find('authors',' 1 ORDER BY sort');		
-	$grouped_authors = mkInitialedList($authors);
+	$grouped_authors = $bbs->allAuthors();		
 	$app->render('authors.html',array( 'page' => mkPage($globalSettings['langa']['authors']), 'authors' => $grouped_authors));
-	R::close();
 }
 
 # Details for a single author -> /authors/:id
 function author($id) {
 	global $app;
 	global $globalSettings;
+	global $bbs;
 
-	$author = R::findOne('authors', ' id=?', array($id));
-	if (is_null($author)) {
+	$details = $bbs->authorDetails($id);
+	if (is_null($details)) {
 		$app->getLog()->debug("no author");
 		$app->notFound();		
 	}
-	$book_ids = R::find('books_authors_link', ' author=?', array($id));
-	$books = array();
-	foreach($book_ids as $bid) {
-		$book = R::findOne('books', ' id=?', array($bid->book));
-		array_push($books, $book);
-	}
-	$app->render('author_detail.html',array('page' => mkPage($globalSettings['langa']['author_details']), 'author' => $author, 'books' => $books));
-	R::close();
+	$app->render('author_detail.html',array('page' => mkPage($globalSettings['langa']['author_details']), 
+		'author' => $details['author'], 
+		'books' => $details['books']));
 }
 
 #List of all tags -> /tags
 function tags() {
-
 	global $app;
 	global $globalSettings;
+	global $bbs;
 
-	$tags = R::find('tags', ' 1 ORDER BY name');
-	$grouped_tags = mkInitialedList($tags);
+	$grouped_tags = $bbs->allTags();
 	$app->render('tags.html',array('page' => mkPage($globalSettings['langa']['tags']),'tags' => $grouped_tags));
-	R::close();
-
 }
 
 #Details of a single tag -> /tags/:id
 function tag($id) {
 	global $app;
 	global $globalSettings;
-	
-	$tag = R::findOne('tags', ' id=?', array($id));
-	if (is_null($tag)) {
+	global $bbs;
+
+	$details = $bbs->tagDetails($id);
+	if (is_null($details)) {
 		$app->getLog()->debug("no tag");
 		$app->notFound();		
 	}
-	$book_ids = R::find('books_tags_link', ' tag=?', array($id));
-	$books = array();
-	foreach($book_ids as $bid) {
-		$book = R::findOne('books', ' id=?', array($bid->book));
-		array_push($books, $book);
-	}
-	$app->render('tag_detail.html',array('page' => mkPage($globalSettings['langa']['tag_details']), 'tag' => $tag, 'books' => $books));
-	R::close();
+	$app->render('tag_detail.html',array('page' => mkPage($globalSettings['langa']['tag_details']), 
+		'tag' => $details['tag'], 
+		'books' => $details['books']));
 }
 
 
@@ -350,24 +318,6 @@ function tag($id) {
 ##### Utility and helper functions, private
 #####
 
-
-# Return the true path of a book. Works around a strange feature of Calibre 
-# where middle components of names are capitalized, eg "Aliette de Bodard" -> "Aliette De Bodard".
-# The directory name uses the capitalized form, the book path stored in the DB uses the original form.
-# Legacy problem?
-function findBookPath($cd, $bp, $file) {
-	global $app;
-	try {
-		$path = $cd.'/'.$bp.'/'.$file;
-		stat($path);
-	} catch (Exception $e) {
-		$app->getLog()->debug('findBookPath, path not found: '.$path);
-		$p = explode("/",$bp);
-		$path = $cd.'/'.ucwords($p[0]).'/'.$p[1].'/'.$file;
-		$app->getLog()->debug('findBookPath, new path: '.$path);
-	}
-	return $path;
-}
 
 # Try to find the correct mime type for a book file.
 function getMimeType($file_path) {
@@ -416,26 +366,6 @@ function is_protected($id) {
 		return false;
 }
 
-# Generate a list where the items are grouped and separated by 
-# the initial character.
-# If the item has a 'sort' field that is used, else the name.
-function mkInitialedList($items) {
-	$grouped_items = array();
-	$initial_item = "";
-	foreach ($items as $item) {
-		if (isset($item->sort))
-			$is = $item->sort;
-		else 
-			$is = $item->name;
-		$ix = mb_strtoupper(mb_substr($is,0,1,'UTF-8'), 'UTF-8');
-		if ($ix != $initial_item) {
-			array_push($grouped_items, array('initial' => $ix));
-			$initial_item = $ix;
-		} 
-		array_push($grouped_items, $item);
-	}
-	return $grouped_items;
-}
 
 # Utility function to fill the page array
 function mkPage($subtitle='') {
@@ -446,8 +376,9 @@ function mkPage($subtitle='') {
 		$title = $globalSettings['appname'];
 	else
 		$title = $globalSettings['appname'].$globalSettings['sep'].$subtitle;
+	$rot = $app->request()->getRootUri();
 	$page = array('title' => $title, 
-		'rot' => $app->request()->getRootUri(),
+		'rot' => $rot,
 		'h1' => $subtitle,
 		'version' => $globalSettings['version'],
 		'glob' => $globalSettings);
