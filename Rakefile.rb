@@ -85,7 +85,7 @@ if env
     cp_r "./pkg/#{APPNAME}-#{VERSION}/.", code_target
     puts "Deploying test fixtures"    
     rm_rf lib_target+"/."
-    cp "tests/fixtures/metadata_empty.db", "#{lib_target}/metadata.db"
+    cp_r "tests/fixtures/lib2/.", lib_target
     cp "tests/fixtures/config.php", code_target
   end
 
