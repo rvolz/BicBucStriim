@@ -23,8 +23,9 @@ try {
 } catch (Exception $e) {
 	$we_have_config = false;
 }
-if (!isset($metadata_db))
-	$metadata_db = 'metadata.db';
+if (!isset($metadata_db)) $metadata_db = 'metadata.db';
+if (!isset($glob_dl_toggle)) $glob_dl_toggle = false;
+if (!isset($glob_dl_password)) $glob_dl_password = '7094e7dc2feb759758884333c2f4a6bdc9a16bb2';
 
 # Allowed languages, i.e. languages with translations
 $allowedLangs = array('de','en');
@@ -55,13 +56,12 @@ if ($globalSettings['lang'] == 'de')
 	$globalSettings['langa'] = $langde;
 else
 	$globalSettings['langa'] = $langen;
-$globalSettings['glob_dl_toggle'] = isset($glob_dl_toggle) ? $glob_dl_toggle : false;
-#$app->getLog()->debug('Global Download Toggle: '.$globalSettings['glob_dl_toggle']);	
-$globalSettings['glob_dl_password'] = isset($glob_dl_password) ? $glob_dl_password : '7094e7dc2feb759758884333c2f4a6bdc9a16bb2';
-#$app->getLog()->debug('Global Download Password: '.$globalSettings['glob_dl_password']);	
+$globalSettings['glob_dl_toggle'] = $glob_dl_toggle;
+$globalSettings['glob_dl_password'] = $glob_dl_password;
 
 $app->notFound('myNotFound');
 $app->get('/', 'main');
+$app->get('/admin/', 'admin');
 $app->get('/titles/', 'titles');
 $app->get('/titles/:id/', 'title');
 $app->get('/titles/:id/showaccess/', 'showaccess');
@@ -108,7 +108,17 @@ function main() {
 	global $app, $bbs;
 
 	$books = $bbs->last30Books();
-	$app->render('index_last30.html',array('page' => mkPage(), 'books' => $books));	
+	$app->render('index_last30.html',array('page' => mkPage('',1), 'books' => $books));	
+}
+
+
+function admin() {
+	global $app, $globalSettings, $bbs;
+
+	$app->render('admin.html',array(
+		'page' => mkPage($globalSettings['langa']['admin']), 
+		'config' => $globalSettings));	
+
 }
 
 # A list of all titles -> /titles/
@@ -116,7 +126,9 @@ function titles() {
 	global $app, $globalSettings, $bbs;
 
 	$grouped_books = $bbs->allTitles();
-	$app->render('titles.html',array('page' => mkPage($globalSettings['langa']['titles']), 'books' => $grouped_books));
+	$app->render('titles.html',array(
+		'page' => mkPage($globalSettings['langa']['titles'],2), 
+		'books' => $grouped_books));
 }
 
 # Show a single title > /titles/:id. The ID ist the Calibre ID
@@ -241,7 +253,9 @@ function authors() {
 	global $app, $globalSettings, $bbs;
 
 	$grouped_authors = $bbs->allAuthors();		
-	$app->render('authors.html',array( 'page' => mkPage($globalSettings['langa']['authors']), 'authors' => $grouped_authors));
+	$app->render('authors.html',array(
+		'page' => mkPage($globalSettings['langa']['authors'],3), 
+		'authors' => $grouped_authors));
 }
 
 # Details for a single author -> /authors/:id
@@ -253,7 +267,8 @@ function author($id) {
 		$app->getLog()->debug("no author");
 		$app->notFound();		
 	}
-	$app->render('author_detail.html',array('page' => mkPage($globalSettings['langa']['author_details']), 
+	$app->render('author_detail.html',array(
+		'page' => mkPage($globalSettings['langa']['author_details']), 
 		'author' => $details['author'], 
 		'books' => $details['books']));
 }
@@ -263,7 +278,9 @@ function tags() {
 	global $app, $globalSettings, $bbs;
 
 	$grouped_tags = $bbs->allTags();
-	$app->render('tags.html',array('page' => mkPage($globalSettings['langa']['tags']),'tags' => $grouped_tags));
+	$app->render('tags.html',array(
+		'page' => mkPage($globalSettings['langa']['tags'],4),
+		'tags' => $grouped_tags));
 }
 
 #Details of a single tag -> /tags/:id
@@ -334,7 +351,7 @@ function is_protected($id) {
 
 
 # Utility function to fill the page array
-function mkPage($subtitle='') {
+function mkPage($subtitle='', $menu=0) {
 	global $app, $globalSettings;
 
 	if ($subtitle == '') 
@@ -346,7 +363,8 @@ function mkPage($subtitle='') {
 		'rot' => $rot,
 		'h1' => $subtitle,
 		'version' => $globalSettings['version'],
-		'glob' => $globalSettings);
+		'glob' => $globalSettings,
+		'menu' => $menu);
 	return $page;
 }
 

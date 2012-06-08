@@ -1,18 +1,5 @@
 {% extends 'main.html' %}
 
-
-{% block nav %}
-<h1>{{ page.glob.appname }} :: {{ page.glob.langa.dl30 }}</h1>
-<div data-role="navbar">
-	<ul>
-	  <li><a href="{{page.rot}}/" class="ui-btn-active">{{page.glob.langa.home}}</a></li>
-	  <li><a href="{{page.rot}}/titles">{{page.glob.langa.titles}}</a></li>
-	  <li><a href="{{page.rot}}/authors">{{page.glob.langa.authors}}</a></li>
-	  <li><a href="{{page.rot}}/tags">{{page.glob.langa.tags}}</a></li>       
-	</ul>
-</div>
-{% endblock %}
-
 {% block content %}
 <ul data-role="listview">
 	{% for book in books %}

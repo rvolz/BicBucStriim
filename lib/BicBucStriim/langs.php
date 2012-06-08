@@ -1,7 +1,9 @@
 <?php
 /** Language specific texts */
 
-$langde = array('authors' => "Autoren",
+$langde = array('admin' => 'Konfiguration',
+	'admin_short' => 'Admin',
+	'authors' => "Autoren",
 	'author_details' => "Details Autor",
 	'back' => "Zurück",
 	'booksby' => "Bücher von",
@@ -24,7 +26,9 @@ $langde = array('authors' => "Autoren",
 	'tags' => "Schlagwörter",
 	'tag_details' => "Details Schlagwort",
 	'titles' => "Bücher");
-$langen = array('authors' => "Authors",
+$langen = array('admin' => 'Configuration',
+	'admin_short' => 'Admin',
+	'authors' => "Authors",
 	'author_details' => "Author Details",
 	'back' => "Back",
 	'booksby' => "Books by",

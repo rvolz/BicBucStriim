@@ -1,0 +1,30 @@
+<h1>{{ page.glob.appname }} :: {{ page.h1 }}</h1>
+<a href="{{page.rot}}/admin/" data-icon="gear" class="ui-btn-left">{{ page.glob.langa.admin_short }}</a>
+{% if page.menu == 0 %}
+<a  data-icon="back" data-rel="back" class="ui-btn-right">{{ page.glob.langa.back }}</a>
+{% endif %}
+<div data-role="navbar">
+	<ul>		
+	  <li>
+	  	<a href="{{page.rot}}/" {% if page.menu == 1 %}class="ui-btn-active"{%endif%}>
+	  		{{page.glob.langa.home}}
+	  	</a>
+	  </li>
+	  <li>
+	  	<a href="{{page.rot}}/titles" {% if page.menu == 2 %}class="ui-btn-active"{%endif%}>
+	  		{{page.glob.langa.titles}}
+	  	</a>
+	  </li>
+	  <li>
+	  	<a href="{{page.rot}}/authors" {% if page.menu == 3 %}class="ui-btn-active"{%endif%}>
+	  		{{page.glob.langa.authors}}
+	  	</a>
+	  </li>
+	  <li>
+	  	<a href="{{page.rot}}/tags" {% if page.menu == 4 %}class="ui-btn-active"{%endif%}>
+	  		{{page.glob.langa.tags}}
+	  	</a>
+	  </li>       
+	</ul>
+</div>
+
