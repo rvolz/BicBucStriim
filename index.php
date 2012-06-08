@@ -9,7 +9,7 @@ TwigView::$twigExtensions = array(
     'Twig_Extensions_Slim'
 );
 
-require_once 'bicbucstriim.php';
+require_once 'lib/BicBucStriim/bicbucstriim.php';
 require_once 'config.php';
 
 # Allowed languages, i.e. languages with translations
@@ -253,7 +253,7 @@ function book($id, $file) {
 		$app->notFound();
 	}	
 	if (is_protected($id)) {
-		$app->getLog()->warning("book: attempt to download a protected book, "+$id);
+		$app->getLog()->warning("book: attempt to download a protected book, "+$id);		
 		$app->response()->status(404);	
 	}
 	$app->getLog()->debug("book: file ".$file);

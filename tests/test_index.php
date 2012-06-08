@@ -3,7 +3,7 @@ set_include_path("tests");
 require_once('tests/lib/simpletest/autorun.php');
 #require_once('lib/rb.php');
 
-require_once('bicbucstriim.php');
+require_once('lib/BicBucStriim/bicbucstriim.php');
 
 class TestOfIndex extends UnitTestCase {
 
