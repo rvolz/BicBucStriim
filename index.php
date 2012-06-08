@@ -38,6 +38,8 @@ $langde = array('authors' => "Autoren",
 	'home' => "Start",
 	'invalid_password' => "Ungültiges Passwort",
 	'mdb_error' => 'Calibre Datenbank existiert nicht oder konnte nicht gelesen werden: ',
+	'not_found1' => 'Nicht gefunden!',
+	'not_found2' => 'Die angeforderte Ressource konnte nicht gefunden werden. Dies sollte eigentlich nicht passieren. Bitte prüfen Sie, ob ihre Calibre-Datenbank defekt ist.',
 	'presskey' => 'Taste drücken, um das Buch im betreffenden Format herunter zu laden.',
 	'published' => 'Veröffentlicht',
 	'tags' => "Schlagwörter",
@@ -58,6 +60,8 @@ $langen = array('authors' => "Authors",
 	'home' => "Home",
 	'invalid_password' => "Invalid Password",
 	'mdb_error' => 'Calibre database not found or not readable: ',
+	'not_found1' => 'Not found!',
+	'not_found2' => 'The requested ressource is no available. This should not happen. Please check your Calibre library for defects.',
 	'presskey' => 'Press a button to download the book in the respective format.',
 	'published' => 'Published',
 	'tags' => "Tags",
@@ -103,7 +107,9 @@ $app->get('/tags/:id/', 'tag');
 $bbs = new BicBucStriim($calibre_dir.'/'.$metadata_db);
 if (!$bbs->libraryOk()) {
 	$app->getLog()->error('Exception while opening metadata db '.$calibre_dir.'/'.$metadata_db);	
-	$app->render('error.html', array('page' => mkPage($globalSettings['langa']['error']), 
+	$app->render('error.html', array(
+		'page' => mkPage($globalSettings['langa']['error']), 
+		'title' => $globalSettings['langa']['error'], 
 		'error' => $globalSettings['langa']['mdb_error'].$calibre_dir.'/'.$metadata_db));
 } else {
 	$app->run();
@@ -111,7 +117,11 @@ if (!$bbs->libraryOk()) {
 
 function myNotFound() {
 	global $app;
-	$app->render('404.html');
+	global $globalSettings;
+	$app->render('error.html', array(
+		'page' => mkPage($globalSettings['langa']['not_found1']), 
+		'title' => $globalSettings['langa']['not_found1'], 
+		'error' => $globalSettings['langa']['not_found2']));
 }
 
 # Index page -> /
@@ -143,7 +153,7 @@ function title($id) {
 	$details = $bbs->titleDetails($id);	
 	if (is_null($details)) {
 		$app->getLog()->debug("title: book not found: ".$id);
-		$app->response()->status(404);
+		$app->notFound();
 		return;
 	}	
 
@@ -249,7 +259,7 @@ function book($id, $file) {
 	$app->getLog()->debug("book: file ".$file);
 	$bookpath = $bbs->titleFile($id, $file);
 	$app->getLog()->debug("book: path ".$bookpath);
-	
+
 	/** readfile has problems with large files (e.g. PDF) caused by php memory limit
 	 * to avoid this the function readfile_chunked() is used. app->response() is not
 	 * working with this solution.
