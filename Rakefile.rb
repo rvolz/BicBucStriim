@@ -38,7 +38,6 @@ task :package2 do |t|
     p.package_files.include("lib/**/*.*")
     p.package_files.include("templates/**/*.*")
     p.package_files.include("logs/**/*.*")
-    p.package_files.include("bicbucstriim.php")
     p.package_files.include("index.php")
     p.package_files.include("config.php.template")
     p.package_files.include("ChangeLog")
