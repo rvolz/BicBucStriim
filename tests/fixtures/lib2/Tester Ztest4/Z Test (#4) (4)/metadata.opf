@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='utf-8'?>
+<package xmlns="http://www.idpf.org/2007/opf" unique-identifier="uuid_id">
+    <metadata xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:opf="http://www.idpf.org/2007/opf">
+        <dc:identifier opf:scheme="calibre" id="calibre_id">4</dc:identifier>
+        <dc:identifier opf:scheme="uuid" id="uuid_id">677a4ded-67af-4bee-bb98-e613e50d1228</dc:identifier>
+        <dc:title>Z Test (#4)</dc:title>
+        <dc:creator opf:file-as="Ztest4, Tester" opf:role="aut">Tester Ztest4</dc:creator>
+        <dc:contributor opf:file-as="calibre" opf:role="bkp">calibre (0.8.53) [http://calibre-ebook.com]</dc:contributor>
+        <dc:date>2012-06-06T22:00:00+00:00</dc:date>
+        <dc:language>lat</dc:language>
+        <dc:subject>Fachbücher</dc:subject>
+        <meta content="{&quot;Tester Ztest4&quot;: &quot;&quot;}" name="calibre:author_link_map"/>
+        <meta content="0" name="calibre:rating"/>
+        <meta content="2012-06-07T15:34:03+00:00" name="calibre:timestamp"/>
+        <meta content="Z Test (#4)" name="calibre:title_sort"/>
+    </metadata>
+    <guide>
+        <reference href="cover.jpg" type="cover" title="Cover"/>
+    </guide>
+</package>
