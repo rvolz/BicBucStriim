@@ -10,12 +10,28 @@ class Tag extends Item {}
 class Data extends Item {}
 class Comment extends Item {}
 
+class Config extends Item{}
+
 class BicBucStriim {
+	const DBNAME = 'data/data.db';
+	var $mydb = NULL;
 	var $calibre = NULL;
 	var $calibre_dir = '';
 	var $last_error = 0;
 
-	function __construct($calibrePath) {
+	function __construct() {
+		if (file_exists(self::DBNAME) && is_writeable(self::DBNAME)) {
+			$this->mydb = new PDO('sqlite:'.self::DBNAME, NULL, NULL, array());
+			$this->mydb->setAttribute(1002, 'SET NAMES utf8');
+			$this->mydb->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			$this->mydb->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+			$this->last_error = $this->mydb->errorCode();
+		} else {
+			$this->mydb = NULL;
+		}
+	}
+
+	function openCalibreDB($calibrePath) {
 		$rp = realpath($calibrePath);
 		$this->calibre_dir = dirname($rp);
 		if (file_exists($rp) && is_readable($rp)) {
@@ -27,8 +43,38 @@ class BicBucStriim {
 		} else {
 			$this->calibre = NULL;
 		}
-
 	}
+
+	# Is our own DB open?
+	function dbOk() {
+		return (!is_null($this->mydb));
+	}
+
+	# Execute a query $sql on the settings DB and return the 
+	# result as an array of objects of class $class
+	function sfind($class, $sql) {
+		$stmt = $this->mydb->query($sql,PDO::FETCH_CLASS, $class);		
+		$this->last_error = $stmt->errorCode();
+		$items = $stmt->fetchAll();
+		$stmt->closeCursor();	
+		return $items;
+	}
+
+	function configs() {
+		return $this->sfind('Config','select * from configs');	
+	}
+	function saveConfigs($configs) {
+		$sql = 'update configs set val=:val where name=:name';
+		$stmt = $this->mydb->prepare($sql);
+		$this->mydb->beginTransaction();
+		#$this->mydb->exec('delete from configs');
+		foreach ($configs as $config) {
+			$stmt->execute(array('name' => $config->name, 'val' => $config->val));
+		}
+		$this->mydb->commit();
+	}
+
+	############# Calibre DB functions ################
 
 	# Is the Calibre library open?
 	function libraryOk() {

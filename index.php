@@ -13,7 +13,7 @@ require_once 'lib/BicBucStriim/bicbucstriim.php';
 require_once 'lib/BicBucStriim/langs.php';
 
 # Load config.php and check for the existence of valid entries
-$we_have_config = false;
+/*$we_have_config = false;
 try {
 	include 'config.php';	
 	if (isset($calibre_dir))
@@ -26,6 +26,7 @@ try {
 if (!isset($metadata_db)) $metadata_db = 'metadata.db';
 if (!isset($glob_dl_toggle)) $glob_dl_toggle = false;
 if (!isset($glob_dl_password)) $glob_dl_password = '7094e7dc2feb759758884333c2f4a6bdc9a16bb2';
+*/
 
 # Allowed languages, i.e. languages with translations
 $allowedLangs = array('de','en');
@@ -37,6 +38,14 @@ $appname = 'BicBucStriim';
 $appversion = '0.8.0';
 # Cookie name for global download protection
 define('GLOBAL_DL_COOKIE', 'glob_dl_access');
+# Calibre library path
+define('CALIBRE_DIR', 'calibre_dir');
+# Global download toggle
+define('GLOB_DL_TOGGLE', 'glob_dl_toggle');
+# Global download password
+define('GLOB_DL_PASSWORD', 'glob_dl_password');
+# BicBucStriim DB version
+define('DB_VERSION', 'db_version');
 
 # Init app and routes
 $app = new Slim(array(
@@ -56,12 +65,38 @@ if ($globalSettings['lang'] == 'de')
 	$globalSettings['langa'] = $langde;
 else
 	$globalSettings['langa'] = $langen;
-$globalSettings['glob_dl_toggle'] = $glob_dl_toggle;
-$globalSettings['glob_dl_password'] = $glob_dl_password;
+
+$bbs = new BicBucStriim();
+if ($bbs->dbOk()) {
+	$we_have_config = true;
+	$css = $bbs->configs();
+	foreach ($css as $config) {
+		switch ($config->name) {
+			case CALIBRE_DIR:
+				$globalSettings[CALIBRE_DIR] = $config->val;
+				break;
+			case GLOB_DL_TOGGLE:
+				$globalSettings[GLOB_DL_TOGGLE] = $config->val;
+				break;
+			case GLOB_DL_PASSWORD:
+				$globalSettings[GLOB_DL_PASSWORD] = $config->val;
+				break;
+			case DB_VERSION:
+				$globalSettings[DB_VERSION] = $config->val;
+				break;
+			default:
+				$app->getLog()->warn(join('',array('Unknown configuration, name: ',
+					$config->name,', value: ',$config->val)));	
+		}
+	}
+} else {
+	$we_have_config = false;
+}
 
 $app->notFound('myNotFound');
 $app->get('/', 'main');
 $app->get('/admin/', 'admin');
+$app->post('/admin/', 'admin_change');
 $app->get('/titles/', 'titles');
 $app->get('/titles/:id/', 'title');
 $app->get('/titles/:id/showaccess/', 'showaccess');
@@ -74,23 +109,37 @@ $app->get('/tags/', 'tags');
 $app->get('/tags/:id/', 'tag');
 
 
-# No config.php --> error
+# No config --> error
 if (!$we_have_config) {
-	$app->getLog()->error('No config.php found');	
+	$app->getLog()->error('No configuration found');	
 	$app->render('error.html', array(
 		'page' => mkPage($globalSettings['langa']['error']), 
 		'title' => $globalSettings['langa']['error'], 
 		'error' => $globalSettings['langa']['no_config']));
+	return;
+}
+
+if ($we_have_config && $globalSettings[CALIBRE_DIR] === '') {
+	if ($app->request()->isPost() && $app->request()->getResourceUri() === '/admin/') {
+		admin_change();
+	} else {
+		$app->getLog()->info('Calibre library path not configured, showing admin page.');	
+		$app->render('admin.html',array(
+			'page' => mkPage($globalSettings['langa']['admin'])));
+	}
+	return;
 }
 
 # Setup the connection to the Calibre metadata db
-$bbs = new BicBucStriim($calibre_dir.'/'.$metadata_db);
+$clp = $globalSettings[CALIBRE_DIR].'/metadata.db';
+$bbs->openCalibreDB($clp);
 if (!$bbs->libraryOk()) {
-	$app->getLog()->error('Exception while opening metadata db '.$calibre_dir.'/'.$metadata_db);	
+	$app->getLog()->error('Exception while opening metadata db '.$clp);	
 	$app->render('error.html', array(
 		'page' => mkPage($globalSettings['langa']['error']), 
 		'title' => $globalSettings['langa']['error'], 
-		'error' => $globalSettings['langa']['mdb_error'].$calibre_dir.'/'.$metadata_db));
+		'error' => $globalSettings['langa']['mdb_error'].$clp));
+	return;
 } else {
 	$app->run();
 }
@@ -115,6 +164,44 @@ function main() {
 function admin() {
 	global $app, $globalSettings, $bbs;
 
+	$app->render('admin.html',array(
+		'page' => mkPage($globalSettings['langa']['admin'])));
+
+}
+
+function admin_change() {
+	global $app, $globalSettings, $bbs;
+	$app->getLog()->debug('admin_change: started');	
+	$ncd = $app->request()->post(CALIBRE_DIR);
+	$ndt = $app->request()->post(GLOB_DL_TOGGLE);
+	$ndp = $app->request()->post(GLOB_DL_PASSWORD);
+	$nconfigs = array();
+	if (!isset($globalSettings[CALIBRE_DIR]) || $ncd != $globalSettings[CALIBRE_DIR]) {
+		$c1 = new Config();
+		$c1->name = CALIBRE_DIR;
+		$c1->val = $ncd;
+		array_push($nconfigs,$c1);
+		$globalSettings[CALIBRE_DIR] = $ncd;
+		$app->getLog()->debug('admin_change: '.CALIBRE_DIR.' changed: '.$ncd);	
+	} elseif ($ndt != $globalSettings[GLOB_DL_TOGGLE]) {
+		$c2 = new Config();
+		$c2->name = GLOB_DL_TOGGLE;
+		$c2->val = $ndt;
+		array_push($nconfigs,$c2);		
+		$globalSettings[GLOB_DL_TOGGLE] = $ndt;
+		$app->getLog()->debug('admin_change: '.GLOB_DL_TOGGLE.' changed: '.$ndt);	
+	} elseif ($ndp != $globalSettings[GLOB_DL_PASSWORD]) {
+		$c3 = new Config();
+		$c3->name = GLOB_DL_PASSWORD;
+		$c3->val = $ndp;		
+		array_push($nconfigs,$c3);		
+		$globalSettings[GLOB_DL_PASSWORD] = $ndp;
+		$app->getLog()->debug('admin_change: '.GLOB_DL_PASSWORD.' changed: '.$ndp);	
+	}
+	if (count($nconfigs) > 0) {
+		$bbs->saveConfigs($nconfigs);
+	}
+	$app->getLog()->debug('admin_change: ended');	
 	$app->render('admin.html',array(
 		'page' => mkPage($globalSettings['langa']['admin']), 
 		'config' => $globalSettings));	

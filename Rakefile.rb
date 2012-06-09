@@ -6,6 +6,7 @@
 require 'rake/clean'
 require 'rake/packagetask'
 require 'fileutils'
+require 'sqlite3'
 
 APPNAME = 'BicBucStriim'
 VERSION = '0.8.0'
@@ -22,10 +23,25 @@ end
 
 desc "Make a release package"
 task :package2 do |t|
-  mkdir "logs"
-  chmod 0777, "logs"
-  touch "logs/dummy.txt"
-  sh 'echo "A dummy file" >> logs/dummy.txt'
+  mkdir "data"
+  chmod 0777, "data"
+  touch "data/data.db"
+  chmod 0777, "data/data.db"
+  db = SQLite3::Database.new "data/data.db"
+  rows = db.execute <<-SQL
+    create table configs (
+      name varchar(30),
+      val varchar(256)
+    );    
+  SQL
+  {
+    "calibre_dir" => "",
+    "glob_dl_toggle" => "0",
+    "glob_dl_password" => "7094e7dc2feb759758884333c2f4a6bdc9a16bb2",
+    "db_version" => "1"
+  }.each do |pair|
+    db.execute "insert into configs values ( ?, ? )", pair
+  end
   Rake::PackageTask.new(APPNAME, VERSION) do |p|
     p.need_tar = true
     p.need_zip = true
@@ -37,7 +53,7 @@ task :package2 do |t|
     p.package_files.include("style/style.css")
     p.package_files.include("lib/**/*.*")
     p.package_files.include("templates/**/*.*")
-    p.package_files.include("logs/**/*.*")
+    p.package_files.include("data/**/*.*")
     p.package_files.include("index.php")
     p.package_files.include("config.php.template")
     p.package_files.include("ChangeLog")
@@ -46,7 +62,7 @@ task :package2 do |t|
     p.package_files.include("README.md")
   end
   Rake::Task['package'].invoke
-  rm_rf "logs"
+  rm_rf "data"
 end
 
 # Integration testing tasks only make sense when vagrant is installed.
