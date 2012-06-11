@@ -4,7 +4,10 @@
 <ul data-role="listview">
 	{% for book in books %}
   	<li>
-  		<a href="{{ page.rot }}/titles/{{ book.id }}">{{ book.title }} ({{ book.pubdate|date("Y") }})</a> 
+  		<a href="{{ page.rot }}/titles/{{ book.id }}">
+  			<img src="{{page.rot}}/titles/{{ book.id }}/thumbnail" />
+  			{{ book.title }} ({{ book.pubdate|date("Y") }})
+  		</a> 
   	</li>
   {% endfor %}
 </ul>

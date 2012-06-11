@@ -6,7 +6,12 @@
 		{% if book.initial != "" %}
 			<li data-role="list-divider"> {{ book.initial }}</li>
 		{% else %}
-			<li><a href="{{page.rot}}/titles/{{ book.id }}">{{ book.sort }}</a></li>
+			<li>				
+				<a href="{{page.rot}}/titles/{{ book.id }}">
+					<img src="{{page.rot}}/titles/{{ book.id }}/thumbnail" />
+					{{ book.sort }}
+				</a>
+			</li>
 		{% endif %}
   {% endfor %}
 </ul>

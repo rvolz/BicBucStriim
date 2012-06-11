@@ -14,6 +14,7 @@ class Config extends Item{}
 
 class BicBucStriim {
 	const DBNAME = 'data/data.db';
+	const THUMB_DIR = './data';
 	var $mydb = NULL;
 	var $calibre = NULL;
 	var $calibre_dir = '';
@@ -184,6 +185,27 @@ class BicBucStriim {
 			return $this->bookPath($this->calibre_dir,$book->path,'cover.jpg');
 	}
 
+	# Returns the path to a thumbnail of a book's cover image or NULL. 
+	# If a thumbnail doesn't exist the function tries to make one.
+	function titleThumbnail($id) {
+		$thumb_name = 'thumb_'.$id.'.png';
+		$thumb_path = self::THUMB_DIR.'/'.$thumb_name;
+		$newwidth = 80;
+		$newheight = 80;
+		if (!file_exists($thumb_path)) {
+			$cover = $this->titleCover($id);
+			if (is_null($cover))
+				$thumb_path = NULL;
+			else {
+				list($width, $height) = getimagesize($cover);
+				$thumb = imagecreatetruecolor($newwidth, $newheight);
+				$source = imagecreatefromjpeg($cover);
+				imagecopyresized($thumb, $source, 0, 0, 0, 0, $newwidth, $newheight, $width, $height);
+				$created = imagepng($thumb, $thumb_path);				
+			}
+		}
+		return $thumb_path;
+	}
 
 	# Find a single book, its authors, tags, formats and comment.
 	function titleDetails($id) {

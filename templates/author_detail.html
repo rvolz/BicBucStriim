@@ -8,7 +8,12 @@
 	</header>
 	<ul data-role="listview">
 		{% for book in books %}
-		<li><a href="{{page.rot}}/titles/{{book.id}}"><i class="icon-book"></i> {{ book.title }}</a></li>
+		<li>
+			<a href="{{page.rot}}/titles/{{book.id}}">
+				<img src="{{page.rot}}/titles/{{ book.id }}/thumbnail" />
+				{{ book.title }}
+			</a>
+		</li>
 		{% endfor %}	
 	</ul>
 </section>
