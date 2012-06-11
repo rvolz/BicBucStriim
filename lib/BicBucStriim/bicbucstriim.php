@@ -115,7 +115,8 @@ class BicBucStriim {
 	# Return a grouped list of all tags. The list is separated by dividers, 
 	# the initial character.
 	function allTags() {
-		$tags = $this->find('Tag','select * from tags order by name');		
+		#$tags = $this->find('Tag','select * from tags order by name');		
+		$tags = $this->find('Tag', 'select tags.id, tags.name, count(btl.id) as anzahl from tags left join books_tags_link as btl on tags.id = btl.tag group by tags.id order by tags.name;');
 		return $this->mkInitialedList($tags);
 	}
 

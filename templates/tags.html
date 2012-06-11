@@ -6,7 +6,10 @@
 		{% if tag.initial != "" %}
 			<li data-role="list-divider"> {{ tag.initial }}</li>
 		{% else %}
-			<li><a href="{{page.rot}}/tags/{{ tag.id }}">{{ tag.name }}</a></li>
+			<li>
+				<a href="{{page.rot}}/tags/{{ tag.id }}">{{ tag.name }}
+				<span class="ui-li-count">{{ tag.anzahl }}</span></a>
+			</li>
 		{% endif %}
   	{% endfor %}
 </ul>
