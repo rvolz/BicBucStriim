@@ -71,11 +71,7 @@ if env
   desc "Start the VM for integration testing"
   task :itest_up do |t|  
     puts "About to run vagrant-up..." 
-    if File.exists?("tests/env/.vagrant") 
-      env.cli("up --no-provision")
-    else
-      env.cli("up")
-    end
+    env.cli("up")
     puts "Finished running vagrant-up"
   end
 
@@ -98,6 +94,7 @@ if env
     puts "Deploying code"
     rm_rf code_target+"/."
     cp_r "./pkg/#{APPNAME}-#{VERSION}/.", code_target
+    chmod_R 0777,"#{code_target}/data"
     puts "Deploying test fixtures"    
     rm_rf lib_target+"/."
     cp_r "tests/fixtures/lib2/.", lib_target
@@ -112,6 +109,7 @@ if env
 
     env.cli("sync","-f#{code_target}/", "-t/var/www/bbs")    
     env.cli("sync","-f#{lib_target}/","-t/tmp/calibre")    
+    #env.cli("ssh", '-c "sudo chmod -R ga+w /var/www/bbs/data"')
   end
 
   desc "Starts a ssh shell in the VM"
