@@ -12,22 +12,6 @@ TwigView::$twigExtensions = array(
 require_once 'lib/BicBucStriim/bicbucstriim.php';
 require_once 'lib/BicBucStriim/langs.php';
 
-# Load config.php and check for the existence of valid entries
-/*$we_have_config = false;
-try {
-	include 'config.php';	
-	if (isset($calibre_dir))
-		$we_have_config = true;
-	else
-		$we_have_config = false;
-} catch (Exception $e) {
-	$we_have_config = false;
-}
-if (!isset($metadata_db)) $metadata_db = 'metadata.db';
-if (!isset($glob_dl_toggle)) $glob_dl_toggle = false;
-if (!isset($glob_dl_password)) $glob_dl_password = '7094e7dc2feb759758884333c2f4a6bdc9a16bb2';
-*/
-
 # Allowed languages, i.e. languages with translations
 $allowedLangs = array('de','en');
 # Fallback language if the browser prefers other than the allowed languages
@@ -56,6 +40,7 @@ $app = new Slim(array(
 	'view' => new TwigView(),
 	));
 
+# Init app globals
 $globalSettings = array();
 $globalSettings['appname'] = $appname;
 $globalSettings['version'] = $appversion;
@@ -66,8 +51,10 @@ if ($globalSettings['lang'] == 'de')
 else
 	$globalSettings['langa'] = $langen;
 
+# Add globals from DB
 $bbs = new BicBucStriim();
 if ($bbs->dbOk()) {
+	$app->getLog()->debug("config db found");
 	$we_have_config = true;
 	$css = $bbs->configs();
 	foreach ($css as $config) {
@@ -89,60 +76,69 @@ if ($bbs->dbOk()) {
 					$config->name,', value: ',$config->val)));	
 		}
 	}
+	$app->getLog()->debug("config loaded");
 } else {
+	$app->getLog()->debug("no config db found");
 	$we_have_config = false;
 }
 
+
+
+# Init routes
 $app->notFound('myNotFound');
-$app->get('/', 'main');
+$app->get('/', 'check_config', 'main');
 $app->get('/admin/', 'admin');
 $app->post('/admin/', 'admin_change');
-$app->get('/titles/', 'titles');
-$app->get('/titles/:id/', 'title');
-$app->get('/titles/:id/showaccess/', 'showaccess');
-$app->post('/titles/:id/checkaccess/', 'checkaccess');
-$app->get('/titles/:id/cover/', 'cover');
-$app->get('/titles/:id/file/:file', 'book');
-$app->get('/titles/:id/thumbnail/', 'thumbnail');
-$app->get('/authors/', 'authors');
-$app->get('/authors/:id/', 'author');
-$app->get('/tags/', 'tags');
-$app->get('/tags/:id/', 'tag');
+$app->get('/admin/error/:id', 'admin_error');
+$app->get('/titles/', 'check_config', 'titles');
+$app->get('/titles/:id/', 'check_config','title');
+$app->get('/titles/:id/showaccess/', 'check_config', 'showaccess');
+$app->post('/titles/:id/checkaccess/', 'check_config', 'checkaccess');
+$app->get('/titles/:id/cover/', 'check_config', 'cover');
+$app->get('/titles/:id/file/:file', 'check_config', 'book');
+$app->get('/titles/:id/thumbnail/', 'check_config', 'thumbnail');
+$app->get('/authors/', 'check_config', 'authors');
+$app->get('/authors/:id/', 'check_config', 'author');
+$app->get('/tags/', 'check_config', 'tags');
+$app->get('/tags/:id/', 'check_config', 'tag');
+
+$app->run();
 
 
-# No config --> error
-if (!$we_have_config) {
-	$app->getLog()->error('No configuration found');	
-	$app->render('error.html', array(
-		'page' => mkPage($globalSettings['langa']['error']), 
-		'title' => $globalSettings['langa']['error'], 
-		'error' => $globalSettings['langa']['no_config']));
-	return;
-}
+# Check if the configuration is valid:
+# - If there is no bbs db --> show error
+# - If 
+function check_config() {
+	global $we_have_config, $bbs, $app, $globalSettings;
 
-if ($we_have_config && $globalSettings[CALIBRE_DIR] === '') {
-	if ($app->request()->isPost() && $app->request()->getResourceUri() === '/admin/') {
-		admin_change();
-	} else {
-		$app->getLog()->info('Calibre library path not configured, showing admin page.');	
-		$app->render('admin.html',array(
-			'page' => mkPage($globalSettings['langa']['admin'])));
+	$app->getLog()->debug("check_config start");
+	# No config --> error
+	if (!$we_have_config) {
+		$app->getLog()->error('No configuration found');	
+		$app->render('error.html', array(
+			'page' => mkPage($globalSettings['langa']['error']), 
+			'title' => $globalSettings['langa']['error'], 
+			'error' => $globalSettings['langa']['no_config']));
 	}
-	return;
-}
 
-# Setup the connection to the Calibre metadata db
-$clp = $globalSettings[CALIBRE_DIR].'/metadata.db';
-$bbs->openCalibreDB($clp);
-if (!$bbs->libraryOk()) {
-	$app->getLog()->error('Exception while opening metadata db '.$clp);	
-	$app->render('error.html', array(
-		'page' => mkPage($globalSettings['langa']['error']), 
-		'title' => $globalSettings['langa']['error'], 
-		'error' => $globalSettings['langa']['mdb_error'].$clp));
-	return;
-} else {
-	$app->run();
+	# 'After installation' scenario: here is a config DB but no valid connection to Calibre
+	if ($we_have_config && $globalSettings[CALIBRE_DIR] === '') {
+		if ($app->request()->isPost() && $app->request()->getResourceUri() === '/admin/') {
+			# let go through
+		} else {
+			$app->getLog()->warn('Calibre library path not configured, showing admin page.');	
+			$app->redirect($app->request()->getRootUri().'/admin');
+		}
+	}
+
+	# Setup the connection to the Calibre metadata db
+	$clp = $globalSettings[CALIBRE_DIR].'/metadata.db';
+	$bbs->openCalibreDB($clp);
+	if (!$bbs->libraryOk()) {
+		$app->getLog()->error('Exception while opening metadata db '.$clp.'. Showing admin page.');	
+		$app->redirect($app->request()->getRootUri().'/admin');
+	} 	
+	$app->getLog()->debug("check_config end");
 }
 
 function myNotFound() {
@@ -166,7 +162,7 @@ function admin() {
 	global $app, $globalSettings, $bbs;
 
 	$app->render('admin.html',array(
-		'page' => mkPage($globalSettings['langa']['admin'])));
+		'page' => mkPage($globalSettings['langa']['admin'],0,true)));
 
 }
 
@@ -177,37 +173,71 @@ function admin_change() {
 	$ndt = $app->request()->post(GLOB_DL_TOGGLE);
 	$ndp = $app->request()->post(GLOB_DL_PASSWORD);
 	$nconfigs = array();
-	if (!isset($globalSettings[CALIBRE_DIR]) || $ncd != $globalSettings[CALIBRE_DIR]) {
+	if (!isset($globalSettings[CALIBRE_DIR]) || empty($ncd) || $ncd != $globalSettings[CALIBRE_DIR]) {
+		if(empty($ncd) || !BicBucStriim::checkForCalibre($ncd)) {
+			$app->redirect($app->request()->getRootUri().'/admin/error/1');
+		}
 		$c1 = new Config();
 		$c1->name = CALIBRE_DIR;
 		$c1->val = $ncd;
 		array_push($nconfigs,$c1);
 		$globalSettings[CALIBRE_DIR] = $ncd;
 		$app->getLog()->debug('admin_change: '.CALIBRE_DIR.' changed: '.$ncd);	
-	} elseif ($ndt != $globalSettings[GLOB_DL_TOGGLE]) {
+	} 
+	if ($ndt != $globalSettings[GLOB_DL_TOGGLE]) {
 		$c2 = new Config();
 		$c2->name = GLOB_DL_TOGGLE;
 		$c2->val = $ndt;
 		array_push($nconfigs,$c2);		
 		$globalSettings[GLOB_DL_TOGGLE] = $ndt;
 		$app->getLog()->debug('admin_change: '.GLOB_DL_TOGGLE.' changed: '.$ndt);	
-	} elseif ($ndp != $globalSettings[GLOB_DL_PASSWORD]) {
+	} 
+	if ($ndp != $globalSettings[GLOB_DL_PASSWORD]) {
+		if($globalSettings[GLOB_DL_TOGGLE] == true && empty($ndp)) {
+			$app->redirect($app->request()->getRootUri().'/admin/error/2');
+		}
 		$c3 = new Config();
 		$c3->name = GLOB_DL_PASSWORD;
 		$c3->val = $ndp;		
 		array_push($nconfigs,$c3);		
 		$globalSettings[GLOB_DL_PASSWORD] = $ndp;
 		$app->getLog()->debug('admin_change: '.GLOB_DL_PASSWORD.' changed: '.$ndp);	
-	}
+	}	
 	if (count($nconfigs) > 0) {
 		$bbs->saveConfigs($nconfigs);
+		$app->getLog()->debug('admin_change: changes saved');	
 	}
 	$app->getLog()->debug('admin_change: ended');	
 	$app->render('admin.html',array(
-		'page' => mkPage($globalSettings['langa']['admin']), 
+		'page' => mkPage($globalSettings['langa']['admin'],0,true), 
 		'config' => $globalSettings));	
 
 }
+
+# Show error messages for the admin area
+function admin_error($id) {
+	global $app, $globalSettings, $bbs;
+
+	switch($id) {
+		case 1:
+			$title = 'invalid_calibredir1';
+			$msg = 'invalid_calibredir2';
+			break;
+		case 2:
+			$title = 'invalid_password';
+			$msg = 'invalid_password2';
+			break;
+		default:
+			$title = 'unknown_error1';
+			$msg = 'unknown_error2';
+			break;
+	}
+	$app->render('error.html',array(
+		'page' => mkPage($globalSettings['langa'][$title]), 
+		'title' => $globalSettings['langa'][$title], 
+		'error' => $globalSettings['langa'][$msg]));
+}
+
 
 # A list of all titles -> /titles/
 function titles() {
@@ -469,7 +499,7 @@ function is_protected($id) {
 
 
 # Utility function to fill the page array
-function mkPage($subtitle='', $menu=0) {
+function mkPage($subtitle='', $menu=0, $nocache=false) {
 	global $app, $globalSettings;
 
 	if ($subtitle == '') 
@@ -482,7 +512,8 @@ function mkPage($subtitle='', $menu=0) {
 		'h1' => $subtitle,
 		'version' => $globalSettings['version'],
 		'glob' => $globalSettings,
-		'menu' => $menu);
+		'menu' => $menu,
+		'nocache' => $nocache);
 	return $page;
 }
 

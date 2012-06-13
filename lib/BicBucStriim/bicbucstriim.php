@@ -31,6 +31,12 @@ class BicBucStriim {
 	# dir for generated thumbs
 	var $thumb_dir = '';
 
+	static function checkForCalibre($path) {
+		$rp = realpath($path);
+		$rpm = $rp.'/metadata.db';
+		return is_readable($rpm);
+	}
+
 	# Open the BBS DB. The thumbnails are stored in the same directory as the db.
 	function __construct($dataPath='data/data.db') {
 		$rp = realpath($dataPath);

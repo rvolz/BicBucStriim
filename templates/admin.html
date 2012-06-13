@@ -3,26 +3,24 @@
 
 {% block content %}
 <h1>{{ page.glob.langa.admin }}</h1>
-<p >
-	Ändern Sie!
-</p>
-<form action="{{page.rot}}/admin/" method="post">
+<p id="flash" />
+<form action="{{page.rot}}/admin/" data-ajax="false" method="post">
 	<fieldset data-role="fieldcontain">
 		<label for="calibre_dir">Calibre Bibliotheksverzeichnis:</label>
 		<input name="calibre_dir" id="calibre_dir" type="text" 
 			value="{{page.glob.calibre_dir}}" placeholder="Calibre Verzeichnis">{{glob.calibre_dir}}</input>
 	</fieldset>
 	<fieldset data-role="fieldcontain">
-		<label for="global_dl_prot">Globaler Downloadschutz:</label>
-		<select name="global_dl_prot" id="global_dl_prot" data-role="slider" 
-			value="{%if page.glob.glob_dl_toggle%}1{%else%}0{%endif%}">
-			<option value="0">Off</option>
-			<option value="1">On</option>
+		<label for="glob_dl_toggle">Globaler Downloadschutz:</label>
+		<select name="glob_dl_toggle" id="glob_dl_toggle" data-role="slider" 
+			value="{%if page.glob.glob_dl_toggle%}0{%else%}1{%endif%}">
+			<option {%if page.glob.glob_dl_toggle%}selected="0"{%endif%} value="0">Off</option>
+			<option {%if page.glob.glob_dl_toggle%}selected="1"{%endif%} value="1">On</option>
 		</select>
 		</fieldset> 
 		<fieldset data-role="fieldcontain">
-			<label for="global_dl_pw">Passwort für Downloadschutz:</label>
-			<input name="global_dl_pw" id="global_dl_pw" type="password" 
+			<label for="glob_dl_password">Passwort für Downloadschutz:</label>
+			<input name="glob_dl_password" id="glob_dl_password" type="password" 
 				value="{{page.glob.glob_dl_password}}" placeholder="Download PW" />
 		</fieldset>
 		<button type="submit">OK</button>	
