@@ -121,7 +121,7 @@ end
 
 desc "Unit testing"
 task :test do |t|
-  sh "php tests/test_index.php"
+  sh "php tests/test_all.php"
 end
 
 desc "Copy the current version to the NAS for testing"

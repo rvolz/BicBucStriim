@@ -13,16 +13,31 @@ class Comment extends Item {}
 class Config extends Item{}
 
 class BicBucStriim {
-	const DBNAME = 'data/data.db';
-	const THUMB_DIR = './data';
-	var $mydb = NULL;
-	var $calibre = NULL;
-	var $calibre_dir = '';
-	var $last_error = 0;
+	# Name to the bbs db
+	const DBNAME = 'data.db';
+	# Thumbnail dimension (they are square)
+	const THUMB_RES = 160;
 
-	function __construct() {
-		if (file_exists(self::DBNAME) && is_writeable(self::DBNAME)) {
-			$this->mydb = new PDO('sqlite:'.self::DBNAME, NULL, NULL, array());
+	# bbs sqlite db
+	var $mydb = NULL;
+	# calibre sqlite db
+	var $calibre = NULL;
+	# calinbre library dir
+	var $calibre_dir = '';
+	# last sqlite error
+	var $last_error = 0;
+	# dir for bbs db
+	var $data_dir = '';
+	# dir for generated thumbs
+	var $thumb_dir = '';
+
+	# Open the BBS DB. The thumbnails are stored in the same directory as the db.
+	function __construct($dataPath='data/data.db') {
+		$rp = realpath($dataPath);
+		$this->data_dir = dirname($dataPath);
+		$this->thumb_dir = $this->data_dir;
+		if (file_exists($rp) && is_writeable($rp)) {
+			$this->mydb = new PDO('sqlite:'.$rp, NULL, NULL, array());
 			$this->mydb->setAttribute(1002, 'SET NAMES utf8');
 			$this->mydb->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			$this->mydb->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
@@ -186,16 +201,16 @@ class BicBucStriim {
 	}
 
 	# Returns the path to a thumbnail of a book's cover image or NULL. 
-	# If a thumbnail doesn't exist the function tries to make one.
+	# If a thumbnail doesn't exist the function tries to make one from the cover.
 	# The thumbnail dimension generated is 160*160, which is more than what 
 	# jQuery Mobile requires (80*80). However, if we send the 80*80 resolution the 
 	# thumbnails look very pixely.
 	#
 	function titleThumbnail($id) {
 		$thumb_name = 'thumb_'.$id.'.png';
-		$thumb_path = self::THUMB_DIR.'/'.$thumb_name;
-		$newwidth = 160;
-		$newheight = 160;
+		$thumb_path = $this->thumb_dir.'/'.$thumb_name;
+		$newwidth = self::THUMB_RES;
+		$newheight = self::THUMB_RES;
 		if (!file_exists($thumb_path)) {
 			$cover = $this->titleCover($id);
 			if (is_null($cover))
