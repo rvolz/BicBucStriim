@@ -162,7 +162,7 @@ function admin() {
 	global $app, $globalSettings, $bbs;
 
 	$app->render('admin.html',array(
-		'page' => mkPage($globalSettings['langa']['admin'],0,true)));
+		'page' => mkPage($globalSettings['langa']['admin'])));
 
 }
 
@@ -209,7 +209,7 @@ function admin_change() {
 	}
 	$app->getLog()->debug('admin_change: ended');	
 	$app->render('admin.html',array(
-		'page' => mkPage($globalSettings['langa']['admin'],0,true), 
+		'page' => mkPage($globalSettings['langa']['admin']), 
 		'config' => $globalSettings));	
 
 }
@@ -499,7 +499,7 @@ function is_protected($id) {
 
 
 # Utility function to fill the page array
-function mkPage($subtitle='', $menu=0, $nocache=false) {
+function mkPage($subtitle='', $menu=0) {
 	global $app, $globalSettings;
 
 	if ($subtitle == '') 
@@ -512,8 +512,7 @@ function mkPage($subtitle='', $menu=0, $nocache=false) {
 		'h1' => $subtitle,
 		'version' => $globalSettings['version'],
 		'glob' => $globalSettings,
-		'menu' => $menu,
-		'nocache' => $nocache);
+		'menu' => $menu);
 	return $page;
 }
 

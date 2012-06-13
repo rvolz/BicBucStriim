@@ -10,8 +10,10 @@ jQuery(function(){
 	the dialog an display an error message.	*/
 	$('.checkdl').live('click', function(){
 		$.ajaxSetup({async:false});
+		var root = $('.checkdl').data('proot');
+		var book = $('.checkdl').data('bookid');
 		var pw = $('#password').val();
-		var jh = $.post("/bbs/titles/272/checkaccess/",{password:pw})
+		var jh = $.post(root+"/titles/"+book+"/checkaccess/",{password:pw})
 		.success(function() {
 			$('.ui-dialog').dialog("close");
 			$('.dl_access').hide();
