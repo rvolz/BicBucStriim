@@ -187,11 +187,15 @@ class BicBucStriim {
 
 	# Returns the path to a thumbnail of a book's cover image or NULL. 
 	# If a thumbnail doesn't exist the function tries to make one.
+	# The thumbnail dimension generated is 160*160, which is more than what 
+	# jQuery Mobile requires (80*80). However, if we send the 80*80 resolution the 
+	# thumbnails look very pixely.
+	#
 	function titleThumbnail($id) {
 		$thumb_name = 'thumb_'.$id.'.png';
 		$thumb_path = self::THUMB_DIR.'/'.$thumb_name;
-		$newwidth = 80;
-		$newheight = 80;
+		$newwidth = 160;
+		$newheight = 160;
 		if (!file_exists($thumb_path)) {
 			$cover = $this->titleCover($id);
 			if (is_null($cover))
@@ -200,7 +204,12 @@ class BicBucStriim {
 				list($width, $height) = getimagesize($cover);
 				$thumb = imagecreatetruecolor($newwidth, $newheight);
 				$source = imagecreatefromjpeg($cover);
-				imagecopyresized($thumb, $source, 0, 0, 0, 0, $newwidth, $newheight, $width, $height);
+				$minwh = min(array($width, $height));
+				$newx = ($width / 2) - ($minwh / 2);
+				$newy = ($height / 2) - ($minwh / 2);
+				$inbetween = imagecreatetruecolor($minwh, $minwh);
+				imagecopy($inbetween, $source, 0, 0, $newx, $newy, $minwh, $minwh);				
+				imagecopyresized($thumb, $inbetween, 0, 0, 0, 0, $newwidth, $newheight, $minwh, $minwh);
 				$created = imagepng($thumb, $thumb_path);				
 			}
 		}
