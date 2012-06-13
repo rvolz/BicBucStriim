@@ -55,7 +55,6 @@ task :package2 do |t|
     p.package_files.include("templates/**/*.*")
     p.package_files.include("data/**/*.*")
     p.package_files.include("index.php")
-    p.package_files.include("config.php.template")
     p.package_files.include("ChangeLog")
     p.package_files.include(".htaccess")
     p.package_files.include("NOTICE")
