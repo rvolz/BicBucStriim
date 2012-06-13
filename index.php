@@ -278,7 +278,7 @@ function showaccess($id) {
 	global $app, $globalSettings;
 
 	$app->render('password_dialog.html',
-		array('page' => mkPage($globalSettings['langa']['check_access']), 
+		array('page' => mkPage($globalSettings['langa']['check_access'],0,true), 
 					'bookid' => $id));
 }
 
@@ -499,7 +499,7 @@ function is_protected($id) {
 
 
 # Utility function to fill the page array
-function mkPage($subtitle='', $menu=0) {
+function mkPage($subtitle='', $menu=0, $dialog=false) {
 	global $app, $globalSettings;
 
 	if ($subtitle == '') 
@@ -512,7 +512,8 @@ function mkPage($subtitle='', $menu=0) {
 		'h1' => $subtitle,
 		'version' => $globalSettings['version'],
 		'glob' => $globalSettings,
-		'menu' => $menu);
+		'menu' => $menu,
+		'dialog' => $dialog);
 	return $page;
 }
 

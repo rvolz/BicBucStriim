@@ -17,7 +17,9 @@
 
   <div data-role="page" data-title="{{ page.title }}">
     <div data-role="header" data-position="inline">                  
+      {% if page.dialog==false %}
       {% include "navbar.html" %}
+      {% endif %}
     </div>
     <div data-role="content">      
       {% block content %}{% endblock %}
