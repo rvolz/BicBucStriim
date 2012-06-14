@@ -151,10 +151,12 @@ function myNotFound() {
 
 # Index page -> /
 function main() {
-	global $app, $bbs;
+	global $app, $globalSettings, $bbs;
 
 	$books = $bbs->last30Books();
-	$app->render('index_last30.html',array('page' => mkPage('',1), 'books' => $books));	
+	$app->render('index_last30.html',array(
+		'page' => mkPage($globalSettings['langa']['dl30'],1), 
+		'books' => $books));	
 }
 
 
