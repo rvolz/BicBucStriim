@@ -6,23 +6,27 @@
 <p id="flash" />
 <form action="{{page.rot}}/admin/" data-ajax="false" method="post">
 	<fieldset data-role="fieldcontain">
-		<label for="calibre_dir">Calibre Bibliotheksverzeichnis:</label>
+		<label for="calibre_dir">{{page.glob.langa.calibre_dir1}}</label>
 		<input name="calibre_dir" id="calibre_dir" type="text" 
-			value="{{page.glob.calibre_dir}}" placeholder="Calibre Verzeichnis">{{glob.calibre_dir}}</input>
+			value="{{page.glob.calibre_dir}}" placeholder="{{page.glob.langa.calibre_dir2}}"/>
 	</fieldset>
 	<fieldset data-role="fieldcontain">
-		<label for="glob_dl_toggle">Globaler Downloadschutz:</label>
+		<label for="glob_dl_toggle">{{page.glob.langa.glob_dl_toggle1}}</label>
 		<select name="glob_dl_toggle" id="glob_dl_toggle" data-role="slider" 
 			value="{%if page.glob.glob_dl_toggle%}0{%else%}1{%endif%}">
-			<option {%if page.glob.glob_dl_toggle%}selected="0"{%endif%} value="0">Off</option>
-			<option {%if page.glob.glob_dl_toggle%}selected="1"{%endif%} value="1">On</option>
+			<option {%if page.glob.glob_dl_toggle%}selected="0"{%endif%} value="0">
+				{{page.glob.langa.glob_dl_toggle2}}
+			</option>
+			<option {%if page.glob.glob_dl_toggle%}selected="1"{%endif%} value="1">
+				{{page.glob.langa.glob_dl_toggle3}}
+			</option>
 		</select>
 		</fieldset> 
 		<fieldset data-role="fieldcontain">
-			<label for="glob_dl_password">Passwort für Downloadschutz:</label>
+			<label for="glob_dl_password">{{page.glob.langa.glob_dl_pw1}}</label>
 			<input name="glob_dl_password" id="glob_dl_password" type="password" 
-				value="{{page.glob.glob_dl_password}}" placeholder="Download PW" />
+				value="{{page.glob.glob_dl_password}}" placeholder="{{page.glob.langa.glob_dl_pw2}}" />
 		</fieldset>
-		<button type="submit">OK</button>	
+		<button type="submit">{{page.glob.langa.save}}</button>	
 </form>
 {% endblock %}
