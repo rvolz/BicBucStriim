@@ -131,7 +131,7 @@ class BicBucStriim {
 	# the initial name character.
 	function allAuthors() {
 		#$authors = $this->find('Author','select * from authors order by sort');		
-		$authors = $this->find('Author', 'select a.id, a.name, a.sort, count(bal.id) as anzahl from authors as a left join books_authors_link as bal on a.id = bal.author group by a.id order by a.name');
+		$authors = $this->find('Author', 'select a.id, a.name, a.sort, count(bal.id) as anzahl from authors as a left join books_authors_link as bal on a.id = bal.author group by a.id order by a.sort');
 		return $this->mkInitialedList($authors);
 	}
 
