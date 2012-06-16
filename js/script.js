@@ -1,14 +1,37 @@
 /* Author: Rainer Volz
 */
 
-jQuery(function(){
+$('#padmin').on('pageinit', function() {
+	$('#glob_dl_toggle').on('change', function(e) {
+		if (e.target.value == "1") {
+			$('#glob_dl_use_admin').slider('enable');
+			if ($('#glob_dl_use_admin').value == "0") {
+				$('#glob_dl_password').textinput('enable');
+			} else {
+				$('#glob_dl_password').textinput('disable');
+			}
+		} else {
+			$('#glob_dl_use_admin').slider('disable');
+			$('#glob_dl_password').textinput('disable');
+		}
+	});
+	$('#glob_dl_use_admin').on('change', function(e) {
+		if (e.target.value == "1") {
+			$('#glob_dl_password').textinput('disable');
+		} else {
+			$('#glob_dl_password').textinput('enable');
+		}
+	});
+});
+
+$(document).on('pageinit', function() {
 
 	/* Click handler for the password dialog.
 	When submit is clicked the password is checked synchronously.
 	If successful the server set a cookie, so we can simly close 
 	the dialog and refresh the parent page. Otherwise we stay in
 	the dialog an display an error message.	*/
-	$('.checkdl').live('click', function(){
+	$('.checkdl').on('click', function(){
 		$.ajaxSetup({async:false});
 		var root = $('.checkdl').data('proot');
 		var book = $('.checkdl').data('bookid');
@@ -44,5 +67,5 @@ jQuery(function(){
 			$('.dl_download').hide();
 		}
 	}
-});
 
+});

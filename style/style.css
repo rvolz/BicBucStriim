@@ -31,6 +31,15 @@ body {
 div.footer p {
   text-align: center;
 }
+div#flash p {
+  color: white;
+}
+div#flash p .success {
+  background-color: green;
+}
+div#flash p .error {
+  background-color: red;
+}
 @media (max-width: 480px) {
   .title_detail_image {
     float: none;
