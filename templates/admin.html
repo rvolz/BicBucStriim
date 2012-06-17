@@ -16,28 +16,31 @@
 
 <form action="{{page.rot}}/admin/" method="post" id="adminform">
 	<fieldset data-role="fieldcontain">
-			<label for="admin_pw">{{page.glob.langa.admin_pw1}}</label>
-			<input name="admin_pw" id="admin_pw" type="text" 
-				value="{{page.glob.admin_pw}}" placeholder="{{page.glob.langa.admin_pw2}}" />
-		</fieldset>
-	<fieldset data-role="fieldcontain">
 		<label for="calibre_dir">{{page.glob.langa.calibre_dir1}}</label>
 		<input name="calibre_dir" id="calibre_dir" type="text" 
 			value="{{page.glob.calibre_dir}}" placeholder="{{page.glob.langa.calibre_dir2}}"/>
+		<p>{{page.glob.langa.calibre_dir_expl}}</p>					
+	</fieldset>	
+	<fieldset data-role="fieldcontain">
+		<label for="admin_pw">{{page.glob.langa.admin_pw1}}</label>
+		<input name="admin_pw" id="admin_pw" type="text" 
+			value="{{page.glob.admin_pw}}" placeholder="{{page.glob.langa.admin_pw2}}" />
+		<p>{{page.glob.langa.admin_pw_expl}}</p>
 	</fieldset>
 	<div data-role="fieldcontain">
 		<fieldset data-role="controlgroup">
-			<legend>{{glob_dl_legend}}</legend>
+			<legend>{{page.glob.langa.glob_dl_legend}}</legend>
 			<input type="radio" name="glob_dl_choice" id="glob_dl_choice_1" value="0" 
 				{% if page.glob.glob_dl_choice == "0" %}checked {%endif%} />
-			<label for="glob_dl_choice_1">Kein Schutz</label>
+			<label for="glob_dl_choice_1">{{page.glob.langa.glob_dl_radio1}}</label>
 			<input type="radio" name="glob_dl_choice" id="glob_dl_choice_2" value="1" 
 				{% if page.glob.glob_dl_choice == "1" %}checked {%endif%} />
-			<label for="glob_dl_choice_2">Schutz mit Adminpasswort</label>			
+			<label for="glob_dl_choice_2">{{page.glob.langa.glob_dl_radio2}}</label>			
 			<input type="radio" name="glob_dl_choice" id="glob_dl_choice_3" value="2" 
 				{% if page.glob.glob_dl_choice == "2" %}checked {%endif%} />
-			<label for="glob_dl_choice_3">Schutz mit anderem Passwort</label>			
-		</fieldset>
+			<label for="glob_dl_choice_3">{{page.glob.langa.glob_dl_radio3}}</label>			
+			<p>{{page.glob.langa.glob_dl_expl}}</p>						
+		</fieldset>		
 	</div>
 	<fieldset data-role="fieldcontain">
 		<label for="glob_dl_password">{{page.glob.langa.glob_dl_pw1}}</label>
