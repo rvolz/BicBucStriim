@@ -18,8 +18,7 @@ $('#padmin').on('pageinit', function(e) {
 		}
 	});
 	/* Submit handling via Ajax */
-	$('#adminform').submit(function(e) {
-		e.preventDefault();
+	$('#adminform').submit(function() {
 		var url= $(this).attr('action');
 		$.post(url, $(this).serializeArray(), function(data,status,jqXHR) {
 			$('div#flash').empty().append(data);
@@ -27,11 +26,10 @@ $('#padmin').on('pageinit', function(e) {
 		return false;
 	});
 		/* Submit handling via Ajax */
-	$('#adminpwform').submit(function(e) {
-		e.preventDefault();
+	$('#adminpwform').submit(function() {
 		var url= $(this).attr('action');
 		var jh = $.post(url, $(this).serializeArray())
-		.success(function() {
+		.success(function(data, status, jqXHR) {
 			$('#adminform').show();
 			$('#adminpwform').hide();			
 		})
@@ -44,19 +42,14 @@ $('#padmin').on('pageinit', function(e) {
 });
 
 $('#padmin').on('pageshow', function(e) {
-	var jh = $.get($('#adminform').attr('action')+'access/')
-	.success(function() {
-		if ($.cookie('admin_access')) {
+	$.get($('#adminform').attr('action')+'access/', function(data) {
+		if (data == '0' || $.cookie('admin_access')) {
 			$('#adminpwform').hide();
 			$('#adminform').show();
 		} else {
 			$('#adminpwform').show();
 			$('#adminform').hide();			
 		}
-	})
-	.error(function() {
-		$('#adminpwform').hide();
-		$('#adminform').show();
 	});
 });
 

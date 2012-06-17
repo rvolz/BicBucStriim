@@ -274,9 +274,11 @@ function admin_is_protected() {
 	if (!empty($globalSettings[ADMIN_PW])) {
 		$app->getLog()->debug('admin_is_protected: yes');
 		$app->response()->status(200);
+		$app->response()->body('1');
 	} else {		
 		$app->getLog()->debug('admin_is_protected: no');
-		$app->response()->status(404);
+		$app->response()->status(200);
+		$app->response()->body('0');
 	}	
 }
 
