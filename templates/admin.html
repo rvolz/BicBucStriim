@@ -3,14 +3,17 @@
 {% block pid %}id="padmin"{%endblock%}
 {% block content %}
 <h1>{{ page.glob.langa.admin }}</h1>
-<div id="flash">	
-	{% if flash['info'] %}
-		<p class="success">{{flash['info']}}</p>
-	{% endif %}
-	{% if flash['error']%}
-		<p class="error">{{flash['info']}}</p>
-	{% endif %}
-</div>
+<div id="flash"></div>	
+
+<form action="{{page.rot}}/admin/access/check/" method="post" id="adminpwform" hidden>
+	<fieldset data-role="fieldcontain">
+		<label for="admin_pwin">{{page.glob.langa.admin_pw1}}</label>
+		<input name="admin_pwin" id="admin_pwin" type="password" 
+			value="{{page.glob.admin_pw}}" placeholder="{{page.glob.langa.admin_pw2}}" />
+	</fieldset>
+	<button type="submit">{{page.glob.langa.check_access}}</button>	
+</form>
+
 <form action="{{page.rot}}/admin/" method="post" id="adminform">
 	<fieldset data-role="fieldcontain">
 			<label for="admin_pw">{{page.glob.langa.admin_pw1}}</label>
@@ -22,45 +25,26 @@
 		<input name="calibre_dir" id="calibre_dir" type="text" 
 			value="{{page.glob.calibre_dir}}" placeholder="{{page.glob.langa.calibre_dir2}}"/>
 	</fieldset>
-	<fieldset data-role="fieldcontain">
-		<label for="glob_dl_toggle">{{page.glob.langa.glob_dl_toggle1}}</label>
-		<select name="glob_dl_toggle" id="glob_dl_toggle" data-role="slider" 
-			value="{{page.glob.glob_dl_toggle}}">
-			<option {% if page.glob.glob_dl_toggle == "0" %}selected{%endif%} value="0">
-				{{page.glob.langa.glob_dl_toggle2}}
-			</option>
-			<option {% if page.glob.glob_dl_toggle == "1" %}selected{%endif%} value="1">
-				{{page.glob.langa.glob_dl_toggle3}}
-			</option>
-		</select>
-	</fieldset>
-	<fieldset data-role="fieldcontain">
-		<label for="glob_dl_use_admin">{{page.glob.langa.glob_dl_use_admin}}</label>
-		<select name="glob_dl_use_admin" id="glob_dl_use_admin" data-role="slider" 
-			value="{{page.glob.glob_dl_use_admin}}"
-			{% if page.glob.glob_dl_toggle == "0" %}
-				disabled
-			{% endif %}
-			>
-			<option {% if page.glob.glob_dl_use_admin == "0"%}selected{%endif%} value="0">
-				{{page.glob.langa.glob_dl_toggle2}}
-			</option>
-			<option {% if page.glob.glob_dl_use_admin == "1"%}selected{%endif%} value="1">
-				{{page.glob.langa.glob_dl_toggle3}}
-			</option>
-		</select>
-	</fieldset>
+	<div data-role="fieldcontain">
+		<fieldset data-role="controlgroup">
+			<legend>{{glob_dl_legend}}</legend>
+			<input type="radio" name="glob_dl_choice" id="glob_dl_choice_1" value="0" 
+				{% if page.glob.glob_dl_choice == "0" %}checked {%endif%} />
+			<label for="glob_dl_choice_1">Kein Schutz</label>
+			<input type="radio" name="glob_dl_choice" id="glob_dl_choice_2" value="1" 
+				{% if page.glob.glob_dl_choice == "1" %}checked {%endif%} />
+			<label for="glob_dl_choice_2">Schutz mit Adminpasswort</label>			
+			<input type="radio" name="glob_dl_choice" id="glob_dl_choice_3" value="2" 
+				{% if page.glob.glob_dl_choice == "2" %}checked {%endif%} />
+			<label for="glob_dl_choice_3">Schutz mit anderem Passwort</label>			
+		</fieldset>
+	</div>
 	<fieldset data-role="fieldcontain">
 		<label for="glob_dl_password">{{page.glob.langa.glob_dl_pw1}}</label>
 		<input name="glob_dl_password" id="glob_dl_password" type="text" 
 			value="{{page.glob.glob_dl_password}}" placeholder="{{page.glob.langa.glob_dl_pw2}}" 
-			{% if page.glob.glob_dl_toggle %}
-				{% if page.glob.glob_use_admin %}
-				{% else %}
+			{% if page.glob.glob_dl_choice != "2" %}
 					disabled
-				{% endif %}
-			{% else %}
-				disabled
 			{% endif %}
 			/>
 		</fieldset>

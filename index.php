@@ -28,10 +28,8 @@ define('ADMIN_COOKIE', 'admin_access');
 define('ADMIN_PW', 'admin_pw');
 # Calibre library path
 define('CALIBRE_DIR', 'calibre_dir');
-# Global download toggle
-define('GLOB_DL_TOGGLE', 'glob_dl_toggle');
-# Use admin password for download protection
-define('GLOB_DL_USE_ADMIN', 'glob_dl_use_admin');
+# Global download choice
+define('GLOB_DL_CHOICE', 'glob_dl_choice');
 # Global download password
 define('GLOB_DL_PASSWORD', 'glob_dl_password');
 # BicBucStriim DB version
@@ -77,12 +75,9 @@ if ($bbs->dbOk()) {
 			case GLOB_DL_PASSWORD:
 				$globalSettings[GLOB_DL_PASSWORD] = $config->val;
 				break;
-			case GLOB_DL_TOGGLE:
-				$globalSettings[GLOB_DL_TOGGLE] = $config->val;
+			case GLOB_DL_CHOICE:
+				$globalSettings[GLOB_DL_CHOICE] = $config->val;
 				break;
-			case GLOB_DL_USE_ADMIN:
-				$globalSettings[GLOB_DL_USE_ADMIN] = $config->val;
-				break;				
 			default:
 				$app->getLog()->warn(join('',array('Unknown configuration, name: ',
 					$config->name,', value: ',$config->val)));	
@@ -100,7 +95,9 @@ if ($bbs->dbOk()) {
 $app->notFound('myNotFound');
 $app->get('/', 'check_config', 'main');
 $app->get('/admin/', 'admin');
-$app->post('/admin/', 'admin_change');
+$app->post('/admin/', 'admin_change_json');
+$app->get('/admin/access/', 'admin_is_protected');
+$app->post('/admin/access/check/', 'admin_checkaccess');
 $app->get('/admin/error/:id', 'admin_error');
 $app->get('/titles/', 'check_config', 'titles');
 $app->get('/titles/:id/', 'check_config','title');
@@ -119,7 +116,6 @@ $app->run();
 
 # Check if the configuration is valid:
 # - If there is no bbs db --> show error
-# - If 
 function check_config() {
 	global $we_have_config, $bbs, $app, $globalSettings;
 
@@ -171,7 +167,7 @@ function main() {
 		'books' => $books));	
 }
 
-
+# Admin page -> /admin/
 function admin() {
 	global $app, $globalSettings, $bbs;
 
@@ -179,104 +175,109 @@ function admin() {
 		'page' => mkPage($globalSettings['langa']['admin'])));
 }
 
+# Is the key in globalSettings?
 function has_global_setting($key) {
 	return (isset($globalSettings[$key]) && !empty($globalSettings[$key]));
 }
 
+# Is there a valid - existing - Calibre directory?
 function has_valid_calibre_dir() {
 	return (has_global_setting(CALIBRE_DIR) && 
 		BicBucStriim::checkForCalibre($globalSettings[CALIBRE_DIR]));
 }
 
-
-function admin_change() {
+# Processes changes in the admin page -> POST /admin/
+function admin_change_json() {
 	global $app, $globalSettings, $bbs;
 	$app->getLog()->debug('admin_change: started');	
 	$nconfigs = array();
 	$req_configs = $app->request()->post();
+	$errors = array();
 
 	## Check for consistency - calibre directory
 	# Calibre dir is still empty and no change in sight --> error
 	if (!has_valid_calibre_dir() && empty($req_configs[CALIBRE_DIR]))
-		$app->redirect($app->request()->getRootUri().'/admin/error/1');
+		array_push($errors, 1);
 	# Calibre dir changed, check it for existence
-	if (array_key_exists(CALIBRE_DIR, $req_configs)) {		
+	elseif (array_key_exists(CALIBRE_DIR, $req_configs)) {		
 		$req_calibre_dir = $req_configs[CALIBRE_DIR];
 		if ($req_calibre_dir != $globalSettings[CALIBRE_DIR]) {
 			if (!BicBucStriim::checkForCalibre($req_calibre_dir))
-				$app->redirect($app->request()->getRootUri().'/admin/error/1');
+				array_push($errors, 1);
 		}
 	} 
-	## Apply changes 
-	foreach ($req_configs as $key => $value) {
-		if (!isset($globalSettings[$key]) || $value != $globalSettings[$key]) {
-			$c1 = new Config();
-			$c1->name = $key;
-			$c1->val = $value;
-			array_push($nconfigs,$c1);
-			$globalSettings[$key] = $value;
-			$app->getLog()->debug('admin_change: '.$key.' changed: '.$value);	
-		}
-	}
 	## More consistency checks - download protection
 	# Switch off DL protection, if there is a problem with the configuration
-	if ($globalSettings[GLOB_DL_TOGGLE] == "1") {
-		if($globalSettings[GLOB_DL_USE_ADMIN] == "1" && empty($globalSettings[ADMIN_PW])) {
-			$c1 = new Config();
-			$c1->name = GLOB_DL_TOGGLE;
-			$c1->val = "0";
-			array_push($nconfigs,$c1);
-			$globalSettings[GLOB_DL_TOGGLE] = "0";
-			$app->redirect($app->request()->getRootUri().'/admin/error/3');
-		} elseif ($globalSettings[GLOB_DL_USE_ADMIN] == "0" && empty($globalSettings[GLOB_DL_PASSWORD])) {
-			$c1 = new Config();
-			$c1->name = GLOB_DL_TOGGLE;
-			$c1->val = "0";
-			array_push($nconfigs,$c1);
-			$globalSettings[GLOB_DL_TOGGLE] = "0";
-			$app->redirect($app->request()->getRootUri().'/admin/error/2');
+	if ($req_configs[GLOB_DL_CHOICE] != "0") {
+		if($req_configs[GLOB_DL_CHOICE] == "1" && empty($req_configs[ADMIN_PW])) {
+			array_push($errors, 3);
+		} elseif ($req_configs[GLOB_DL_CHOICE] == "2" && empty($req_configs[GLOB_DL_PASSWORD])) {
+			array_push($errors, 2);
 		}
 	}			
 
-	# Save changes
-	if (count($nconfigs) > 0) {
-		$bbs->saveConfigs($nconfigs);
-		$app->getLog()->debug('admin_change: changes saved');	
-	}
-	$app->getLog()->debug('admin_change: ended');	
-	$app->flashNow('info',$globalSettings['langa']['changes_saved']);
-	$app->render('admin.html',array(
+	# Don't save just return the error status
+	if (count($errors) > 0) {
+		$app->getLog()->error('admin_change: ended with error '.var_export($errors, true));	
+		$app->render('admin_status.html',array(
 		'page' => mkPage($globalSettings['langa']['admin']), 
-		'config' => $globalSettings));	
-
+		'status_ok' => false,
+		'errors' => $errors));	
+	} else {
+		## Apply changes 
+		foreach ($req_configs as $key => $value) {
+			if (!isset($globalSettings[$key]) || $value != $globalSettings[$key]) {
+				$c1 = new Config();
+				$c1->name = $key;
+				$c1->val = $value;
+				array_push($nconfigs,$c1);
+				$globalSettings[$key] = $value;
+				$app->getLog()->debug('admin_change: '.$key.' changed: '.$value);	
+			}
+		}
+		# Save changes
+		if (count($nconfigs) > 0) {
+			$bbs->saveConfigs($nconfigs);
+			$app->getLog()->debug('admin_change: changes saved');	
+		}
+		$app->getLog()->debug('admin_change: ended');	
+		$app->render('admin_status.html',array(
+			'page' => mkPage($globalSettings['langa']['admin']), 
+			'status_ok' => true));	
+	}
 }
 
-# Show error messages for the admin area
-function admin_error($id) {
+# Checks access to the admin page -> /admin/access/check
+function admin_checkaccess() {
 	global $app, $globalSettings, $bbs;
 
-	switch($id) {
-		case 1:
-			$title = 'invalid_calibredir1';
-			$msg = 'invalid_calibredir2';
-			break;
-		case 2:
-			$title = 'invalid_password';
-			$msg = 'invalid_password2';
-			break;
-		case 3:
-			$title = 'admin_pw_required1';
-			$msg = 'admin_pw_required2';
-			break;
-		default:
-			$title = 'unknown_error1';
-			$msg = 'unknown_error2';
-			break;
+	$app->deleteCookie(ADMIN_COOKIE);
+	$password = $app->request()->post('admin_pwin');
+	$app->getLog()->debug('admin_checkaccess input: '.$password);
+
+	if ($password == $globalSettings[ADMIN_PW]) {
+		$app->getLog()->debug('admin_checkaccess succeded');
+		$app->setCookie(ADMIN_COOKIE,$password);
+		$app->response()->status(200);
+	} else {		
+		$app->getLog()->debug('admin_checkaccess failed');
+		$app->response()->body($globalSettings['langa']['invalid_password']);
+		$app->response()->status(404);
 	}
-	$app->render('error.html',array(
-		'page' => mkPage($globalSettings['langa'][$title]), 
-		'title' => $globalSettings['langa'][$title], 
-		'error' => $globalSettings['langa'][$msg]));
+}
+
+# Check if the admin page is protected by a password
+# -> /admin/access/
+function admin_is_protected() {
+	global $app, $globalSettings;
+
+	if (!empty($globalSettings[ADMIN_PW])) {
+		$app->getLog()->debug('admin_is_protected: yes');
+		$app->response()->status(200);
+	} else {		
+		$app->getLog()->debug('admin_is_protected: no');
+		$app->response()->status(404);
+	}	
 }
 
 
@@ -340,9 +341,9 @@ function checkaccess($id) {
 	$password = $app->request()->post('password');
 	$app->getLog()->debug('checkaccess input: '.$password);
 
-	if ($globalSettings[GLOB_DL_USE_ADMIN] == "1") 
+	if ($globalSettings[GLOB_DL_CHOICE] == "1") 
 		$cpw = $globalSettings[ADMIN_PW];
-	else 
+	elseif ($globalSettings[GLOB_DL_CHOICE] == "2") 
 		$cpw = $globalSettings[GLOB_DL_PASSWORD];
 
 	if ($password == $cpw) {
@@ -538,7 +539,7 @@ function is_protected($id) {
 	} else {
 		$app->getLog()->debug('is_protected: No cookie glob_dl_access');		
 	}
-	if ($globalSettings[GLOB_DL_TOGGLE]=="1" && is_null($glob_dl_cookie))
+	if ($globalSettings[GLOB_DL_CHOICE] != "0" && is_null($glob_dl_cookie))
 		return true;
 	else 
 		return false;

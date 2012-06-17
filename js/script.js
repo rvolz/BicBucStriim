@@ -1,27 +1,68 @@
 /* Author: Rainer Volz
 */
 
-$('#padmin').on('pageinit', function() {
-	$('#glob_dl_toggle').on('change', function(e) {
-		if (e.target.value == "1") {
-			$('#glob_dl_use_admin').slider('enable');
-			if ($('#glob_dl_use_admin').value == "0") {
-				$('#glob_dl_password').textinput('enable');
-			} else {
-				$('#glob_dl_password').textinput('disable');
-			}
-		} else {
-			$('#glob_dl_use_admin').slider('disable');
-			$('#glob_dl_password').textinput('disable');
-		}
-	});
-	$('#glob_dl_use_admin').on('change', function(e) {
-		if (e.target.value == "1") {
+/** Install some change handlers on the admin page for the ui logic. */
+$('#padmin').on('pageinit', function(e) {
+		$('#glob_dl_choice_1, #glob_dl_choice_2').on('change', function(e) {
+		if ($(this).attr('checked') == "checked") {
 			$('#glob_dl_password').textinput('disable');
 		} else {
 			$('#glob_dl_password').textinput('enable');
 		}
 	});
+	$('#glob_dl_choice_3').on('change', function(e) {
+		if ($(this).attr('checked') == "checked") {
+			$('#glob_dl_password').textinput('enable');
+		} else {
+			$('#glob_dl_password').textinput('disable');
+		}
+	});
+	/* Submit handling via Ajax */
+	$('#adminform').submit(function(e) {
+		e.preventDefault();
+		var url= $(this).attr('action');
+		$.post(url, $(this).serializeArray(), function(data,status,jqXHR) {
+			$('div#flash').empty().append(data);
+		});
+		return false;
+	});
+		/* Submit handling via Ajax */
+	$('#adminpwform').submit(function(e) {
+		e.preventDefault();
+		var url= $(this).attr('action');
+		var jh = $.post(url, $(this).serializeArray())
+		.success(function() {
+			$('#adminform').show();
+			$('#adminpwform').hide();			
+		})
+		.error(function(data,status,jqXHR) {
+			$('div#flash').empty().append('<p class="error">'+data+'</p>');
+		});
+		return false;
+	});
+
+});
+
+$('#padmin').on('pageshow', function(e) {
+	var jh = $.get($('#adminform').attr('action')+'access/')
+	.success(function() {
+		if ($.cookie('admin_access')) {
+			$('#adminpwform').hide();
+			$('#adminform').show();
+		} else {
+			$('#adminpwform').show();
+			$('#adminform').hide();			
+		}
+	})
+	.error(function() {
+		$('#adminpwform').hide();
+		$('#adminform').show();
+	});
+});
+
+$('#padmin').on('pagehide', function(e) {
+	/* Delete the flash messages when the page is done */
+	$('div#flash').empty();
 });
 
 $(document).on('pageinit', function() {
@@ -58,7 +99,7 @@ $(document).on('pageinit', function() {
 	/* Show the correct state of the download area in the title
 	 details page. Only if we have a download cookie the download 
 	 options should be visible */
-	if ($('.dl_access')) {
+	if ($('.dl_access').size() > 0) {
 		if ($.cookie('glob_dl_access')) {
 			$('.dl_access').hide();
 			$('.dl_download').show();

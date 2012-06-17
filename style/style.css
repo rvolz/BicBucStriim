@@ -31,13 +31,16 @@ body {
 div.footer p {
   text-align: center;
 }
-div#flash p {
+div#flash {
   color: white;
 }
-div#flash p .success {
+div#flash p {
+  padding: 5px;
+}
+div#flash .success {
   background-color: green;
 }
-div#flash p .error {
+div#flash .error {
   background-color: red;
 }
 @media (max-width: 480px) {
