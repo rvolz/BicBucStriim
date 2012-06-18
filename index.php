@@ -39,7 +39,7 @@ define('DB_VERSION', 'db_version');
 $app = new Slim(array(
 	'debug' => true,
 	'log.enabled' => true, 
-	#'log.writer' => new Slim_LogFileWriter(fopen('./logs/bbs.log','a')),
+	#'log.writer' => new Slim_LogFileWriter(fopen('./data/bbs.log','a')),
 	'log.level' => 4,
 	'view' => new TwigView(),
 	));

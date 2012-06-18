@@ -17,7 +17,7 @@ If you are looking for a possibility to publish a larger book collection, or wan
 Status
 ------
 
-BicBucStriim is still under development. Version 0.7.0 of BicBucStriim: 
+BicBucStriim is still under development. Version 0.8.0 of BicBucStriim: 
 
 * displays the 30 most recent titles on the index page
 * provides listing/filtering/searching of book titles
@@ -27,7 +27,13 @@ BicBucStriim is still under development. Version 0.7.0 of BicBucStriim:
 * is bilingual, English/German
 * is ready for mobile clients (tested with Kindle, iPhone, iPad)
 * provides a download protection for books (optional, think "parental control")
+* has an admin GUI for configuration
 
+New in 0.8.0:
+
+* Easier installation/configuration: no textfile editing anymore, all settings can be configured in the admin section
+* more pictures: book title listings include cover thumbnails 
+* more data: author and tags listings show the number of books per item
 
 Install
 -------
@@ -36,14 +42,11 @@ The easy way assumes that BicBucStriim lives right below the web root of your de
 
 * Download a installation archive from [GitHub](https://github.com/rvolz/BicBucStriim/downloads).
 * Unarchive the downloaded archive below the web server root of your NAS (e.g. "/volume1/web" on a Synology device)
-* Rename the newly created directory (e.g. BicBucStriim-0.5.0.zip) to "bbs".
-* NOTE: If you don't want to use the directory name *bbs* simply change the .htaccess file accordingly (the line "RewriteBase /bbs/")
-* Make the "logs" directory writeable for all: `chmod ga+w logs`
-* Copy the file `config.php.template` to `config.php` and edit the latter:
-  * Enter the full path to your Calibre library directory, e.g. `$calibre_dir = '/volume1/books';`
-  * Optional: change the value of `$glob_dl_toggle = false;` to `true` if you want a password protection for book downloads
-  * Optional: enter a password of your choice in `$glob_dl_password = '7094e7dc2feb759758884333c2f4a6bdc9a16bb2';` if you enabled the global password protection
+* Rename the newly created directory (e.g. BicBucStriim-0.8.0.zip) to "bbs".
+* NOTE: If you don't want to use the directory name *bbs* simply change the included .htaccess file accordingly
+* The "data" directory and its contents must be writeable for all. Depending on your method of unarchiving this might be already the case. However, in case you experience access error just use a terminal to correct this: `chmod -R ga+w data`. 
 * BicBucStriim should now be working, start your web browser and navigate to `http://<address of your NAS>/bbs/`
+* A freshly installed BicBucStriim app will show you the admin section, where you will have tell the app where your Calibre library is located. Everything else is optional. Just have a look.
 
 
 Requirements

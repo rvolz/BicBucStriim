@@ -1,3 +1,10 @@
+2012-06-18 Version 0.8.0
+
+* new: admin section for configuration, no config.php editing anymore
+* new: thumbnail support for book title listings
+* new: author and tags listings show the number of books per item
+* changed: removed the RedBean PHP dependency
+
 2012-05-31 Version 0.7.0
 
 * new: support for Calibre book tags, code donated by mapero (https://github.com/mapero)
