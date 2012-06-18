@@ -255,15 +255,19 @@ function admin_checkaccess() {
 	$password = $app->request()->post('admin_pwin');
 	$app->getLog()->debug('admin_checkaccess input: '.$password);
 
+	$response = $app->response();
+	$response['Content-Type'] = 'application/json';
+	$response['X-Powered-By'] = 'Slim';
+	$response->status(200);
 	if ($password == $globalSettings[ADMIN_PW]) {
 		$app->getLog()->debug('admin_checkaccess succeded');
 		$app->setCookie(ADMIN_COOKIE,$password);
-		$app->response()->status(200);
+		$answer = array('access' => true);
 	} else {		
 		$app->getLog()->debug('admin_checkaccess failed');
-		$app->response()->body($globalSettings['langa']['invalid_password']);
-		$app->response()->status(404);
+		$answer = array('access' => false, 'message' => $globalSettings['langa']['invalid_password']);
 	}
+	$response->body(json_encode($answer));
 }
 
 # Check if the admin page is protected by a password

@@ -17,7 +17,7 @@ $('#padmin').on('pageinit', function(e) {
 			$('#glob_dl_password').textinput('disable');
 		}
 	});
-	/* Submit handling via Ajax */
+	/* Submit handling for the admin page  */
 	$('#adminform').submit(function() {
 		var url= $(this).attr('action');
 		$.post(url, $(this).serializeArray(), function(data,status,jqXHR) {
@@ -25,16 +25,16 @@ $('#padmin').on('pageinit', function(e) {
 		});
 		return false;
 	});
-		/* Submit handling via Ajax */
+		/* Submit handling for admin password check */
 	$('#adminpwform').submit(function() {
 		var url= $(this).attr('action');
-		var jh = $.post(url, $(this).serializeArray())
-		.success(function(data, status, jqXHR) {
-			$('#adminform').show();
-			$('#adminpwform').hide();			
-		})
-		.error(function(data,status,jqXHR) {
-			$('div#flash').empty().append('<p class="error">'+data+'</p>');
+		$.post(url, $(this).serializeArray(), function(data, status, jqXHR) {
+			if (data.access == true) {
+				$('#adminform').show();
+				$('#adminpwform').hide();			
+			} else {
+				$('div#flash').empty().append('<p class="error">'+data.message+'</p>');	
+			}
 		});
 		return false;
 	});
