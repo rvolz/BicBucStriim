@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='utf-8'?>
+<package xmlns="http://www.idpf.org/2007/opf" unique-identifier="uuid_id">
+    <metadata xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:opf="http://www.idpf.org/2007/opf">
+        <dc:identifier opf:scheme="calibre" id="calibre_id">7</dc:identifier>
+        <dc:identifier opf:scheme="uuid" id="uuid_id">6e5dad73-240a-4228-bb4f-8955d9254fc4</dc:identifier>
+        <dc:title>The Stones of Venice, Volume II</dc:title>
+        <dc:creator opf:file-as="Ruskin, John" opf:role="aut">John Ruskin</dc:creator>
+        <dc:contributor opf:file-as="calibre" opf:role="bkp">calibre (0.8.56) [http://calibre-ebook.com]</dc:contributor>
+        <dc:date>2012-06-22T08:20:04+00:00</dc:date>
+        <dc:language>eng</dc:language>
+        <dc:subject>Venice</dc:subject>
+        <dc:subject>Italy</dc:subject>
+        <dc:subject>Architecture</dc:subject>
+        <meta content="{&quot;John Ruskin&quot;: &quot;&quot;}" name="calibre:author_link_map"/>
+        <meta content="0" name="calibre:rating"/>
+        <meta content="2012-06-22T08:20:04+00:00" name="calibre:timestamp"/>
+        <meta content="Stones of Venice, Volume II, The" name="calibre:title_sort"/>
+    </metadata>
+    <guide>
+        <reference href="cover.jpg" type="cover" title="Cover"/>
+    </guide>
+</package>

@@ -3,15 +3,16 @@
     <metadata xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:opf="http://www.idpf.org/2007/opf">
         <dc:identifier opf:scheme="calibre" id="calibre_id">2</dc:identifier>
         <dc:identifier opf:scheme="uuid" id="uuid_id">d307d818-0521-4ad7-b7ed-39805a98dbce</dc:identifier>
-        <dc:title>Test #2</dc:title>
-        <dc:creator opf:file-as="Test2, Tester" opf:role="aut">Tester Test2</dc:creator>
-        <dc:contributor opf:file-as="calibre" opf:role="bkp">calibre (0.8.53) [http://calibre-ebook.com]</dc:contributor>
+        <dc:title>Trutz Simplex</dc:title>
+        <dc:creator opf:file-as="Grimmelshausen, Hans Jakob Christoffel von" opf:role="aut">Hans Jakob Christoffel von Grimmelshausen</dc:creator>
+        <dc:contributor opf:file-as="calibre" opf:role="bkp">calibre (0.8.56) [http://calibre-ebook.com]</dc:contributor>
         <dc:date>2012-06-06T22:00:00+00:00</dc:date>
         <dc:language>deu</dc:language>
         <dc:subject>Biografien &amp; Memoiren</dc:subject>
-        <meta content="{&quot;Tester Test2&quot;: &quot;&quot;}" name="calibre:author_link_map"/>
+        <meta content="{&quot;Hans Jakob Christoffel von Grimmelshausen&quot;: &quot;&quot;}" name="calibre:author_link_map"/>
+        <meta content="0" name="calibre:rating"/>
         <meta content="2012-06-07T15:26:06+00:00" name="calibre:timestamp"/>
-        <meta content="Test #2" name="calibre:title_sort"/>
+        <meta content="Trutz Simplex" name="calibre:title_sort"/>
     </metadata>
     <guide>
         <reference href="cover.jpg" type="cover" title="Cover"/>
