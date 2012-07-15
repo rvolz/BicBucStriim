@@ -1,6 +1,7 @@
 <?php
 /** Language specific texts */
 
+// German
 $langde = array('admin' => 'Konfiguration',
 	'admin_pw1' => 'Admin Passwort',
 	'admin_pw2' => 'Admin Passwort',
@@ -49,6 +50,8 @@ $langde = array('admin' => 'Konfiguration',
 	'unknown_error1' => 'Unbekannter Fehler',
 	'unknown_error2' => 'Ein bisher unbekannter Fehler wurde gemeldet.',
 	);
+
+// English
 $langen = array('admin' => 'Configuration',
 	'admin_pw1' => 'Admin Password',
 	'admin_pw2' => 'Admin Password',
@@ -96,7 +99,56 @@ $langen = array('admin' => 'Configuration',
 	'titles' => "Books",
 	'unknown_error1' => 'Unknown Error',
 	'unknown_error2' => 'An unknown error occured.',
+	);
 
+// French
+$langfr = array('admin' => 'Configuration',
+	'admin_pw1' => 'Mot de passe Administrateur',
+	'admin_pw2' => 'Mot de passe Administrateur',
+	'admin_pw_expl' => 'Option: Introduisez une mot de passe administrateur pour contrôler l\'accès à la configuration',
+	'admin_pw_required1' => 'Pas de mot de passe admin défini',
+	'admin_pw_required2' => 'Vous essayez d\'utilizer le mot de passe admin pour télécharger des livres protégés par un mot de passe. Utilisez le bon mot de passe.',
+	'admin_short' => 'Admin',
+	'authors' => "Auteurs",
+	'author_details' => "Détails auteurs",
+	'back' => "Retour",
+	'booksby' => "Livres par",
+	'booksbytag' => "Livres par tag",
+	'book_details' => "Détails des livres",
+	'calibre_dir1' => 'Chemin vers le répertoire Calibre',
+	'calibre_dir2' => 'Exemple: /volume1/books',
+	'calibre_dir_expl' => 'Le chemin vers votre répertoire où se trouve votre bibliothèque Calibre. Introduisez un nom complet chemin/nom_répertoire',
+	'changes_saved' => 'Changements sauvegardés',
+	'check_access' => "Soumettre un mot de passe",
+	'check_access_info' => "Ce livre est protégé. Introduisez le mot de passe pour télécharger le livre.",
+	'comment' => 'Description',
+	'dl30' => "Les 30 plus récents livres",
+	'download' => "Télécharger",
+	'error' => 'Erreur',
+	'glob_dl_expl' => 'Si vous votre réseau est ouvert au public, vous pouvez activer un mot de passe pour protéger le téléchargement de vos livres. Si vous avez déjà un mot de passe administrateur, vous pouvez le réutiliser ou en définir un nouveau, différent.',
+	'glob_dl_legend' => 'Protéger les téléchargements avec un mot de passe',
+	'glob_dl_pw1' => 'Mot de passe pour les téléchargements',
+	'glob_dl_pw2' => 'Mot de passe téléchargement',
+	'glob_dl_radio1' => 'Non, pas nécessaire',
+	'glob_dl_radio2' => 'Oui, utilisez le mot de passe admin',
+	'glob_dl_radio3' => 'Oui, utilisez un mot de passe différent (introduisez-le plus bas)',
+	'home' => "Acceuil",
+	'invalid_calibredir1' => 'Répertoire vers la bibliothèque Calibre invalide',
+	'invalid_calibredir2' => 'La base de données Calibre configurée ne peut pas être utilisée. Est-ce le bon répertoire ? LEs droits d\'accès sont-ils corrects ?  Existe-t-elle ? ',
+	'invalid_password' => "Mot de passe invalide",
+	'invalid_password2' => "Ce mot de passe n'est pas valide. Veuillez réessayer.",
+	'mdb_error' => 'Base de données Calibre database non trouvée ou illisible: ',
+	'no_config' => 'config.php n\'a pas étré trouvé ou n\'est pas bien formaté. Veuillez copier le fichier config.php.template vers config.php et refaire votre propre configuration.',
+	'not_found1' => 'Non trouvé !',
+	'not_found2' => 'La resource demandée n\'est pas disponible. Cela ne devrait pas se produire... Vérifier votre base de donnée Calibre.',
+	'presskey' => 'Cliquez sur le bouton pour télécharger le livre dans le format correspondant.',
+	'published' => 'Publié',
+	'save' => 'Sauver',
+	'tags' => "Tags",
+	'tag_details' => "Détails du Tag",
+	'titles' => "Livres",
+	'unknown_error1' => 'Erreur inconnue',
+	'unknown_error2' => 'Une erreur s\'est produite',
 	);
 
 ?>

@@ -13,7 +13,7 @@ require_once 'lib/BicBucStriim/bicbucstriim.php';
 require_once 'lib/BicBucStriim/langs.php';
 
 # Allowed languages, i.e. languages with translations
-$allowedLangs = array('de','en');
+$allowedLangs = array('de','en','fr');
 # Fallback language if the browser prefers other than the allowed languages
 $fallbackLang = 'en';
 # Application Name
@@ -52,6 +52,8 @@ $globalSettings['sep'] = ' :: ';
 $globalSettings['lang'] = getUserLang($allowedLangs, $fallbackLang);
 if ($globalSettings['lang'] == 'de')
 	$globalSettings['langa'] = $langde;
+elseif ($globalSettings['lang'] == 'fr')
+	$globalSettings['langa'] = $langfr;
 else
 	$globalSettings['langa'] = $langen;
 
