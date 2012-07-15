@@ -433,7 +433,7 @@ function book($id, $file) {
 		$app->notFound();
 	}	
 	if (is_protected($id)) {
-		$app->getLog()->warning("book: attempt to download a protected book, "+$id);		
+		$app->getLog()->warn("book: attempt to download a protected book, "+$id);		
 		$app->response()->status(404);	
 	}
 	$app->getLog()->debug("book: file ".$file);
