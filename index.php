@@ -34,6 +34,8 @@ define('GLOB_DL_CHOICE', 'glob_dl_choice');
 define('GLOB_DL_PASSWORD', 'glob_dl_password');
 # BicBucStriim DB version
 define('DB_VERSION', 'db_version');
+# Sort "All Books" by series?
+define('GLOB_SORTBYSERIES', 'glob_sortBySeries');
 
 # Init app and routes
 $app = new Slim(array(
@@ -78,6 +80,8 @@ if ($bbs->dbOk()) {
 			case GLOB_DL_CHOICE:
 				$globalSettings[GLOB_DL_CHOICE] = $config->val;
 				break;
+			case GLOB_SORTBYSERIES:
+      $globalSettings[GLOB_SORTBYSERIES] = $config->val;	
 			default:
 				$app->getLog()->warn(join('',array('Unknown configuration, name: ',
 					$config->name,', value: ',$config->val)));	
@@ -110,6 +114,8 @@ $app->get('/authors/', 'check_config', 'authors');
 $app->get('/authors/:id/', 'check_config', 'author');
 $app->get('/tags/', 'check_config', 'tags');
 $app->get('/tags/:id/', 'check_config', 'tag');
+$app->get('/series/', 'check_config', 'series');
+$app->get('/series/:id/', 'check_config', 'oneSeries');
 
 $app->run();
 
@@ -291,6 +297,9 @@ function admin_is_protected() {
 function titles() {
 	global $app, $globalSettings, $bbs;
 
+  if ($globalSettings[GLOB_SORTBYSERIES] == "1")
+    $grouped_books = $bbs->allSortedTitles();
+  elseif($globalSettings[GLOB_SORTBYSERIES] == "0") 
 	$grouped_books = $bbs->allTitles();
 	$app->render('titles.html',array(
 		'page' => mkPage($globalSettings['langa']['titles'],2), 
@@ -313,7 +322,8 @@ function title($id) {
 			'calibre_dir' => $calibre_dir,
 			'book' => $details['book'], 
 			'authors' => $details['authors'], 
-			'tags' => $details['tags'], 
+			'tags' => $details['tags'],
+			'series' => $details['series'],	
 			'formats'=>$details['formats'], 
 			'comment' => $details['comment'],
 			'protect_dl' => is_protected($id))
@@ -498,6 +508,32 @@ function tag($id) {
 		'tag' => $details['tag'], 
 		'books' => $details['books']));
 }
+
+
+#List of all series -> /series
+function series() {
+	global $app, $globalSettings, $bbs;
+
+	$grouped_series = $bbs->allSeries();
+	$app->render('series.html',array(
+		'page' => mkPage($globalSettings['langa']['series'],5),
+		'series' => $grouped_series));
+}
+
+#Details of a single series -> /series/:id
+function oneSeries($id) {
+	global $app, $globalSettings, $bbs;
+			
+	$details = $bbs->seriesDetails($id);
+	if (is_null($details)) {
+		$app->getLog()->debug("no series");
+		$app->notFound();		
+	}
+	$app->render('series_detail.html',array('page' => mkPage($globalSettings['langa']['series_details']), 
+		'series' => $details['series'], 
+		'books' => $details['books']));
+}
+
 
 
 
