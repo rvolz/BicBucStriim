@@ -61,35 +61,41 @@ class TestOfBicBucStriim extends UnitTestCase {
 		$result = $this->bbs->last30Books();
 		$this->assertEqual(0, $this->bbs->last_error);
 		$this->assertFalse($result === FALSE);
-		$this->assertEqual(4, count($result));
+		$this->assertEqual(7, count($result));
 	}
 
 	function testAllAuthors() {		
 		$result = $this->bbs->allAuthors();
 		$this->assertEqual(0, $this->bbs->last_error);
 		$this->assertFalse($result === FALSE);
-		$this->assertEqual(7, count($result));
+		$this->assertEqual(11, count($result));
+		$this->assertEqual('E', $result[0]['initial']);
+		$this->assertEqual('R', $result[8]['initial']);			
 	}
 
 	function testAllTags() {		
 		$result = $this->bbs->allTags();
 		$this->assertEqual(0, $this->bbs->last_error);
 		$this->assertFalse($result === FALSE);
-		$this->assertEqual(5, count($result));
+		$this->assertEqual(11, count($result));
+		$this->assertEqual('A', $result[0]['initial']);
+		$this->assertEqual('V', $result[9]['initial']);					
 	}
 
 	function testAllTitles() {		
 		$result = $this->bbs->allTitles();
 		$this->assertEqual(0, $this->bbs->last_error);
 		$this->assertFalse($result === FALSE);
-		$this->assertEqual(7, count($result));
+		$this->assertEqual(13, count($result));
+		$this->assertEqual('G', $result[0]['initial']);
+		$this->assertEqual('Z', $result[11]['initial']);							
 	}
 
 	function testAuthorDetails() {
-		$result = $this->bbs->authorDetails(3);
+		$result = $this->bbs->authorDetails(7);
 		$this->assertEqual(0, $this->bbs->last_error);
 		$this->assertNotNull($result);
-		$this->assertEqual('Eintest3, Tester',$result['author']->sort);
+		$this->assertEqual('Lessing, Gotthold Ephraim',$result['author']->sort);
 	}
 
 	function testTagDetails() {
@@ -104,7 +110,7 @@ class TestOfBicBucStriim extends UnitTestCase {
 		$result = $this->bbs->title(3);
 		$this->assertEqual(0, $this->bbs->last_error);
 		$this->assertFalse($result === FALSE);
-		$this->assertEqual('Ein Test (#3)',$result->title);
+		$this->assertEqual('Der seltzame Springinsfeld',$result->title);
 	}
 
 	function testTitleCover() {
@@ -122,17 +128,17 @@ class TestOfBicBucStriim extends UnitTestCase {
 	}
 
 	function testTitleFile() {
-		$result = $this->bbs->titleFile(3, 'Ein Test (#3) - Tester Eintest3.epub');
+		$result = $this->bbs->titleFile(3, 'Der seltzame Springinsfeld - Hans Jakob Christoffel von Grimmelshausen.epub');
 		$this->assertEqual(0, $this->bbs->last_error);
 		$this->assertNotNull($result);
-		$this->assertEqual('Ein Test (#3) - Tester Eintest3.epub',basename($result));
+		$this->assertEqual('Der seltzame Springinsfeld - Hans Jakob Christoffel von Grimmelshausen.epub',basename($result));
 	}
 
 	function testTitleDetails() {
 		$result = $this->bbs->titleDetails(3);
 		$this->assertEqual(0, $this->bbs->last_error);
 		$this->assertFalse($result === FALSE);
-		$this->assertEqual('Ein Test (#3)',$result['book']->title);
+		$this->assertEqual('Der seltzame Springinsfeld',$result['book']->title);
 		$this->assertEqual('Fachbücher',$result['tags'][0]->name);
 	}
 }
