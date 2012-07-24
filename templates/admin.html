@@ -42,6 +42,24 @@
 			<p>{{page.glob.langa.glob_dl_expl}}</p>						
 		</fieldset>		
 	</div>
+	
+		<div data-role="fieldcontain">
+            <fieldset data-role="controlgroup">
+                <legend>
+                    {{page.glob.langa.glob_sortbyseries_legend}}
+                </legend>
+                <select name="glob_sortBySeries" id="glob_sortBySeries" data-role="slider">
+                    <option value="0">
+                        {{page.glob.langa.glob_sortbyseries_no}}
+                    </option>
+                    <option value="1">
+                        {{page.glob.langa.glob_sortbyseries_yes}}
+                    </option>
+                </select>
+            </fieldset>	
+	</div>
+	
+	
 	<fieldset data-role="fieldcontain">
 		<label for="glob_dl_password">{{page.glob.langa.glob_dl_pw1}}</label>
 		<input name="glob_dl_password" id="glob_dl_password" type="text" 

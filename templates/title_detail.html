@@ -53,6 +53,20 @@
 				<a data-role="button" data-icon="info" href="{{page.rot}}/authors/{{author.id}}">{{ author.name }}</a>
 				{% endfor %} 
 		</div>
+		
+		  {% for oneSeries in series %}
+		  {% if oneSeries.name !="" %}
+			<div id="series" data-role="collapsible" data-collapsed="false">
+				<h2>{{page.glob.langa.series}}</h2>			
+				<p>
+						<a data-role="button"  data-icon="info" href="{{page.rot}}/series/{{oneSeries.id}}">
+              {{ page.glob.langa.volume }} {{ book.series_index }} {{ page.glob.langa.of}} {{ oneSeries.name }}
+            </a>
+				</p>
+			</div>
+			{% endif %}
+			{% endfor %}
+		
 		<div id="tags" data-role="collapsible">
 			<h2>{{page.glob.langa.tags}}</h2>			
 			<p>
@@ -60,7 +74,7 @@
 				<a data-role="button" data-mini="true" data-inline="true" href="{{page.rot}}/tags/{{tag.id}}">{{ tag.name }}</a>
 				{% endfor %}
 			</p>
-		</div>
+		</div>		
 		<div id="comment">
 				<h2>{{page.glob.langa.comment}}</h2>			
 				<div>

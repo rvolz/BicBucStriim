@@ -1,6 +1,5 @@
 <?php
 
-
 class Item {}
 class Book extends Item {}
 class Author extends Item {}
@@ -9,7 +8,8 @@ class BookTagLink extends Item {}
 class Tag extends Item {}
 class Data extends Item {}
 class Comment extends Item {}
-
+class Series extends Item {}
+class BookSeriesLink extends Item {}
 class Config extends Item{}
 
 class BicBucStriim {
@@ -134,13 +134,22 @@ class BicBucStriim {
 		$authors = $this->find('Author', 'select a.id, a.name, a.sort, count(bal.id) as anzahl from authors as a left join books_authors_link as bal on a.id = bal.author group by a.id order by a.sort');
 		return $this->mkInitialedList($authors);
 	}
+	
+	# Return a grouped list of all tags. The list is separated by dividers,
+  # the initial character.
+  function allTags() {
+    #$tags = $this->find('Tag','select * from tags order by name');
+    $tags = $this->find('Tag', 'select tags.id, tags.name, count(btl.id) as anzahl from tags left join books_tags_link as btl on tags.id = btl.tag group by tags.id order by tags.name;');
+    return $this->mkInitialedList($tags);
+  }
+	
 
-	# Return a grouped list of all tags. The list is separated by dividers, 
+	# Return a grouped list of all series. The list is separated by dividers, 
 	# the initial character.
-	function allTags() {
-		#$tags = $this->find('Tag','select * from tags order by name');		
-		$tags = $this->find('Tag', 'select tags.id, tags.name, count(btl.id) as anzahl from tags left join books_tags_link as btl on tags.id = btl.tag group by tags.id order by tags.name;');
-		return $this->mkInitialedList($tags);
+	function allSeries() {
+		#$tags = $this->find('Tag','select * from series order by name');		
+		$series = $this->find('Series', 'select series.id, series.name, count(bsl.id) as anzahl from series left join books_series_link as bsl on series.id = bsl.series group by series.id order by series.name;');
+				return $this->mkInitialedList($series);
 	}
 
 	# Return a grouped list of all books. The list is separated by dividers, 
@@ -149,6 +158,24 @@ class BicBucStriim {
 		$books = $this->find('Book','select * from books order by sort');		
 		return $this->mkInitialedList($books);
 	}
+	
+	
+	# Return a grouped list of all books sorted by series.
+	function allSortedTitles() {
+    $series_ids = $this->find('Series', 'select series.id from series left join books_series_link as bsl on series.id = bsl.series group by series.id order by series.name');
+	 	$booksInSeries = array();
+	 	foreach ($series_ids as $sid)
+	 	{
+      $books = $this->seriesDetails($sid->id);
+      unset($books['series']);
+      $booksInSeries = array_merge_recursive($booksInSeries, $books);  
+    }
+    $booksInSeries = $booksInSeries['books'];
+    $books = $this->find('Book', 'select * from books where books.id not in (select book from books_series_link) order by sort'); 
+	  $groupedBooks = array_merge($booksInSeries, $books);
+	  return $groupedBooks;
+  }
+		
 
 	# Find a single author and return the details plus all books.
 	function authorDetails($id) {
@@ -156,7 +183,8 @@ class BicBucStriim {
 		if (is_null($author)) return NULL;
 		$book_ids = $this->find('BookAuthorLink', 'select * from books_authors_link where author='.$id);
 		$books = array();
-		foreach($book_ids as $bid) {
+		foreach($book_ids as $bid) 
+		{
 			$book = $this->title($bid->book);
 			array_push($books, $book);
 		}
@@ -177,18 +205,28 @@ class BicBucStriim {
 		}
 		return $path;
 	}
-
+	
 	# Returns a tag and the related books
-	function tagDetails($id) {
-		$tag = $this->findOne('Tag', 'select * from tags where id='.$id);
-		if (is_null($tag)) return NULL;
-		$book_ids = $this->find('BookTagLink', 'select * from books_tags_link where tag='.$id);
-		$books = array();
-		foreach($book_ids as $bid) {
-			$book = $this->title($bid->book);
-			array_push($books, $book);
-		}
-		return array('tag' => $tag, 'books' => $books);
+  function tagDetails($id) {
+    $tag = $this->findOne('Tag', 'select * from tags where id='.$id);
+    if (is_null($tag)) return NULL;
+    $book_ids = $this->find('BookTagLink', 'select * from books_tags_link where tag='.$id);
+    $books = array();
+    foreach($book_ids as $bid) {
+      $book = $this->title($bid->book);
+      array_push($books, $book);
+    }
+    return array('tag' => $tag, 'books' => $books);
+  }
+	
+	
+
+	# Returns a series and the related books
+	function seriesDetails($id) {
+		$series = $this->findOne('Series', 'select * from series where id='.$id);
+		if (is_null($series)) return NULL;
+		$books = $this->find('Book', 'select BSL.book, Books.* from books_series_link BSL, books Books where Books.id=BSL.book and series='.$id.' order by series_index');
+		return array('series' => $series, 'books' => $books);
 	}
 
 
@@ -237,7 +275,7 @@ class BicBucStriim {
 		return $thumb_path;
 	}
 
-	# Find a single book, its authors, tags, formats and comment.
+	# Find a single book, its authors, tags, series, formats and comment.
 	function titleDetails($id) {
 		$book = $this->title($id);
 		if (is_null($book)) return NULL;
@@ -253,14 +291,21 @@ class BicBucStriim {
 			$tag = $this->findOne('Tag', 'select * from tags where id='.$tid->tag);
 			array_push($tags, $tag);
 		}
+		$series_ids = $this->find('BookSeriesLink', 'select * from books_series_link where book='.$id);
+		$series = array();
+		foreach($series_ids as $sid) {
+			$oneSeries = $this->findOne('Series', 'select * from series where id='.$sid->series);
+			array_push($series, $oneSeries);
+		}
+		
 		$formats = $this->find('Data', 'select * from data where book='.$id);
 		$comment = $this->findOne('Comment', 'select * from comments where book='.$id);
 		if (is_null($comment))
 			$comment_text = '';
 		else
-			$comment_text = $comment->text;		
+			$comment_text = $comment->text;	      	
 		return array('book' => $book, 'authors' => $authors, 'tags' => $tags, 
-			'formats' => $formats, 'comment' => $comment_text);
+			'series' => $series, 'formats' => $formats, 'comment' => $comment_text);
 	}
 
 	# Returns the path to the cover image of a book or NULL.

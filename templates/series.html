@@ -1,0 +1,16 @@
+{% extends 'main.html' %}
+
+{% block content %}
+<ul data-role="listview" data-filter="true">	
+	{% for oneSeries in series %}
+		{% if oneSeries.initial != "" %}
+			<li data-role="list-divider"> {{ oneSeries.initial }}</li>
+		{% else %}
+			<li>
+				<a href="{{page.rot}}/series/{{ oneSeries.id }}">{{ oneSeries.name }}
+				<span class="ui-li-count">{{ oneSeries.anzahl }}</span></a>
+			</li>
+		{% endif %}
+  	{% endfor %}
+</ul>
+{% endblock %}

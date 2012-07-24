@@ -6,7 +6,8 @@
   	<li>
   		<a href="{{ page.rot }}/titles/{{ book.id }}">
   			<img src="{{page.rot}}/titles/{{ book.id }}/thumbnail" />
-  			{{ book.title }} ({{ book.pubdate|date("Y") }})
+  			<p> {{ book.author_sort }} </p>
+			{{ book.title }} ({{ book.pubdate|date("Y") }})
   		</a> 
   	</li>
   {% endfor %}
