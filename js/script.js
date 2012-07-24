@@ -43,7 +43,7 @@ $('#padmin').on('pageinit', function(e) {
 
 $('#padmin').on('pageshow', function(e) {
 	$.get($('#adminform').attr('action')+'access/', function(data) {
-		if (data == '0' || $.cookie('admin_access')) {
+		if (data === '0' || $.cookie('admin_access')) {
 			$('#adminpwform').hide();
 			$('#adminform').show();
 		} else {

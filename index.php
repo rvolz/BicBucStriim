@@ -188,10 +188,31 @@ function has_valid_calibre_dir() {
 		BicBucStriim::checkForCalibre($globalSettings[CALIBRE_DIR]));
 }
 
+/*
+Check for admin permissions. If no admin password is defined
+everyone has admin permissions.
+ */
+function is_admin() {
+	if (empty($globalSettings[ADMIN_PW]))
+		return true;
+	else {
+		$admin_cookie = $app->getCookie(ADMIN_ACCESS_COOKIE);
+		if (isset($admin_cookie))
+			return true;
+		else
+			return false;
+	}	
+}
+
 # Processes changes in the admin page -> POST /admin/
 function admin_change_json() {
 	global $app, $globalSettings, $bbs;
 	$app->getLog()->debug('admin_change: started');	
+	# Check access permission
+	if (!is_admin()) {
+		$app->getLog()->warn('admin_change: no admin permission');	
+		$app->notFound();
+	}
 	$nconfigs = array();
 	$req_configs = $app->request()->post();
 	$errors = array();
