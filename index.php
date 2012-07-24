@@ -437,19 +437,20 @@ function book($id, $file) {
 	if (is_protected($id)) {
 		$app->getLog()->warn("book: attempt to download a protected book, "+$id);		
 		$app->response()->status(404);	
-	}
-	$app->getLog()->debug("book: file ".$file);
-	$bookpath = $bbs->titleFile($id, $file);
-	$app->getLog()->debug("book: path ".$bookpath);
+	} else {
+		$app->getLog()->debug("book: file ".$file);
+		$bookpath = $bbs->titleFile($id, $file);
+		$app->getLog()->debug("book: path ".$bookpath);
 
-	/** readfile has problems with large files (e.g. PDF) caused by php memory limit
-	 * to avoid this the function readfile_chunked() is used. app->response() is not
-	 * working with this solution.
-	**/
-	//TODO: Use new streaming functions in SLIM 1.7.0 when released
-	header("Content-length: ".filesize($bookpath));
-	header("Content-type: ".getMimeType($bookpath));
-	readfile_chunked($bookpath);
+		/** readfile has problems with large files (e.g. PDF) caused by php memory limit
+		 * to avoid this the function readfile_chunked() is used. app->response() is not
+		 * working with this solution.
+		**/
+		//TODO: Use new streaming functions in SLIM 1.7.0 when released
+		header("Content-length: ".filesize($bookpath));
+		header("Content-type: ".getMimeType($bookpath));
+		readfile_chunked($bookpath);
+	}
 }
 
 # List of all authors -> /authors
@@ -547,10 +548,13 @@ function is_protected($id) {
 	} else {
 		$app->getLog()->debug('is_protected: No cookie glob_dl_access');		
 	}
-	if ($globalSettings[GLOB_DL_CHOICE] != "0" && is_null($glob_dl_cookie))
+	if ($globalSettings[GLOB_DL_CHOICE] != "0" && is_null($glob_dl_cookie)) {
+		$app->getLog()->debug('is_protected: book is protected, no cookie, ask for password');		
 		return true;
-	else 
+	}	else {
+		$app->getLog()->debug('is_protected: book is not protected');		
 		return false;
+	}		
 }
 
 
