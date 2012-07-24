@@ -124,6 +124,11 @@ task :test do |t|
   sh "php tests/test_all.php"
 end
 
+desc "Integration testing (via integration test environment)"
+task :itest => [:itest_deploy] do |t|  
+  sh "php tests/test_integration.php"
+end
+
 desc "Copy the current version to the NAS for testing"
 task :copy2nas => [:package2] do |t|
 	sh "rsync -rv pkg/#{APPNAME}-#{VERSION}/ /Volumes/web/bbs"
