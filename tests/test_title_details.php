@@ -70,5 +70,13 @@ class TestOfTitleDetails extends WebTestCase {
 		$this->assertResponse(200);
 		$this->assertMime('application/x-mobipocket-ebook');				
 	}
+
+	/*
+	Check book download for not exisiting file
+	 */
+	public function testDownloadNotExisitingBook() {
+		$this->get($this->testhost.'titles/999/file/Der+seltzame+Springinsfeld+-+Hans+Jakob+Christoffel+von+Grimmelshausen.epub');
+		$this->assertResponse(404);
+	}	
 }
 ?>
