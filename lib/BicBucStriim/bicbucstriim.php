@@ -122,6 +122,16 @@ class BicBucStriim {
 			return $result[0];
 	}
 
+	# Return the number of rows for a SQL COUNT Statement, e.g.
+	# SELECT COUNT(*) FROM books;
+	function count($sql) {
+		$result = $this->calibre->query($sql)->fetchColumn(); 
+		if ($result == NULL || $result == FALSE)
+			return -1;
+		else
+			return (int) $result;
+	}
+
 	function last30Books() {
 		$books = $this->find('Book','select * from books order by timestamp desc limit 30');		
 		return $books;
@@ -146,7 +156,7 @@ class BicBucStriim {
 	# Return a grouped list of all books. The list is separated by dividers, 
 	# the initial title character.
 	function allTitles() {
-		$books = $this->find('Book','select * from books order by sort');		
+		$books = $this->find('Book','select * from books order by sort');
 		return $this->mkInitialedList($books);
 	}
 
@@ -191,6 +201,27 @@ class BicBucStriim {
 		return array('tag' => $tag, 'books' => $books);
 	}
 
+	# Search a list of book titles defined by the parameters $index and $length.
+	# If $search is defined it is used to filter the titles, ignoring case.
+	# Return an array withe elements: current page, no. of pages, $length entries
+	function titlesList($index=0, $length=100, $search=NULL) {
+		if ($index < 0 || $length < 1)
+			return array('page'=>0,'pages'=>0,'entries'=>NULL);
+		$offset = $index * $length;
+		if (is_null($search)) {
+			$count = 'select count(*) from books';
+			$query = 'select * from books order by sort limit '.$length.' offset '.$offset;
+		}	else {
+			$count = 'select count(*) from books where lower(title) like \'%'.strtolower($search).'%\'';
+			$query = 'select * from books where lower(title) like \'%'.strtolower($search).'%\' order by sort limit '.$length.' offset '.$offset;	
+		}
+		$no_books = $this->count($count);
+		$no_pages = (int) ($no_books / $length);
+		if ($no_books % $length > 0)
+			$no_pages += 1;
+		$books = $this->find('Book',$query);
+		return array('page'=>$index, 'pages'=>$no_pages, 'entries'=>$books);
+	}
 
 	# Find only one book
 	function title($id) {
