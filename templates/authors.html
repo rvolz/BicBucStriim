@@ -4,8 +4,9 @@
 {% block content %}
 <div data-role="fieldcontain" class="ui-hide-label">
 	<form action="{{page.rot}}/authorslist/0/" method="get">
-		<label for="search">Autorensuche:</label>
-		<input type="search" name="search" id="search" value="{{search}}" data-mini="true" placeholder="Suche nach Autoren"/>
+		<label for="search">{{page.glob.langa.pagination_search_lbl_author}}</label>
+		<input type="search" name="search" id="search" value="{{search}}" data-mini="true" 
+					placeholder="{{page.glob.langa.pagination_search_ph_author}}"/>
 	</form>
 </div>
 <ul data-role="listview" data-filter="false">	
