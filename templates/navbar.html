@@ -1,16 +1,17 @@
 {% if curpage != NULL %}
 	{% if curpage > 0 %}
-		<a  data-icon="arrow-l" data-role="button" class="ui-btn-left" href="{{page.rot}}/titleslist/{{curpage - 1}}">
+		<a  data-icon="arrow-l" data-role="button" class="ui-btn-left" href="{{page.rot}}/{{url}}/{{curpage - 1}}">
 			prev
 		</a>	
 	{% endif %}
 	{% if curpage+1 < pages %}
-		<a  data-icon="arrow-r" data-role="button"  href="{{page.rot}}/titleslist/{{curpage + 1}}">
+		<a data-icon="arrow-r" data-role="button" class="ui-btn-right" href="{{page.rot}}/{{url}}/{{curpage + 1}}">
 			next
 		</a>	
 	{% endif %}
 	<h1>Seite {{ curpage+1 }}/{{ pages }}</h1>
 {% else %}
+	<a href="{{page.rot}}/admin/" data-icon="gear" class="ui-btn-left">{{ page.glob.langa.admin_short }}</a>
 	<h1>{{ page.title }}</h1>
 {% endif %}
 {% if page.menu == 0 %}
@@ -24,17 +25,17 @@
 	  	</a>
 	  </li>
 	  <li>
-	  	<a href="{{page.rot}}/titles" {% if page.menu == 2 %}class="ui-btn-active"{%endif%}>
+	  	<a href="{{page.rot}}/titleslist/0/" {% if page.menu == 2 %}class="ui-btn-active"{%endif%}>
 	  		{{page.glob.langa.titles}}
 	  	</a>
 	  </li>
 	  <li>
-	  	<a href="{{page.rot}}/authors" {% if page.menu == 3 %}class="ui-btn-active"{%endif%}>
+	  	<a href="{{page.rot}}/authorslist/0/" {% if page.menu == 3 %}class="ui-btn-active"{%endif%}>
 	  		{{page.glob.langa.authors}}
 	  	</a>
 	  </li>
 	  <li>
-	  	<a href="{{page.rot}}/tags" {% if page.menu == 4 %}class="ui-btn-active"{%endif%}>
+	  	<a href="{{page.rot}}/tagslist/0/" {% if page.menu == 4 %}class="ui-btn-active"{%endif%}>
 	  		{{page.glob.langa.tags}}
 	  	</a>
 	  </li>       

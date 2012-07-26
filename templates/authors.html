@@ -2,7 +2,7 @@
 
 
 {% block content %}
-<ul data-role="listview" data-filter="true">	
+<ul data-role="listview" data-filter="false">	
 	{% for author in authors %}
 		{% if author.initial != "" %}
 			<li data-role="list-divider"> {{ author.initial }}</li>

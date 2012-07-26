@@ -1,7 +1,7 @@
 {% extends 'main.html' %}
 
 {% block content %}
-<ul data-role="listview" data-filter="true">	
+<ul data-role="listview" data-filter="false">	
 	{% for tag in tags %}
 		{% if tag.initial != "" %}
 			<li data-role="list-divider"> {{ tag.initial }}</li>

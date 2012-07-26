@@ -1,7 +1,7 @@
 {% extends 'main.html' %}
 
 {% block content %}
-<ul data-role="listview" data-filter="true">	
+<ul data-role="listview" data-filter="false">	
 	{% for book in books %}
 		{% if book.initial != "" %}
 			<li data-role="list-divider"> {{ book.initial }}</li>

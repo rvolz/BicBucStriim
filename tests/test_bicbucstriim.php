@@ -73,6 +73,38 @@ class TestOfBicBucStriim extends UnitTestCase {
 		$this->assertEqual('R', $result[8]['initial']);			
 	}
 
+	function testAuthorsSlice() {
+		$result0 = $this->bbs->authorsSlice(0,2);
+		$this->assertEqual(0, $this->bbs->last_error);
+		$this->assertEqual(2, count($result0['entries']));
+		$this->assertEqual(0, $result0['page']);
+		$this->assertEqual(3, $result0['pages']);
+		$result1 = $this->bbs->authorsSlice(1,2);
+		$this->assertEqual(2, count($result1['entries']));
+		$this->assertEqual(1, $result1['page']);
+		$this->assertEqual(3, $result1['pages']);		
+		$result2 = $this->bbs->authorsSlice(2,2);
+		$this->assertEqual(2, count($result2['entries']));
+		$this->assertEqual(2, $result2['page']);
+		$this->assertEqual(3, $result2['pages']);		
+		$no_result = $this->bbs->authorsSlice(100,2);		
+		$this->assertEqual(0, count($no_result['entries']));
+		$this->assertEqual(100, $no_result['page']);
+		$this->assertEqual(3, $no_result['pages']);				
+	}
+
+	function testAuthorsSliceSearch() {
+		$result0 = $this->bbs->authorsSlice(0,2,'I');
+		$this->assertEqual(0, $this->bbs->last_error);
+		$this->assertEqual(2, count($result0['entries']));
+		$this->assertEqual(0, $result0['page']);
+		$this->assertEqual(3, $result0['pages']);		
+		$result1 = $this->bbs->authorsSlice(1,2,'I');
+		$this->assertEqual(2, count($result1['entries']));
+		$result3 = $this->bbs->authorsSlice(2,2,'I');
+		$this->assertEqual(1, count($result3['entries']));
+	}
+
 	function testAllTags() {		
 		$result = $this->bbs->allTags();
 		$this->assertEqual(0, $this->bbs->last_error);
@@ -80,6 +112,38 @@ class TestOfBicBucStriim extends UnitTestCase {
 		$this->assertEqual(11, count($result));
 		$this->assertEqual('A', $result[0]['initial']);
 		$this->assertEqual('V', $result[9]['initial']);					
+	}
+
+	function testTagsSlice() {
+		$result0 = $this->bbs->tagsSlice(0,2);
+		$this->assertEqual(0, $this->bbs->last_error);
+		$this->assertEqual(2, count($result0['entries']));
+		$this->assertEqual(0, $result0['page']);
+		$this->assertEqual(3, $result0['pages']);
+		$result1 = $this->bbs->tagsSlice(1,2);
+		$this->assertEqual(2, count($result1['entries']));
+		$this->assertEqual(1, $result1['page']);
+		$this->assertEqual(3, $result1['pages']);		
+		$result2 = $this->bbs->tagsSlice(2,2);
+		$this->assertEqual(2, count($result2['entries']));
+		$this->assertEqual(2, $result2['page']);
+		$this->assertEqual(3, $result2['pages']);		
+		$no_result = $this->bbs->tagsSlice(100,2);		
+		$this->assertEqual(0, count($no_result['entries']));
+		$this->assertEqual(100, $no_result['page']);
+		$this->assertEqual(3, $no_result['pages']);				
+	}
+
+	function testTagsSliceSearch() {
+		$result0 = $this->bbs->tagsSlice(0,2,'I');
+		$this->assertEqual(0, $this->bbs->last_error);
+		$this->assertEqual(2, count($result0['entries']));
+		$this->assertEqual(0, $result0['page']);
+		$this->assertEqual(3, $result0['pages']);		
+		$result1 = $this->bbs->tagsSlice(1,2,'I');
+		$this->assertEqual(2, count($result1['entries']));
+		$result3 = $this->bbs->tagsSlice(2,2,'I');
+		$this->assertEqual(1, count($result3['entries']));
 	}
 
 	function testAllTitles() {		
@@ -91,21 +155,21 @@ class TestOfBicBucStriim extends UnitTestCase {
 		$this->assertEqual('Z', $result[11]['initial']);							
 	}
 
-	function testTitlesList() {
-		$result0 = $this->bbs->titlesList(0,2);
+	function testTitlesSlice() {
+		$result0 = $this->bbs->titlesSlice(0,2);
 		$this->assertEqual(0, $this->bbs->last_error);
 		$this->assertEqual(2, count($result0['entries']));
 		$this->assertEqual(0, $result0['page']);
 		$this->assertEqual(4, $result0['pages']);
-		$result1 = $this->bbs->titlesList(1,2);
+		$result1 = $this->bbs->titlesSlice(1,2);
 		$this->assertEqual(2, count($result1['entries']));
 		$this->assertEqual(1, $result1['page']);
 		$this->assertEqual(4, $result1['pages']);		
-		$result3 = $this->bbs->titlesList(3,2);
+		$result3 = $this->bbs->titlesSlice(3,2);
 		$this->assertEqual(1, count($result3['entries']));
 		$this->assertEqual(3, $result3['page']);
 		$this->assertEqual(4, $result3['pages']);		
-		$no_result = $this->bbs->titlesList(100,2);		
+		$no_result = $this->bbs->titlesSlice(100,2);		
 		$this->assertEqual(0, count($no_result['entries']));
 		$this->assertEqual(100, $no_result['page']);
 		$this->assertEqual(4, $no_result['pages']);				
@@ -117,15 +181,15 @@ class TestOfBicBucStriim extends UnitTestCase {
 		$this->assertEqual(6,$result);
 	}
 
-	function testTitlesListSearch() {
-		$result0 = $this->bbs->titlesList(0,2,'I');
+	function testTitlesSliceSearch() {
+		$result0 = $this->bbs->titlesSlice(0,2,'I');
 		$this->assertEqual(0, $this->bbs->last_error);
 		$this->assertEqual(2, count($result0['entries']));
 		$this->assertEqual(0, $result0['page']);
 		$this->assertEqual(3, $result0['pages']);		
-		$result1 = $this->bbs->titlesList(1,2);
+		$result1 = $this->bbs->titlesSlice(1,2,'I');
 		$this->assertEqual(2, count($result1['entries']));
-		$result3 = $this->bbs->titlesList(2,2);
+		$result3 = $this->bbs->titlesSlice(2,2,'I');
 		$this->assertEqual(2, count($result3['entries']));
 	}
 

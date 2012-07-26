@@ -108,10 +108,13 @@ $app->post('/titles/:id/checkaccess/', 'check_config', 'checkaccess');
 $app->get('/titles/:id/cover/', 'check_config', 'cover');
 $app->get('/titles/:id/file/:file', 'check_config', 'book');
 $app->get('/titles/:id/thumbnail/', 'check_config', 'thumbnail');
+$app->get('/titleslist/:id/', 'check_config', 'titlesSlice');
 $app->get('/authors/', 'check_config', 'authors');
 $app->get('/authors/:id/', 'check_config', 'author');
+$app->get('/authorslist/:id/', 'check_config', 'authorsSlice');
 $app->get('/tags/', 'check_config', 'tags');
 $app->get('/tags/:id/', 'check_config', 'tag');
+$app->get('/tagslist/:id/', 'check_config', 'tagsSlice');
 
 $app->run();
 
@@ -320,6 +323,19 @@ function titles() {
 		'books' => $grouped_books));
 }
 
+# A list of titles at $index -> /titlesList/:index
+function titlesSlice($index=0) {
+	global $app, $globalSettings, $bbs;
+
+	$tl = $bbs->titlesSlice($index,2);
+	$app->render('titles.html',array(
+		'page' => mkPage($globalSettings['langa']['titles'],2), 
+		'url' => 'titleslist',
+		'books' => $tl['entries'],
+		'curpage' => $tl['page'],
+		'pages' => $tl['pages']));
+}
+
 # Show a single title > /titles/:id. The ID ist the Calibre ID
 function title($id) {
 	global $app, $calibre_dir, $globalSettings, $bbs;
@@ -484,6 +500,19 @@ function authors() {
 		'authors' => $grouped_authors));
 }
 
+# A list of authors at $index -> /authorslist/:index
+function authorsSlice($index=0) {
+	global $app, $globalSettings, $bbs;
+
+	$tl = $bbs->authorsSlice($index,2);
+	$app->render('authors.html',array(
+		'page' => mkPage($globalSettings['langa']['authors'],3), 
+		'url' => 'authorslist',
+		'authors' => $tl['entries'],
+		'curpage' => $tl['page'],
+		'pages' => $tl['pages']));
+}
+
 # Details for a single author -> /authors/:id
 function author($id) {
 	global $app, $globalSettings, $bbs;
@@ -507,6 +536,19 @@ function tags() {
 	$app->render('tags.html',array(
 		'page' => mkPage($globalSettings['langa']['tags'],4),
 		'tags' => $grouped_tags));
+}
+
+# A list of tags at $index -> /tagslist/:index
+function tagsSlice($index=0) {
+	global $app, $globalSettings, $bbs;
+
+	$tl = $bbs->tagsSlice($index,2);
+	$app->render('tags.html',array(
+		'page' => mkPage($globalSettings['langa']['tags'],4), 
+		'url' => 'tagslist',
+		'tags' => $tl['entries'],
+		'curpage' => $tl['page'],
+		'pages' => $tl['pages']));
 }
 
 #Details of a single tag -> /tags/:id

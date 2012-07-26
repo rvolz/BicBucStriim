@@ -122,7 +122,51 @@ class BicBucStriim {
 			return $result[0];
 	}
 
-	# Return the number of rows for a SQL COUNT Statement, e.g.
+	# Return a slice of entries defined by the parameters $index and $length.
+	# If $search is defined it is used to filter the titles, ignoring case.
+	# Return an array with elements: current page, no. of pages, $length entries
+	function findSlice($class, $index=0, $length=100, $search=NULL) {
+		if ($index < 0 || $length < 1 || !in_array($class, array('Book','Author','Tag')))
+			return array('page'=>0,'pages'=>0,'entries'=>NULL);
+		$offset = $index * $length;		
+		switch($class) {
+			case 'Author': 
+				if (is_null($search)) {
+					$count = 'select count(*) from authors';
+					$query = 'select a.id, a.name, a.sort, count(bal.id) as anzahl from authors as a left join books_authors_link as bal on a.id = bal.author group by a.id order by a.sort limit '.$length.' offset '.$offset;
+				}	else {
+					$count = 'select count(*) from authors where lower(sort) like \'%'.strtolower($search).'%\'';
+					$query = 'select a.id, a.name, a.sort, count(bal.id) as anzahl from authors as a left join books_authors_link as bal on a.id = bal.author where lower(a.name) like \'%'.strtolower($search).'%\' group by a.id order by a.sort limit '.$length.' offset '.$offset;	
+				}
+				break;
+			case 'Book': 
+				if (is_null($search)) {
+					$count = 'select count(*) from books';
+					$query = 'select * from books order by sort limit '.$length.' offset '.$offset;
+				}	else {
+					$count = 'select count(*) from books where lower(title) like \'%'.strtolower($search).'%\'';
+					$query = 'select * from books where lower(title) like \'%'.strtolower($search).'%\' order by sort limit '.$length.' offset '.$offset;	
+				}
+				break;
+			case 'Tag': 
+				if (is_null($search)) {
+					$count = 'select count(*) from tags';
+					$query = 'select tags.id, tags.name, count(btl.id) as anzahl from tags left join books_tags_link as btl on tags.id = btl.tag group by tags.id order by tags.name limit '.$length.' offset '.$offset;
+				}	else {
+					$count = 'select count(*) from tags where lower(name) like \'%'.strtolower($search).'%\'';
+					$query = 'select tags.id, tags.name, count(btl.id) as anzahl from tags left join books_tags_link as btl on tags.id = btl.tag where lower(tags.name) like \'%'.strtolower($search).'%\' group by tags.id order by tags.name limit '.$length.' offset '.$offset;	
+				}
+				break;
+		}
+		$no_entries = $this->count($count);
+		$no_pages = (int) ($no_entries / $length);
+		if ($no_entries % $length > 0)
+			$no_pages += 1;
+		$entries = $this->find($class,$query);
+		return array('page'=>$index, 'pages'=>$no_pages, 'entries'=>$entries);
+	}
+
+	# Return the number (int) of rows for a SQL COUNT Statement, e.g.
 	# SELECT COUNT(*) FROM books;
 	function count($sql) {
 		$result = $this->calibre->query($sql)->fetchColumn(); 
@@ -132,6 +176,8 @@ class BicBucStriim {
 			return (int) $result;
 	}
 
+
+	# Return the 30 most recent books
 	function last30Books() {
 		$books = $this->find('Book','select * from books order by timestamp desc limit 30');		
 		return $books;
@@ -145,6 +191,13 @@ class BicBucStriim {
 		return $this->mkInitialedList($authors);
 	}
 
+	# Search a list of authors defined by the parameters $index and $length.
+	# If $search is defined it is used to filter the names, ignoring case.
+	# Return an array with elements: current page, no. of pages, $length entries
+	function authorsSlice($index=0, $length=100, $search=NULL) {
+		return $this->findSlice('Author', $index, $length, $search);
+	}
+
 	# Return a grouped list of all tags. The list is separated by dividers, 
 	# the initial character.
 	function allTags() {
@@ -153,11 +206,25 @@ class BicBucStriim {
 		return $this->mkInitialedList($tags);
 	}
 
+	# Search a list of tags defined by the parameters $index and $length.
+	# If $search is defined it is used to filter the tag names, ignoring case.
+	# Return an array with elements: current page, no. of pages, $length entries
+	function tagsSlice($index=0, $length=100, $search=NULL) {
+		return $this->findSlice('Tag', $index, $length, $search);
+	}
+
 	# Return a grouped list of all books. The list is separated by dividers, 
 	# the initial title character.
 	function allTitles() {
 		$books = $this->find('Book','select * from books order by sort');
 		return $this->mkInitialedList($books);
+	}
+
+	# Search a list of books defined by the parameters $index and $length.
+	# If $search is defined it is used to filter the book title, ignoring case.
+	# Return an array with elements: current page, no. of pages, $length entries
+	function titlesSlice($index=0, $length=100, $search=NULL) {
+		return $this->findSlice('Book', $index, $length, $search);
 	}
 
 	# Find a single author and return the details plus all books.
@@ -199,28 +266,6 @@ class BicBucStriim {
 			array_push($books, $book);
 		}
 		return array('tag' => $tag, 'books' => $books);
-	}
-
-	# Search a list of book titles defined by the parameters $index and $length.
-	# If $search is defined it is used to filter the titles, ignoring case.
-	# Return an array withe elements: current page, no. of pages, $length entries
-	function titlesList($index=0, $length=100, $search=NULL) {
-		if ($index < 0 || $length < 1)
-			return array('page'=>0,'pages'=>0,'entries'=>NULL);
-		$offset = $index * $length;
-		if (is_null($search)) {
-			$count = 'select count(*) from books';
-			$query = 'select * from books order by sort limit '.$length.' offset '.$offset;
-		}	else {
-			$count = 'select count(*) from books where lower(title) like \'%'.strtolower($search).'%\'';
-			$query = 'select * from books where lower(title) like \'%'.strtolower($search).'%\' order by sort limit '.$length.' offset '.$offset;	
-		}
-		$no_books = $this->count($count);
-		$no_pages = (int) ($no_books / $length);
-		if ($no_books % $length > 0)
-			$no_pages += 1;
-		$books = $this->find('Book',$query);
-		return array('page'=>$index, 'pages'=>$no_pages, 'entries'=>$books);
 	}
 
 	# Find only one book
