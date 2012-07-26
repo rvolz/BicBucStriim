@@ -1,6 +1,12 @@
 {% extends 'main.html' %}
 
 {% block content %}
+<div data-role="fieldcontain" class="ui-hide-label">
+	<form action="{{page.rot}}/tagslist/0/" method="get">
+		<label for="search">Autorensuche:</label>
+		<input type="search" name="search" id="search" value="{{search}}" data-mini="true" placeholder="Suche nach Stichworten"/>
+	</form>
+</div>
 <ul data-role="listview" data-filter="false">	
 	{% for tag in tags %}
 		{% if tag.initial != "" %}

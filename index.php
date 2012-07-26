@@ -327,13 +327,18 @@ function titles() {
 function titlesSlice($index=0) {
 	global $app, $globalSettings, $bbs;
 
-	$tl = $bbs->titlesSlice($index,2);
+	$search = $app->request()->get('search');
+	if (isset($search))
+		$tl = $bbs->titlesSlice($index,2,$search);
+	else
+		$tl = $bbs->titlesSlice($index,2);
 	$app->render('titles.html',array(
 		'page' => mkPage($globalSettings['langa']['titles'],2), 
 		'url' => 'titleslist',
 		'books' => $tl['entries'],
 		'curpage' => $tl['page'],
-		'pages' => $tl['pages']));
+		'pages' => $tl['pages'],
+		'search' => $search));
 }
 
 # Show a single title > /titles/:id. The ID ist the Calibre ID
@@ -504,13 +509,18 @@ function authors() {
 function authorsSlice($index=0) {
 	global $app, $globalSettings, $bbs;
 
-	$tl = $bbs->authorsSlice($index,2);
+	$search = $app->request()->get('search');
+	if (isset($search))
+		$tl = $bbs->authorsSlice($index,2,$search);	
+	else
+		$tl = $bbs->authorsSlice($index,2);
 	$app->render('authors.html',array(
 		'page' => mkPage($globalSettings['langa']['authors'],3), 
 		'url' => 'authorslist',
 		'authors' => $tl['entries'],
 		'curpage' => $tl['page'],
-		'pages' => $tl['pages']));
+		'pages' => $tl['pages'],
+		'search' => $search));
 }
 
 # Details for a single author -> /authors/:id
@@ -542,13 +552,18 @@ function tags() {
 function tagsSlice($index=0) {
 	global $app, $globalSettings, $bbs;
 
-	$tl = $bbs->tagsSlice($index,2);
+	$search = $app->request()->get('search');
+	if (isset($search))
+		$tl = $bbs->tagsSlice($index,2,$search);
+	else
+		$tl = $bbs->tagsSlice($index,2);
 	$app->render('tags.html',array(
 		'page' => mkPage($globalSettings['langa']['tags'],4), 
 		'url' => 'tagslist',
 		'tags' => $tl['entries'],
 		'curpage' => $tl['page'],
-		'pages' => $tl['pages']));
+		'pages' => $tl['pages'],
+		'search' => $search));
 }
 
 #Details of a single tag -> /tags/:id

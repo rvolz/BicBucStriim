@@ -1,11 +1,13 @@
 {% if curpage != NULL %}
 	{% if curpage > 0 %}
-		<a  data-icon="arrow-l" data-role="button" class="ui-btn-left" href="{{page.rot}}/{{url}}/{{curpage - 1}}">
+		<a  data-icon="arrow-l" data-role="button" class="ui-btn-left" 
+				href="{{page.rot}}/{{url}}/{{curpage - 1}}/{% if search != NULL %}?search={{search}}{% endif %}">
 			prev
 		</a>	
 	{% endif %}
 	{% if curpage+1 < pages %}
-		<a data-icon="arrow-r" data-role="button" class="ui-btn-right" href="{{page.rot}}/{{url}}/{{curpage + 1}}">
+		<a data-icon="arrow-r" data-role="button" class="ui-btn-right" 
+			 href="{{page.rot}}/{{url}}/{{curpage + 1}}/{% if search != NULL %}?search={{search}}{% endif %}">
 			next
 		</a>	
 	{% endif %}
