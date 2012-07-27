@@ -1,13 +1,6 @@
 {% extends 'main.html' %}
 
 {% block content %}
-<div data-role="fieldcontain" class="ui-hide-label">
-	<form action="{{page.rot}}/titleslist/0/" method="get">
-		<label for="search">{{page.glob.langa.pagination_search_lbl_title}}</label>
-		<input type="search" name="search" id="search" value="{{search}}" data-mini="true" 
-				placeholder="{{page.glob.langa.pagination_search_ph_title}}"/>
-	</form>
-</div>
 <ul data-role="listview" data-filter="false">	
 	{% for book in books %}
 		{% if book.initial != "" %}

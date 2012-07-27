@@ -1,3 +1,8 @@
+2012-07-?? Version 0.9.0
+
+* new: pagination for titles, authors and tags makes navigation in larger libraries easier
+* 
+
 2012-06-18 Version 0.8.0
 
 * new: admin section for configuration, no config.php editing anymore
