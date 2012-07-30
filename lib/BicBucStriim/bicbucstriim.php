@@ -22,8 +22,10 @@ class BicBucStriim {
 	var $mydb = NULL;
 	# calibre sqlite db
 	var $calibre = NULL;
-	# calinbre library dir
+	# calibre library dir
 	var $calibre_dir = '';
+	# calibre library file, last modified date
+	var $calibre_last_modified;
 	# last sqlite error
 	var $last_error = 0;
 	# dir for bbs db
@@ -43,6 +45,7 @@ class BicBucStriim {
 		$this->data_dir = dirname($dataPath);
 		$this->thumb_dir = $this->data_dir;
 		if (file_exists($rp) && is_writeable($rp)) {
+			$this->calibre_last_modified = filemtime($rp);
 			$this->mydb = new PDO('sqlite:'.$rp, NULL, NULL, array());
 			$this->mydb->setAttribute(1002, 'SET NAMES utf8');
 			$this->mydb->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -348,7 +351,49 @@ class BicBucStriim {
 			return $this->bookPath($this->calibre_dir,$book->path,$file);
 	}
 
+	/**
+	 * Return the MIME type for an ebook file. 
+	 *
+	 * To reduce search time the function checks first wether the file 
+	 * has a well known extension. If not two functions are tried. If all fails
+	 * 'application/force-download' is returned to force the download of the 
+	 * unknown format.
+	 * 
+	 * @param  string $file_path path to ebook file
+	 * @return string            MIME type
+	 */
+	function titleMimeType($file_path) {
+		$mtype = '';
+		
+		if (preg_match('/epub$/',$file_path) == 1)
+			return 'application/epub+zip';
+		else if (preg_match('/mobi$/', $file_path) == 1) 
+			return 'application/x-mobipocket-ebook';
+		else if (preg_match('/azw$/', $file_path) == 1) 
+			return 'application/vnd.amazon.ebook';
+		else if (preg_match('/pdf$/', $file_path) == 1) 
+			return 'application/pdf';
+		else if (preg_match('/txt$/', $file_path) == 1) 
+			return 'text/plain';
+		else if (preg_match('/html$/', $file_path) == 1) 
+			return 'text/html';
+		else if (preg_match('/zip$/', $file_path) == 1) 
+			return 'application/zip';
 
+		if (function_exists('mime_content_type')){
+	    	     $mtype = mime_content_type($file_path);
+	  }
+		else if (function_exists('finfo_file')){
+	    	     $finfo = finfo_open(FILEINFO_MIME);
+	    	     $mtype = finfo_file($finfo, $file_path);
+	    	     finfo_close($finfo);  
+	  }
+		if ($mtype == ''){
+	    	     $mtype = 'application/force-download';
+	  }
+		return $mtype;
+	}
+	
 	# Generate a list where the items are grouped and separated by 
 	# the initial character.
 	# If the item has a 'sort' field that is used, else the name.

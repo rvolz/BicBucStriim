@@ -10,6 +10,7 @@ TwigView::$twigExtensions = array(
 );
 
 require_once 'lib/BicBucStriim/bicbucstriim.php';
+require_once 'lib/BicBucStriim/opds_generator.php';
 require_once 'lib/BicBucStriim/langs.php';
 
 # Allowed languages, i.e. languages with translations
@@ -115,7 +116,11 @@ $app->get('/authorslist/:id/', 'check_config', 'authorsSlice');
 $app->get('/tags/', 'check_config', 'tags');
 $app->get('/tags/:id/', 'check_config', 'tag');
 $app->get('/tagslist/:id/', 'check_config', 'tagsSlice');
-
+$app->get('/opds/', 'opdsCheckConfig', 'opdsRoot');
+$app->get('/opds/newest/', 'opdsCheckConfig', 'opdsNewest');
+$app->get('/opds/titles/', 'opdsCheckConfig', 'opdsByTitles');
+$app->get('/opds/authors/', 'opdsCheckConfig', 'opdsByAuthors');
+$app->get('/opds/tags/', 'opdsCheckConfig', 'opdsByTags');
 $app->run();
 
 
@@ -490,7 +495,7 @@ function book($id, $file) {
 		**/
 		//TODO: Use new streaming functions in SLIM 1.7.0 when released
 		header("Content-length: ".filesize($bookpath));
-		header("Content-type: ".getMimeType($bookpath));
+		header("Content-type: ".$bbs->titleMimeType($bookpath));
 		readfile_chunked($bookpath);
 	}
 }
@@ -580,52 +585,66 @@ function tag($id) {
 		'books' => $details['books']));
 }
 
+#####
+##### OPDS Catalog functions
+#####
 
+function opdsCheckConfig() {
+	global $we_have_config, $app;
+
+	if (!$we_have_config) {
+		$app->getLog()->error('opdsCheckConfig: No configuration found');	
+		$app->response()->status(500);
+		$app->response()->header('Content-type','text/html');
+		$app->response()->body('<p>No configuration found.</p>');
+	}
+}
+
+/**
+ * Generate and send the OPDS root navigation catalog
+ */
+function opdsRoot() {
+	global $app, $appversion, $bbs;
+
+	$gen = new OpdsGenerator($app->request()->getRootUri(), $appversion, 
+		date(DATE_ATOM,$bbs->calibre_last_modified));
+	$app->response()->status(200);
+	$app->response()->header('Content-type',OpdsGenerator::OPDS_MIME_NAV);
+	$gen->rootCatalog('php://output');
+}
+
+/**
+ * Generate and send the OPDS 'newest' catalog
+ */
+function opdsNewest() {
+	global $app, $appversion, $bbs;
+
+	$books = $bbs->last30Books();
+	$gen = new OpdsGenerator($app->request()->getRootUri(), $appversion, 
+		date(DATE_ATOM,$bbs->calibre_last_modified));
+	$app->response()->status(200);
+	$app->response()->header('Content-type',OpdsGenerator::OPDS_MIME_ACQ);
+	$gen->newestCatalog('php://output', $books, is_protected(NULL));
+}
 
 #####
 ##### Utility and helper functions, private
 #####
 
-
-# Try to find the correct mime type for a book file.
-function getMimeType($file_path) {
-	$mtype = '';
-	
-	if (preg_match('/epub$/',$file_path) == 1)
-		return 'application/epub+zip';
-	else if (preg_match('/mobi$/', $file_path) == 1) 
-		return 'application/x-mobipocket-ebook';
-
-	if (function_exists('mime_content_type')){
-    	     $mtype = mime_content_type($file_path);
-  }
-	else if (function_exists('finfo_file')){
-    	     $finfo = finfo_open(FILEINFO_MIME);
-    	     $mtype = finfo_file($finfo, $file_path);
-    	     finfo_close($finfo);  
-  }
-	if ($mtype == ''){
-    	     $mtype = "application/force-download";
-  }
-	return $mtype;
-}
-
-# Check whether the book download must be protected. 
-# Returns:
-#  true - the user must enter a password
-#  false - no password necessary
-#
-function is_protected($id) {
+/**
+ * Check whether the book download must be protected. 
+ * The ID parameter is for future use (selective download protection)
+ * 
+ * @param  int  		$id book id, currently not used
+ * @return boolean  true - the user must enter a password, else no authentication necessary
+ */
+function is_protected($id=NULL) {
 	global $app, $globalSettings;
 
 	# Get the cookie
-	# TBD more checks
+	# TBD Check the cookie content
 	$glob_dl_cookie = $app->getCookie(GLOBAL_DL_COOKIE);
-	if (isset($glob_dl_cookie)) {
-		$app->getLog()->debug('is_protected: Cookie glob_dl_access value: '.$glob_dl_cookie);		
-	} else {
-		$app->getLog()->debug('is_protected: No cookie glob_dl_access');		
-	}
+	$app->getLog()->debug('is_protected: Cookie glob_dl_access value: '.$glob_dl_cookie);			
 	if ($globalSettings[GLOB_DL_CHOICE] != "0" && is_null($glob_dl_cookie)) {
 		$app->getLog()->debug('is_protected: book is protected, no cookie, ask for password');		
 		return true;
@@ -666,35 +685,29 @@ function mkPage($subtitle='', $menu=0, $dialog=false) {
  * @return the user language, like 'de' or 'en'
  */
 function getUserLang($allowedLangs, $fallbackLang) {
-
-    // reset user_lang array
-    $userLangs = array();
-
-    // 2nd highest priority: GET parameter 'lang'
-    if(isset($_GET['lang']) && is_string($_GET['lang'])) {
-        $userLangs[] =  $_GET['lang'];
+  // reset user_lang array
+  $userLangs = array();
+  // 2nd highest priority: GET parameter 'lang'
+  if(isset($_GET['lang']) && is_string($_GET['lang'])) {
+      $userLangs[] =  $_GET['lang'];
+  }
+	// 3rd highest priority: SESSION parameter 'lang'
+  if(isset($_SESSION['lang']) && is_string($_SESSION['lang'])) {
+      $userLangs[] = $_SESSION['lang'];
+  }
+  // 4th highest priority: HTTP_ACCEPT_LANGUAGE
+  if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
+    foreach (explode(',',$_SERVER['HTTP_ACCEPT_LANGUAGE']) as $part) {
+      $userLangs[] = strtolower(substr($part,0,2));
     }
-
-// 3rd highest priority: SESSION parameter 'lang'
-    if(isset($_SESSION['lang']) && is_string($_SESSION['lang'])) {
-        $userLangs[] = $_SESSION['lang'];
-    }
-
-    // 4th highest priority: HTTP_ACCEPT_LANGUAGE
-    if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
-      foreach (explode(',',$_SERVER['HTTP_ACCEPT_LANGUAGE']) as $part) {
-        $userLangs[] = strtolower(substr($part,0,2));
-      }
-    }
-
-    // Lowest priority: fallback
-    $userLangs[] = $fallbackLang;    
-
-    foreach($allowedLangs as $al) {
-    	if ($userLangs[0] == $al)
-    		return $al;
-    }
-    return $fallbackLang;
+  }
+  // Lowest priority: fallback
+  $userLangs[] = $fallbackLang;    
+  foreach($allowedLangs as $al) {
+  	if ($userLangs[0] == $al)
+  		return $al;
+  }
+  return $fallbackLang;
 }
 
 #Utility function to server files

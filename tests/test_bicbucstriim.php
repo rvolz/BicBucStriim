@@ -5,6 +5,8 @@ require_once('lib/BicBucStriim/bicbucstriim.php');
 
 class TestOfBicBucStriim extends UnitTestCase {
 
+	const FIXT = './tests/fixtures'; 
+
 	const CDB1 = './tests/fixtures/metadata_empty.db';
 	const CDB2 = './tests/fixtures/lib2/metadata.db';
 	const CDB3 = './tests/fixtures/lib3/metadata.db';
@@ -242,6 +244,14 @@ class TestOfBicBucStriim extends UnitTestCase {
 		$this->assertFalse($result === FALSE);
 		$this->assertEqual('Der seltzame Springinsfeld',$result['book']->title);
 		$this->assertEqual('Fachbücher',$result['tags'][0]->name);
+	}
+
+	function testTitleMimeType() {
+		$this->assertEqual('application/epub+zip', $this->bbs->titleMimeType('x/y/test.epub'));
+		$this->assertEqual('application/vnd.amazon.ebook', $this->bbs->titleMimeType('test.azw'));
+		$this->assertEqual('application/x-mobipocket-ebook', $this->bbs->titleMimeType('test.mobi'));
+		$this->assertEqual('text/plain', $this->bbs->titleMimeType(self::FIXT.'/test.unknown-format'));
+		$this->assertEqual('application/xml', $this->bbs->titleMimeType(self::FIXT.'/atom.rng'));
 	}
 }
 ?>
