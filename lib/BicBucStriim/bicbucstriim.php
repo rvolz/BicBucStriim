@@ -1,6 +1,6 @@
 <?php
 
-require_once 'items.php';
+require_once 'utilities.php';
 
 class BicBucStriim {
 	# Name to the bbs db
@@ -233,20 +233,7 @@ class BicBucStriim {
 		return array('author' => $author, 'books' => $books);
 	}
 
-	# Return the true path of a book. Works around a strange feature of Calibre 
-	# where middle components of names are capitalized, eg "Aliette de Bodard" -> "Aliette De Bodard".
-	# The directory name uses the capitalized form, the book path stored in the DB uses the original form.
-	# Legacy problem?
-	function bookPath($cd, $bp, $file) {
-		try {
-			$path = $cd.'/'.$bp.'/'.$file;
-			stat($path);
-		} catch (Exception $e) {
-			$p = explode("/",$bp);
-			$path = $cd.'/'.ucwords($p[0]).'/'.$p[1].'/'.$file;
-		}
-		return $path;
-	}
+
 
 	# Returns a tag and the related books
 	function tagDetails($id) {
@@ -272,7 +259,7 @@ class BicBucStriim {
 		if (is_null($book)) 
 			return NULL;
 		else
-			return $this->bookPath($this->calibre_dir,$book->path,'cover.jpg');
+			return Utilities::bookPath($this->calibre_dir,$book->path,'cover.jpg');
 	}
 
 	# Returns the path to a thumbnail of a book's cover image or NULL. 
@@ -369,7 +356,7 @@ class BicBucStriim {
 		if (is_null($book)) 
 			return NULL;
 		else 
-			return $this->bookPath($this->calibre_dir,$book->path,$file);
+			return Utilities::bookPath($this->calibre_dir,$book->path,$file);
 	}
 
 	/**
