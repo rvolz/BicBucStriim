@@ -6,6 +6,7 @@ class TestsAll extends TestSuite {
 	function TestsAll() {
 		$this->TestSuite('All Tests');
 		$this->addFile('test_bicbucstriim.php');
+		$this->addFile('test_opds_generator.php');
 	}
 }
 ?>
