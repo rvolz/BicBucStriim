@@ -1,4 +1,5 @@
 <?php
+require_once 'utilities.php';
 /**
  * Generator for OPDS 1.1 Catalogs of BicBucStriim
  */
@@ -13,17 +14,20 @@ class OpdsGenerator {
 
   var $bbs_root;
   var $bbs_version;
+  var $calibre_dir;
   var $updated;
   var $xmlw;
   /**
    * [__construct description]
    * @param string $bbs_root        Root URL for BicBucStriim, e.g. '/bbs'
    * @param string $bbs_version     BBS version 
+   * @param string $calibre_dir     calibre library dir
    * @param string $calibre_modtime Modification time of Calibre library, in ATOM format
    */
-  function __construct($bbs_root, $bbs_version, $calibre_modtime) {
+  function __construct($bbs_root, $bbs_version, $calibre_dir, $calibre_modtime) {
     $this->bbs_root = $bbs_root;
     $this->bbs_version = $bbs_version;
+    $this->calibre_dir = $calibre_dir;
     $this->updated = $calibre_modtime;
   }
 
@@ -34,7 +38,6 @@ class OpdsGenerator {
    * @return string           if $output is a URI NULL, else the XML is returned as a string.
    */
   function rootCatalog($of=NULL) {
-    $this->xmlw = new XMLWriter();    
     $this->openStream($of);
     $this->header('BicBucStriim Root Catalog', 
       'The root catalog to the contents of your Calibre library',
@@ -44,10 +47,13 @@ class OpdsGenerator {
     $this->navigationCatalogLink($this->bbs_root.'/opds/', 'start');
     # Subcatalogs
     $this->navigationEntry('Most Recent 30', 'newest', 'The 30 most recent titles', '/newest/', 
-      'http://opds-spec.org/sort/new');
-    $this->navigationEntry('By Titles', 'titles', 'All books by title', '/titles/');
-    $this->navigationEntry('By Authors', 'authors', 'All books by author', '/authors/');
-    $this->navigationEntry('By Tags', 'tags', 'All books by tag', '/tags/');
+      self::OPDS_MIME_ACQ, 'http://opds-spec.org/sort/new');
+    $this->navigationEntry('By Titles', 'titles', 'All books by title', '/titles/',
+      self::OPDS_MIME_ACQ);
+    $this->navigationEntry('By Authors', 'authors', 'All books by author', '/authors/',
+      self::OPDS_MIME_NAV);
+    $this->navigationEntry('By Tags', 'tags', 'All books by tag', '/tags/',
+      self::OPDS_MIME_NAV);
     $this->footer();
     return $this->closeStream($of);
   }
@@ -59,7 +65,6 @@ class OpdsGenerator {
    * @param  boolean  $protected true = we need password authentication before a download
    */
   function newestCatalog($of=NULL, $entries, $protected) {
-    $this->xmlw = new XMLWriter();    
     $this->openStream($of);
     $this->header('BicBucStriim Catalog: Most recent 30', 
       'The newest 30 titles of your Calibre library',
@@ -80,20 +85,34 @@ class OpdsGenerator {
 
   /**
    * Write a catalog entry for a book title with acquisition links
-   * @param  Book     $entry      the book 
+   * @param  array    $entry      the book and its details 
    * @param  boolean  $protected  true = use an indirect acquisition link, 
    *                              else a direct one 
    */
   function partialAcquisitionEntry($entry, $protected) {
-    $this->startElement('entry');
-    $this->writeElement('id','urn:bicbucstriim:'.$this->bbs_root.'/titles/'.$entry->id);
-    $this->writeElement('title',$entry->title);
-    $this->writeElement('dc:issued',date("Y",$entry->pubdate));
-    # TODO: mod time of book?
-    $this->writeElement('updated',$this->updated);
-    if ($protected)
-      $this->indirectDownloadLink();
-    $this->endElement();
+    $titleLink = $this->bbs_root.'/titles/'.$entry['book']->id;
+    $this->xmlw->startElement('entry');
+    $this->xmlw->writeElement('id','urn:bicbucstriim:'.$titleLink);
+    $this->xmlw->writeElement('title',$entry['book']->title);
+    $this->xmlw->writeElement('dc:issued',date("Y",strtotime($entry['book']->pubdate)));    
+    $this->xmlw->writeElement('updated',$this->updated);
+    $this->xmlw->startElement('author');
+    $this->xmlw->writeElement('name',$entry['book']->author_sort);
+    $this->xmlw->endElement();    
+    $this->thumbnailLink($titleLink.'/thumbnail/');
+    #$this->detailsLink($titleLink.'/thumbnail/');
+    foreach($entry['formats'] as $format) {
+      $fname = $format->name;
+      $ext = strtolower($format->format);
+      $bp = Utilities::bookPath($this->calibre_dir,$entry['book']->path,$fname.'.'.$ext);
+      $mt = Utilities::titleMimeType($bp);
+      if ($protected)
+        $this->indirectDownloadLink($titleLink.'/showaccess/', $mt);
+       else      
+        $this->directDownloadLink($titleLink.'/file/'.urlencode($fname).'.'.$ext,$mt);
+    }
+
+    $this->xmlw->endElement();
   }
 
   /**
@@ -102,9 +121,10 @@ class OpdsGenerator {
    * @param  string $id      id detail, appended to 'urn:bicbucstriim:nav-'
    * @param  string $content content description (text)
    * @param  string $url     catalog url, appended to bbs_root.'/opds'
+   * @param  string type     navigation or acquisition feed
    * @param  string $rel     optional relation according to OPDS spec
    */
-  function navigationEntry($title, $id, $content, $url, $rel = NULL) {
+  function navigationEntry($title, $id, $content, $url, $type, $rel = NULL) {
     $this->xmlw->startElement('entry');
     $this->xmlw->writeElement('title', $title);
     $this->xmlw->writeElement('id', 'urn:bicbucstriim:nav-'.$id);
@@ -113,7 +133,7 @@ class OpdsGenerator {
     $this->xmlw->writeAttribute('type', 'text');
     $this->xmlw->text($content);
     $this->xmlw->endElement();  
-    $this->link($this->bbs_root.'/opds'.$url, 'application/atom+xml;type=feed;profile=opds-catalog', $rel);
+    $this->link($this->bbs_root.'/opds'.$url, $type, $rel);
     $this->xmlw->endElement();  
   }
 
@@ -242,6 +262,7 @@ class OpdsGenerator {
    * @param  string $of=NULL URI or NULL
    */
   function openStream($of=NULL) {
+    $this->xmlw = new XMLWriter();        
     if (is_null($of))
       $this->xmlw->openMemory();
     else  

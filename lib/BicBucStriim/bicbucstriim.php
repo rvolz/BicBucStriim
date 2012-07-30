@@ -347,7 +347,7 @@ class BicBucStriim {
 		}
 		$formats = $this->find('Data', 'select * from data where book='.$book->id);
 		return array('book' => $book, 'authors' => $authors, 'tags' => $tags, 
-			'formats' => $formats, 'comment' => $comment_text);
+			'formats' => $formats);
 	}
 
 	# Returns the path to the cover image of a book or NULL.
@@ -359,48 +359,7 @@ class BicBucStriim {
 			return Utilities::bookPath($this->calibre_dir,$book->path,$file);
 	}
 
-	/**
-	 * Return the MIME type for an ebook file. 
-	 *
-	 * To reduce search time the function checks first wether the file 
-	 * has a well known extension. If not two functions are tried. If all fails
-	 * 'application/force-download' is returned to force the download of the 
-	 * unknown format.
-	 * 
-	 * @param  string $file_path path to ebook file
-	 * @return string            MIME type
-	 */
-	function titleMimeType($file_path) {
-		$mtype = '';
-		
-		if (preg_match('/epub$/',$file_path) == 1)
-			return 'application/epub+zip';
-		else if (preg_match('/mobi$/', $file_path) == 1) 
-			return 'application/x-mobipocket-ebook';
-		else if (preg_match('/azw$/', $file_path) == 1) 
-			return 'application/vnd.amazon.ebook';
-		else if (preg_match('/pdf$/', $file_path) == 1) 
-			return 'application/pdf';
-		else if (preg_match('/txt$/', $file_path) == 1) 
-			return 'text/plain';
-		else if (preg_match('/html$/', $file_path) == 1) 
-			return 'text/html';
-		else if (preg_match('/zip$/', $file_path) == 1) 
-			return 'application/zip';
-
-		if (function_exists('mime_content_type')){
-	    	     $mtype = mime_content_type($file_path);
-	  }
-		else if (function_exists('finfo_file')){
-	    	     $finfo = finfo_open(FILEINFO_MIME);
-	    	     $mtype = finfo_file($finfo, $file_path);
-	    	     finfo_close($finfo);  
-	  }
-		if ($mtype == ''){
-	    	     $mtype = 'application/force-download';
-	  }
-		return $mtype;
-	}
+	
 
 	# Generate a list where the items are grouped and separated by 
 	# the initial character.

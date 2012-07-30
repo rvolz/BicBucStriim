@@ -16,6 +16,7 @@ class TestsIntegration extends TestSuite {
 		$this->addFile('test_tag_details.php');
 		$this->addFile('test_glob_dl_prot.php');
 		$this->addFile('test_admin_prot.php');
+		$this->addFile('test_site_opds.php');
 	}
 }
 ?>

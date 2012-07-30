@@ -96,26 +96,26 @@ if ($bbs->dbOk()) {
 
 # Init routes
 $app->notFound('myNotFound');
-$app->get('/', 'check_config', 'main');
+$app->get('/', 'htmlCheckConfig', 'main');
 $app->get('/admin/', 'admin');
 $app->post('/admin/', 'admin_change_json');
 $app->get('/admin/access/', 'admin_is_protected');
 $app->post('/admin/access/check/', 'admin_checkaccess');
 $app->get('/admin/error/:id', 'admin_error');
-$app->get('/titles/', 'check_config', 'titles');
-$app->get('/titles/:id/', 'check_config','title');
-$app->get('/titles/:id/showaccess/', 'check_config', 'showaccess');
-$app->post('/titles/:id/checkaccess/', 'check_config', 'checkaccess');
-$app->get('/titles/:id/cover/', 'check_config', 'cover');
-$app->get('/titles/:id/file/:file', 'check_config', 'book');
-$app->get('/titles/:id/thumbnail/', 'check_config', 'thumbnail');
-$app->get('/titleslist/:id/', 'check_config', 'titlesSlice');
-$app->get('/authors/', 'check_config', 'authors');
-$app->get('/authors/:id/', 'check_config', 'author');
-$app->get('/authorslist/:id/', 'check_config', 'authorsSlice');
-$app->get('/tags/', 'check_config', 'tags');
-$app->get('/tags/:id/', 'check_config', 'tag');
-$app->get('/tagslist/:id/', 'check_config', 'tagsSlice');
+$app->get('/titles/', 'htmlCheckConfig', 'titles');
+$app->get('/titles/:id/', 'htmlCheckConfig','title');
+$app->get('/titles/:id/showaccess/', 'htmlCheckConfig', 'showaccess');
+$app->post('/titles/:id/checkaccess/', 'htmlCheckConfig', 'checkaccess');
+$app->get('/titles/:id/cover/', 'htmlCheckConfig', 'cover');
+$app->get('/titles/:id/file/:file', 'htmlCheckConfig', 'book');
+$app->get('/titles/:id/thumbnail/', 'htmlCheckConfig', 'thumbnail');
+$app->get('/titleslist/:id/', 'htmlCheckConfig', 'titlesSlice');
+$app->get('/authors/', 'htmlCheckConfig', 'authors');
+$app->get('/authors/:id/', 'htmlCheckConfig', 'author');
+$app->get('/authorslist/:id/', 'htmlCheckConfig', 'authorsSlice');
+$app->get('/tags/', 'htmlCheckConfig', 'tags');
+$app->get('/tags/:id/', 'htmlCheckConfig', 'tag');
+$app->get('/tagslist/:id/', 'htmlCheckConfig', 'tagsSlice');
 $app->get('/opds/', 'opdsCheckConfig', 'opdsRoot');
 $app->get('/opds/newest/', 'opdsCheckConfig', 'opdsNewest');
 $app->get('/opds/titles/', 'opdsCheckConfig', 'opdsByTitles');
@@ -124,19 +124,21 @@ $app->get('/opds/tags/', 'opdsCheckConfig', 'opdsByTags');
 $app->run();
 
 
-# Check if the configuration is valid:
-# - If there is no bbs db --> show error
+/**
+ * Check the configuration DB and open it
+ * @return int 0 = ok
+ *             1 = no config db
+ *             2 = no calibre library path defined (after installation scenario)
+ *             3 = error while opening the calibre db 
+ */
 function check_config() {
 	global $we_have_config, $bbs, $app, $globalSettings;
 
-	$app->getLog()->debug("check_config start");
+	$app->getLog()->debug('check_config started');
 	# No config --> error
 	if (!$we_have_config) {
-		$app->getLog()->error('No configuration found');	
-		$app->render('error.html', array(
-			'page' => mkPage($globalSettings['langa']['error']), 
-			'title' => $globalSettings['langa']['error'], 
-			'error' => $globalSettings['langa']['no_config']));
+		$app->getLog()->error('check_config: No configuration found');
+		return(1);
 	}
 
 	# 'After installation' scenario: here is a config DB but no valid connection to Calibre
@@ -144,8 +146,8 @@ function check_config() {
 		if ($app->request()->isPost() && $app->request()->getResourceUri() === '/admin/') {
 			# let go through
 		} else {
-			$app->getLog()->warn('Calibre library path not configured, showing admin page.');	
-			$app->redirect($app->request()->getRootUri().'/admin');
+			$app->getLog()->warn('check_config: Calibre library path not configured, showing admin page.');	
+			return(2);
 		}
 	}
 
@@ -153,10 +155,36 @@ function check_config() {
 	$clp = $globalSettings[CALIBRE_DIR].'/metadata.db';
 	$bbs->openCalibreDB($clp);
 	if (!$bbs->libraryOk()) {
-		$app->getLog()->error('Exception while opening metadata db '.$clp.'. Showing admin page.');	
-		$app->redirect($app->request()->getRootUri().'/admin');
+		$app->getLog()->error('check_config: Exception while opening metadata db '.$clp.'. Showing admin page.');	
+		return(3);
 	} 	
-	$app->getLog()->debug("check_config end");
+	$app->getLog()->debug('check_config ended');
+	return(0);
+}
+
+# Check if the configuration is valid:
+# - If there is no bbs db --> show error
+function htmlCheckConfig() {
+	global $app, $globalSettings;
+
+	$result = check_config();
+
+	# No config --> error
+	if ($result === 1) {
+		$app->render('error.html', array(
+			'page' => mkPage($globalSettings['langa']['error']), 
+			'title' => $globalSettings['langa']['error'], 
+			'error' => $globalSettings['langa']['no_config']));
+		return;
+	} elseif ($result === 2) {
+		# After installation, no calibre dir defined, goto admin page
+		$app->redirect($app->request()->getRootUri().'/admin');
+		return;
+	} elseif ($result === 3) {
+		# Calibre dir wrong? Goto admin page
+		$app->redirect($app->request()->getRootUri().'/admin');
+		return;
+	} 
 }
 
 function myNotFound() {
@@ -374,6 +402,7 @@ function title($id) {
 function showaccess($id) {
 	global $app, $globalSettings;
 
+	$app->getLog()->debug('showaccess called for '.$id);			
 	$app->render('password_dialog.html',
 		array('page' => mkPage($globalSettings['langa']['check_access'],0,true), 
 					'bookid' => $id));
@@ -495,7 +524,7 @@ function book($id, $file) {
 		**/
 		//TODO: Use new streaming functions in SLIM 1.7.0 when released
 		header("Content-length: ".filesize($bookpath));
-		header("Content-type: ".$bbs->titleMimeType($bookpath));
+		header("Content-type: ".Utilities::titleMimeType($bookpath));
 		readfile_chunked($bookpath);
 	}
 }
@@ -592,11 +621,12 @@ function tag($id) {
 function opdsCheckConfig() {
 	global $we_have_config, $app;
 
-	if (!$we_have_config) {
-		$app->getLog()->error('opdsCheckConfig: No configuration found');	
+	$result = check_config();
+	if ($result != 0) {
+		$app->getLog()->error('opdsCheckConfig: Configuration invalid, check config error '.$result);	
 		$app->response()->status(500);
 		$app->response()->header('Content-type','text/html');
-		$app->response()->body('<p>No configuration found.</p>');
+		$app->response()->body('<p>BucBucStriim: Invalid Configuration.</p>');
 	}
 }
 
@@ -606,25 +636,37 @@ function opdsCheckConfig() {
 function opdsRoot() {
 	global $app, $appversion, $bbs;
 
+	$app->getLog()->debug('opdsRoot started');			
 	$gen = new OpdsGenerator($app->request()->getRootUri(), $appversion, 
+		$bbs->calibre_dir,
 		date(DATE_ATOM,$bbs->calibre_last_modified));
 	$app->response()->status(200);
 	$app->response()->header('Content-type',OpdsGenerator::OPDS_MIME_NAV);
 	$gen->rootCatalog('php://output');
+	$app->getLog()->debug('opdsRoot ended');			
 }
 
 /**
- * Generate and send the OPDS 'newest' catalog
+ * Generate and send the OPDS 'newest' catalog. This catalog is an
+ * acquisition catalog with a subset of the title details.
  */
 function opdsNewest() {
 	global $app, $appversion, $bbs;
 
-	$books = $bbs->last30Books();
+	$app->getLog()->debug('opdsNewest started');			
+	$just_books = $bbs->last30Books();
+	$app->getLog()->debug('opdsNewest: 30 books found');			
+	$books = array();
+	foreach ($just_books as $book)
+		array_push($books,$bbs->titleDetailsOpds($book));
+	$app->getLog()->debug('opdsNewest: details found');			
 	$gen = new OpdsGenerator($app->request()->getRootUri(), $appversion, 
+		$bbs->calibre_dir,
 		date(DATE_ATOM,$bbs->calibre_last_modified));
 	$app->response()->status(200);
 	$app->response()->header('Content-type',OpdsGenerator::OPDS_MIME_ACQ);
 	$gen->newestCatalog('php://output', $books, is_protected(NULL));
+	$app->getLog()->debug('opdsNewest ended');			
 }
 
 #####
