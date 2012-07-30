@@ -1,16 +1,6 @@
 <?php
 
-
-class Item {}
-class Book extends Item {}
-class Author extends Item {}
-class BookAuthorLink extends Item {}
-class BookTagLink extends Item {}
-class Tag extends Item {}
-class Data extends Item {}
-class Comment extends Item {}
-
-class Config extends Item{}
+require_once 'items.php';
 
 class BicBucStriim {
 	# Name to the bbs db
@@ -316,7 +306,12 @@ class BicBucStriim {
 		return $thumb_path;
 	}
 
-	# Find a single book, its authors, tags, formats and comment.
+	# 
+	/**
+	 * Find a single book, its authors, tags, formats and comment.
+	 * @param  int 		$id 	the Calibre book ID
+	 * @return array     		the book and its authors, tags, formats, and comment/description
+	 */
 	function titleDetails($id) {
 		$book = $this->title($id);
 		if (is_null($book)) return NULL;
@@ -338,6 +333,32 @@ class BicBucStriim {
 			$comment_text = '';
 		else
 			$comment_text = $comment->text;		
+		return array('book' => $book, 'authors' => $authors, 'tags' => $tags, 
+			'formats' => $formats, 'comment' => $comment_text);
+	}
+
+	/**
+	 * Find a subset of the details for a book that is sufficient for an OPDS 
+	 * partial acquisition feed. The function assumes that the book record has 
+	 * already been loaded.
+	 * @param  Book   $book complete book record from title()
+	 * @return array       	the book and its authors, tags and formats
+	 */
+	function titleDetailsOpds($book) {
+		if (is_null($book)) return NULL;
+		$author_ids = $this->find('BookAuthorLink', 'select * from books_authors_link where book='.$book->id);
+		$authors = array();
+		foreach($author_ids as $aid) {
+			$author = $this->findOne('Author', 'select * from authors where id='.$aid->author);
+			array_push($authors, $author);
+		}
+		$tag_ids = $this->find('BookTagLink', 'select * from books_tags_link where book='.$book->id);
+		$tags = array();
+		foreach($tag_ids as $tid) {
+			$tag = $this->findOne('Tag', 'select * from tags where id='.$tid->tag);
+			array_push($tags, $tag);
+		}
+		$formats = $this->find('Data', 'select * from data where book='.$book->id);
 		return array('book' => $book, 'authors' => $authors, 'tags' => $tags, 
 			'formats' => $formats, 'comment' => $comment_text);
 	}
@@ -393,7 +414,7 @@ class BicBucStriim {
 	  }
 		return $mtype;
 	}
-	
+
 	# Generate a list where the items are grouped and separated by 
 	# the initial character.
 	# If the item has a 'sort' field that is used, else the name.
