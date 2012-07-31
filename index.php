@@ -125,7 +125,9 @@ $app->get('/opds/titleslist/:id/', 'opdsCheckConfig', 'opdsByTitle');
 $app->get('/opds/authorslist/', 'opdsCheckConfig', 'opdsByAuthorInitial');
 $app->get('/opds/authorslist/:initial/', 'opdsCheckConfig', 'opdsByAuthorNamesForInitial');
 $app->get('/opds/authorslist/:initial/:id/', 'opdsCheckConfig', 'opdsByAuthor');
-$app->get('/opds/tagslist/:id/', 'opdsCheckConfig', 'opdsByTag');
+$app->get('/opds/tagslist/', 'opdsCheckConfig', 'opdsByTagInitial');
+$app->get('/opds/tagslist/:initial/', 'opdsCheckConfig', 'opdsByTagNamesForInitial');
+$app->get('/opds/tagslist/:initial/:id/', 'opdsCheckConfig', 'opdsByTag');
 $app->run();
 
 
@@ -758,6 +760,11 @@ function opdsByAuthorNamesForInitial($initial) {
 	$app->getLog()->debug('opdsByAuthorNamesForInitial ended');			
 }
 
+/**
+ * Return a feed with partial acquisition entries for the author's books
+ * @param  string $initial initial character
+ * @param  int 		$id      author id
+ */
 function opdsByAuthor($initial,$id) {
 	global $app, $appversion, $bbs;
 
@@ -782,35 +789,69 @@ function opdsByAuthor($initial,$id) {
 }
 
 /**
- * Return a page of the titles or 404 if not found
- * @param  integer $index=0 page index
+ * Return a page with tag initials
  */
-function opdsByTag($index=0) {
-	global $app, $appversion, $bbs, $globalSettings;
+function opdsByTagInitial() {
+	global $app, $appversion, $bbs;
 
-	$app->getLog()->debug('opdsByTag started, showing page '.$index);			
-	$search = $app->request()->get('search');
-	if (isset($search))
-		$tl = $bbs->titlesSlice($index,$globalSettings['pagentries'],$search);
-	else
-		$tl = $bbs->titlesSlice($index,$globalSettings['pagentries']);
-	$app->getLog()->debug('opdsByTag: books found');			
-	$books = array();
-	foreach ($tl['entries'] as $book)
-		array_push($books,$bbs->titleDetailsOpds($book));
-	$app->getLog()->debug('opdsTitles: details found');
-	if ($tl['page'] < $tl['pages']-1)
-		$nextPage = $tl['page']+1;
-	else
-		$nextPage = NULL;
+	$app->getLog()->debug('opdsByTagInitial started');			
+	$initials = $bbs->tagsInitials();
+	$app->getLog()->debug('opdsByTagInitial: initials found');			
 	$gen = new OpdsGenerator($app->request()->getRootUri(), $appversion, 
 		$bbs->calibre_dir,
 		date(DATE_ATOM,$bbs->calibre_last_modified));
 	$app->response()->status(200);
-	$app->response()->header('Content-type',OpdsGenerator::OPDS_MIME_ACQ);
-	$gen->titlesCatalog('php://output', $books, is_protected(NULL), $tl['page'], $nextPage, $tl['pages']-1);
-	$app->getLog()->debug('opdsByTag ended');			
+	$app->response()->header('Content-type',OpdsGenerator::OPDS_MIME_NAV);
+	$gen->tagsRootCatalog('php://output', $initials);
+	$app->getLog()->debug('opdsByTagInitial ended');			
 }
+
+/**
+ * Return a page with author names for a initial
+ */
+function opdsByTagNamesForInitial($initial) {
+	global $app, $appversion, $bbs;
+
+	$app->getLog()->debug('opdsByTagNamesForInitial started, showing initial '.$initial);			
+	$tags = $bbs->tagsNamesForInitial($initial);
+	$app->getLog()->debug('opdsByTagNamesForInitial: initials found');			
+	$gen = new OpdsGenerator($app->request()->getRootUri(), $appversion, 
+		$bbs->calibre_dir,
+		date(DATE_ATOM,$bbs->calibre_last_modified));
+	$app->response()->status(200);
+	$app->response()->header('Content-type',OpdsGenerator::OPDS_MIME_NAV);
+	$gen->tagsNamesForInitialCatalog('php://output', $tags, $initial);
+	$app->getLog()->debug('opdsByTagNamesForInitial ended');			
+}
+
+/**
+ * Return a feed with partial acquisition entries for the tags's books
+ * @param  string $initial initial character
+ * @param  int 		$id      tag id
+ */
+function opdsByTag($initial,$id) {
+	global $app, $appversion, $bbs;
+
+	$app->getLog()->debug('opdsByTag started, showing initial '.$initial.', id '.$id);			
+	$adetails = $bbs->tagDetails($id);
+	$books = array();
+	foreach ($adetails['books'] as $book) {
+		$record = $bbs->titleDetailsOpds($book);
+		if (!empty($record['formats']))
+			array_push($books,$record);
+	}
+	
+	$app->getLog()->debug('opdsByTag: details found');			
+	$gen = new OpdsGenerator($app->request()->getRootUri(), $appversion, 
+		$bbs->calibre_dir,
+		date(DATE_ATOM,$bbs->calibre_last_modified));
+	$app->response()->status(200);
+	$app->response()->header('Content-type',OpdsGenerator::OPDS_MIME_NAV);
+	$gen->booksForTagCatalog('php://output', $books, $initial, 
+		$adetails['tag'],is_protected(NULL));
+	$app->getLog()->debug('opdsByTag ended');				
+}
+
 
 #####
 ##### Utility and helper functions, private

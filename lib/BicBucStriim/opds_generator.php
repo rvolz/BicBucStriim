@@ -188,6 +188,83 @@ class OpdsGenerator {
     return $this->closeStream($of);
   }
 
+  /**
+   * Generate a list of initials of tag names
+   * @param  string   $of=NULL   output URI or NULL for string output
+   * @param  array    $entries   an array of Items
+   */
+  function tagsRootCatalog($of=NULL, $entries) {
+    $this->openStream($of);
+    $this->header('BicBucStriim Catalog: All Tags', 
+      'Tags by their initials',
+      '/opds/tagslist/');
+    # TODO Search link?
+    $this->navigationCatalogLink($this->bbs_root.'/opds/tagslist/','self');
+    $this->navigationCatalogLink($this->bbs_root.'/opds/', 'start');
+    $this->navigationCatalogLink($this->bbs_root.'/opds/', 'up');
+    # Content
+    foreach($entries as $entry) {
+      $url = '/tagslist/'.$entry->initial.'/';
+      $this->navigationEntry($entry->initial, $url, 'Tags: '.$entry->ctr, $url, 
+        self::OPDS_MIME_NAV);
+    }
+    $this->footer();
+    return $this->closeStream($of);
+  }
+
+  /**
+   * generate a list of tag entries with book counts
+   * @param  string   $of=NULL   output URI or NULL for string output
+   * @param  array    $entries   an array of Tags
+   * @param  string   $initial   the initial character
+   */
+  function tagsNamesForInitialCatalog($of=NULL, $entries, $initial) {
+    $this->openStream($of);
+    $url= '/tagslist/'.$initial.'/';
+    $this->header('BicBucStriim Catalog: All Tags for '.$initial, 
+      'Tags list',
+      $url);
+    # TODO Search link?
+    $this->navigationCatalogLink($this->bbs_root.$url,'self');
+    $this->navigationCatalogLink($this->bbs_root.'/opds/', 'start');
+    $this->navigationCatalogLink($this->bbs_root.'/opds/tagslist/', 'up');
+    # TODO next/prev
+
+    # Content
+    foreach($entries as $entry) {
+      $url2 = $url.$entry->id.'/';
+      $this->navigationEntry($entry->name, $url2, 'Books: '.$entry->anzahl, $url2, 
+        self::OPDS_MIME_NAV);
+    }
+    $this->footer();
+    return $this->closeStream($of);
+  }
+
+  /**
+   * generate a list of book entries for a tag
+   * @param  string   $of=NULL    output URI or NULL for string output
+   * @param  array    $entries    an array of Books
+   * @param  string   $initial    the initial character
+   * @param  string   $tag        the tag
+   * @param  bool     $protected  download protection y/n?
+   */
+  function booksForTagCatalog($of=NULL, $entries, $initial, $tag, $protected) {
+    $this->openStream($of);
+    $url= '/tagslist/'.$initial.'/'.$tag->id.'/';
+    $this->header('BicBucStriim Catalog: '.$tag->name, 
+      'All books with tag '.$tag->name,
+      $url);
+    $this->acquisitionCatalogLink($this->bbs_root.$url,'self');
+    $this->navigationCatalogLink($this->bbs_root.'/opds/', 'start');
+    $this->navigationCatalogLink($this->bbs_root.'/opds/tagslist/'.$initial.'/', 'up');
+    # Content
+    foreach($entries as $entry) {
+      $url2 = $url.$entry['book']->id.'/';
+      $this->partialAcquisitionEntry($entry, $protected);
+    }
+    $this->footer();
+    return $this->closeStream($of);
+  }
 
   /**
    * Write a catalog entry for a book title with acquisition links

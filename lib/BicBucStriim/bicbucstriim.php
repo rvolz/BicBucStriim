@@ -223,6 +223,23 @@ class BicBucStriim {
 		return $this->findSlice('Tag', $index, $length, $search);
 	}
 
+	/**
+	 * Find the initials of all tags and their count
+	 * @return array an array of Items with initial character and tag count
+	 */
+	function tagsInitials() {
+		return $this->find('Item', 'select substr(upper(name),1,1) as initial, count(*) as ctr from tags group by initial order by initial asc');
+	}
+
+	/**
+	 * Find all authors with a given initial and return their names and book count
+	 * @param  string $initial initial character of last name, uppercase
+	 * @return array           array of authors with book count
+	 */
+	function tagsNamesForInitial($initial) {
+		return $this->find('Tag', 'select tags.id, tags.name, count(btl.id) as anzahl from tags left join books_tags_link as btl on tags.id = btl.tag where substr(upper(tags.name),1,1) = \''.$initial.'\' group by tags.id order by tags.name');	
+	}
+
 	# Return a grouped list of all books. The list is separated by dividers, 
 	# the initial title character.
 	function allTitles() {
