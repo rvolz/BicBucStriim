@@ -105,6 +105,24 @@ class TestOfBicBucStriim extends UnitTestCase {
 		$this->assertEqual(1, count($result3['entries']));
 	}
 
+	function testAuthorsInitials() {
+		$result = $this->bbs->authorsInitials();
+		$this->assertEqual(0, $this->bbs->last_error);
+		$this->assertEqual(5, count($result));
+		$this->assertEqual('E', $result[0]->initial);
+		$this->assertEqual(1, $result[0]->ctr);
+		$this->assertEqual('R', $result[4]->initial);
+		$this->assertEqual(2, $result[4]->ctr);		
+	}
+
+	function testAuthorsNamesForInitial() {
+		$result = $this->bbs->authorsNamesForInitial('R');
+		$this->assertEqual(0, $this->bbs->last_error);
+		$this->assertEqual(2, count($result));
+		$this->assertEqual(1, $result[0]->anzahl);
+		$this->assertEqual('Rilke, Rainer Maria', $result[0]->sort);
+	}
+
 	function testAllTags() {		
 		$result = $this->bbs->allTags();
 		$this->assertEqual(0, $this->bbs->last_error);

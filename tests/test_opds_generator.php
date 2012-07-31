@@ -1,4 +1,11 @@
 <?php
+/**
+ * OPDS Generator test suite.
+ *
+ * Needs the follwoing external tools installed:
+ * - jing (http://code.google.com/p/jing-trang/)
+ * - opds_validator (https://github.com/zetaben/opds-validator)
+ */
 set_include_path("tests");
 require_once('lib/simpletest/autorun.php');
 require_once('lib/BicBucStriim/bicbucstriim.php');
@@ -31,9 +38,20 @@ class TestOfOpdsGenerator extends UnitTestCase {
 		system("rm -rf ".self::DATA);
 	}
 
-	# Validation helper
-	function opdsValidate($feed) {
+	# Validation helper: validate relaxng 
+	function opdsValidateSchema($feed) {
 		$res = system('jing '.self::OPDS_RNG.' '.$feed);
+		if ($res != '') {
+			echo 'RelaxNG validation error: '.$res;
+			return false;
+		} else
+			return true;
+	}
+
+	# Validation helper: validate opds
+	function opdsValidate($feed, $version) {
+		$cmd = 'cd ~/lib/java/opds-validator;java -jar OPDSvalidator.jar -v'.$version.' '.realpath($feed);
+		$res = system($cmd);
 		if ($res != '') {
 			echo 'OPDS validation error: '.$res;
 			return false;
@@ -45,7 +63,9 @@ class TestOfOpdsGenerator extends UnitTestCase {
 		$feed = self::DATA.'/feed.xml';
 		$xml = $this->gen->rootCatalog($feed);
 		$this->assertTrue(file_exists($feed));		
-		$this->assertTrue($this->opdsValidate($feed));
+		$this->assertTrue($this->opdsValidateSchema($feed));
+		$this->assertTrue($this->opdsValidate($feed,'1.0'));
+		$this->assertTrue($this->opdsValidate($feed,'1.1'));
 	}
 
 	function testPartialAcquisitionEntry() {
@@ -98,5 +118,19 @@ function testPartialAcquisitionEntryWithProtection() {
 		#print_r($result);
 		$this->assertEqual($expected, $result);
 	}	
+
+	function testNewestCatalogValidation() {
+		$feed = self::DATA.'/feed.xml';
+		$just_books = $this->bbs->last30Books();
+		$books = array();
+		foreach ($just_books as $book)
+			array_push($books,$this->bbs->titleDetailsOpds($book));
+		$xml = $this->gen->newestCatalog($feed,$books,false);
+		$this->assertTrue(file_exists($feed));		
+		$this->assertTrue($this->opdsValidateSchema($feed));
+		$this->assertTrue($this->opdsValidate($feed,'1.0'));
+		$this->assertTrue($this->opdsValidate($feed,'1.1'));
+	}
+
 }
 ?>

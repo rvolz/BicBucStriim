@@ -191,6 +191,23 @@ class BicBucStriim {
 		return $this->findSlice('Author', $index, $length, $search);
 	}
 
+	/**
+	 * Find the initials of all authors and their count
+	 * @return array an array of Items with initial character and author count
+	 */
+	function authorsInitials() {
+		return $this->find('Item', 'select substr(upper(sort),1,1) as initial, count(*) as ctr from authors group by initial order by initial asc');
+	}
+
+	/**
+	 * Find all authors with a given initial and return their names and book count
+	 * @param  string $initial initial character of last name, uppercase
+	 * @return array           array of authors with book count
+	 */
+	function authorsNamesForInitial($initial) {
+		return $this->find('Author', 'select a.id, a.name, a.sort, count(bal.id) as anzahl from authors as a left join books_authors_link as bal on a.id = bal.author where substr(upper(a.sort),1,1) = \''.$initial.'\' group by a.id order by a.sort');	
+	}
+
 	# Return a grouped list of all tags. The list is separated by dividers, 
 	# the initial character.
 	function allTags() {
@@ -232,8 +249,6 @@ class BicBucStriim {
 		}
 		return array('author' => $author, 'books' => $books);
 	}
-
-
 
 	# Returns a tag and the related books
 	function tagDetails($id) {

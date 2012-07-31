@@ -41,18 +41,19 @@ class OpdsGenerator {
     $this->openStream($of);
     $this->header('BicBucStriim Root Catalog', 
       'The root catalog to the contents of your Calibre library',
-      'nav:root');
+      '/opds/');
     # TODO Search link?
     $this->navigationCatalogLink($this->bbs_root.'/opds/', 'self');
     $this->navigationCatalogLink($this->bbs_root.'/opds/', 'start');
+    $this->link($this->bbs_root.'/opds/opensearch.xml', 'application/opensearchdescription+xml', 'search', 'Search in BicBucStriim');
     # Subcatalogs
-    $this->navigationEntry('Most Recent 30', 'newest', 'The 30 most recent titles', '/newest/', 
+    $this->navigationEntry('Most Recent 30', '/opds/newest/', 'The 30 most recent titles', '/newest/', 
       self::OPDS_MIME_ACQ, 'http://opds-spec.org/sort/new');
-    $this->navigationEntry('By Titles', 'titles', 'All books by title', '/titles/',
+    $this->navigationEntry('By Titles', '/opds/titleslist/0/', 'All books by title', '/titleslist/0/',
       self::OPDS_MIME_ACQ);
-    $this->navigationEntry('By Authors', 'authors', 'All books by author', '/authors/',
+    $this->navigationEntry('By Authors', '/opds/authorslist/', 'All books by author', '/authorslist/',
       self::OPDS_MIME_NAV);
-    $this->navigationEntry('By Tags', 'tags', 'All books by tag', '/tags/',
+    $this->navigationEntry('By Tags', '/opds/tagslist/', 'All books by tag', '/tagslist/',
       self::OPDS_MIME_NAV);
     $this->footer();
     return $this->closeStream($of);
@@ -68,20 +69,125 @@ class OpdsGenerator {
     $this->openStream($of);
     $this->header('BicBucStriim Catalog: Most recent 30', 
       'The newest 30 titles of your Calibre library',
-      'nav:newest');
+      '/opds/newest/');
     # TODO Search link?
     $this->acquisitionCatalogLink($this->bbs_root.'/opds/newest/','self');
     $this->navigationCatalogLink($this->bbs_root.'/opds/', 'start');
     $this->navigationCatalogLink($this->bbs_root.'/opds/', 'up');
-    $this->acquisitionCatalogLink($this->bbs_root.'/opds/newest/','first');
-    $this->acquisitionCatalogLink($this->bbs_root.'/opds/titles/', 'next');
-    $this->navigationCatalogLink($this->bbs_root.'/opds/tags/', 'last');
     # Content
     foreach($entries as $entry)
       $this->partialAcquisitionEntry($entry, $protected);
     $this->footer();
     return $this->closeStream($of);
   }
+
+  /**
+   * Generate an paginated acquisition catalog for the all books
+   * @param  string   $of=NULL   output URI or NULL for string output
+   * @param  array    $entries   an array of Book
+   * @param  boolean  $protected true = we need password authentication before a download
+   * @param  int      $page      number of page to show, minimum 0
+   * @param  int      $next      number of the nextPage to show, or NULL
+   * @param  int      $last      number of the last page
+   */
+  function titlesCatalog($of=NULL, $entries, $protected, $page, $next, $last) {
+    $this->openStream($of);
+    $this->header('BicBucStriim Catalog: All Titles', 
+      'All books of your Calibre library, sorted by title',
+      '/opds/titles/');
+    # TODO Search link?
+    $this->acquisitionCatalogLink($this->bbs_root.'/opds/titleslist/'.$page.'/','self');
+    $this->navigationCatalogLink($this->bbs_root.'/opds/', 'start');
+    $this->navigationCatalogLink($this->bbs_root.'/opds/', 'up');
+    $this->acquisitionCatalogLink($this->bbs_root.'/opds/titleslist/0/','first');
+    if (!is_null($next))
+      $this->acquisitionCatalogLink($this->bbs_root.'/opds/titleslist/'.$next.'/','next');
+    $this->navigationCatalogLink($this->bbs_root.'/opds/titleslist/'.$last.'/', 'last');
+    # Content
+    foreach($entries as $entry)
+      $this->partialAcquisitionEntry($entry, $protected);
+    $this->footer();
+    return $this->closeStream($of);
+  }
+
+  /**
+   * Generate a list of initials of author names
+   * @param  string   $of=NULL   output URI or NULL for string output
+   * @param  array    $entries   an array of Items
+   */
+  function authorsRootCatalog($of=NULL, $entries) {
+    $this->openStream($of);
+    $this->header('BicBucStriim Catalog: All Authors', 
+      'Authors by their initials',
+      '/opds/authorslist/');
+    # TODO Search link?
+    $this->navigationCatalogLink($this->bbs_root.'/opds/authorslist/','self');
+    $this->navigationCatalogLink($this->bbs_root.'/opds/', 'start');
+    $this->navigationCatalogLink($this->bbs_root.'/opds/', 'up');
+    # Content
+    foreach($entries as $entry) {
+      $url = '/authorslist/'.$entry->initial.'/';
+      $this->navigationEntry($entry->initial, $url, 'Authors: '.$entry->ctr, $url, 
+        self::OPDS_MIME_NAV);
+    }
+    $this->footer();
+    return $this->closeStream($of);
+  }
+
+  /**
+   * generate a list of author entries with book counts
+   * @param  string   $of=NULL   output URI or NULL for string output
+   * @param  array    $entries   an array of Authors
+   * @param  string   $initial   the initial character
+   */
+  function authorsNamesForInitialCatalog($of=NULL, $entries, $initial) {
+    $this->openStream($of);
+    $url= '/authorslist/'.$initial.'/';
+    $this->header('BicBucStriim Catalog: All Authors for '.$initial, 
+      'Authors list',
+      $url);
+    # TODO Search link?
+    $this->navigationCatalogLink($this->bbs_root.$url,'self');
+    $this->navigationCatalogLink($this->bbs_root.'/opds/', 'start');
+    $this->navigationCatalogLink($this->bbs_root.'/opds/authorslist/', 'up');
+    # TODO next/prev
+
+    # Content
+    foreach($entries as $entry) {
+      $url2 = $url.$entry->id.'/';
+      $this->navigationEntry($entry->name, $url2, 'Books: '.$entry->anzahl, $url2, 
+        self::OPDS_MIME_NAV);
+    }
+    $this->footer();
+    return $this->closeStream($of);
+  }
+
+  /**
+   * generate a list of book entries for an author
+   * @param  string   $of=NULL    output URI or NULL for string output
+   * @param  array    $entries    an array of Books
+   * @param  string   $initial    the initial character
+   * @param  string   $author     the author
+   * @param  bool     $protected  download protection y/n?
+   */
+  function booksForAuthorCatalog($of=NULL, $entries, $initial, $author, $protected) {
+    $this->openStream($of);
+    $url= '/authorslist/'.$initial.'/'.$author->id.'/';
+    $this->header('BicBucStriim Catalog: '.$author->name, 
+      'All books by '.$author->name,
+      $url);
+    $this->acquisitionCatalogLink($this->bbs_root.$url,'self');
+    $this->navigationCatalogLink($this->bbs_root.'/opds/', 'start');
+    $this->navigationCatalogLink($this->bbs_root.'/opds/authorslist/'.$initial.'/', 'up');
+    # Content
+    foreach($entries as $entry) {
+      $url2 = $url.$entry['book']->id.'/';
+      $this->partialAcquisitionEntry($entry, $protected);
+    }
+    $this->footer();
+    return $this->closeStream($of);
+  }
+
 
   /**
    * Write a catalog entry for a book title with acquisition links
@@ -124,10 +230,10 @@ class OpdsGenerator {
    * @param  string type     navigation or acquisition feed
    * @param  string $rel     optional relation according to OPDS spec
    */
-  function navigationEntry($title, $id, $content, $url, $type, $rel = NULL) {
+  function navigationEntry($title, $id, $content, $url, $type, $rel='subsection') {
     $this->xmlw->startElement('entry');
     $this->xmlw->writeElement('title', $title);
-    $this->xmlw->writeElement('id', 'urn:bicbucstriim:nav-'.$id);
+    $this->xmlw->writeElement('id', $this->bbs_root.$id);
     $this->xmlw->writeElement('updated', $this->updated);
     $this->xmlw->startElement('content');
     $this->xmlw->writeAttribute('type', 'text');
@@ -146,19 +252,24 @@ class OpdsGenerator {
   function header($title,$subtitle,$id) {
     $this->xmlw->startDocument('1.0','UTF-8');
     $this->xmlw->startElement('feed');
-    $this->xmlw->writeAttribute('xmlns', 'http://www.w3.org/2005/Atom');
     $this->xmlw->writeAttribute('xmlns:opds', 'http://opds-spec.org/2010/catalog'); 
     $this->xmlw->writeAttribute('xmlns:dc', 'http://purl.org/dc/terms/'); 
+    $this->xmlw->writeAttribute('xmlns:thr','http://purl.org/syndication/thread/1.0');
+    $this->xmlw->writeAttribute('xmlns:opensearch','http://a9.com/-/spec/opensearch/1.1/');
+    $this->xmlw->writeAttribute('xml:lang','en');
+    $this->xmlw->writeAttribute('xmlns', 'http://www.w3.org/2005/Atom');    
     $this->xmlw->writeElement('title',$title);
     $this->xmlw->writeElement('subtitle',$subtitle);
+    $this->xmlw->writeElement('icon',$this->bbs_root.'/favicon.ico');
     $this->xmlw->startElement('author');
     $this->xmlw->writeElement('name', 'BicBucStriim '.$this->bbs_version);
     # TODO: textmulch url for feed uri
     $this->xmlw->writeElement('uri', 'http://rvolz.gihub.com/BicBucStriim');
     $this->xmlw->endElement();
     # TODO: proper urn
-    $this->xmlw->writeElement('id', 'urn:bicbucstriim:'.$id);
-    $this->xmlw->writeElement('updated', $this->updated);
+    #$this->xmlw->writeElement('id', 'urn:bicbucstriim:'.$id);
+    $this->xmlw->writeElement('id', $this->bbs_root.$id);
+    $this->xmlw->writeElement('updated', $this->updated);    
   }
 
   /**
