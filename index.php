@@ -1,13 +1,18 @@
 <?php
-// Copyight 2012 Rainer Volz
-// Licensed under MIT License, see README.MD/License
+/**
+ * BicBucStriim
+ *
+ * Copyight 2012 Rainer Volz
+ * Licensed under MIT License, see LICENSE
+ * 
+ */ 
 
-require_once 'lib/Slim/Slim.php';
-require_once 'lib/Slim/Views/TwigView.php';
-TwigView::$twigDirectory = dirname(__FILE__) . '/lib/Twig';
-TwigView::$twigExtensions = array(
-    'Twig_Extensions_Slim'
-);
+require 'vendor/autoload.php';
+require_once 'vendor/slim/slim/Slim/View.php';
+require_once 'vendor/slim/extras/Views/TwigView.php';
+
+TwigView::$twigDirectory = dirname(__FILE__) . '/vendor/twig/twig';
+TwigView::$twigExtensions = array('Twig_Extensions_Slim');
 
 require_once 'lib/BicBucStriim/bicbucstriim.php';
 require_once 'lib/BicBucStriim/opds_generator.php';
