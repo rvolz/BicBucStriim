@@ -122,10 +122,82 @@ function testPartialAcquisitionEntryWithProtection() {
 	function testNewestCatalogValidation() {
 		$feed = self::DATA.'/feed.xml';
 		$just_books = $this->bbs->last30Books();
-		$books = array();
-		foreach ($just_books as $book)
-			array_push($books,$this->bbs->titleDetailsOpds($book));
+		$books = $this->bbs->titleDetailsFilteredOpds($just_books);		
 		$xml = $this->gen->newestCatalog($feed,$books,false);
+		$this->assertTrue(file_exists($feed));		
+		$this->assertTrue($this->opdsValidateSchema($feed));
+		$this->assertTrue($this->opdsValidate($feed,'1.0'));
+		$this->assertTrue($this->opdsValidate($feed,'1.1'));
+	}
+
+	function testTitlesCatalogValidation() {
+		$feed = self::DATA.'/feed.xml';
+		$tl = $this->bbs->titlesSlice(0,2);
+		$books = $this->bbs->titleDetailsFilteredOpds($tl['entries']);		
+		$xml = $this->gen->titlesCatalog($feed,$books,false, 
+			$tl['page'],$tl['page']+1,$tl['pages']-1);
+		$this->assertTrue(file_exists($feed));		
+		$this->assertTrue($this->opdsValidateSchema($feed));
+		$this->assertTrue($this->opdsValidate($feed,'1.0'));
+		$this->assertTrue($this->opdsValidate($feed,'1.1'));
+	}
+
+	function testAuthorsInitialCatalogValidation() {
+		$feed = self::DATA.'/feed.xml';
+		$tl = $this->bbs->authorsInitials();
+		$xml = $this->gen->authorsRootCatalog($feed,$tl);
+		$this->assertTrue(file_exists($feed));		
+		$this->assertTrue($this->opdsValidateSchema($feed));
+		$this->assertTrue($this->opdsValidate($feed,'1.0'));
+		$this->assertTrue($this->opdsValidate($feed,'1.1'));
+	}
+
+	function testAuthorsNamesForInitialCatalogValidation() {
+		$feed = self::DATA.'/feed.xml';
+		$tl = $this->bbs->authorsNamesForInitial('R');
+		$xml = $this->gen->authorsNamesForInitialCatalog($feed,$tl, 'R');
+		$this->assertTrue(file_exists($feed));		
+		$this->assertTrue($this->opdsValidateSchema($feed));
+		$this->assertTrue($this->opdsValidate($feed,'1.0'));
+		$this->assertTrue($this->opdsValidate($feed,'1.1'));
+	}
+
+	function testAuthorsBooksForAuthorCatalogValidation() {
+		$feed = self::DATA.'/feed.xml';
+		$adetails = $this->bbs->authorDetails(5);
+		$books = $this->bbs->titleDetailsFilteredOpds($adetails['books']);
+		$xml = $this->gen->booksForAuthorCatalog($feed,$books, 'E', $adetails, false);
+		$this->assertTrue(file_exists($feed));		
+		$this->assertTrue($this->opdsValidateSchema($feed));
+		$this->assertTrue($this->opdsValidate($feed,'1.0'));
+		$this->assertTrue($this->opdsValidate($feed,'1.1'));
+	}
+
+	function testTagsInitialCatalogValidation() {
+		$feed = self::DATA.'/feed.xml';
+		$tl = $this->bbs->tagsInitials();
+		$xml = $this->gen->tagsRootCatalog($feed,$tl);
+		$this->assertTrue(file_exists($feed));		
+		$this->assertTrue($this->opdsValidateSchema($feed));
+		$this->assertTrue($this->opdsValidate($feed,'1.0'));
+		$this->assertTrue($this->opdsValidate($feed,'1.1'));
+	}
+
+	function testTagsNamesForInitialCatalogValidation() {
+		$feed = self::DATA.'/feed.xml';
+		$tl = $this->bbs->tagsNamesForInitial('B');
+		$xml = $this->gen->tagsNamesForInitialCatalog($feed,$tl, 'B');
+		$this->assertTrue(file_exists($feed));		
+		$this->assertTrue($this->opdsValidateSchema($feed));
+		$this->assertTrue($this->opdsValidate($feed,'1.0'));
+		$this->assertTrue($this->opdsValidate($feed,'1.1'));
+	}
+
+	function testTagsBooksForTagCatalogValidation() {
+		$feed = self::DATA.'/feed.xml';
+		$adetails = $this->bbs->tagDetails(5);
+		$books = $this->bbs->titleDetailsFilteredOpds($adetails['books']);
+		$xml = $this->gen->booksForTagCatalog($feed,$books, 'B', $adetails, false);
 		$this->assertTrue(file_exists($feed));		
 		$this->assertTrue($this->opdsValidateSchema($feed));
 		$this->assertTrue($this->opdsValidate($feed,'1.0'));

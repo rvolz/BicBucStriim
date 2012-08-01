@@ -703,12 +703,7 @@ function opdsByTitle($index=0) {
 	else
 		$tl = $bbs->titlesSlice($index,$globalSettings['pagentries']);
 	$app->getLog()->debug('opdsByTitle: books found');			
-	$books = array();
-	foreach ($tl['entries'] as $book) {
-		$record = $bbs->titleDetailsOpds($book);
-		if (!empty($record['formats']))
-			array_push($books,$record);
-	}
+	$books = $bbs->titleDetailsFilteredOpds($tl['entries']);
 	$app->getLog()->debug('opdsByTitle: details found');
 	if ($tl['page'] < $tl['pages']-1)
 		$nextPage = $tl['page']+1;
@@ -720,7 +715,8 @@ function opdsByTitle($index=0) {
 	$app->response()->status(200);
 	$app->response()->header('Content-type',OpdsGenerator::OPDS_MIME_ACQ);
 	# protection = is_protected(NULL)
-	$gen->titlesCatalog('php://output', $books, false, $tl['page'], $nextPage, $tl['pages']-1);
+	$gen->titlesCatalog('php://output', $books, is_protected(NULL), 
+		$tl['page'], $nextPage, $tl['pages']-1);
 	$app->getLog()->debug('opdsByTitle ended');			
 }
 
@@ -770,19 +766,13 @@ function opdsByAuthor($initial,$id) {
 
 	$app->getLog()->debug('opdsByAuthor started, showing initial '.$initial.', id '.$id);			
 	$adetails = $bbs->authorDetails($id);
-	$books = array();
-	foreach ($adetails['books'] as $book) {
-		$record = $bbs->titleDetailsOpds($book);
-		if (!empty($record['formats']))
-			array_push($books,$record);
-	}
-	
+	$books = $bbs->titleDetailsFilteredOpds($adetails['books']);
 	$app->getLog()->debug('opdsByAuthor: details found');			
 	$gen = new OpdsGenerator($app->request()->getRootUri(), $appversion, 
 		$bbs->calibre_dir,
 		date(DATE_ATOM,$bbs->calibre_last_modified));
 	$app->response()->status(200);
-	$app->response()->header('Content-type',OpdsGenerator::OPDS_MIME_NAV);
+	$app->response()->header('Content-type',OpdsGenerator::OPDS_MIME_ACQ);
 	$gen->booksForAuthorCatalog('php://output', $books, $initial, 
 		$adetails['author'],is_protected(NULL));
 	$app->getLog()->debug('opdsByAuthor ended');				
@@ -834,19 +824,13 @@ function opdsByTag($initial,$id) {
 
 	$app->getLog()->debug('opdsByTag started, showing initial '.$initial.', id '.$id);			
 	$adetails = $bbs->tagDetails($id);
-	$books = array();
-	foreach ($adetails['books'] as $book) {
-		$record = $bbs->titleDetailsOpds($book);
-		if (!empty($record['formats']))
-			array_push($books,$record);
-	}
-	
+	$books = $bbs->titleDetailsFilteredOpds($adetails['books']);
 	$app->getLog()->debug('opdsByTag: details found');			
 	$gen = new OpdsGenerator($app->request()->getRootUri(), $appversion, 
 		$bbs->calibre_dir,
 		date(DATE_ATOM,$bbs->calibre_last_modified));
 	$app->response()->status(200);
-	$app->response()->header('Content-type',OpdsGenerator::OPDS_MIME_NAV);
+	$app->response()->header('Content-type',OpdsGenerator::OPDS_MIME_ACQ);
 	$gen->booksForTagCatalog('php://output', $books, $initial, 
 		$adetails['tag'],is_protected(NULL));
 	$app->getLog()->debug('opdsByTag ended');				

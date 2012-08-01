@@ -89,7 +89,7 @@ class BicBucStriim {
 		$this->mydb->commit();
 	}
 
-	############# Calibre DB functions ################
+	############# Calibre Library functions ################
 
 	# Is the Calibre library open?
 	function libraryOk() {
@@ -380,6 +380,26 @@ class BicBucStriim {
 		$formats = $this->find('Data', 'select * from data where book='.$book->id);
 		return array('book' => $book, 'authors' => $authors, 'tags' => $tags, 
 			'formats' => $formats);
+	}
+
+	/**
+	 * Retrieve the OPDS title details for a collection of Books and
+	 * filter out the titles without a downloadable format.
+	 *
+	 * This is a utilty function for OPDS, because OPDS acquisition feeds don't 
+	 * valdate if there are entries without acquisition links to downloadable files.
+	 * 
+	 * @param  array 	$books a collection of Book instances
+	 * @return array         the book and its authors, tags and formats
+	 */
+	function titleDetailsFilteredOpds($books) {
+		$filtered_books = array();
+		foreach ($books as $book) {
+			$record = $this->titleDetailsOpds($book);
+			if (!empty($record['formats']))
+				array_push($filtered_books,$record);
+		}
+		return $filtered_books;
 	}
 
 	# Returns the path to the cover image of a book or NULL.

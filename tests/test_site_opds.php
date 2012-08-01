@@ -31,14 +31,50 @@ class TestOfSiteOpds extends WebTestCase {
 		$this->assertTrue($this->opdsValidate($feed,$version));
 	}
 
-	function testRootCatalog() {
+	function testValidateRootCatalog() {
 		$this->catalogValidate($this->testhost.'opds/', OpdsGenerator::OPDS_MIME_NAV, '1.0');
 		$this->catalogValidate($this->testhost.'opds/', OpdsGenerator::OPDS_MIME_NAV, '1.1');
 	}
 
-	function testNewestCatalog() {
+	function testValidateNewestCatalog() {
 		$this->catalogValidate($this->testhost.'opds/newest/', OpdsGenerator::OPDS_MIME_ACQ, '1.0');
 		$this->catalogValidate($this->testhost.'opds/newest/', OpdsGenerator::OPDS_MIME_ACQ, '1.1');
 	}
+
+	function testValidateTitlesCatalog() {
+		$this->catalogValidate($this->testhost.'opds/titleslist/0/', OpdsGenerator::OPDS_MIME_ACQ, '1.0');
+		$this->catalogValidate($this->testhost.'opds/titleslist/0/', OpdsGenerator::OPDS_MIME_ACQ, '1.1');
+	}	
+
+	function testValidateAuthorsInitialCatalog() {
+		$this->catalogValidate($this->testhost.'opds/authorslist/', OpdsGenerator::OPDS_MIME_NAV, '1.0');
+		$this->catalogValidate($this->testhost.'opds/authorslist/', OpdsGenerator::OPDS_MIME_NAV, '1.1');
+	}
+
+	function testValidateAuthorsNamesForInitialCatalog() {
+		$this->catalogValidate($this->testhost.'opds/authorslist/R/', OpdsGenerator::OPDS_MIME_NAV, '1.0');
+		$this->catalogValidate($this->testhost.'opds/authorslist/R/', OpdsGenerator::OPDS_MIME_NAV, '1.1');
+	}
+
+	function testValidateAuthorsBooksForAuthorCatalog() {
+		$this->catalogValidate($this->testhost.'opds/authorslist/E/5/', OpdsGenerator::OPDS_MIME_ACQ, '1.0');
+		$this->catalogValidate($this->testhost.'opds/authorslist/E/5/', OpdsGenerator::OPDS_MIME_ACQ, '1.1');
+	}
+
+	function testValidateTagsInitialCatalog() {
+		$this->catalogValidate($this->testhost.'opds/tagslist/', OpdsGenerator::OPDS_MIME_NAV, '1.0');
+		$this->catalogValidate($this->testhost.'opds/tagslist/', OpdsGenerator::OPDS_MIME_NAV, '1.1');
+	}
+
+	function testValidateTagsNamesForInitialCatalog() {
+		$this->catalogValidate($this->testhost.'opds/tagslist/B/', OpdsGenerator::OPDS_MIME_NAV, '1.0');
+		$this->catalogValidate($this->testhost.'opds/tagslist/B/', OpdsGenerator::OPDS_MIME_NAV, '1.1');
+	}
+
+	function testValidateTagsBooksForTagCatalog() {
+		$this->catalogValidate($this->testhost.'opds/tagslist/B/5/', OpdsGenerator::OPDS_MIME_ACQ, '1.0');
+		$this->catalogValidate($this->testhost.'opds/tagslist/B/5/', OpdsGenerator::OPDS_MIME_ACQ, '1.1');
+	}
+
 }
 ?>

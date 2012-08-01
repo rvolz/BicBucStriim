@@ -42,6 +42,10 @@ class Utilities {
 		return $path;
 	}
 
+	static function filterEmptyBooks($books) {
+
+	}
+	
 	/**
 	 * Return the MIME type for an ebook file. 
 	 *

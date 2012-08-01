@@ -289,5 +289,13 @@ class TestOfBicBucStriim extends UnitTestCase {
 		$this->assertEqual('Fachbücher',$result['tags'][0]->name);		
 	}
 
+	function testTitleDetailsFilteredOpds() {
+		$books = $this->bbs->titlesSlice(1,2);
+		$this->assertEqual(2, count($books['entries']));
+		$result = $this->bbs->titleDetailsFilteredOpds($books['entries']);
+		$this->assertEqual(0, $this->bbs->last_error);
+		$this->assertFalse($result === FALSE);
+		$this->assertEqual(1, count($result));
+	}
 }
 ?>
