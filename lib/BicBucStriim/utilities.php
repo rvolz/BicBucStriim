@@ -42,9 +42,6 @@ class Utilities {
 		return $path;
 	}
 
-	static function filterEmptyBooks($books) {
-
-	}
 	
 	/**
 	 * Return the MIME type for an ebook file. 
@@ -88,6 +85,25 @@ class Utilities {
 	  }
 		return $mtype;
 	}
+
+	/**
+	 * Create an image with transparent background. 
+	 *
+	 * see http://stackoverflow.com/questions/279236/how-do-i-resize-pngs-with-transparency-in-php#279310
+	 * 
+	 * @param  int 	$width  
+	 * @param  int 	$height 
+	 * @return image        
+	 */
+	static function transparentImage($width, $height) {
+		$img = imagecreatetruecolor($width, $height);
+		imagealphablending($img, false);
+		imagesavealpha($img, true); 				
+		$backgr = imagecolorallocatealpha($img, 255, 255, 255, 127);
+		imagefilledrectangle($img, 0, 0, $width, $height, $backgr);
+		return $img;
+	}
+
 }
 
 

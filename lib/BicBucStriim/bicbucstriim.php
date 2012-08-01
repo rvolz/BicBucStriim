@@ -294,38 +294,112 @@ class BicBucStriim {
 			return Utilities::bookPath($this->calibre_dir,$book->path,'cover.jpg');
 	}
 
-	# Returns the path to a thumbnail of a book's cover image or NULL. 
-	# If a thumbnail doesn't exist the function tries to make one from the cover.
-	# The thumbnail dimension generated is 160*160, which is more than what 
-	# jQuery Mobile requires (80*80). However, if we send the 80*80 resolution the 
-	# thumbnails look very pixely.
-	#
-	function titleThumbnail($id) {
+	/**
+	 * Returns the path to a thumbnail of a book's cover image or NULL. 
+	 * 
+	 * If a thumbnail doesn't exist the function tries to make one from the cover.
+	 * The thumbnail dimension generated is 160*160, which is more than what 
+	 * jQuery Mobile requires (80*80). However, if we send the 80*80 resolution the 
+	 * thumbnails look very pixely.
+	 * @param  int 				$id book id
+	 * @param  bool  			true = clip the thumbnail, else stuff it
+	 * @return string     thumbnail path or NULL
+	 */
+	function titleThumbnail($id, $clipped) {
 		$thumb_name = 'thumb_'.$id.'.png';
 		$thumb_path = $this->thumb_dir.'/'.$thumb_name;
-		$newwidth = self::THUMB_RES;
-		$newheight = self::THUMB_RES;
 		if (!file_exists($thumb_path)) {
 			$cover = $this->titleCover($id);
 			if (is_null($cover))
 				$thumb_path = NULL;
 			else {
-				list($width, $height) = getimagesize($cover);
-				$thumb = imagecreatetruecolor($newwidth, $newheight);
-				$source = imagecreatefromjpeg($cover);
-				$minwh = min(array($width, $height));
-				$newx = ($width / 2) - ($minwh / 2);
-				$newy = ($height / 2) - ($minwh / 2);
-				$inbetween = imagecreatetruecolor($minwh, $minwh);
-				imagecopy($inbetween, $source, 0, 0, $newx, $newy, $minwh, $minwh);				
-				imagecopyresized($thumb, $inbetween, 0, 0, 0, 0, $newwidth, $newheight, $minwh, $minwh);
-				$created = imagepng($thumb, $thumb_path);				
+				if ($clipped)
+					$created = $this->titleThumbnailClipped($cover, self::THUMB_RES, self::THUMB_RES, $thumb_path);
+				else
+					$created = $this->titleThumbnailStuffed($cover, self::THUMB_RES, self::THUMB_RES, $thumb_path);
+				if (!$created)
+					$thumb_path = NULL;
 			}
 		}
 		return $thumb_path;
 	}
+	
+	/**
+	 * Create a square thumbnail by clipping the largest possible square from the cover
+	 * @param  string $cover      path to book cover image
+	 * @param  int 	 	$newwidth   required thumbnail width
+	 * @param  int 		$newheight  required thumbnail height
+	 * @param  string $thumb_path path for thumbnail storage
+	 * @return bool             	true = thumbnail created
+	 */
+	function titleThumbnailClipped($cover, $newwidth, $newheight, $thumb_path) {
+		list($width, $height) = getimagesize($cover);
+		$thumb = imagecreatetruecolor($newwidth, $newheight);
+		$source = imagecreatefromjpeg($cover);
+		$minwh = min(array($width, $height));
+		$newx = ($width / 2) - ($minwh / 2);
+		$newy = ($height / 2) - ($minwh / 2);
+		$inbetween = imagecreatetruecolor($minwh, $minwh);
+		imagecopy($inbetween, $source, 0, 0, $newx, $newy, $minwh, $minwh);				
+		imagecopyresized($thumb, $inbetween, 0, 0, 0, 0, $newwidth, $newheight, $minwh, $minwh);
+		$created = imagepng($thumb, $thumb_path);				
+		return $created;
+	}
 
-	# 
+	/**
+	 * Create a square thumbnail by stuffing the cover at the edges
+	 * @param  string $cover      path to book cover image
+	 * @param  int 	 	$newwidth   required thumbnail width
+	 * @param  int 		$newheight  required thumbnail height
+	 * @param  string $thumb_path path for thumbnail storage
+	 * @return bool             	true = thumbnail created
+	 */
+	function titleThumbnailStuffed($cover, $newwidth, $newheight, $thumb_path) {
+		list($width, $height) = getimagesize($cover);
+		$thumb = Utilities::transparentImage($newwidth, $newheight);
+		$source = imagecreatefromjpeg($cover);
+		$dstx = 0;
+		$dsty = 0;
+		$maxwh = max(array($width, $height));
+		if ($height > $width) {
+			$diff = $maxwh - $width;
+			$dstx = (int) $diff/2;
+		} else {
+			$diff = $maxwh - $height;
+			$dsty = (int) $diff/2;
+		}
+		$inbetween = Utilities::transparentImage($maxwh, $maxwh);
+		imagecopy($inbetween, $source, $dstx, $dsty, 0, 0, $width, $height);				
+		imagecopyresampled($thumb, $inbetween, 0, 0, 0, 0, $newwidth, $newheight, $maxwh, $maxwh);
+		$created = imagepng($thumb, $thumb_path);				
+		imagedestroy($thumb);
+		imagedestroy($inbetween);
+		imagedestroy($source);
+		return $created;
+	}
+
+	/**
+	 * Delete existing thumbnail files
+	 * @return bool false if there was an error
+	 */
+	function clearThumbnails() {
+		$cleared = true;
+		if($dh = opendir($this->thumb_dir)){
+	    while(($file = readdir($dh)) !== false) {
+	    	$fn = $this->thumb_dir.'/'.$file;
+	      if(fnmatch("thumb*.png", $file) && file_exists($fn)) {
+	      	if (!@unlink($fn)) {
+	      		$cleared = false;
+	      		break;
+	      	}
+	      }
+	    }
+			closedir($dh);
+		} else 
+			$cleared = false;
+		return $cleared;
+	}
+
 	/**
 	 * Find a single book, its authors, tags, formats and comment.
 	 * @param  int 		$id 	the Calibre book ID

@@ -259,10 +259,17 @@ class TestOfBicBucStriim extends UnitTestCase {
 	}
 
 	function testTitleThumbnail() {
-		$result = $this->bbs->titleThumbnail(3);
+		$result = $this->bbs->titleThumbnail(3, true);
 		$this->assertEqual(0, $this->bbs->last_error);
 		$this->assertNotNull($result);
 		$this->assertEqual('thumb_3.png',basename($result));
+	}
+
+	function testClearThumbnail() {
+		$result = $this->bbs->titleThumbnail(3, true);
+		$this->assertEqual('thumb_3.png',basename($result));
+		$this->assertTrue($this->bbs->clearThumbnails());
+		$this->assertFalse(file_exists($result));
 	}
 
 	function testTitleFile() {

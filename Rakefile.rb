@@ -39,7 +39,8 @@ task :package2 do |t|
     "calibre_dir" => "",
     "db_version" => "1",
     "glob_dl_choice" => "0",
-    "glob_dl_password" => "7094e7dc2feb759758884333c2f4a6bdc9a16bb2"
+    "glob_dl_password" => "7094e7dc2feb759758884333c2f4a6bdc9a16bb2",
+    "thumb_gen_clipped" => "1"
   }.each do |pair|
     db.execute "insert into configs values ( ?, ? )", pair
   end

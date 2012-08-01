@@ -35,6 +35,8 @@ define('GLOB_DL_CHOICE', 'glob_dl_choice');
 define('GLOB_DL_PASSWORD', 'glob_dl_password');
 # BicBucStriim DB version
 define('DB_VERSION', 'db_version');
+# Thumbnail generation method
+define('THUMB_GEN_CLIPPED', 'thumb_gen_clipped');
 
 # Init app and routes
 $app = new Slim(array(
@@ -85,6 +87,9 @@ if ($bbs->dbOk()) {
 			case GLOB_DL_CHOICE:
 				$globalSettings[GLOB_DL_CHOICE] = $config->val;
 				break;
+			case THUMB_GEN_CLIPPED:
+				$globalSettings[THUMB_GEN_CLIPPED] = $config->val;
+				break;				
 			default:
 				$app->getLog()->warn(join('',array('Unknown configuration, name: ',
 					$config->name,', value: ',$config->val)));	
@@ -260,6 +265,7 @@ function admin_change_json() {
 	$nconfigs = array();
 	$req_configs = $app->request()->post();
 	$errors = array();
+	$delete_thumbnails = false;
 
 	## Check for consistency - calibre directory
 	# Calibre dir is still empty and no change in sight --> error
@@ -282,6 +288,12 @@ function admin_change_json() {
 			array_push($errors, 2);
 		}
 	}			
+
+	## Check for a change in the thumbnail generation method
+	if ($req_configs[THUMB_GEN_CLIPPED] != $globalSettings[THUMB_GEN_CLIPPED]) {
+		$delete_thumbnails = true;
+		$app->getLog()->info('admin_change: Thumbnail generation method changed. Exisiting Thumbnails will be deleted.');
+	}
 
 	# Don't save just return the error status
 	if (count($errors) > 0) {
@@ -307,6 +319,13 @@ function admin_change_json() {
 			$bbs->saveConfigs($nconfigs);
 			$app->getLog()->debug('admin_change: changes saved');	
 		}
+
+		# Delete old thumbnails if necessary
+		if ($delete_thumbnails) {
+			$bbs->clearThumbnails();
+			$app->getLog()->info('admin_change: Deleted exisiting thumbnails.');
+		}
+
 		$app->getLog()->debug('admin_change: ended');	
 		$app->render('admin_status.html',array(
 			'page' => mkPage($globalSettings['langa']['admin']), 
@@ -482,7 +501,7 @@ function cover($id) {
 # If there is no cover, return 404.
 # Route: /titles/:id/thumbnail
 function thumbnail($id) {
-	global $app, $calibre_dir, $bbs;
+	global $app, $calibre_dir, $bbs, $globalSettings;
 
 	$has_cover = false;
 	$rot = $app->request()->getRootUri();
@@ -494,7 +513,7 @@ function thumbnail($id) {
 	}
 	
 	if ($book->has_cover) {		
-		$thumb = $bbs->titleThumbnail($id);
+		$thumb = $bbs->titleThumbnail($id, $globalSettings[THUMB_GEN_CLIPPED]);
 		$has_cover = true;
 	}
 	if ($has_cover) {
