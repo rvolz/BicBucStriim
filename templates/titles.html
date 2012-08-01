@@ -9,7 +9,8 @@
 			<li>				
 				<a href="{{page.rot}}/titles/{{ book.id }}">
 					<img src="{{page.rot}}/titles/{{ book.id }}/thumbnail/" />
-					{{ book.sort }}
+					<h3>{{ book.sort }} ({{ book.pubdate|date("Y") }})</h3>
+  				<p>{{book.author_sort}}</p>
 				</a>
 			</li>
 		{% endif %}

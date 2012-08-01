@@ -71,7 +71,7 @@ class TestOfSiteSimple extends WebTestCase {
 	Check titles overview.
 	*/
 	public function testTitles() {
-		$this->assertTrue($this->get($this->testhost.'titles/'));
+		$this->assertTrue($this->get($this->testhost.'titleslist/0/'));
 		$this->assertTitle('BicBucStriim :: Books');
 	}
 
@@ -79,19 +79,19 @@ class TestOfSiteSimple extends WebTestCase {
 	Check the navigation from titles overview to title detail and back
 	 */
 	public function testNavigationFromTitlesOverviewToDetail() {
-		$this->assertTrue($this->get($this->testhost.'titles/'));
-		$this->clickLink('seltzame Springinsfeld, Der');
+		$this->assertTrue($this->get($this->testhost.'titleslist/0/'));
+		$this->clickLink('Lob der Faulheit (2012)');
 		$this->assertResponse(200);
-		$this->assertEqual($this->testhost.'titles/3/', $this->getUrl());
+		$this->assertEqual($this->testhost.'titles/1/', $this->getUrl());
 	}
 
 	/*
 	Check thumbnail generation for titles overview
 	 */
 	public function testTitleThumbnails() {
-		$this->assertTrue($this->get($this->testhost.'titles/'));
-		$this->assertPattern('/<img src="\/bbs\/titles\/3\/thumbnail\/"/');
-		$this->assertTrue($this->get($this->testhost.'titles/3/thumbnail/'));
+		$this->assertTrue($this->get($this->testhost.'titleslist/0/'));
+		$this->assertPattern('/<img src="\/bbs\/titles\/1\/thumbnail\/"/');
+		$this->assertTrue($this->get($this->testhost.'titles/1/thumbnail/'));
 		$this->assertResponse(200);
 		$this->assertMime('image/jpeg;base64');		
 	}
@@ -100,7 +100,7 @@ class TestOfSiteSimple extends WebTestCase {
 	Check authors overview.
 	*/
 	public function testAuthors() {
-		$this->assertTrue($this->get($this->testhost.'authors/'));
+		$this->assertTrue($this->get($this->testhost.'authorslist/0/'));
 		$this->assertTitle('BicBucStriim :: Authors');
 	}
 
@@ -108,18 +108,18 @@ class TestOfSiteSimple extends WebTestCase {
 	Check the navigation from authors overview to author detail 
 	 */
 	public function testNavigationFromAuthorsOverviewToDetail() {
-		$this->assertTrue($this->get($this->testhost.'authors/'));
-		$this->assertText('Heyse, Paul');
-		$this->clickLink('Heyse, Paul 1');
+		$this->assertTrue($this->get($this->testhost.'authorslist/0/'));
+		$this->assertText('Eichendorff, Joseph von');
+		$this->clickLink('Eichendorff, Joseph von 1');
 		$this->assertResponse(200);
-		$this->assertEqual($this->testhost.'authors/8/', $this->getUrl());
+		$this->assertEqual($this->testhost.'authors/5/', $this->getUrl());
 	}
 
 	/*
 	Check tags overview.
 	*/
 	public function testTags() {
-		$this->assertTrue($this->get($this->testhost.'tags/'));
+		$this->assertTrue($this->get($this->testhost.'tagslist/0/'));
 		$this->assertTitle('BicBucStriim :: Tags');
 	}
 
@@ -127,10 +127,10 @@ class TestOfSiteSimple extends WebTestCase {
 	Check the navigation from tags overview to tag detail
 	 */
 	public function testNavigationFromTagsOverviewToDetail() {
-		$this->assertTrue($this->get($this->testhost.'tags/'));
-		$this->clickLink('Biografien & Memoiren 1');
+		$this->assertTrue($this->get($this->testhost.'tagslist/0/'));
+		$this->clickLink('Belletristik & Literatur 1');
 		$this->assertResponse(200);
-		$this->assertEqual($this->testhost.'tags/4/', $this->getUrl());
+		$this->assertEqual($this->testhost.'tags/5/', $this->getUrl());
 	}
 
 

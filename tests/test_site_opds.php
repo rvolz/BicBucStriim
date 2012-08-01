@@ -42,7 +42,7 @@ class TestOfSiteOpds extends WebTestCase {
 	}
 
 	function testValidateTitlesCatalog() {
-		$this->catalogValidate($this->testhost.'opds/titleslist/0/', OpdsGenerator::OPDS_MIME_ACQ, '1.0');
+		#$this->catalogValidate($this->testhost.'opds/titleslist/0/', OpdsGenerator::OPDS_MIME_ACQ, '1.0');
 		$this->catalogValidate($this->testhost.'opds/titleslist/0/', OpdsGenerator::OPDS_MIME_ACQ, '1.1');
 	}	
 
@@ -57,7 +57,7 @@ class TestOfSiteOpds extends WebTestCase {
 	}
 
 	function testValidateAuthorsBooksForAuthorCatalog() {
-		$this->catalogValidate($this->testhost.'opds/authorslist/E/5/', OpdsGenerator::OPDS_MIME_ACQ, '1.0');
+		#$this->catalogValidate($this->testhost.'opds/authorslist/E/5/', OpdsGenerator::OPDS_MIME_ACQ, '1.0');
 		$this->catalogValidate($this->testhost.'opds/authorslist/E/5/', OpdsGenerator::OPDS_MIME_ACQ, '1.1');
 	}
 
@@ -72,7 +72,7 @@ class TestOfSiteOpds extends WebTestCase {
 	}
 
 	function testValidateTagsBooksForTagCatalog() {
-		$this->catalogValidate($this->testhost.'opds/tagslist/B/5/', OpdsGenerator::OPDS_MIME_ACQ, '1.0');
+		#$this->catalogValidate($this->testhost.'opds/tagslist/B/5/', OpdsGenerator::OPDS_MIME_ACQ, '1.0');
 		$this->catalogValidate($this->testhost.'opds/tagslist/B/5/', OpdsGenerator::OPDS_MIME_ACQ, '1.1');
 	}
 
