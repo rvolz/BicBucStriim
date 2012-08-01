@@ -265,7 +265,6 @@ function admin_change_json() {
 	$nconfigs = array();
 	$req_configs = $app->request()->post();
 	$errors = array();
-	$delete_thumbnails = false;
 
 	## Check for consistency - calibre directory
 	# Calibre dir is still empty and no change in sight --> error
@@ -291,8 +290,13 @@ function admin_change_json() {
 
 	## Check for a change in the thumbnail generation method
 	if ($req_configs[THUMB_GEN_CLIPPED] != $globalSettings[THUMB_GEN_CLIPPED]) {
-		$delete_thumbnails = true;
-		$app->getLog()->info('admin_change: Thumbnail generation method changed. Exisiting Thumbnails will be deleted.');
+		$app->getLog()->info('admin_change: Thumbnail generation method changed. Exisiting Thumbnails will be deleted.');		
+		# Delete old thumbnails if necessary
+		if($bbs->clearThumbnails())
+			$app->getLog()->info('admin_change: Deleted exisiting thumbnails.');
+		else {
+			$app->getLog()->info('admin_change: Deletion of exisiting thumbnails failed.');
+		}
 	}
 
 	# Don't save just return the error status
@@ -318,12 +322,6 @@ function admin_change_json() {
 		if (count($nconfigs) > 0) {
 			$bbs->saveConfigs($nconfigs);
 			$app->getLog()->debug('admin_change: changes saved');	
-		}
-
-		# Delete old thumbnails if necessary
-		if ($delete_thumbnails) {
-			$bbs->clearThumbnails();
-			$app->getLog()->info('admin_change: Deleted exisiting thumbnails.');
 		}
 
 		$app->getLog()->debug('admin_change: ended');	
