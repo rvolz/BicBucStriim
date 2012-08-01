@@ -45,7 +45,7 @@ class OpdsGenerator {
     # TODO Search link?
     $this->navigationCatalogLink($this->bbs_root.'/opds/', 'self');
     $this->navigationCatalogLink($this->bbs_root.'/opds/', 'start');
-    $this->link($this->bbs_root.'/opds/opensearch.xml', 'application/opensearchdescription+xml', 'search', 'Search in BicBucStriim');
+    #$this->link($this->bbs_root.'/opds/opensearch.xml', 'application/opensearchdescription+xml', 'search', 'Search in BicBucStriim');
     # Subcatalogs
     $this->navigationEntry('Most Recent 30', '/opds/newest/', 'The 30 most recent titles', '/newest/', 
       self::OPDS_MIME_ACQ, 'http://opds-spec.org/sort/new');
@@ -329,22 +329,20 @@ class OpdsGenerator {
   function header($title,$subtitle,$id) {
     $this->xmlw->startDocument('1.0','UTF-8');
     $this->xmlw->startElement('feed');
-    $this->xmlw->writeAttribute('xmlns:opds', 'http://opds-spec.org/2010/catalog'); 
     $this->xmlw->writeAttribute('xmlns:dc', 'http://purl.org/dc/terms/'); 
+    $this->xmlw->writeAttribute('xmlns:opds', 'http://opds-spec.org/2010/catalog'); 
     $this->xmlw->writeAttribute('xmlns:thr','http://purl.org/syndication/thread/1.0');
     $this->xmlw->writeAttribute('xmlns:opensearch','http://a9.com/-/spec/opensearch/1.1/');
     $this->xmlw->writeAttribute('xml:lang','en');
     $this->xmlw->writeAttribute('xmlns', 'http://www.w3.org/2005/Atom');    
     $this->xmlw->writeElement('title',$title);
     $this->xmlw->writeElement('subtitle',$subtitle);
-    $this->xmlw->writeElement('icon',$this->bbs_root.'/favicon.ico');
+    #$this->xmlw->writeElement('icon',$this->bbs_root.'/favicon.ico');
     $this->xmlw->startElement('author');
     $this->xmlw->writeElement('name', 'BicBucStriim '.$this->bbs_version);
     # TODO: textmulch url for feed uri
     $this->xmlw->writeElement('uri', 'http://rvolz.gihub.com/BicBucStriim');
     $this->xmlw->endElement();
-    # TODO: proper urn
-    #$this->xmlw->writeElement('id', 'urn:bicbucstriim:'.$id);
     $this->xmlw->writeElement('id', $this->bbs_root.$id);
     $this->xmlw->writeElement('updated', $this->updated);    
   }

@@ -60,6 +60,7 @@ else
 
 # TODO: 30 als Standardwert
 $globalSettings['pagentries'] = 2;
+date_default_timezone_set('UTC');
 
 # Add globals from DB
 $bbs = new BicBucStriim();
@@ -644,8 +645,7 @@ function opdsRoot() {
 	global $app, $appversion, $bbs;
 
 	$app->getLog()->debug('opdsRoot started');			
-	#$gen = new OpdsGenerator($app->request()->getRootUri(), $appversion, 
-	$gen = new OpdsGenerator('http://borg.fritz.box:8080/bbs', $appversion, 
+	$gen = new OpdsGenerator($app->request()->getRootUri(), $appversion, 
 		$bbs->calibre_dir,
 		date(DATE_ATOM,$bbs->calibre_last_modified));
 	$cat = $gen->rootCatalog(NULL);	
@@ -714,7 +714,6 @@ function opdsByTitle($index=0) {
 		date(DATE_ATOM,$bbs->calibre_last_modified));
 	$app->response()->status(200);
 	$app->response()->header('Content-type',OpdsGenerator::OPDS_MIME_ACQ);
-	# protection = is_protected(NULL)
 	$gen->titlesCatalog('php://output', $books, is_protected(NULL), 
 		$tl['page'], $nextPage, $tl['pages']-1);
 	$app->getLog()->debug('opdsByTitle ended');			
