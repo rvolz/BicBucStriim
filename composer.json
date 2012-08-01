@@ -1,0 +1,7 @@
+{
+	"require": {
+    "slim/slim": "1.6.5",
+    "slim/extras": "dev-release-1.0.3",
+    "twig/twig": "1.9.1"
+  }
+}

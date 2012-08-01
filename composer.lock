@@ -1,0 +1,27 @@
+{
+    "hash": "a6514da7a0cdff193ddb1c76af912730",
+    "packages": [
+        {
+            "package": "slim/extras",
+            "version": "dev-release-1.0.3",
+            "source-reference": "07ca603f59f59e7919049272264fb79bf4c8266e",
+            "commit-date": "1341419294"
+        },
+        {
+            "package": "slim/slim",
+            "version": "1.6.5"
+        },
+        {
+            "package": "twig/twig",
+            "version": "v1.9.1"
+        }
+    ],
+    "packages-dev": null,
+    "aliases": [
+
+    ],
+    "minimum-stability": "stable",
+    "stability-flags": {
+        "slim/extras": 20
+    }
+}
