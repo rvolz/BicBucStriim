@@ -33,7 +33,7 @@ class TestOfTitleDetails extends WebTestCase {
 		$this->assertTrue($this->get($this->testhost.'titles/6/'));
 		$this->assertTitle('BicBucStriim :: Book Details');	
 		$this->assertText('Neues Leben');
-		$this->assertNoText('Series');
+		$this->assertNoPattern('/div id="series"/');
 	}
 
 	/*

@@ -626,7 +626,7 @@ function seriesSlice($index=0) {
 	} else
 		$tl = $bbs->seriesSlice($index,$globalSettings['pagentries']);
 	$app->render('series.html',array(
-		'page' => mkPage($globalSettings['langa']['series'],3), 
+		'page' => mkPage($globalSettings['langa']['series'],5), 
 		'url' => 'serieslist',
 		'series' => $tl['entries'],
 		'curpage' => $tl['page'],
