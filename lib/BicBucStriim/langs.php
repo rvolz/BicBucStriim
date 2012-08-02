@@ -141,7 +141,9 @@ $langfr = array('admin' => 'Configuration',
 	'booksby' => 'Livres par',
 	'booksbytag' => 'Livres par tag',
 
+	#********
 	'booksbyseries' => 'Books in series',
+	#********
 
 	'book_details' => 'Détails des livres',
 	'calibre_dir1' => 'Chemin vers le répertoire Calibre',
@@ -184,9 +186,11 @@ $langfr = array('admin' => 'Configuration',
 	'published' => 'Publié',
 	'save' => 'Sauver',
 
+	#*******
 	'series' => 'Series',
 	'series_details' => 'Series Details',
-
+	#*******
+	
 	'switch_yes' => 'Oui',
 	'switch_no' => 'Non',
 	'tags' => 'Tags',
