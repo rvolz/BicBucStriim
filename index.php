@@ -6,13 +6,8 @@
  * Licensed under MIT License, see LICENSE
  * 
  */ 
-
 require 'vendor/autoload.php';
 require_once 'vendor/slim/slim/Slim/View.php';
-require_once 'vendor/slim/extras/Views/TwigView.php';
-
-TwigView::$twigDirectory = dirname(__FILE__) . '/vendor/twig/twig';
-TwigView::$twigExtensions = array('Twig_Extensions_Slim');
 
 require_once 'lib/BicBucStriim/bicbucstriim.php';
 require_once 'lib/BicBucStriim/opds_generator.php';
@@ -43,14 +38,61 @@ define('DB_VERSION', 'db_version');
 # Thumbnail generation method
 define('THUMB_GEN_CLIPPED', 'thumb_gen_clipped');
 
+
 # Init app and routes
 $app = new Slim(array(
-	'debug' => true,
-	'log.enabled' => true, 
-	#'log.writer' => new Slim_LogFileWriter(fopen('./data/bbs.log','a')),
-	'log.level' => 4,
-	'view' => new TwigView(),
+	'cookies.lifetime' => '1 day',
+	'cookies.secret_key' => 'b4924c3579e2850a6fad8597da7ad24bf43ab78e',
+	'view' => new View_Twig(),
+	#'mode' => 'production',
+));
+
+$app->configureMode('production','confprod');
+$app->configureMode('development','confdev');
+$app->configureMode('debug','confdebug');
+$app->view()->getEnvironment()->addExtension(new Twig_Extensions_Slim());
+# TODO: use proper translation support
+# $app->view()->getEnvironment()->addExtension(new Twig_Extensions_Extension_I18n());
+
+/**
+ * Configure app for production
+ */
+function confprod() {
+	global $app, $appname, $appversion;
+	$app->config(array(
+		'debug' => false,
+		'log.enabled' => true, 
+		'log.level' => 3,
 	));
+	$app->getLog()->info($appname.' '.$appversion.': Running in production mode.');
+}
+
+/**
+ * Configure app for production
+ */
+function confdev() {
+	global $app, $appname, $appversion;
+	$app->config(array(
+		'debug' => true,
+		'log.enabled' => true, 
+		'log.level' => 4,
+	));
+	$app->getLog()->info($appname.' '.$appversion.': Running in development mode.');
+}
+
+/**
+ * Debug mode, log everything to file
+ */
+function confdebug() {
+	global $app, $appname, $appversion;
+	$app->config(array(
+		'debug' => true,
+		'log.enabled' => true, 
+		'log.writer' => new Slim_LogFileWriter(fopen('./data/bbs.log','a')),
+		'log.level' => 4,
+	));
+	$app->getLog()->info($appname.' '.$appversion.': Running in debug mode.');
+}
 
 # Init app globals
 $globalSettings = array();
@@ -65,8 +107,12 @@ elseif ($globalSettings['lang'] == 'fr')
 else
 	$globalSettings['langa'] = $langen;
 
-# TODO: 30 als Standardwert
-$globalSettings['pagentries'] = 2;
+# Set the number of items per page
+if ($app->config('mode') == 'development')
+	$globalSettings['pagentries'] = 2;
+else
+	$globalSettings['pagentries'] = 30;
+# Timestamps in UTC, mostly for OPDS
 date_default_timezone_set('UTC');
 
 # Add globals from DB
@@ -105,8 +151,6 @@ if ($bbs->dbOk()) {
 	$app->getLog()->debug("no config db found");
 	$we_have_config = false;
 }
-
-
 
 # Init routes
 $app->notFound('myNotFound');
