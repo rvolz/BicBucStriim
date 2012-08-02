@@ -1,7 +1,10 @@
-2012-07-?? Version 0.9.0
+2012-08-?? Version 0.9.0
 
 * new: pagination for titles, authors and tags makes navigation in larger libraries easier
-* 
+* new: OPDS catalog support
+* new: french translation, thanks to Thomas Parvais
+* updated: added more details to list views, thanks to DarkHunter85 (https://github.com/DarkHunter85)
+ 
 
 2012-06-18 Version 0.8.0
 
