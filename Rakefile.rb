@@ -9,7 +9,7 @@ require 'fileutils'
 require 'sqlite3'
 
 APPNAME = 'BicBucStriim'
-VERSION = '0.9.0'
+VERSION = '0.9.1'
 
 begin
   require 'vagrant'
