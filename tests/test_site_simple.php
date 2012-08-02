@@ -130,7 +130,7 @@ class TestOfSiteSimple extends WebTestCase {
 		$this->assertTrue($this->get($this->testhost.'tagslist/0/'));
 		$this->clickLink('Belletristik & Literatur 1');
 		$this->assertResponse(200);
-		$this->assertEqual($this->testhost.'tags/5/', $this->getUrl());
+		$this->assertEqual($this->testhost.'tags/10/', $this->getUrl());
 	}
 
 

@@ -14,7 +14,7 @@ class TestOfTitleDetails extends WebTestCase {
 	Check the title details, the display of information
 	 */
 	public function testTitleDetails() {
-		$this->assertTrue($this->get($this->testhost.'titles/3'));
+		$this->assertTrue($this->get($this->testhost.'titles/3/'));
 		$this->assertTitle('BicBucStriim :: Book Details');	
 		$this->assertText('Der seltzame Springinsfeld');
 		$this->assertText('Hans Jakob Christoffel von Grimmelshausen, 2012');
@@ -22,6 +22,18 @@ class TestOfTitleDetails extends WebTestCase {
 		$this->assertPattern('/<img src="\/bbs\/titles\/3\/cover\/"/');
 		$this->assertLink('Hans Jakob Christoffel von Grimmelshausen');		
 		$this->assertLink('Fachbücher');		
+		$this->assertText('Series');
+		$this->assertLink('Serie Grimmelshausen');		
+	}
+
+	/*
+	Check for no series
+	 */
+	public function testTitleDetailsNoSeries() {
+		$this->assertTrue($this->get($this->testhost.'titles/6/'));
+		$this->assertTitle('BicBucStriim :: Book Details');	
+		$this->assertText('Neues Leben');
+		$this->assertNoText('Series');
 	}
 
 	/*
@@ -44,6 +56,19 @@ class TestOfTitleDetails extends WebTestCase {
 		$this->assertEqual($this->testhost.'authors/6/', $this->getUrl());
 		$this->assertTitle('BicBucStriim :: Author Details');	
 		$this->assertText('Books by '.$author);
+	}
+
+	/*
+	Check the navigation from title detail to series details
+	 */
+	public function testNavigationFromTitleToSeries() {
+		$series = 'Serie Grimmelshausen';
+		$this->assertTrue($this->get($this->testhost.'titles/3/'));
+		$this->clickLink($series);
+		$this->assertResponse(200);
+		$this->assertEqual($this->testhost.'series/1/', $this->getUrl());
+		$this->assertTitle('BicBucStriim :: Series Details');	
+		$this->assertText('Books in series "'.$series.'"');
 	}
 
 	/*

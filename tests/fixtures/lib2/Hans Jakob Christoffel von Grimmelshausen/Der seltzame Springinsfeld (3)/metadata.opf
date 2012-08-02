@@ -5,11 +5,13 @@
         <dc:identifier opf:scheme="uuid" id="uuid_id">b3434512-ea43-4682-9687-baff37f7e015</dc:identifier>
         <dc:title>Der seltzame Springinsfeld</dc:title>
         <dc:creator opf:file-as="Grimmelshausen, Hans Jakob Christoffel von" opf:role="aut">Hans Jakob Christoffel von Grimmelshausen</dc:creator>
-        <dc:contributor opf:file-as="calibre" opf:role="bkp">calibre (0.8.56) [http://calibre-ebook.com]</dc:contributor>
+        <dc:contributor opf:file-as="calibre" opf:role="bkp">calibre (0.8.62) [http://calibre-ebook.com]</dc:contributor>
         <dc:date>2012-06-06T22:00:00+00:00</dc:date>
         <dc:language>deu</dc:language>
         <dc:subject>Fachbücher</dc:subject>
         <meta content="{&quot;Hans Jakob Christoffel von Grimmelshausen&quot;: &quot;&quot;}" name="calibre:author_link_map"/>
+        <meta content="Serie Grimmelshausen" name="calibre:series"/>
+        <meta content="1" name="calibre:series_index"/>
         <meta content="0" name="calibre:rating"/>
         <meta content="2012-06-07T15:30:54+00:00" name="calibre:timestamp"/>
         <meta content="seltzame Springinsfeld, Der" name="calibre:title_sort"/>

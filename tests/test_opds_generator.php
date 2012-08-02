@@ -195,7 +195,7 @@ function testPartialAcquisitionEntryWithProtection() {
 
 	function testTagsBooksForTagCatalogValidation() {
 		$feed = self::DATA.'/feed.xml';
-		$adetails = $this->bbs->tagDetails(5);
+		$adetails = $this->bbs->tagDetails(9);
 		$books = $this->bbs->titleDetailsFilteredOpds($adetails['books']);
 		$xml = $this->gen->booksForTagCatalog($feed,$books, 'B', $adetails, false);
 		$this->assertTrue(file_exists($feed));		

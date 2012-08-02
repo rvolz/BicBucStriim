@@ -285,6 +285,7 @@ class TestOfBicBucStriim extends UnitTestCase {
 		$this->assertFalse($result === FALSE);
 		$this->assertEqual('Der seltzame Springinsfeld',$result['book']->title);
 		$this->assertEqual('Fachbücher',$result['tags'][0]->name);
+		$this->assertEqual('Serie Grimmelshausen',$result['series'][0]->name);
 	}
 
 	function testTitleDetailsOpds() {
@@ -304,5 +305,36 @@ class TestOfBicBucStriim extends UnitTestCase {
 		$this->assertFalse($result === FALSE);
 		$this->assertEqual(1, count($result));
 	}
+
+	function testSeriesSlice() {
+		$result0 = $this->bbs->seriesSlice(0,2);
+		$this->assertEqual(0, $this->bbs->last_error);
+		$this->assertEqual(2, count($result0['entries']));
+		$this->assertEqual(0, $result0['page']);
+		$this->assertEqual(2, $result0['pages']);
+		$result1 = $this->bbs->seriesSlice(1,2);
+		$this->assertEqual(1, count($result1['entries']));
+		$this->assertEqual(1, $result1['page']);
+		$this->assertEqual(2, $result1['pages']);		
+	}
+
+	function testSeriesSliceSearch() {
+		$result0 = $this->bbs->seriesSlice(0,2,'I');
+		$this->assertEqual(0, $this->bbs->last_error);
+		$this->assertEqual(2, count($result0['entries']));
+		$this->assertEqual(0, $result0['page']);
+		$this->assertEqual(2, $result0['pages']);		
+		$result1 = $this->bbs->seriesSlice(1,2,'I');
+		$this->assertEqual(1, count($result1['entries']));
+	}
+
+	function testSeriesDetails() {
+		$result = $this->bbs->seriesDetails(3);
+		$this->assertEqual(0, $this->bbs->last_error);
+		$this->assertNotNull($result);
+		$this->assertEqual('Serie Rilke',$result['series']->name);
+		$this->assertEqual(1,count($result['books']));		
+	}
+
 }
 ?>

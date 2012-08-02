@@ -5,7 +5,7 @@
         <dc:identifier opf:scheme="uuid" id="uuid_id">677a4ded-67af-4bee-bb98-e613e50d1228</dc:identifier>
         <dc:title>Die Glücksritter</dc:title>
         <dc:creator opf:file-as="Eichendorff, Joseph von" opf:role="aut">Joseph von Eichendorff</dc:creator>
-        <dc:contributor opf:file-as="calibre" opf:role="bkp">calibre (0.8.56) [http://calibre-ebook.com]</dc:contributor>
+        <dc:contributor opf:file-as="calibre" opf:role="bkp">calibre (0.8.62) [http://calibre-ebook.com]</dc:contributor>
         <dc:date>2012-06-06T22:00:00+00:00</dc:date>
         <dc:language>lat</dc:language>
         <dc:subject>Fachbücher</dc:subject>

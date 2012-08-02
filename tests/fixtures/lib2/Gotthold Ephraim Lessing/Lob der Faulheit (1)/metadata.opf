@@ -5,11 +5,13 @@
         <dc:identifier opf:scheme="uuid" id="uuid_id">678cbe07-3d3c-44e0-817b-01d14ab7bcb2</dc:identifier>
         <dc:title>Lob der Faulheit</dc:title>
         <dc:creator opf:file-as="Lessing, Gotthold Ephraim" opf:role="aut">Gotthold Ephraim Lessing</dc:creator>
-        <dc:contributor opf:file-as="calibre" opf:role="bkp">calibre (0.8.56) [http://calibre-ebook.com]</dc:contributor>
+        <dc:contributor opf:file-as="calibre" opf:role="bkp">calibre (0.8.62) [http://calibre-ebook.com]</dc:contributor>
         <dc:date>2012-06-06T22:00:00+00:00</dc:date>
         <dc:language>lat</dc:language>
         <dc:subject>Belletristik &amp; Literatur</dc:subject>
         <meta content="{&quot;Gotthold Ephraim Lessing&quot;: &quot;&quot;}" name="calibre:author_link_map"/>
+        <meta content="Serie Lessing" name="calibre:series"/>
+        <meta content="1" name="calibre:series_index"/>
         <meta content="0" name="calibre:rating"/>
         <meta content="2012-06-07T15:19:52+00:00" name="calibre:timestamp"/>
         <meta content="Lob der Faulheit" name="calibre:title_sort"/>

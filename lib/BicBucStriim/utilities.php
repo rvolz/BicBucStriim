@@ -7,13 +7,15 @@
 class Item {}
 
 # Utiliy classes for Calibre DB items
-class Book extends Item {}
 class Author extends Item {}
+class Book extends Item {}
 class BookAuthorLink extends Item {}
+class BookSeriesLink extends Item {}
 class BookTagLink extends Item {}
-class Tag extends Item {}
-class Data extends Item {}
 class Comment extends Item {}
+class Data extends Item {}
+class Series extends Item {}
+class Tag extends Item {}
 
 # Confiuration items in the BBS DB
 class Config extends Item{}

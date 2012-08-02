@@ -115,11 +115,21 @@ class BicBucStriim {
 			return $result[0];
 	}
 
-	# Return a slice of entries defined by the parameters $index and $length.
-	# If $search is defined it is used to filter the titles, ignoring case.
-	# Return an array with elements: current page, no. of pages, $length entries
+	/**
+	 * Return a slice of entries defined by the parameters $index and $length.
+	 * If $search is defined it is used to filter the titles, ignoring case.
+	 * Return an array with elements: current page, no. of pages, $length entries
+	 * 
+	 * @param  string  $class       name of class to return
+	 * @param  integer $index=0     page index
+	 * @param  integer $length=100  length of page
+	 * @param  string  $search=NULL search pattern for sort/name fields
+	 * @return array                an array with current page (key 'page'),
+	 *                              number of pages (key 'pages'),
+	 *                              an array of $class instances (key 'entries') or NULL
+	 */
 	function findSlice($class, $index=0, $length=100, $search=NULL) {
-		if ($index < 0 || $length < 1 || !in_array($class, array('Book','Author','Tag')))
+		if ($index < 0 || $length < 1 || !in_array($class, array('Book','Author','Tag', 'Series')))
 			return array('page'=>0,'pages'=>0,'entries'=>NULL);
 		$offset = $index * $length;		
 		switch($class) {
@@ -141,6 +151,15 @@ class BicBucStriim {
 					$query = 'select * from books where lower(title) like \'%'.strtolower($search).'%\' order by sort limit '.$length.' offset '.$offset;	
 				}
 				break;
+			case 'Series': 
+				if (is_null($search)) {
+					$count = 'select count(*) from series';
+					$query = 'select series.id, series.name, count(bsl.id) as anzahl from series left join books_series_link as bsl on series.id = bsl.series group by series.id order by series.name limit '.$length.' offset '.$offset;
+				}	else {
+					$count = 'select count(*) from series where lower(name) like \'%'.strtolower($search).'%\'';
+					$query = 'select series.id, series.name, count(bsl.id) as anzahl from series left join books_series_link as bsl on series.id = bsl.series where lower(series.name) like \'%'.strtolower($search).'%\' group by series.id order by series.name limit '.$length.' offset '.$offset;	
+				}
+				break;				
 			case 'Tag': 
 				if (is_null($search)) {
 					$count = 'select count(*) from tags';
@@ -184,6 +203,19 @@ class BicBucStriim {
 		return $this->mkInitialedList($authors);
 	}
 
+	# Find a single author and return the details plus all books.
+	function authorDetails($id) {
+		$author = $this->findOne('Author', 'select * from authors where id='.$id);
+		if (is_null($author)) return NULL;
+		$book_ids = $this->find('BookAuthorLink', 'select * from books_authors_link where author='.$id);
+		$books = array();
+		foreach($book_ids as $bid) {
+			$book = $this->title($bid->book);
+			array_push($books, $book);
+		}
+		return array('author' => $author, 'books' => $books);
+	}
+
 	# Search a list of authors defined by the parameters $index and $length.
 	# If $search is defined it is used to filter the names, ignoring case.
 	# Return an array with elements: current page, no. of pages, $length entries
@@ -206,6 +238,19 @@ class BicBucStriim {
 	 */
 	function authorsNamesForInitial($initial) {
 		return $this->find('Author', 'select a.id, a.name, a.sort, count(bal.id) as anzahl from authors as a left join books_authors_link as bal on a.id = bal.author where substr(upper(a.sort),1,1) = \''.$initial.'\' group by a.id order by a.sort');	
+	}
+
+	# Returns a tag and the related books
+	function tagDetails($id) {
+		$tag = $this->findOne('Tag', 'select * from tags where id='.$id);
+		if (is_null($tag)) return NULL;
+		$book_ids = $this->find('BookTagLink', 'select * from books_tags_link where tag='.$id);
+		$books = array();
+		foreach($book_ids as $bid) {
+			$book = $this->title($bid->book);
+			array_push($books, $book);
+		}
+		return array('tag' => $tag, 'books' => $books);
 	}
 
 	# Return a grouped list of all tags. The list is separated by dividers, 
@@ -254,32 +299,7 @@ class BicBucStriim {
 		return $this->findSlice('Book', $index, $length, $search);
 	}
 
-	# Find a single author and return the details plus all books.
-	function authorDetails($id) {
-		$author = $this->findOne('Author', 'select * from authors where id='.$id);
-		if (is_null($author)) return NULL;
-		$book_ids = $this->find('BookAuthorLink', 'select * from books_authors_link where author='.$id);
-		$books = array();
-		foreach($book_ids as $bid) {
-			$book = $this->title($bid->book);
-			array_push($books, $book);
-		}
-		return array('author' => $author, 'books' => $books);
-	}
-
-	# Returns a tag and the related books
-	function tagDetails($id) {
-		$tag = $this->findOne('Tag', 'select * from tags where id='.$id);
-		if (is_null($tag)) return NULL;
-		$book_ids = $this->find('BookTagLink', 'select * from books_tags_link where tag='.$id);
-		$books = array();
-		foreach($book_ids as $bid) {
-			$book = $this->title($bid->book);
-			array_push($books, $book);
-		}
-		return array('tag' => $tag, 'books' => $books);
-	}
-
+	
 	# Find only one book
 	function title($id) {
 		return $this->findOne('Book','select * from books where id='.$id);
@@ -401,9 +421,9 @@ class BicBucStriim {
 	}
 
 	/**
-	 * Find a single book, its authors, tags, formats and comment.
+	 * Find a single book, its authors, series, tags, formats and comment.
 	 * @param  int 		$id 	the Calibre book ID
-	 * @return array     		the book and its authors, tags, formats, and comment/description
+	 * @return array     		the book and its authors, series, tags, formats, and comment/description
 	 */
 	function titleDetails($id) {
 		$book = $this->title($id);
@@ -414,6 +434,12 @@ class BicBucStriim {
 			$author = $this->findOne('Author', 'select * from authors where id='.$aid->author);
 			array_push($authors, $author);
 		}
+		$series_ids = $this->find('BookSeriesLink', 'select * from books_series_link where book='.$id);
+		$series = array();
+		foreach($series_ids as $aid) {
+			$this_series = $this->findOne('Series', 'select * from series where id='.$aid->series);
+			array_push($series, $this_series);
+		}		
 		$tag_ids = $this->find('BookTagLink', 'select * from books_tags_link where book='.$id);
 		$tags = array();
 		foreach($tag_ids as $tid) {
@@ -426,7 +452,7 @@ class BicBucStriim {
 			$comment_text = '';
 		else
 			$comment_text = $comment->text;		
-		return array('book' => $book, 'authors' => $authors, 'tags' => $tags, 
+		return array('book' => $book, 'authors' => $authors, 'series' => $series, 'tags' => $tags, 
 			'formats' => $formats, 'comment' => $comment_text);
 	}
 
@@ -486,6 +512,38 @@ class BicBucStriim {
 	}
 
 	
+	/**
+	 * Find a single series and return the details plus all books.
+	 * @param  int 		$id series id
+	 * @return array  an array with series details (key 'series') and 
+	 *                the related books (key 'books')
+	 */
+	function seriesDetails($id) {
+		$series = $this->findOne('Series', 'select * from series where id='.$id);
+		if (is_null($series)) return NULL;
+		$book_ids = $this->find('BookSeriesLink', 'select * from books_series_link where series='.$id);
+		$books = array();
+		foreach($book_ids as $bid) {
+			$book = $this->title($bid->book);
+			array_push($books, $book);
+		}
+		return array('series' => $series, 'books' => $books);
+	}
+
+	/**
+	 * Search a list of books defined by the parameters $index and $length.
+	 * If $search is defined it is used to filter the book title, ignoring case.
+	 * Return an array with elements: current page, no. of pages, $length entries
+	 * 
+	 * @param  integer $index=0     page indes
+	 * @param  integer $length=100  page length
+	 * @param  string  $search=NULL search criteria for series name
+	 * @return array                see findSlice
+	 */
+	function seriesSlice($index=0, $length=100, $search=NULL) {
+		return $this->findSlice('Series', $index, $length, $search);
+	}
+
 
 	# Generate a list where the items are grouped and separated by 
 	# the initial character.

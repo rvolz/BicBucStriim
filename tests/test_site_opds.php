@@ -73,7 +73,7 @@ class TestOfSiteOpds extends WebTestCase {
 
 	function testValidateTagsBooksForTagCatalog() {
 		#$this->catalogValidate($this->testhost.'opds/tagslist/B/5/', OpdsGenerator::OPDS_MIME_ACQ, '1.0');
-		$this->catalogValidate($this->testhost.'opds/tagslist/B/5/', OpdsGenerator::OPDS_MIME_ACQ, '1.1');
+		$this->catalogValidate($this->testhost.'opds/tagslist/B/10/', OpdsGenerator::OPDS_MIME_ACQ, '1.1');
 	}
 
 }

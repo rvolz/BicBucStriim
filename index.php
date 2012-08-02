@@ -119,6 +119,8 @@ $app->get('/admin/error/:id', 'admin_error');
 #$app->get('/authors/', 'htmlCheckConfig', 'authors');
 $app->get('/authors/:id/', 'htmlCheckConfig', 'author');
 $app->get('/authorslist/:id/', 'htmlCheckConfig', 'authorsSlice');
+$app->get('/series/:id/', 'htmlCheckConfig', 'series');
+$app->get('/serieslist/:id/', 'htmlCheckConfig', 'seriesSlice');
 #$app->get('/tags/', 'htmlCheckConfig', 'tags');
 $app->get('/tags/:id/', 'htmlCheckConfig', 'tag');
 $app->get('/tagslist/:id/', 'htmlCheckConfig', 'tagsSlice');
@@ -376,7 +378,10 @@ function admin_is_protected() {
 }
 
 
-# A list of all titles -> /titles/
+/**
+ * A list of all titles -> /titles/
+ * @deprecated replaced by titlesSlice in 0.9
+ */
 function titles() {
 	global $app, $globalSettings, $bbs;
 
@@ -414,12 +419,12 @@ function title($id) {
 		$app->notFound();
 		return;
 	}	
-
 	$app->render('title_detail.html',
 		array('page' => mkPage($globalSettings['langa']['book_details']), 
 			'calibre_dir' => $calibre_dir,
 			'book' => $details['book'], 
-			'authors' => $details['authors'], 
+			'authors' => $details['authors'],
+			'series' => $details['series'],
 			'tags' => $details['tags'], 
 			'formats'=>$details['formats'], 
 			'comment' => $details['comment'],
@@ -559,7 +564,10 @@ function book($id, $file) {
 	}
 }
 
-# List of all authors -> /authors
+/**
+ * List of all authors -> /authors
+ * @deprecated replaced by authorsSlice in 0.9
+ */
 function authors() {
 	global $app, $globalSettings, $bbs;
 
@@ -602,7 +610,54 @@ function author($id) {
 		'books' => $details['books']));
 }
 
-#List of all tags -> /tags
+
+/**
+ * Return a HTML page of series at page $index. 
+ * @param  integer $index=0 page index into series list
+ */
+function seriesSlice($index=0) {
+	global $app, $globalSettings, $bbs;
+
+	$app->getLog()->debug('seriesSlice started with index '.$index);			
+	$search = $app->request()->get('search');
+	if (isset($search)) {
+		$app->getLog()->debug('seriesSlice: search '.$search);			
+		$tl = $bbs->seriesSlice($index,$globalSettings['pagentries'],$search);	
+	} else
+		$tl = $bbs->seriesSlice($index,$globalSettings['pagentries']);
+	$app->render('series.html',array(
+		'page' => mkPage($globalSettings['langa']['series'],3), 
+		'url' => 'serieslist',
+		'series' => $tl['entries'],
+		'curpage' => $tl['page'],
+		'pages' => $tl['pages'],
+		'search' => $search));
+	$app->getLog()->debug('seriesSlice ended');			
+}
+
+/**
+ * Return a HTML page with details of series $id, /series/:id
+ * @param  int 		$id series id
+ */
+function series($id) {
+	global $app, $globalSettings, $bbs;
+
+	$details = $bbs->seriesDetails($id);
+	if (is_null($details)) {
+		$app->getLog()->debug('no series '.$id);
+		$app->notFound();		
+	}
+	$app->render('series_detail.html',array(
+		'page' => mkPage($globalSettings['langa']['series_details']), 
+		'series' => $details['series'], 
+		'books' => $details['books']));
+}
+
+
+/**
+ * List of all tags -> /tags
+ * @deprecated replaced by tagsSlice in 0.9
+ */
 function tags() {
 	global $app, $globalSettings, $bbs;
 
