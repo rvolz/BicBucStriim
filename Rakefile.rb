@@ -61,6 +61,7 @@ task :package2 do |t|
     p.package_files.include("ChangeLog")
     p.package_files.include(".htaccess")
     p.package_files.include("NOTICE")
+    p.package_files.include("LICENSE")
     p.package_files.include("README.md")
   end
   Rake::Task['package'].invoke
