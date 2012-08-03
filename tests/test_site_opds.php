@@ -76,5 +76,20 @@ class TestOfSiteOpds extends WebTestCase {
 		$this->catalogValidate($this->testhost.'opds/tagslist/B/10/', OpdsGenerator::OPDS_MIME_ACQ, '1.1');
 	}
 
+	function testValidateSeriesInitialCatalog() {
+		$this->catalogValidate($this->testhost.'opds/serieslist/', OpdsGenerator::OPDS_MIME_NAV, '1.0');
+		$this->catalogValidate($this->testhost.'opds/serieslist/', OpdsGenerator::OPDS_MIME_NAV, '1.1');
+	}
+
+	function testValidateSeriesNamesForInitialCatalog() {
+		$this->catalogValidate($this->testhost.'opds/serieslist/S/', OpdsGenerator::OPDS_MIME_NAV, '1.0');
+		$this->catalogValidate($this->testhost.'opds/serieslist/S/', OpdsGenerator::OPDS_MIME_NAV, '1.1');
+	}
+
+	function testValidateSeriesBooksForSeriesCatalog() {
+		#$this->catalogValidate($this->testhost.'opds/serieslist/S/1/', OpdsGenerator::OPDS_MIME_ACQ, '1.0');
+		$this->catalogValidate($this->testhost.'opds/serieslist/S/1/', OpdsGenerator::OPDS_MIME_ACQ, '1.1');
+	}
+
 }
 ?>

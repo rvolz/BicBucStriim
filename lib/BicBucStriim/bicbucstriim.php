@@ -544,6 +544,22 @@ class BicBucStriim {
 		return $this->findSlice('Series', $index, $length, $search);
 	}
 
+	/**
+	 * Find the initials of all series and their number
+	 * @return array an array of Items with initial character and series count
+	 */
+	function seriesInitials() {
+		return $this->find('Item', 'select substr(upper(name),1,1) as initial, count(*) as ctr from series group by initial order by initial asc');
+	}
+
+	/**
+	 * Find all series with a given initial and return their names and book count
+	 * @param  string $initial initial character of name, uppercase
+	 * @return array           array of Series with book count
+	 */
+	function seriesNamesForInitial($initial) {
+		return $this->find('Series', 'select series.id, series.name, count(btl.id) as anzahl from series left join books_series_link as btl on series.id = btl.series where substr(upper(series.name),1,1) = \''.$initial.'\' group by series.id order by series.name');	
+	}
 
 	# Generate a list where the items are grouped and separated by 
 	# the initial character.

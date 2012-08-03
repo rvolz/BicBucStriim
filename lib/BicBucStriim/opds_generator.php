@@ -55,6 +55,8 @@ class OpdsGenerator {
       self::OPDS_MIME_NAV);
     $this->navigationEntry('By Tags', '/opds/tagslist/', 'All books by tag', '/tagslist/',
       self::OPDS_MIME_NAV);
+    $this->navigationEntry('By Series', '/opds/serieslist/', 'All books by series', '/serieslist/',
+      self::OPDS_MIME_NAV);
     $this->footer();
     return $this->closeStream($of);
   }
@@ -266,6 +268,86 @@ class OpdsGenerator {
     return $this->closeStream($of);
   }
 
+  /**
+   * Generate a list of initials of series names
+   * @param  string   $of=NULL   output URI or NULL for string output
+   * @param  array    $entries   an array of Items
+   */
+  function seriesRootCatalog($of=NULL, $entries) {
+    $this->openStream($of);
+    $this->header('BicBucStriim Catalog: All Series', 
+      'Series by their initials',
+      '/opds/serieslist/');
+    # TODO Search link?
+    $this->navigationCatalogLink($this->bbs_root.'/opds/serieslist/','self');
+    $this->navigationCatalogLink($this->bbs_root.'/opds/', 'start');
+    $this->navigationCatalogLink($this->bbs_root.'/opds/', 'up');
+    # Content
+    foreach($entries as $entry) {
+      $url = '/serieslist/'.$entry->initial.'/';
+      $this->navigationEntry($entry->initial, $url, 'Series: '.$entry->ctr, $url, 
+        self::OPDS_MIME_NAV);
+    }
+    $this->footer();
+    return $this->closeStream($of);
+  }
+
+  /**
+   * generate a list of series entries with book counts
+   * @param  string   $of=NULL   output URI or NULL for string output
+   * @param  array    $entries   an array of Series
+   * @param  string   $initial   the initial character
+   */
+  function seriesNamesForInitialCatalog($of=NULL, $entries, $initial) {
+    $this->openStream($of);
+    $url= '/serieslist/'.$initial.'/';
+    $this->header('BicBucStriim Catalog: All Series for '.$initial, 
+      'Series list',
+      $url);
+    # TODO Search link?
+    $this->navigationCatalogLink($this->bbs_root.$url,'self');
+    $this->navigationCatalogLink($this->bbs_root.'/opds/', 'start');
+    $this->navigationCatalogLink($this->bbs_root.'/opds/serieslist/', 'up');
+    # TODO next/prev
+
+    # Content
+    foreach($entries as $entry) {
+      $url2 = $url.$entry->id.'/';
+      $this->navigationEntry($entry->name, $url2, 'Books: '.$entry->anzahl, $url2, 
+        self::OPDS_MIME_NAV);
+    }
+    $this->footer();
+    return $this->closeStream($of);
+  }
+
+  /**
+   * generate a list of book entries for a series
+   * @param  string   $of=NULL    output URI or NULL for string output
+   * @param  array    $entries    an array of Books
+   * @param  string   $initial    the initial character
+   * @param  string   $tag        the series
+   * @param  bool     $protected  download protection y/n?
+   */
+  function booksForSeriesCatalog($of=NULL, $entries, $initial, $series, $protected) {
+    $this->openStream($of);
+    $url= '/serieslist/'.$initial.'/'.$series->id.'/';
+    $this->header('BicBucStriim Catalog: '.$series->name, 
+      'All books in series '.$series->name,
+      $url);
+    $this->acquisitionCatalogLink($this->bbs_root.$url,'self');
+    $this->navigationCatalogLink($this->bbs_root.'/opds/', 'start');
+    $this->navigationCatalogLink($this->bbs_root.'/opds/serieslist/'.$initial.'/', 'up');
+    # Content
+    foreach($entries as $entry) {
+      $url2 = $url.$entry['book']->id.'/';
+      $this->partialAcquisitionEntry($entry, $protected);
+    }
+    $this->footer();
+    return $this->closeStream($of);
+  }
+
+
+############ Common stuff ############
   /**
    * Write a catalog entry for a book title with acquisition links
    * @param  array    $entry      the book and its details 

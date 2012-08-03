@@ -204,5 +204,36 @@ function testPartialAcquisitionEntryWithProtection() {
 		$this->assertTrue($this->opdsValidate($feed,'1.1'));
 	}
 
+	function testSeriesInitialCatalogValidation() {
+		$feed = self::DATA.'/feed.xml';
+		$tl = $this->bbs->seriesInitials();
+		$xml = $this->gen->seriesRootCatalog($feed,$tl);
+		$this->assertTrue(file_exists($feed));		
+		$this->assertTrue($this->opdsValidateSchema($feed));
+		$this->assertTrue($this->opdsValidate($feed,'1.0'));
+		$this->assertTrue($this->opdsValidate($feed,'1.1'));
+	}
+
+	function testSeriesNamesForInitialCatalogValidation() {
+		$feed = self::DATA.'/feed.xml';
+		$tl = $this->bbs->seriesNamesForInitial('S');
+		$xml = $this->gen->seriesNamesForInitialCatalog($feed,$tl, 'S');
+		$this->assertTrue(file_exists($feed));		
+		$this->assertTrue($this->opdsValidateSchema($feed));
+		$this->assertTrue($this->opdsValidate($feed,'1.0'));
+		$this->assertTrue($this->opdsValidate($feed,'1.1'));
+	}
+
+	function testSeriesBooksForSeriesCatalogValidation() {
+		$feed = self::DATA.'/feed.xml';
+		$adetails = $this->bbs->seriesDetails(1);
+		$books = $this->bbs->titleDetailsFilteredOpds($adetails['books']);
+		$xml = $this->gen->booksForSeriesCatalog($feed,$books, 'S', $adetails, false);
+		$this->assertTrue(file_exists($feed));		
+		$this->assertTrue($this->opdsValidateSchema($feed));
+		$this->assertTrue($this->opdsValidate($feed,'1.0'));
+		$this->assertTrue($this->opdsValidate($feed,'1.1'));
+	}
+
 }
 ?>

@@ -41,8 +41,6 @@ define('THUMB_GEN_CLIPPED', 'thumb_gen_clipped');
 
 # Init app and routes
 $app = new Slim(array(
-	'cookies.lifetime' => '1 day',
-	'cookies.secret_key' => 'b4924c3579e2850a6fad8597da7ad24bf43ab78e',
 	'view' => new View_Twig(),
 	#'mode' => 'production',
 ));
@@ -63,12 +61,15 @@ function confprod() {
 		'debug' => false,
 		'log.enabled' => true, 
 		'log.level' => 3,
+		'cookies.lifetime' => '1 day',
+		'cookies.secret_key' => 'b4924c3579e2850a6fad8597da7ad24bf43ab78e',
+
 	));
 	$app->getLog()->info($appname.' '.$appversion.': Running in production mode.');
 }
 
 /**
- * Configure app for production
+ * Configure app for development
  */
 function confdev() {
 	global $app, $appname, $appversion;
@@ -76,12 +77,15 @@ function confdev() {
 		'debug' => true,
 		'log.enabled' => true, 
 		'log.level' => 4,
+		'cookies.lifetime' => '1 minutes',
+		'cookies.secret_key' => 'b4924c3579e2850a6fad8597da7ad24bf43ab78e',
+
 	));
 	$app->getLog()->info($appname.' '.$appversion.': Running in development mode.');
 }
 
 /**
- * Debug mode, log everything to file
+ * Configure app for debug mode: production + log everything to file
  */
 function confdebug() {
 	global $app, $appname, $appversion;
@@ -90,6 +94,8 @@ function confdebug() {
 		'log.enabled' => true, 
 		'log.writer' => new Slim_LogFileWriter(fopen('./data/bbs.log','a')),
 		'log.level' => 4,
+		'cookies.lifetime' => '1 day',
+		'cookies.secret_key' => 'b4924c3579e2850a6fad8597da7ad24bf43ab78e',
 	));
 	$app->getLog()->info($appname.' '.$appversion.': Running in debug mode.');
 }
@@ -112,6 +118,11 @@ if ($app->config('mode') == 'development')
 	$globalSettings['pagentries'] = 2;
 else
 	$globalSettings['pagentries'] = 30;
+
+# Check if libmcrypt is available
+$globalSettings['crypt'] = function_exists('mcrypt_encrypt');
+$app->getLog()->info('Encryption '.($globalSettings['crypt']==true ? '' : 'not ').'available');
+
 # Timestamps in UTC, mostly for OPDS
 date_default_timezone_set('UTC');
 
@@ -185,6 +196,9 @@ $app->get('/opds/authorslist/:initial/:id/', 'opdsCheckConfig', 'opdsByAuthor');
 $app->get('/opds/tagslist/', 'opdsCheckConfig', 'opdsByTagInitial');
 $app->get('/opds/tagslist/:initial/', 'opdsCheckConfig', 'opdsByTagNamesForInitial');
 $app->get('/opds/tagslist/:initial/:id/', 'opdsCheckConfig', 'opdsByTag');
+$app->get('/opds/serieslist/', 'opdsCheckConfig', 'opdsBySeriesInitial');
+$app->get('/opds/serieslist/:initial/', 'opdsCheckConfig', 'opdsBySeriesNamesForInitial');
+$app->get('/opds/serieslist/:initial/:id/', 'opdsCheckConfig', 'opdsBySeries');
 $app->run();
 
 
@@ -966,6 +980,64 @@ function opdsByTag($initial,$id) {
 	$app->getLog()->debug('opdsByTag ended');				
 }
 
+/**
+ * Return a page with series initials
+ */
+function opdsBySeriesInitial() {
+	global $app, $appversion, $bbs;
+
+	$app->getLog()->debug('opdsBySeriesInitial started');			
+	$initials = $bbs->seriesInitials();
+	$app->getLog()->debug('opdsBySeriesInitial: initials found');			
+	$gen = new OpdsGenerator($app->request()->getRootUri(), $appversion, 
+		$bbs->calibre_dir,
+		date(DATE_ATOM,$bbs->calibre_last_modified));
+	$app->response()->status(200);
+	$app->response()->header('Content-type',OpdsGenerator::OPDS_MIME_NAV);
+	$gen->seriesRootCatalog('php://output', $initials);
+	$app->getLog()->debug('opdsBySeriesInitial ended');			
+}
+
+/**
+ * Return a page with author names for a initial
+ */
+function opdsBySeriesNamesForInitial($initial) {
+	global $app, $appversion, $bbs;
+
+	$app->getLog()->debug('opdsBySeriesNamesForInitial started, showing initial '.$initial);			
+	$tags = $bbs->seriesNamesForInitial($initial);
+	$app->getLog()->debug('opdsBySeriesNamesForInitial: initials found');			
+	$gen = new OpdsGenerator($app->request()->getRootUri(), $appversion, 
+		$bbs->calibre_dir,
+		date(DATE_ATOM,$bbs->calibre_last_modified));
+	$app->response()->status(200);
+	$app->response()->header('Content-type',OpdsGenerator::OPDS_MIME_NAV);
+	$gen->seriesNamesForInitialCatalog('php://output', $tags, $initial);
+	$app->getLog()->debug('opdsBySeriesNamesForInitial ended');			
+}
+
+/**
+ * Return a feed with partial acquisition entries for the series' books
+ * @param  string $initial initial character
+ * @param  int 		$id      tag id
+ */
+function opdsBySeries($initial,$id) {
+	global $app, $appversion, $bbs;
+
+	$app->getLog()->debug('opdsBySeries started, showing initial '.$initial.', id '.$id);			
+	$adetails = $bbs->seriesDetails($id);
+	$books = $bbs->titleDetailsFilteredOpds($adetails['books']);
+	$app->getLog()->debug('opdsBySeries: details found');			
+	$gen = new OpdsGenerator($app->request()->getRootUri(), $appversion, 
+		$bbs->calibre_dir,
+		date(DATE_ATOM,$bbs->calibre_last_modified));
+	$app->response()->status(200);
+	$app->response()->header('Content-type',OpdsGenerator::OPDS_MIME_ACQ);
+	$gen->booksForSeriesCatalog('php://output', $books, $initial, 
+		$adetails['series'],is_protected(NULL));
+	$app->getLog()->debug('opdsBySeries ended');				
+}
+
 
 #####
 ##### Utility and helper functions, private
@@ -1056,12 +1128,10 @@ function getDownloadPassword() {
  * @return string 			cookie value or NULL if not available
  */
 function getOurCookie($name) {
-	global $app;	
-	if (function_exists('mcrypt_encrypt')) {
-		$app->getLog()->debug('getOurCookie: mcrypt available');
+	global $app, $globalSettings;	
+	if ($globalSettings['crypt'] == true) {
 		$cookie = $app->getEncryptedCookie($name);	
 	} else {
-		$app->getLog()->debug('getOurCookie: mcrypt not available');
 		$cookie = $app->getCookie($name);
 	}
 	return $cookie;
@@ -1073,12 +1143,10 @@ function getOurCookie($name) {
  * @param string $value cookie value
  */
 function setOurCookie($name, $value) {
-	global $app;	
-	if (function_exists('mcrypt_encrypt')) {
-		$app->getLog()->debug('setOurCookie: mcrypt available');
+	global $app, $globalSettings;	
+	if ($globalSettings['crypt'] == true) {
 		$cookie = $app->setEncryptedCookie($name, $value);	
 	} else {
-		$app->getLog()->debug('setOurCookie: mcrypt not available');
 		$cookie = $app->setCookie($name, $value);
 	}
 }

@@ -336,5 +336,21 @@ class TestOfBicBucStriim extends UnitTestCase {
 		$this->assertEqual(1,count($result['books']));		
 	}
 
+	function testSeriesInitials() {
+		$result = $this->bbs->seriesInitials();
+		$this->assertEqual(0, $this->bbs->last_error);
+		$this->assertEqual(1, count($result));
+		$this->assertEqual('S', $result[0]->initial);
+		$this->assertEqual(3, $result[0]->ctr);
+	}
+
+	function testSeriesNamesForInitial() {
+		$result = $this->bbs->seriesNamesForInitial('S');
+		$this->assertEqual(0, $this->bbs->last_error);
+		$this->assertEqual(3, count($result));
+		$this->assertEqual(2, $result[0]->anzahl);
+		$this->assertEqual('Serie Grimmelshausen', $result[0]->name);
+	}
+
 }
 ?>
