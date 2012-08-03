@@ -1,6 +1,7 @@
 <?php
 set_include_path("tests");
 require_once('lib/simpletest/autorun.php');
+require_once('lib/simpletest/web_tester.php');
 
 /*
 Test the global download protection for books. The test case turns on 
@@ -42,7 +43,7 @@ class TestOfGlobalDownloadProtection extends WebTestCase {
 	 */
 	public function testDownloadBookWithCookie() {
 		$this->assertNoCookie('glob_dl_access');
-		$this->setCookie('glob_dl_access','abc');
+		$this->setCookie('glob_dl_access','1344067456%7CoKkHuRzJkvI8ZJ2OeHKRvWpllLpnIFW2uIb5xEe%2B6q8%3D%7Cdde54dad44f5d5e0a56befde92fe68a3f87aa27d');
 		$this->get($this->testhost.'titles/3/file/Der+seltzame+Springinsfeld+-+Hans+Jakob+Christoffel+von+Grimmelshausen.epub');
 		$this->assertResponse(200);
 	}

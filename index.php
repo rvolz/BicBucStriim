@@ -293,11 +293,12 @@ Check for admin permissions. If no admin password is defined
 everyone has admin permissions.
  */
 function is_admin() {
-	if (empty($globalSettings[ADMIN_PW]))
+	$apw = getAdminPassword();
+	if (is_null($apw))
 		return true;
 	else {
-		$admin_cookie = $app->getCookie(ADMIN_ACCESS_COOKIE);
-		if (isset($admin_cookie))
+		$admin_cookie = getOurCookie(ADMIN_COOKIE);
+		if (!is_null($admin_cookie) && $admin_cookie === $apw)
 			return true;
 		else
 			return false;
@@ -394,9 +395,10 @@ function admin_checkaccess() {
 	$response['Content-Type'] = 'application/json';
 	$response['X-Powered-By'] = 'Slim';
 	$response->status(200);
-	if ($password == $globalSettings[ADMIN_PW]) {
+	$apw = getAdminPassword();
+	if ($password == $apw) {
 		$app->getLog()->debug('admin_checkaccess succeded');
-		$app->setCookie(ADMIN_COOKIE,$password);
+		setOurCookie(ADMIN_COOKIE,$password);
 		$answer = array('access' => true);
 	} else {		
 		$app->getLog()->debug('admin_checkaccess failed');
@@ -410,7 +412,8 @@ function admin_checkaccess() {
 function admin_is_protected() {
 	global $app, $globalSettings;
 
-	if (!empty($globalSettings[ADMIN_PW])) {
+	$apw = getAdminPassword();
+	if (!is_null($apw)) {
 		$app->getLog()->debug('admin_is_protected: yes');
 		$app->response()->status(200);
 		$app->response()->body('1');
@@ -439,10 +442,12 @@ function titles() {
 function titlesSlice($index=0) {
 	global $app, $globalSettings, $bbs;
 
+	$app->getLog()->debug("titlesSlice started for index ".$index);
 	$search = $app->request()->get('search');
-	if (isset($search))
+	if (isset($search)) {
+		$app->getLog()->debug("titlesSlice: search=".$search);
 		$tl = $bbs->titlesSlice($index,$globalSettings['pagentries'],$search);
-	else
+	} else
 		$tl = $bbs->titlesSlice($index,$globalSettings['pagentries']);
 	$app->render('titles.html',array(
 		'page' => mkPage($globalSettings['langa']['titles'],2), 
@@ -487,9 +492,15 @@ function showaccess($id) {
 					'bookid' => $id));
 }
 
-# Check the access rights for a book and set a cookie if successful.
-# Sends 404 if unsuccessful.
-# Route: /titles/:id/checkaccess/
+/**
+ * Check the access rights for a book and set a cookie if successful.
+ * Sends 404 if unsuccessful.
+ * Route: /titles/:id/checkaccess/
+ *
+ * If libmcrypt is available, encrypted cookies are used.
+ * 
+ * @param  int 		$id book id
+ */
 function checkaccess($id) {
 	global $app, $calibre_dir, $globalSettings, $bbs;
 
@@ -499,19 +510,18 @@ function checkaccess($id) {
 		$app->getLog()->debug("checkaccess: book not found: ".$id);
 		$app->response()->status(404);
 		return;
-	}	
+	}
+
 	$app->deleteCookie(GLOBAL_DL_COOKIE);
 	$password = $app->request()->post('password');
 	$app->getLog()->debug('checkaccess input: '.$password);
 
-	if ($globalSettings[GLOB_DL_CHOICE] == "1") 
-		$cpw = $globalSettings[ADMIN_PW];
-	elseif ($globalSettings[GLOB_DL_CHOICE] == "2") 
-		$cpw = $globalSettings[GLOB_DL_PASSWORD];
+	$cpw = getDownloadPassword();
 
 	if ($password == $cpw) {
 		$app->getLog()->debug('checkaccess succeded');
-		$app->setCookie(GLOBAL_DL_COOKIE,$cpw);
+
+		setOurCookie(GLOBAL_DL_COOKIE, $cpw);
 		$app->response()->status(200);
 	} else {		
 		$app->getLog()->debug('checkaccess failed');
@@ -590,7 +600,7 @@ function book($id, $file) {
 		$app->notFound();
 	}	
 	if (is_protected($id)) {
-		$app->getLog()->warn("book: attempt to download a protected book, "+$id);		
+		$app->getLog()->warn("book: attempt to download a protected book, ".$id);		
 		$app->response()->status(404);	
 	} else {
 		$app->getLog()->debug("book: file ".$file);
@@ -964,6 +974,8 @@ function opdsByTag($initial,$id) {
 /**
  * Check whether the book download must be protected. 
  * The ID parameter is for future use (selective download protection)
+ *
+ * If libmcrypt is available, encrypted cookies are used.
  * 
  * @param  int  		$id book id, currently not used
  * @return boolean  true - the user must enter a password, else no authentication necessary
@@ -971,17 +983,22 @@ function opdsByTag($initial,$id) {
 function is_protected($id=NULL) {
 	global $app, $globalSettings;
 
-	# Get the cookie
-	# TBD Check the cookie content
-	$glob_dl_cookie = $app->getCookie(GLOBAL_DL_COOKIE);
-	$app->getLog()->debug('is_protected: Cookie glob_dl_access value: '.$glob_dl_cookie);			
-	if ($globalSettings[GLOB_DL_CHOICE] != "0" && is_null($glob_dl_cookie)) {
-		$app->getLog()->debug('is_protected: book is protected, no cookie, ask for password');		
-		return true;
-	}	else {
-		$app->getLog()->debug('is_protected: book is not protected');		
+	$pw = getDownloadPassword();
+	if (!is_null($pw)) {
+		$glob_dl_cookie = getOurCookie(GLOBAL_DL_COOKIE);
+		$app->getLog()->debug('is_protected: global download protection enabled, cookie: '.$glob_dl_cookie);
+		if (is_null($glob_dl_cookie))
+			return true;
+		else {
+			if ($glob_dl_cookie === $pw)
+				return false;
+			else
+				return true;
+		}
+	} else {
+		$app->getLog()->debug('is_protected: global download protection disabled');		
 		return false;
-	}		
+	}
 }
 
 
@@ -1003,6 +1020,69 @@ function mkPage($subtitle='', $menu=0, $dialog=false) {
 		'dialog' => $dialog);
 	return $page;
 }
+
+/**
+ * Return the admin password or NULL if none is set.
+ * @return string admin password or NULL
+ */
+function getAdminPassword() {
+	global $globalSettings;
+
+	if (empty($globalSettings[ADMIN_PW])) 
+		return NULL;
+	else
+		return $globalSettings[ADMIN_PW];
+}
+
+/**
+ * Return the download password or NULL if no download protection is set.
+ * @return string download password or NULL
+ */
+function getDownloadPassword() {
+	global $globalSettings;
+
+	if ($globalSettings[GLOB_DL_CHOICE] == "1") 
+		$cpw = $globalSettings[ADMIN_PW];
+	elseif ($globalSettings[GLOB_DL_CHOICE] == "2") 
+		$cpw = $globalSettings[GLOB_DL_PASSWORD];
+	else
+		$cpw = NULL;
+	return $cpw;
+}
+
+/**
+ * Get the value of the cookie
+ * @param string $name 	cookie name
+ * @return string 			cookie value or NULL if not available
+ */
+function getOurCookie($name) {
+	global $app;	
+	if (function_exists('mcrypt_encrypt')) {
+		$app->getLog()->debug('getOurCookie: mcrypt available');
+		$cookie = $app->getEncryptedCookie($name);	
+	} else {
+		$app->getLog()->debug('getOurCookie: mcrypt not available');
+		$cookie = $app->getCookie($name);
+	}
+	return $cookie;
+}
+
+/**
+ * Set a cookie
+ * @param string $name 	cookie name
+ * @param string $value cookie value
+ */
+function setOurCookie($name, $value) {
+	global $app;	
+	if (function_exists('mcrypt_encrypt')) {
+		$app->getLog()->debug('setOurCookie: mcrypt available');
+		$cookie = $app->setEncryptedCookie($name, $value);	
+	} else {
+		$app->getLog()->debug('setOurCookie: mcrypt not available');
+		$cookie = $app->setCookie($name, $value);
+	}
+}
+
 
 /**
  * getUserLangs()
@@ -1059,5 +1139,6 @@ function readfile_chunked($filename) {
 	return $status;
 	
 }
+
 
 ?>

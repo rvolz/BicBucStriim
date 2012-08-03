@@ -65,7 +65,7 @@ class TestOfAdminProtection extends WebTestCase {
 	 */
 	public function testDownloadBookWithCookie() {
 		$this->assertNoCookie('glob_dl_access');
-		$this->setCookie('glob_dl_access','def');
+		$this->setCookie('glob_dl_access','1344066550%7CAopi6Z%2FMZew1NNp%2BWHrzFTBHtFv24x5qgqb%2FD2hgZv4%3D%7Ceabea02c4b729875474dae4bbc50d05639093652');
 		$this->get($this->testhost.'titles/3/file/Der+seltzame+Springinsfeld+-+Hans+Jakob+Christoffel+von+Grimmelshausen.epub');
 		$this->assertResponse(200);
 	}
