@@ -29,25 +29,27 @@ class TestOfAdminProtection extends WebTestCase {
 	/*
 	Check admin page access protection. 
 	 */
-	public function testAdminAccessProtection()	{
+	public function testAdminWithoutPermission()	{
 		$this->assertNoCookie('admin_access');
-		$access = $this->get($this->testhost.'admin/access/');
-		$this->assertEqual('1', $access);
+		$access = $this->post($this->testhost.'admin/');
+		$this->assertResponse(200);
+		$this->assertEqual($this->testhost.'admin/', $this->getUrl());
+		$this->assertText('Submit Password');
 	}
-
-	/*
-	Check admin page access protection. 
-	 */
+	
 	public function testAdminAccessWithoutPermission()	{
 		$this->assertNoCookie('admin_access');
-		$access = json_decode($this->post($this->testhost.'admin/access/check/'));
-		$this->assertEqual(FALSE, $access->access);
+		$access = $this->post($this->testhost.'admin/access/check/');
+		$this->assertResponse(200);
+		$this->assertEqual($this->testhost.'admin/access/check/', $this->getUrl());
+		$this->assertText('Invalid Password');
 	}
 	public function testAdminAccessWithPermission()	{
 		$this->assertNoCookie('admin_access');
-		$access = json_decode($this->post($this->testhost.'admin/access/check/', array('admin_pwin' => 'def')));
-		$this->assertEqual(TRUE, $access->access);
-		$this->assertCookie('admin_access');
+		$access = $this->post($this->testhost.'admin/access/check/', array('admin_pwin' => 'def'));
+		$this->assertResponse(200);
+		$this->assertEqual($this->testhost.'admin/', $this->getUrl());
+		$this->assertText('Configuration');		
 	}
 	/*
 	Check direct book download without password challenge or download cookie

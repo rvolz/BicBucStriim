@@ -77,7 +77,7 @@ function confdev() {
 		'debug' => true,
 		'log.enabled' => true, 
 		'log.level' => 4,
-		'cookies.lifetime' => '1 minutes',
+		'cookies.lifetime' => '5 minutes',
 		'cookies.secret_key' => 'b4924c3579e2850a6fad8597da7ad24bf43ab78e',
 
 	));
@@ -168,7 +168,7 @@ $app->notFound('myNotFound');
 $app->get('/', 'htmlCheckConfig', 'main');
 $app->get('/admin/', 'admin');
 $app->post('/admin/', 'admin_change_json');
-$app->get('/admin/access/', 'admin_is_protected');
+#$app->get('/admin/access/', 'admin_is_protected');
 $app->post('/admin/access/check/', 'admin_checkaccess');
 $app->get('/admin/error/:id', 'admin_error');
 #$app->get('/authors/', 'htmlCheckConfig', 'authors');
@@ -288,7 +288,8 @@ function admin() {
 	global $app, $globalSettings, $bbs;
 
 	$app->render('admin.html',array(
-		'page' => mkPage($globalSettings['langa']['admin'])));
+		'page' => mkPage($globalSettings['langa']['admin']),
+		'isadmin' => is_admin()));
 }
 
 # Is the key in globalSettings?
@@ -326,7 +327,11 @@ function admin_change_json() {
 	# Check access permission
 	if (!is_admin()) {
 		$app->getLog()->warn('admin_change: no admin permission');	
-		$app->notFound();
+		$app->render('admin.html',array(
+			'page' => mkPage($globalSettings['langa']['admin']),
+			'messages' => array($globalSettings['langa']['invalid_password']),
+			'isadmin' => false));
+		return;
 	}
 	$nconfigs = array();
 	$req_configs = $app->request()->post();
@@ -368,9 +373,9 @@ function admin_change_json() {
 	# Don't save just return the error status
 	if (count($errors) > 0) {
 		$app->getLog()->error('admin_change: ended with error '.var_export($errors, true));	
-		$app->render('admin_status.html',array(
+		$app->render('admin.html',array(
 		'page' => mkPage($globalSettings['langa']['admin']), 
-		'status_ok' => false,
+		'isadmin' => true,
 		'errors' => $errors));	
 	} else {
 		## Apply changes 
@@ -389,36 +394,36 @@ function admin_change_json() {
 			$bbs->saveConfigs($nconfigs);
 			$app->getLog()->debug('admin_change: changes saved');	
 		}
-
 		$app->getLog()->debug('admin_change: ended');	
-		$app->render('admin_status.html',array(
+		$app->render('admin.html',array(
 			'page' => mkPage($globalSettings['langa']['admin']), 
-			'status_ok' => true));	
+			'messages' => array($globalSettings['langa']['changes_saved']),
+			'isadmin' => true,
+			));	
 	}
 }
 
 # Checks access to the admin page -> /admin/access/check
 function admin_checkaccess() {
-	global $app, $globalSettings, $bbs;
+	global $app, $globalSettings;
 
 	$app->deleteCookie(ADMIN_COOKIE);
 	$password = $app->request()->post('admin_pwin');
 	$app->getLog()->debug('admin_checkaccess input: '.$password);
 
-	$response = $app->response();
-	$response['Content-Type'] = 'application/json';
-	$response['X-Powered-By'] = 'Slim';
-	$response->status(200);
 	$apw = getAdminPassword();
 	if ($password == $apw) {
 		$app->getLog()->debug('admin_checkaccess succeded');
 		setOurCookie(ADMIN_COOKIE,$password);
-		$answer = array('access' => true);
+		$app->redirect($app->request()->getRootUri().'/admin/');
 	} else {		
 		$app->getLog()->debug('admin_checkaccess failed');
-		$answer = array('access' => false, 'message' => $globalSettings['langa']['invalid_password']);
+		#$app->response()->status(401);
+		$app->render('admin.html',array(
+			'page' => mkPage($globalSettings['langa']['admin']),
+			'messages' => array($globalSettings['langa']['invalid_password']),
+			'isadmin' => false));
 	}
-	$response->body(json_encode($answer));
 }
 
 # Check if the admin page is protected by a password
