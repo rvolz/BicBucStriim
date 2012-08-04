@@ -1,5 +1,11 @@
 {% extends 'main.html' %}
 
+{% block headerlinks %}
+<link rel="related" href="{{page.rot}}/opds/" 
+	type="application/atom+xml;profile=opds-catalog" title="OPDS index">
+<link rel="alternate" href="{{page.rot}}/opds/newest/" 
+	type="application/atom+xml;profile=opds-catalog" title="OPDS catalog: newest books">
+{% endblock %}
 {% block content %}
 <ul data-role="listview">
 	{% for book in books %}
