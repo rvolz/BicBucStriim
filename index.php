@@ -620,7 +620,7 @@ function book($id, $file) {
 	}	
 	if (is_protected($id)) {
 		$app->getLog()->warn("book: attempt to download a protected book, ".$id);		
-		$app->response()->status(404);	
+		$app->response()->status(401);
 	} else {
 		$app->getLog()->debug("book: file ".$file);
 		$bookpath = $bbs->titleFile($id, $file);
