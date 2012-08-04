@@ -33,9 +33,9 @@ class TestOfGlobalDownloadProtection extends WebTestCase {
 	public function testDownloadBookWithoutPermission() {
 		$this->assertNoCookie('glob_dl_access');
 		$this->get($this->testhost.'titles/3/file/Der+seltzame+Springinsfeld+-+Hans+Jakob+Christoffel+von+Grimmelshausen.epub');
-		$this->assertResponse(404);
+		$this->assertResponse(401);
 		$this->get($this->testhost.'titles/2/file/Trutz+Simplex+-+Hans+Jakob+Christoffel+von+Grimmelshausen.mobi');
-		$this->assertResponse(404);
+		$this->assertResponse(401);
 	}
 
 	/*
