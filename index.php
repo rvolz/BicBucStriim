@@ -20,7 +20,7 @@ $fallbackLang = 'en';
 # Application Name
 $appname = 'BicBucStriim';
 # App version
-$appversion = '0.9.1';
+$appversion = '0.9.2';
 # Cookie name for global download protection
 define('GLOBAL_DL_COOKIE', 'glob_dl_access');
 # Cookie name for admin access

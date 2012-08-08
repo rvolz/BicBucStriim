@@ -521,12 +521,7 @@ class BicBucStriim {
 	function seriesDetails($id) {
 		$series = $this->findOne('Series', 'select * from series where id='.$id);
 		if (is_null($series)) return NULL;
-		$book_ids = $this->find('BookSeriesLink', 'select * from books_series_link where series='.$id);
-		$books = array();
-		foreach($book_ids as $bid) {
-			$book = $this->title($bid->book);
-			array_push($books, $book);
-		}
+		$books = $this->find('Book', 'select BSL.book, Books.* from books_series_link BSL, books Books where Books.id=BSL.book and series='.$id.' order by series_index');
 		return array('series' => $series, 'books' => $books);
 	}
 
