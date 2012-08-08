@@ -140,11 +140,7 @@ $langfr = array('admin' => 'Configuration',
 	'back' => 'Retour',
 	'booksby' => 'Livres par',
 	'booksbytag' => 'Livres par tag',
-
-	#********
-	'booksbyseries' => 'Books in series',
-	#********
-
+	'booksbyseries' => 'Livres par série',
 	'book_details' => 'Détails des livres',
 	'calibre_dir1' => 'Chemin vers le répertoire Calibre',
 	'calibre_dir2' => 'Exemple: /volume1/books',
@@ -172,35 +168,23 @@ $langfr = array('admin' => 'Configuration',
 	'no_config' => 'config.php n\'a pas étré trouvé ou n\'est pas bien formaté. Veuillez copier le fichier config.php.template vers config.php et refaire votre propre configuration.',
 	'not_found1' => 'Non trouvé !',
 	'not_found2' => 'La resource demandée n\'est pas disponible. Cela ne devrait pas se produire... Vérifier votre base de donnée Calibre.',
-	
-	#******
 	'pagination_next' => 'suiv.',
 	'pagination_page' => 'Page',
 	'pagination_prev' => 'préc.',
 	'pagination_search' => 'Recherche',
 	'pagination_search_lbl' => 'Recherche',
 	'pagination_search_ph_author' => 'Recherche ...',
-	#******
-	
 	'presskey' => 'Cliquez sur le bouton pour télécharger le livre dans le format correspondant.',
 	'published' => 'Publié',
 	'save' => 'Sauver',
-
-	#*******
-	'series' => 'Series',
-	'series_details' => 'Series Details',
-	#*******
-	
+	'series' => 'Séries',
+	'series_details' => 'Details de la Série',
 	'switch_yes' => 'Oui',
 	'switch_no' => 'Non',
 	'tags' => 'Tags',
 	'tag_details' => 'Détails du Tag',
-
-	#******
-	'thumb_gen_clipped' => 'Clip thumbnails?',
-	'thumb_gen_clipped_expl' => 'If switched on, the edges of thumbnails will be clipped to show more details.',	
-	#******
-
+	'thumb_gen_clipped' => 'Decouper les miniatures?',
+	'thumb_gen_clipped_expl' => 'Si activé, les bords de vignettes sera ramenée à montrer plus de détails.',	
 	'titles' => 'Livres',
 	'unknown_error1' => 'Erreur inconnue',
 	'unknown_error2' => 'Une erreur s\'est produite',
