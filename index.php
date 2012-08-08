@@ -42,7 +42,7 @@ define('THUMB_GEN_CLIPPED', 'thumb_gen_clipped');
 # Init app and routes
 $app = new Slim(array(
 	'view' => new View_Twig(),
-	#'mode' => 'production',
+	'mode' => 'production',
 ));
 
 $app->configureMode('production','confprod');
