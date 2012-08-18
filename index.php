@@ -173,11 +173,14 @@ $app->post('/admin/access/check/', 'admin_checkaccess');
 $app->get('/admin/error/:id', 'admin_error');
 #$app->get('/authors/', 'htmlCheckConfig', 'authors');
 $app->get('/authors/:id/', 'htmlCheckConfig', 'author');
+$app->get('/authors/:id/:page/', 'htmlCheckConfig', 'authorDetailSlice');
 $app->get('/authorslist/:id/', 'htmlCheckConfig', 'authorsSlice');
-$app->get('/series/:id/', 'htmlCheckConfig', 'series');
+#$app->get('/series/:id/', 'htmlCheckConfig', 'series');
 $app->get('/serieslist/:id/', 'htmlCheckConfig', 'seriesSlice');
+$app->get('/series/:id/:page/', 'htmlCheckConfig', 'seriesDetailSlice');
 #$app->get('/tags/', 'htmlCheckConfig', 'tags');
-$app->get('/tags/:id/', 'htmlCheckConfig', 'tag');
+#$app->get('/tags/:id/', 'htmlCheckConfig', 'tag');
+$app->get('/tags/:id/:page/', 'htmlCheckConfig', 'tagDetailSlice');
 $app->get('/tagslist/:id/', 'htmlCheckConfig', 'tagsSlice');
 #$app->get('/titles/', 'htmlCheckConfig', 'titles');
 $app->get('/titles/:id/', 'htmlCheckConfig','title');
@@ -683,6 +686,32 @@ function author($id) {
 		'books' => $details['books']));
 }
 
+function authorDetailSlice($id, $index=0) {
+  global $app, $globalSettings, $bbs;
+  
+  $search = $app->request()->get('search');
+	if (isset($search))
+	$tl = $bbs->authorDetailSlice($index, $id, $globalSettings['pagentries'], $search);
+	else
+	$tl = $bbs->authorDetailSlice($index, $id, $globalSettings['pagentries']);
+	
+	if (is_null($tl)) {
+		$app->getLog()->debug('no author '.$id);
+		$app->notFound();
+	}
+	$author = $bbs->findOne('Author', 'select name from authors where id='.$id);
+	
+
+		$app->render('author_detail.html',array(
+		'page' => mkPage($globalSettings['langa']['author_details'],3),
+		'url' => 'authors/'.$id,	
+		'author' => $author,
+		'books' => $tl['entries'],
+		'curpage' => $tl['page'],
+		'pages' =>  $tl['pages'],
+    'search' => $search));
+}
+
 
 /**
  * Return a HTML page of series at page $index. 
@@ -706,6 +735,32 @@ function seriesSlice($index=0) {
 		'pages' => $tl['pages'],
 		'search' => $search));
 	$app->getLog()->debug('seriesSlice ended');			
+}
+
+
+function seriesDetailSlice ($id, $index=0) {
+  global $app, $globalSettings, $bbs;
+	
+	$app->getLog()->debug('seriesDetailSlice started with index '.$index);
+  	$search = $app->request()->get('search');
+  	if (isset($search)) {
+		$app->getLog()->debug('seriesDetailSlice: search '.$search);			
+		$tl = $bbs->seriesDetailsSlice($index, $id, $globalSettings['pagentries'], $search);	
+	} else  	
+	$tl = $bbs->seriesDetailsSlice($index, $id, $globalSettings['pagentries']);
+	if (is_null($tl)) {
+		$app->getLog()->debug('no series '.$id);
+		$app->notFound();		
+	}
+	$series = $bbs->findOne('Series', 'select name from series where id='.$id); 
+		$app->render('series_detail.html',array(
+		'page' => mkPage($globalSettings['langa']['series_details'],5),
+    'url' => 'series/'.$id, 
+		'series' => $series, 
+		'books' => $tl['entries'],
+    'curpage' => $tl['page'],
+    'pages' => $tl['pages'],
+    'search' => $search));   
 }
 
 /**
@@ -757,6 +812,33 @@ function tagsSlice($index=0) {
 		'pages' => $tl['pages'],
 		'search' => $search));
 }
+
+function tagDetailSlice ($id, $index=0) {
+  global $app, $globalSettings, $bbs;
+	
+	$search = $app->request()->get('search');
+	if (isset($search))
+	$tl = $bbs->tagDetailSlice($index, $id, $globalSettings['pagentries'], $search);
+	else
+	$tl = $bbs->tagDetailSlice($index, $id, $globalSettings['pagentries']);
+	
+	if (is_null($tl)) {
+		$app->getLog()->debug('no tag '.$id);
+		$app->notFound();
+	}
+	$tag = $bbs->findOne('Tag', 'select name from tags where id='.$id);
+	
+
+		$app->render('tag_detail.html',array(
+		'page' => mkPage($globalSettings['langa']['tag_details'],4),
+		'url' => 'tags/'.$id,	
+		'tag' => $tag,
+		'books' => $tl['entries'],
+		'curpage' => $tl['page'],
+		'pages' =>  $tl['pages'],
+    'search' => $search));
+}
+
 
 #Details of a single tag -> /tags/:id
 function tag($id) {

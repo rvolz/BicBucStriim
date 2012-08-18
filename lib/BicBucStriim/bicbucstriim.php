@@ -128,10 +128,11 @@ class BicBucStriim {
 	 *                              number of pages (key 'pages'),
 	 *                              an array of $class instances (key 'entries') or NULL
 	 */
-	function findSlice($class, $index=0, $length=100, $search=NULL) {
-		if ($index < 0 || $length < 1 || !in_array($class, array('Book','Author','Tag', 'Series')))
+	function findSlice($class, $index=0, $length=100, $search=NULL, $id=NULL) {	
+	if ($index < 0 || $length < 1 || !in_array($class, array('Book','Author','Tag', 'Series', 'SingleSeries', 'SingleTag', 'SingleAuthor')))
 			return array('page'=>0,'pages'=>0,'entries'=>NULL);
-		$offset = $index * $length;		
+		$offset = $index * $length;	
+		
 		switch($class) {
 			case 'Author': 
 				if (is_null($search)) {
@@ -140,8 +141,17 @@ class BicBucStriim {
 				}	else {
 					$count = 'select count(*) from authors where lower(sort) like \'%'.strtolower($search).'%\'';
 					$query = 'select a.id, a.name, a.sort, count(bal.id) as anzahl from authors as a left join books_authors_link as bal on a.id = bal.author where lower(a.name) like \'%'.strtolower($search).'%\' group by a.id order by a.sort limit '.$length.' offset '.$offset;	
-				}
+				}				
 				break;
+			case 'SingleAuthor':
+			if (is_null($search)) {
+        $count = 'select count(*) from authors where id='.$id;
+        $query = 'select BAL.book, Books.* from books_authors_link BAL, books Books where Books.id=BAL.book and author = '.$id.' order by Books.sort limit '.$length.' offset '.$offset;
+      } else {
+        $count = 'select count(*) from (select BAL.book, Books.* from books_authors_link BAL, books Books where Books.id=BAL.book and author = '.$id.') where lower(sort) like \'%'.strtolower($search).'%\'';
+        $query = 'select BAL.book, Books.* from books_authors_link BAL, books Books where Books.id=BAL.book and author ='.$id.' and lower(Books.sort) like \'%'.strtolower($search).'%\' order by Books.sort limit '.$length.' offset '.$offset;
+      }
+      break;
 			case 'Book': 
 				if (is_null($search)) {
 					$count = 'select count(*) from books';
@@ -159,22 +169,40 @@ class BicBucStriim {
 					$count = 'select count(*) from series where lower(name) like \'%'.strtolower($search).'%\'';
 					$query = 'select series.id, series.name, count(bsl.id) as anzahl from series left join books_series_link as bsl on series.id = bsl.series where lower(series.name) like \'%'.strtolower($search).'%\' group by series.id order by series.name limit '.$length.' offset '.$offset;	
 				}
-				break;				
+				break;
+			case 'SingleSeries':
+				if (is_null($search)) {
+					$count = 'select count(*) from books_series_link where series = '.$id;
+					$query = 'select BSL.book, Books.* from books_series_link BSL, books Books where Books.id=BSL.book and series = '.$id.' order by series_index limit '.$length.' offset '.$offset;	          
+				} else {
+					$count = 'select count (*) from (select BSL.book, Books.* from books_series_link BSL, books Books where Books.id=BSL.book and series = '.$id.') where lower(sort) like \'%'.strtolower($search).'%\'';
+					$query = 'select BSL.book, Books.* from books_series_link BSL, books Books where Books.id=BSL.book and series = '.$id.' and lower(Books.sort) like \'%'.strtolower($search).'%\' order by series_index limit '.$length.' offset '.$offset;	
+				}
+				break;			
 			case 'Tag': 
 				if (is_null($search)) {
 					$count = 'select count(*) from tags';
-					$query = 'select tags.id, tags.name, count(btl.id) as anzahl from tags left join books_tags_link as btl on tags.id = btl.tag group by tags.id order by tags.name limit '.$length.' offset '.$offset;
+					$query = 'select tags.id, tags.name, count(btl.id) as anzahl from tags left join books_tags_link as btl on tags.id = btl.tag group by tags.id order by tags.name limit '.$length.' offset '.$offset;							
 				}	else {
 					$count = 'select count(*) from tags where lower(name) like \'%'.strtolower($search).'%\'';
 					$query = 'select tags.id, tags.name, count(btl.id) as anzahl from tags left join books_tags_link as btl on tags.id = btl.tag where lower(tags.name) like \'%'.strtolower($search).'%\' group by tags.id order by tags.name limit '.$length.' offset '.$offset;	
 				}
 				break;
+			case 'SingleTag':
+				if (is_null($search)) {
+					$count = 'select count(*) from books_tags_link where tag ='.$id;
+					$query = 'select BTL.book, Books.* from books_tags_link BTL, books Books where Books.id=BTL.book and tag = '.$id.' order by Books.sort limit '.$length.' offset '.$offset;
+				}	else {
+					$count = 'select count (*) from (select BTL.book, Books.* from books_tags_link BTL, books Books where Books.id=BTL.book and tag = '.$id.') where lower(sort) like \'%'.strtolower($search).'%\'';
+					$query = 'select BTL.book, Books.* from books_tags_link BTL, books Books where Books.id=BTL.book and tag = '.$id.' and lower(Books.sort) like \'%'.strtolower($search).'%\' order by Books.sort limit '.$length.' offset '.$offset;
+				}			
+				break;
 		}
 		$no_entries = $this->count($count);
 		$no_pages = (int) ($no_entries / $length);
 		if ($no_entries % $length > 0)
-			$no_pages += 1;
-		$entries = $this->find($class,$query);
+			$no_pages += 1;		
+  	$entries = $this->find($class,$query); 	
 		return array('page'=>$index, 'pages'=>$no_pages, 'entries'=>$entries);
 	}
 
@@ -222,6 +250,11 @@ class BicBucStriim {
 	function authorsSlice($index=0, $length=100, $search=NULL) {
 		return $this->findSlice('Author', $index, $length, $search);
 	}
+	
+	function authorDetailSlice($index=0, $id=NULL, $length=100, $search=NULL) {
+    return $this->findSlice('SingleAuthor', $index, $length, $search, $id);
+  }
+	
 
 	/**
 	 * Find the initials of all authors and their count
@@ -267,6 +300,11 @@ class BicBucStriim {
 	function tagsSlice($index=0, $length=100, $search=NULL) {
 		return $this->findSlice('Tag', $index, $length, $search);
 	}
+	
+	
+	function tagDetailSlice($index=0, $id=NULL, $length=100, $search=NULL) {
+		return $this->findSlice('SingleTag', $index, $length, $search, $id);
+	}		
 
 	/**
 	 * Find the initials of all tags and their count
@@ -524,6 +562,13 @@ class BicBucStriim {
 		$books = $this->find('Book', 'select BSL.book, Books.* from books_series_link BSL, books Books where Books.id=BSL.book and series='.$id.' order by series_index');
 		return array('series' => $series, 'books' => $books);
 	}
+
+  
+  function seriesDetailsSlice ($index=0, $id=NULL, $length=100, $search=NULL)
+  {
+      return $this->findSlice('SingleSeries', $index, $length, $search, $id);
+  }
+
 
 	/**
 	 * Search a list of books defined by the parameters $index and $length.
