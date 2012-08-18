@@ -1,3 +1,16 @@
+2012-08-08 Version 0.9.1
+
+* updated dependencies (jQuery 1.7.2, jQuery Mobile 1.2.0 alpha 1)
+
+2012-08-02 Version 0.9.0
+
+* new: french translation, thanks to Thomas Parvais
+* new: display of book series, thanks to DarkHunter85 (https://github.com/DarkHunter85)
+* new: pagination for titles, authors, series and tags makes navigation in larger libraries easier
+* new: OPDS catalog support
+* updated: added more details to list views, thanks to DarkHunter85 
+
+
 2012-06-18 Version 0.8.0
 
 * new: admin section for configuration, no config.php editing anymore

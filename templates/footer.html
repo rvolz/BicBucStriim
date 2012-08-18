@@ -1,0 +1,24 @@
+{% if curpage != NULL %}
+	{% if curpage > 0 %}
+		<a  data-icon="arrow-l" data-role="button" class="ui-btn-left" 
+				href="{{page.rot}}/{{url}}/{{curpage - 1}}/{% if search != NULL %}?search={{search}}{% endif %}">
+			{{page.glob.langa.pagination_prev}}
+		</a>	
+	{% endif %}
+	{% if curpage+1 < pages %}
+		<a data-icon="arrow-r" data-role="button" class="ui-btn-right" 
+				href="{{page.rot}}/{{url}}/{{curpage + 1}}/{% if search != NULL %}?search={{search}}{% endif %}">
+			{{page.glob.langa.pagination_next}}
+		</a>	
+	{% endif %}
+		<h1>
+		{% if search != NULL %}
+			{{page.glob.langa.pagination_search}} 
+		{% else %}
+			{{page.glob.langa.pagination_page}} 
+		{% endif %}
+		{{ curpage+1 }}/{{ pages }}
+		</h1>
+{% endif %}
+
+<p><a href="https://github.com/rvolz/BicBucStriim">BicBucStriim {{page.version}}</a>  &copy; 2012 Rainer Volz</p>

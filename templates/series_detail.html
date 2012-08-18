@@ -2,18 +2,17 @@
 
 
 {% block content %}
-<section class="author_detail row">
+<section class="series_detail row">
 	<header>
-		<h1>{{page.glob.langa.oneseries}} "{{ series.name }}":</h1>
+		<h1>{{page.glob.langa.booksbyseries}} "{{ series.name }}":</h1>
 	</header>
 	<ul data-role="listview">
 		{% for book in books %}
 		<li>
 			<a href="{{page.rot}}/titles/{{book.id}}">
 				<img src="{{page.rot}}/titles/{{ book.id }}/thumbnail" />
-				<p>{{ book.author_sort }}</p>
-				{{ book.title }}
-				<span class="ui-li-count">{{ page.glob.langa.volume }} {{ book.series_index }}</span>
+				<h3>{{ book.sort }} ({{ book.pubdate|date("Y") }})</h3>
+  			<p>{{book.author_sort}}</p>
 			</a>
 		</li>
 		{% endfor %}	

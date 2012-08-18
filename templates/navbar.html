@@ -1,5 +1,28 @@
-<h1>{{ page.title }}</h1>
-<a href="{{page.rot}}/admin/" data-icon="gear" class="ui-btn-left">{{ page.glob.langa.admin_short }}</a>
+{% if curpage != NULL %}
+	{% if curpage > 0 %}
+		<a  data-icon="arrow-l" data-role="button" class="ui-btn-left" 
+				href="{{page.rot}}/{{url}}/{{curpage - 1}}/{% if search != NULL %}?search={{search}}{% endif %}">
+			{{page.glob.langa.pagination_prev}}
+		</a>	
+	{% endif %}
+	{% if curpage+1 < pages %}
+		<a data-icon="arrow-r" data-role="button" class="ui-btn-right" 
+			 href="{{page.rot}}/{{url}}/{{curpage + 1}}/{% if search != NULL %}?search={{search}}{% endif %}">
+			{{page.glob.langa.pagination_next}}
+		</a>	
+	{% endif %}
+	<h1>
+		{% if search != NULL %}
+			{{page.glob.langa.pagination_search}} 
+		{% else %}
+			{{page.glob.langa.pagination_page}} 
+		{% endif %}
+		{{ curpage+1 }}/{{ pages }}
+		</h1>
+{% else %}
+	<a href="{{page.rot}}/admin/" data-icon="gear" class="ui-btn-left">{{ page.glob.langa.admin_short }}</a>
+	<h1>{{ page.title }}</h1>
+{% endif %}
 {% if page.menu == 0 %}
 <a  data-icon="back" data-rel="back" class="ui-btn-right">{{ page.glob.langa.back }}</a>
 {% endif %}
@@ -11,25 +34,35 @@
 	  	</a>
 	  </li>
 	  <li>
-	  	<a href="{{page.rot}}/titles" {% if page.menu == 2 %}class="ui-btn-active"{%endif%}>
+	  	<a href="{{page.rot}}/titleslist/0/" {% if page.menu == 2 %}class="ui-btn-active"{%endif%}>
 	  		{{page.glob.langa.titles}}
 	  	</a>
 	  </li>
 	  <li>
-	  	<a href="{{page.rot}}/authors" {% if page.menu == 3 %}class="ui-btn-active"{%endif%}>
+	  	<a href="{{page.rot}}/authorslist/0/" {% if page.menu == 3 %}class="ui-btn-active"{%endif%}>
 	  		{{page.glob.langa.authors}}
 	  	</a>
 	  </li>
 	  <li>
-	  	<a href="{{page.rot}}/tags" {% if page.menu == 4 %}class="ui-btn-active"{%endif%}>
+	  	<a href="{{page.rot}}/tagslist/0/" {% if page.menu == 4 %}class="ui-btn-active"{%endif%}>
 	  		{{page.glob.langa.tags}}
 	  	</a>
-	  </li>
+	  </li>       
 	  <li>
-	  	<a href="{{page.rot}}/series" {% if page.menu == 5 %}class="ui-btn-active"{%endif%}>
+	  	<a href="{{page.rot}}/serieslist/0/" {% if page.menu == 5 %}class="ui-btn-active"{%endif%}>
 	  		{{page.glob.langa.series}}
 	  	</a>
-	  </li>  	  
+	  </li>       	  
 	</ul>
 </div>
+{% if page.menu > 1 %}
+<form action="{{page.rot}}/{{url}}/0/" 
+			method="get" class="ui-bar-b">
+	<div data-role="fieldcontain" class="ui-hide-label">
+		<label for="search">{{page.glob.langa.pagination_search_lbl}}</label>
+		<input type="search" name="search" id="search" value="{{search}}" 
+					placeholder="{{page.glob.langa.pagination_search_ph}}"/>
+	</div>			
+</form>
+{% endif %}
 

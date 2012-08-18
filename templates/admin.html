@@ -1,11 +1,28 @@
 {% extends 'main.html' %}
 
-{% block pid %}id="padmin"{%endblock%}
+{% block pid %}id="padmin" data-ajax="false"{%endblock%}
 {% block content %}
 <h1>{{ page.glob.langa.admin }}</h1>
-<div id="flash"></div>	
 
-<form action="{{page.rot}}/admin/access/check/" method="post" id="adminpwform" hidden>
+<div id="flash">
+	{% for message in messages %}
+		<p class="success">{{message}}</p></div>	
+	{% endfor %}
+
+	{% for error in errors %}
+	{% if error == 1 %}
+		<p class="error">{{page.glob.langa.invalid_calibredir2}}</p>
+	{% elseif error == 2 %}
+		<p class="error">{{page.glob.langa.invalid_password2}}</p>
+	{% else %}
+		<p class="error">{{page.glob.langa.admin_pw_required2}}</p>
+	{% endif %}
+	{% endfor %}
+
+</div>	
+
+{% if isadmin == false %}
+<form action="{{page.rot}}/admin/access/check/" method="post" id="adminpwform">
 	<fieldset data-role="fieldcontain">
 		<label for="admin_pwin">{{page.glob.langa.admin_pw1}}</label>
 		<input name="admin_pwin" id="admin_pwin" type="password" 
@@ -13,7 +30,7 @@
 	</fieldset>
 	<button type="submit">{{page.glob.langa.check_access}}</button>	
 </form>
-
+{% else %}
 <form action="{{page.rot}}/admin/" method="post" id="adminform">
 	<fieldset data-role="fieldcontain">
 		<label for="calibre_dir">{{page.glob.langa.calibre_dir1}}</label>
@@ -42,33 +59,24 @@
 			<p>{{page.glob.langa.glob_dl_expl}}</p>						
 		</fieldset>		
 	</div>
-	
-		<div data-role="fieldcontain">
-            <fieldset data-role="controlgroup">
-                <legend>
-                    {{page.glob.langa.glob_sortbyseries_legend}}
-                </legend>
-                <select name="glob_sortBySeries" id="glob_sortBySeries" data-role="slider">
-                    <option value="0">
-                        {{page.glob.langa.glob_sortbyseries_no}}
-                    </option>
-                    <option value="1">
-                        {{page.glob.langa.glob_sortbyseries_yes}}
-                    </option>
-                </select>
-            </fieldset>	
-	</div>
-	
-	
 	<fieldset data-role="fieldcontain">
 		<label for="glob_dl_password">{{page.glob.langa.glob_dl_pw1}}</label>
 		<input name="glob_dl_password" id="glob_dl_password" type="text" 
-			value="{{page.glob.glob_dl_password}}" placeholder="{{page.glob.langa.glob_dl_pw2}}" 
-			{% if page.glob.glob_dl_choice != "2" %}
-					disabled
-			{% endif %}
-			/>
-		</fieldset>
-		<button type="submit">{{page.glob.langa.save}}</button>	
+			value="{{page.glob.glob_dl_password}}" placeholder="{{page.glob.langa.glob_dl_pw2}}" />
+	</fieldset>
+	<fieldset data-role="fieldcontain">
+		<label for="thumb_gen_clipped">{{page.glob.langa.thumb_gen_clipped}}</label>
+		<select name="thumb_gen_clipped" id="thumb_gen_clipped" data-role="slider">
+			<option value="0" {% if page.glob.thumb_gen_clipped == "0" %}selected {%endif%}>
+				{{page.glob.langa.switch_no}}
+			</option>
+			<option value="1" {% if page.glob.thumb_gen_clipped == "1" %}selected {%endif%}>
+				{{page.glob.langa.switch_yes}}
+			</option>
+		</select>
+		<p>{{page.glob.langa.thumb_gen_clipped_expl}}</p>						
+	</fieldset>	
+	<button type="submit">{{page.glob.langa.save}}</button>	
 </form>
+{% endif %}
 {% endblock %}

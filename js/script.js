@@ -1,62 +1,6 @@
 /* Author: Rainer Volz
 */
 
-/** Install some change handlers on the admin page for the ui logic. */
-$('#padmin').on('pageinit', function(e) {
-		$('#glob_dl_choice_1, #glob_dl_choice_2').on('change', function(e) {
-		if ($(this).attr('checked') == "checked") {
-			$('#glob_dl_password').textinput('disable');
-		} else {
-			$('#glob_dl_password').textinput('enable');
-		}
-	});
-	$('#glob_dl_choice_3').on('change', function(e) {
-		if ($(this).attr('checked') == "checked") {
-			$('#glob_dl_password').textinput('enable');
-		} else {
-			$('#glob_dl_password').textinput('disable');
-		}
-	});
-	/* Submit handling for the admin page  */
-	$('#adminform').submit(function() {
-		var url= $(this).attr('action');
-		$.post(url, $(this).serializeArray(), function(data,status,jqXHR) {
-			$('div#flash').empty().append(data);
-		});
-		return false;
-	});
-		/* Submit handling for admin password check */
-	$('#adminpwform').submit(function() {
-		var url= $(this).attr('action');
-		$.post(url, $(this).serializeArray(), function(data, status, jqXHR) {
-			if (data.access == true) {
-				$('#adminform').show();
-				$('#adminpwform').hide();			
-			} else {
-				$('div#flash').empty().append('<p class="error">'+data.message+'</p>');	
-			}
-		});
-		return false;
-	});
-
-});
-
-$('#padmin').on('pageshow', function(e) {
-	$.get($('#adminform').attr('action')+'access/', function(data) {
-		if (data == '0' || $.cookie('admin_access')) {
-			$('#adminpwform').hide();
-			$('#adminform').show();
-		} else {
-			$('#adminpwform').show();
-			$('#adminform').hide();			
-		}
-	});
-});
-
-$('#padmin').on('pagehide', function(e) {
-	/* Delete the flash messages when the page is done */
-	$('div#flash').empty();
-});
 
 $(document).on('pageinit', function() {
 

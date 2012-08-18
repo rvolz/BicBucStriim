@@ -7,33 +7,22 @@ BicBucStriim was created when I bought a NAS device (Synology DS 512+) to store 
 
 BicBucStriim is a simple PHP application that runs in the Apache/PHP environment provided by the NAS. It assumes that you manage your e-book collection with [Calibre](http://calibre-ebook.com/). The application reads the Calibre data and publishes it in HTML form. To access the e-book catalog you simply point your ebook reader to your NAS, select one of your e-books and download it. 
 
-Alternatives
-------------
 
-BicBucStriim is intended for in-house usage, on a NAS or a similar device without much memory and processing power. On a PC you could simply use the Content Server built into Calibre.
+Features & Issues
+-----------------
 
-If you are looking for a possibility to publish a larger book collection, or want to publish on the Internet, then [calibre2opds](http://calibre2opds.com/) might be interesting. It generates a static HTML catalog of a Calibre library that then can be transferred to a web server.
-
-Status
-------
-
-BicBucStriim is still under development. Version 0.8.0 of BicBucStriim: 
-
-* displays the 30 most recent titles on the index page
-* provides listing/filtering/searching of book titles
-* provides listing/filtering/searching of authors
-* provides listing/filtering/searching of tags
+* shows the 30 most recent titles on the index page
+* provides listing/filtering/searching of book titles, authors, tags and series
 * shows detail pages (including download links) for authors and books
-* is bilingual, English/German
+* speaks English, Fench, German
 * is ready for mobile clients (tested with Kindle, iPhone, iPad)
 * provides a download protection for books (optional, think "parental control")
+* provides OPDS book catalogs for reading apps like Stanza
 * has an admin GUI for configuration
 
-New in 0.8.0:
+* no search yet for OPDS clients
+* book download for OPDS is only possible when download protection is off
 
-* Easier installation/configuration: no textfile editing anymore, all settings can be configured in the admin section
-* more pictures: book title listings include cover thumbnails 
-* more data: author and tags listings show the number of books per item
 
 Install
 -------
@@ -47,11 +36,13 @@ The easy way assumes that BicBucStriim lives right below the web root of your de
 * The "data" directory and its contents must be writeable for all. Depending on your method of unarchiving this might be already the case. However, in case you experience access error just use a terminal to correct this: `chmod -R ga+w data`. 
 * BicBucStriim should now be working, start your web browser and navigate to `http://<address of your NAS>/bbs/`
 * A freshly installed BicBucStriim app will show you the admin section, where you will have tell the app where your Calibre library is located. Everything else is optional. Just have a look.
+* OPDS catalogs are availabe at http://.../bbs/opds/
 
 
 Requirements
 ------------
 * Apache web server with PHP 5.2+ and sqlite3 support
+* Optional: if mcrypt is available cookies will be encrypted
 
 License
 -------

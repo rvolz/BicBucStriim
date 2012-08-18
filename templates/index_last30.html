@@ -1,13 +1,19 @@
 {% extends 'main.html' %}
 
+{% block headerlinks %}
+<link rel="related" href="{{page.rot}}/opds/" 
+	type="application/atom+xml;profile=opds-catalog" title="OPDS index">
+<link rel="alternate" href="{{page.rot}}/opds/newest/" 
+	type="application/atom+xml;profile=opds-catalog" title="OPDS catalog: newest books">
+{% endblock %}
 {% block content %}
 <ul data-role="listview">
 	{% for book in books %}
   	<li>
   		<a href="{{ page.rot }}/titles/{{ book.id }}">
   			<img src="{{page.rot}}/titles/{{ book.id }}/thumbnail" />
-  			<p> {{ book.author_sort }} </p>
-			{{ book.title }} ({{ book.pubdate|date("Y") }})
+  			<h3>{{ book.title }} ({{ book.pubdate|date("Y") }})</h3>
+  			<p>{{book.author_sort}}</p>
   		</a> 
   	</li>
   {% endfor %}

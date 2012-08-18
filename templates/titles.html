@@ -1,16 +1,23 @@
 {% extends 'main.html' %}
 
+{% block headerlinks %}
+<link rel="related" href="{{page.rot}}/opds/" 
+	type="application/atom+xml;profile=opds-catalog" title="OPDS index">
+<link rel="alternate" href="{{page.rot}}/opds/titleslist/0/" 
+	type="application/atom+xml;profile=opds-catalog" title="OPDS catalog: by titles">
+{% endblock %}
+
 {% block content %}
-<ul data-role="listview" data-filter="true">	
+<ul data-role="listview" data-filter="false">	
 	{% for book in books %}
 		{% if book.initial != "" %}
 			<li data-role="list-divider"> {{ book.initial }}</li>
 		{% else %}
 			<li>				
 				<a href="{{page.rot}}/titles/{{ book.id }}">
-					<img src="{{page.rot}}/titles/{{ book.id }}/thumbnail" />
-					<p> {{ book.author_sort }} </p>
-					{{ book.sort }}
+					<img src="{{page.rot}}/titles/{{ book.id }}/thumbnail/" />
+					<h3>{{ book.sort }} ({{ book.pubdate|date("Y") }})</h3>
+  				<p>{{book.author_sort}}</p>
 				</a>
 			</li>
 		{% endif %}
