@@ -1,0 +1,90 @@
+<!doctype html>
+<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<title>Installation check, BicBucStriim</title>
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="stylesheet" href="style/jquery/jquery.mobile-1.2.0-alpha.1.min.css">
+  <link rel="stylesheet" href="style/style.css">
+	<script src="js/libs/modernizr-2.5-respond-1.1.0.min.js"></script>
+</head>
+<body>
+  <!--[if lt IE 7]><p class=chromeframe>Your browser is <em>ancient!</em> <a href="http://browsehappy.com/">Upgrade to a different browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to experience this site.</p><![endif]-->
+
+  <div data-role="page" data-title="{{ page.title }}" {% block pid %}{% endblock %}>
+    <div data-role="header" data-position="inline">                  
+    </div>
+    <div data-role="content">      
+      <h1>Installation check for BicBucStriim</h1>
+      <table>
+        <tr>
+          <td>Apache server?</td>
+          <td>
+            {% if is_a == true %}
+            OK
+            {% else %}
+            No Apache server found. BicBucStriim should work with other HTTP servers, too. But it needs URL rewriting as defined in the file <em>.htaccess</em>. Please check.
+            {% endif %}
+          </td>
+        </tr>
+        <tr>
+          <td>Server software/version</td>
+          <td>{{srv}}</td>
+        </tr>
+        <tr>
+          <td>Is URL rewriting (mod_rewrite) enabled?</td>
+          <td>
+            {% if mre == true %}
+            OK
+            {% else %}
+            Unable to check. Please check manually.
+            {% endif %}
+          </td>
+        </tr>
+        <tr>
+          <td>Is the <em>data</em> directory writeable?</td>
+          <td>
+            {% if dwrit == true %}
+            OK
+            {% else %}
+            The <em>data</em> directory doesn't exist or is not writeable! 
+            {% endif %}
+          </td>
+        </tr>        
+        <tr>
+          <td>Is <em>data/metadata.db</em> writeable?</td>
+          <td>
+            {% if mwrit == true %}
+            OK
+            {% else %}
+            The file <em>data/metadata.db</em> doesn't exist or is not writeable! 
+            {% endif %}
+          </td>
+        </tr>        
+        <tr>
+          <td>Is sqlite3 installed?</td>
+          <td>
+            {% if hsql != false %}
+            OK
+            {% else %}
+            No sqlite3 installed! Please install PHP support for sqlite3.
+            {% endif %}
+          </td>
+        </tr>        
+      </table>
+    </div>
+    <div data-role="footer" class="footer">
+      {% include "footer.html" %}
+    </div>      
+  </div> <!-- page -->
+
+  <script src="js/libs/jquery-1.7.2.min.js"></script>
+  <script src="js/libs/jquery.mobile-1.2.0-alpha.1.min.js"></script>
+  <script src="js/libs/jquery.cookie.js"></script>
+  <script src="js/script.js"></script>
+</body>
+</html>
