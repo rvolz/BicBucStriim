@@ -20,7 +20,7 @@ $fallbackLang = 'en';
 # Application Name
 $appname = 'BicBucStriim';
 # App version
-$appversion = '0.9.2';
+$appversion = '0.9.3';
 # Cookie name for global download protection
 define('GLOBAL_DL_COOKIE', 'glob_dl_access');
 # Cookie name for admin access
@@ -42,7 +42,8 @@ define('THUMB_GEN_CLIPPED', 'thumb_gen_clipped');
 # Init app and routes
 $app = new Slim(array(
 	'view' => new View_Twig(),
-	'mode' => 'production',
+	#'mode' => 'production',
+	'mode' => 'development',
 ));
 
 $app->configureMode('production','confprod');
