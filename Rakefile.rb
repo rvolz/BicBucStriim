@@ -9,14 +9,14 @@ require 'fileutils'
 require 'sqlite3'
 
 APPNAME = 'BicBucStriim'
-VERSION = '0.9.2'
+VERSION = '0.9.3'
 
 begin
   require 'vagrant'
   # Needs also 'vagrant-sync' !
   # tests/env contains the integration testing environment with the Vagrantfile
   env = Vagrant::Environment.new(:cwd => "tests/env")
-rescue
+rescue LoadError
   env = nil
   puts STDERR, "*** Vagrant not installed. Integration testing tasks disabled. ***"
 end
@@ -58,6 +58,7 @@ task :package2 do |t|
     p.package_files.include("templates/**/*.*")
     p.package_files.include("data/**/*.*")
     p.package_files.include("index.php")
+    p.package_files.include("installcheck.php")
     p.package_files.include("ChangeLog")
     p.package_files.include(".htaccess")
     p.package_files.include("NOTICE")
