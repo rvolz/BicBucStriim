@@ -47,9 +47,9 @@ class OpdsGenerator {
     $this->navigationCatalogLink($this->bbs_root.'/opds/', 'start');
     #$this->link($this->bbs_root.'/opds/opensearch.xml', 'application/opensearchdescription+xml', 'search', 'Search in BicBucStriim');
     # Subcatalogs
-    $this->navigationEntry('Most Recent 30', '/opds/newest/', 'The 30 most recent titles', '/newest/', 
+    $this->navigationEntry('By Newest', '/opds/newest/', 'The 30 most recent titles', '/newest/', 
       self::OPDS_MIME_ACQ, 'http://opds-spec.org/sort/new');
-    $this->navigationEntry('By Titles', '/opds/titleslist/0/', 'All books by title', '/titleslist/0/',
+    $this->navigationEntry('By Title', '/opds/titleslist/0/', 'All books by title', '/titleslist/0/',
       self::OPDS_MIME_ACQ);
     $this->navigationEntry('By Authors', '/opds/authorslist/', 'All books by author', '/authorslist/',
       self::OPDS_MIME_NAV);
@@ -425,7 +425,8 @@ class OpdsGenerator {
     # TODO: textmulch url for feed uri
     $this->xmlw->writeElement('uri', 'http://rvolz.gihub.com/BicBucStriim');
     $this->xmlw->endElement();
-    $this->xmlw->writeElement('id', $this->bbs_root.$id);
+    #$this->xmlw->writeElement('id', $this->bbs_root.$id);
+    $this->xmlw->writeElement('id', 'urn:bbs:calibre:'.$id);
     $this->xmlw->writeElement('updated', $this->updated);    
   }
 
