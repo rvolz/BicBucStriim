@@ -174,15 +174,12 @@ $app->post('/admin/', 'admin_change_json');
 #$app->get('/admin/access/', 'admin_is_protected');
 $app->post('/admin/access/check/', 'admin_checkaccess');
 $app->get('/admin/error/:id', 'admin_error');
-#$app->get('/authors/', 'htmlCheckConfig', 'authors');
 $app->get('/authors/:id/', 'htmlCheckConfig', 'author');
 $app->get('/authorslist/:id/', 'htmlCheckConfig', 'authorsSlice');
 $app->get('/series/:id/', 'htmlCheckConfig', 'series');
 $app->get('/serieslist/:id/', 'htmlCheckConfig', 'seriesSlice');
-#$app->get('/tags/', 'htmlCheckConfig', 'tags');
 $app->get('/tags/:id/', 'htmlCheckConfig', 'tag');
 $app->get('/tagslist/:id/', 'htmlCheckConfig', 'tagsSlice');
-#$app->get('/titles/', 'htmlCheckConfig', 'titles');
 $app->get('/titles/:id/', 'htmlCheckConfig','title');
 $app->get('/titles/:id/showaccess/', 'htmlCheckConfig', 'showaccess');
 $app->post('/titles/:id/checkaccess/', 'htmlCheckConfig', 'checkaccess');
@@ -446,20 +443,6 @@ function admin_is_protected() {
 	}	
 }
 
-
-/**
- * A list of all titles -> /titles/
- * @deprecated replaced by titlesSlice in 0.9
- */
-function titles() {
-	global $app, $globalSettings, $bbs;
-
-	$grouped_books = $bbs->allTitles();
-	$app->render('titles.html',array(
-		'page' => mkPage($globalSettings['langa']['titles'],2), 
-		'books' => $grouped_books));
-}
-
 # A list of titles at $index -> /titlesList/:index
 function titlesSlice($index=0) {
 	global $app, $globalSettings, $bbs;
@@ -640,19 +623,6 @@ function book($id, $file) {
 	}
 }
 
-/**
- * List of all authors -> /authors
- * @deprecated replaced by authorsSlice in 0.9
- */
-function authors() {
-	global $app, $globalSettings, $bbs;
-
-	$grouped_authors = $bbs->allAuthors();		
-	$app->render('authors.html',array(
-		'page' => mkPage($globalSettings['langa']['authors'],3), 
-		'authors' => $grouped_authors));
-}
-
 # A list of authors at $index -> /authorslist/:index
 function authorsSlice($index=0) {
 	global $app, $globalSettings, $bbs;
@@ -729,19 +699,6 @@ function series($id) {
 		'books' => $details['books']));
 }
 
-
-/**
- * List of all tags -> /tags
- * @deprecated replaced by tagsSlice in 0.9
- */
-function tags() {
-	global $app, $globalSettings, $bbs;
-
-	$grouped_tags = $bbs->allTags();
-	$app->render('tags.html',array(
-		'page' => mkPage($globalSettings['langa']['tags'],4),
-		'tags' => $grouped_tags));
-}
 
 # A list of tags at $index -> /tagslist/:index
 function tagsSlice($index=0) {
