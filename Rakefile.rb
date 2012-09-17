@@ -54,7 +54,14 @@ task :package2 do |t|
     p.package_files.include("style/jquery/**/*.*")
     p.package_files.include("style/style.css")
     p.package_files.include("lib/BicBucStriim/*.*")
-    p.package_files.include("vendor/**/*.*")
+    p.package_files.include("vendor/*.*")
+    p.package_files.include("vendor/composer/*.*")
+    p.package_files.include("vendor/slim/slim/*.*")
+    p.package_files.include("vendor/slim/extras/**/*.*")
+    p.package_files.include("vendor/slim/slim/Slim/**/*.*")
+    p.package_files.include("vendor/twig/twig/*.*")
+    p.package_files.include("vendor/twig/twig/ext/**/*.*")
+    p.package_files.include("vendor/twig/twig/lib/**/*.*")
     p.package_files.include("templates/**/*.*")
     p.package_files.include("data/**/*.*")
     p.package_files.include("index.php")
@@ -64,6 +71,7 @@ task :package2 do |t|
     p.package_files.include("NOTICE")
     p.package_files.include("LICENSE")
     p.package_files.include("README.md")
+
   end
   Rake::Task['package'].invoke
   rm_rf "data"
