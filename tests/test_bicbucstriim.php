@@ -17,18 +17,6 @@ class TestOfBicBucStriim extends UnitTestCase {
 	var $bbs;
 
 	function setUp() {
-		/*
-		$_SERVER['SERVER_NAME'] = 'slim';
-    $_SERVER['SERVER_PORT'] = '80';
-    $_SERVER['SCRIPT_NAME'] = '/bbs/index.php';
-    $_SERVER['REQUEST_URI'] = '/bbs/titles/';
-    $_SERVER['PATH_INFO'] = '/titles/';
-    $_SERVER['REQUEST_METHOD'] = 'GET';
-    $_SERVER['QUERY_STRING'] = '';
-    $_SERVER['HTTPS'] = '';
-    $_SERVER['REMOTE_ADDR'] = '127.0.0.1';
-    unset($_SERVER['CONTENT_TYPE'], $_SERVER['CONTENT_LENGTH']);        
-		*/
 		if (file_exists(self::DATA))
 			system("rm -rf ".self::DATA);	
     mkdir(self::DATA);
@@ -62,15 +50,6 @@ class TestOfBicBucStriim extends UnitTestCase {
 		$this->assertEqual(0, $this->bbs->last_error);
 		$this->assertFalse($result === FALSE);
 		$this->assertEqual(7, count($result));
-	}
-
-	function testAllAuthors() {		
-		$result = $this->bbs->allAuthors();
-		$this->assertEqual(0, $this->bbs->last_error);
-		$this->assertFalse($result === FALSE);
-		$this->assertEqual(11, count($result));
-		$this->assertEqual('E', $result[0]['initial']);
-		$this->assertEqual('R', $result[8]['initial']);			
 	}
 
 	function testAuthorsSlice() {
@@ -123,15 +102,6 @@ class TestOfBicBucStriim extends UnitTestCase {
 		$this->assertEqual('Rilke, Rainer Maria', $result[0]->sort);
 	}
 
-	function testAllTags() {		
-		$result = $this->bbs->allTags();
-		$this->assertEqual(0, $this->bbs->last_error);
-		$this->assertFalse($result === FALSE);
-		$this->assertEqual(11, count($result));
-		$this->assertEqual('A', $result[0]['initial']);
-		$this->assertEqual('V', $result[9]['initial']);					
-	}
-
 	function testTagsSlice() {
 		$result0 = $this->bbs->tagsSlice(0,2);
 		$this->assertEqual(0, $this->bbs->last_error);
@@ -180,15 +150,6 @@ class TestOfBicBucStriim extends UnitTestCase {
 		$this->assertEqual(2, count($result));
 		$this->assertEqual(1, $result[0]->anzahl);
 		$this->assertEqual('Belletristik & Literatur', $result[0]->name);
-	}
-
-	function testAllTitles() {		
-		$result = $this->bbs->allTitles();
-		$this->assertEqual(0, $this->bbs->last_error);
-		$this->assertFalse($result === FALSE);
-		$this->assertEqual(13, count($result));
-		$this->assertEqual('G', $result[0]['initial']);
-		$this->assertEqual('Z', $result[11]['initial']);							
 	}
 
 	function testTitlesSlice() {

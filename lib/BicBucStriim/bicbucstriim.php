@@ -195,14 +195,6 @@ class BicBucStriim {
 		return $books;
 	}
 
-	# Return a grouped list of all authors. The list is separated by dividers, 
-	# the initial name character.
-	function allAuthors() {
-		#$authors = $this->find('Author','select * from authors order by sort');		
-		$authors = $this->find('Author', 'select a.id, a.name, a.sort, count(bal.id) as anzahl from authors as a left join books_authors_link as bal on a.id = bal.author group by a.id order by a.sort');
-		return $this->mkInitialedList($authors);
-	}
-
 	# Find a single author and return the details plus all books.
 	function authorDetails($id) {
 		$author = $this->findOne('Author', 'select * from authors where id='.$id);
@@ -253,14 +245,6 @@ class BicBucStriim {
 		return array('tag' => $tag, 'books' => $books);
 	}
 
-	# Return a grouped list of all tags. The list is separated by dividers, 
-	# the initial character.
-	function allTags() {
-		#$tags = $this->find('Tag','select * from tags order by name');		
-		$tags = $this->find('Tag', 'select tags.id, tags.name, count(btl.id) as anzahl from tags left join books_tags_link as btl on tags.id = btl.tag group by tags.id order by tags.name;');
-		return $this->mkInitialedList($tags);
-	}
-
 	# Search a list of tags defined by the parameters $index and $length.
 	# If $search is defined it is used to filter the tag names, ignoring case.
 	# Return an array with elements: current page, no. of pages, $length entries
@@ -285,12 +269,6 @@ class BicBucStriim {
 		return $this->find('Tag', 'select tags.id, tags.name, count(btl.id) as anzahl from tags left join books_tags_link as btl on tags.id = btl.tag where substr(upper(tags.name),1,1) = \''.$initial.'\' group by tags.id order by tags.name');	
 	}
 
-	# Return a grouped list of all books. The list is separated by dividers, 
-	# the initial title character.
-	function allTitles() {
-		$books = $this->find('Book','select * from books order by sort');
-		return $this->mkInitialedList($books);
-	}
 
 	# Search a list of books defined by the parameters $index and $length.
 	# If $search is defined it is used to filter the book title, ignoring case.
