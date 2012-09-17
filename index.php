@@ -14,7 +14,7 @@ require_once 'lib/BicBucStriim/opds_generator.php';
 require_once 'lib/BicBucStriim/langs.php';
 
 # Allowed languages, i.e. languages with translations
-$allowedLangs = array('de','en','fr');
+$allowedLangs = array('de','en','fr','nl');
 # Fallback language if the browser prefers other than the allowed languages
 $fallbackLang = 'en';
 # Application Name
@@ -111,6 +111,8 @@ if ($globalSettings['lang'] == 'de')
 	$globalSettings['langa'] = $langde;
 elseif ($globalSettings['lang'] == 'fr')
 	$globalSettings['langa'] = $langfr;
+elseif ($globalSettings['lang'] == 'nl')
+	$globalSettings['langa'] = $langnl;
 else
 	$globalSettings['langa'] = $langen;
 
