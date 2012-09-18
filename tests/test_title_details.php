@@ -53,7 +53,7 @@ class TestOfTitleDetails extends WebTestCase {
 		$this->assertTrue($this->get($this->testhost.'titles/3/'));
 		$this->clickLink($author);
 		$this->assertResponse(200);
-		$this->assertEqual($this->testhost.'authors/6/', $this->getUrl());
+		$this->assertEqual($this->testhost.'authors/6/0/', $this->getUrl());
 		$this->assertTitle('BicBucStriim :: Author Details');	
 		$this->assertText('Books by '.$author);
 	}
@@ -66,7 +66,7 @@ class TestOfTitleDetails extends WebTestCase {
 		$this->assertTrue($this->get($this->testhost.'titles/3/'));
 		$this->clickLink($series);
 		$this->assertResponse(200);
-		$this->assertEqual($this->testhost.'series/1/', $this->getUrl());
+		$this->assertEqual($this->testhost.'series/1/0/', $this->getUrl());
 		$this->assertTitle('BicBucStriim :: Series Details');	
 		$this->assertText('Books in series "'.$series.'"');
 	}
@@ -79,7 +79,7 @@ class TestOfTitleDetails extends WebTestCase {
 		$this->assertTrue($this->get($this->testhost.'titles/3/'));
 		$this->clickLink($tag);
 		$this->assertResponse(200);
-		$this->assertEqual($this->testhost.'tags/3/', $this->getUrl());
+		$this->assertEqual($this->testhost.'tags/3/0/', $this->getUrl());
 		$this->assertTitle('BicBucStriim :: Tag Details');	
 		$this->assertText('Books tagged with "'.$tag.'"');
 	}

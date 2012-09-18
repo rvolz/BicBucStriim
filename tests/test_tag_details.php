@@ -14,7 +14,7 @@ class TestOfTagDetails extends WebTestCase {
 	Check the tag details, the display of information
 	 */
 	public function testTagDetails() {
-		$this->assertTrue($this->get($this->testhost.'tags/3'));
+		$this->assertTrue($this->get($this->testhost.'tags/3/0/'));
 		$this->assertTitle('BicBucStriim :: Tag Details');	
 		$this->assertText('Books tagged with "Fachbücher"');		
 		$this->assertLink('Glücksritter, Die (2012)');		

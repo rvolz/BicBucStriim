@@ -112,7 +112,7 @@ class TestOfSiteSimple extends WebTestCase {
 		$this->assertText('Eichendorff, Joseph von');
 		$this->clickLink('Eichendorff, Joseph von 1');
 		$this->assertResponse(200);
-		$this->assertEqual($this->testhost.'authors/5/', $this->getUrl());
+		$this->assertEqual($this->testhost.'authors/5/0/', $this->getUrl());
 	}
 
 	/*
@@ -130,7 +130,7 @@ class TestOfSiteSimple extends WebTestCase {
 		$this->assertTrue($this->get($this->testhost.'tagslist/0/'));
 		$this->clickLink('Belletristik & Literatur 1');
 		$this->assertResponse(200);
-		$this->assertEqual($this->testhost.'tags/10/', $this->getUrl());
+		$this->assertEqual($this->testhost.'tags/10/0/', $this->getUrl());
 	}
 
 

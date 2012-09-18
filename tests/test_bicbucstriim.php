@@ -84,6 +84,18 @@ class TestOfBicBucStriim extends UnitTestCase {
 		$this->assertEqual(1, count($result3['entries']));
 	}
 
+	function testAuthorDetailsSlice() {
+		$result0 = $this->bbs->authorDetailsSlice(6,0,1);
+		$this->assertEqual(0, $this->bbs->last_error);
+		$this->assertEqual(1, count($result0['entries']));
+		$this->assertEqual(0, $result0['page']);
+		$this->assertEqual(2, $result0['pages']);
+		$result1 = $this->bbs->authorDetailsSlice(6,1,1);
+		$this->assertEqual(1, count($result1['entries']));
+		$this->assertEqual(1, $result1['page']);
+		$this->assertEqual(2, $result1['pages']);		
+	}
+
 	function testAuthorsInitials() {
 		$result = $this->bbs->authorsInitials();
 		$this->assertEqual(0, $this->bbs->last_error);
@@ -132,6 +144,18 @@ class TestOfBicBucStriim extends UnitTestCase {
 		$this->assertEqual(2, count($result1['entries']));
 		$result3 = $this->bbs->tagsSlice(2,2,'I');
 		$this->assertEqual(1, count($result3['entries']));
+	}
+
+	function testTagDetailsSlice() {
+		$result0 = $this->bbs->tagDetailsSlice(3,0,1);
+		$this->assertEqual(0, $this->bbs->last_error);
+		$this->assertEqual(1, count($result0['entries']));
+		$this->assertEqual(0, $result0['page']);
+		$this->assertEqual(2, $result0['pages']);
+		$result1 = $this->bbs->tagDetailsSlice(3,1,1);
+		$this->assertEqual(1, count($result1['entries']));
+		$this->assertEqual(1, $result1['page']);
+		$this->assertEqual(2, $result1['pages']);		
 	}
 
 	function testTagsInitials() {
@@ -287,6 +311,18 @@ class TestOfBicBucStriim extends UnitTestCase {
 		$this->assertEqual(2, $result0['pages']);		
 		$result1 = $this->bbs->seriesSlice(1,2,'I');
 		$this->assertEqual(1, count($result1['entries']));
+	}
+
+	function testSeriesDetailsSlice() {
+		$result0 = $this->bbs->seriesDetailsSlice(1,0,1);
+		$this->assertEqual(0, $this->bbs->last_error);
+		$this->assertEqual(1, count($result0['entries']));
+		$this->assertEqual(0, $result0['page']);
+		$this->assertEqual(2, $result0['pages']);
+		$result1 = $this->bbs->seriesDetailsSlice(1,1,1);
+		$this->assertEqual(1, count($result1['entries']));
+		$this->assertEqual(1, $result1['page']);
+		$this->assertEqual(2, $result1['pages']);		
 	}
 
 	function testSeriesDetails() {

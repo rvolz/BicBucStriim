@@ -23,13 +23,21 @@ class BicBucStriim {
 	# dir for generated thumbs
 	var $thumb_dir = '';
 
+	/**
+	 * Check if the Calibre DB is readable
+	 * @param  string 	$path Path to Calibre DB
+	 * @return boolean				true if exists and is readable, else false
+	 */
 	static function checkForCalibre($path) {
 		$rp = realpath($path);
 		$rpm = $rp.'/metadata.db';
 		return is_readable($rpm);
 	}
 
-	# Open the BBS DB. The thumbnails are stored in the same directory as the db.
+	/**
+	 * Open the BBS DB. The thumbnails are stored in the same directory as the db.
+	 * @param string $dataPath Path to BBS DB
+	 */
 	function __construct($dataPath='data/data.db') {
 		$rp = realpath($dataPath);
 		$this->data_dir = dirname($dataPath);
@@ -46,6 +54,10 @@ class BicBucStriim {
 		}
 	}
 
+	/**
+	 * Open the Calibre DB
+	 * @param  string $calibrePath 	Path to claibre library
+	 */
 	function openCalibreDB($calibrePath) {
 		$rp = realpath($calibrePath);
 		$this->calibre_dir = dirname($rp);
@@ -60,13 +72,21 @@ class BicBucStriim {
 		}
 	}
 
-	# Is our own DB open?
+	/**
+	 * Is our own DB open?
+	 * @return boolean	true if open, else false
+	 */
 	function dbOk() {
 		return (!is_null($this->mydb));
 	}
 
-	# Execute a query $sql on the settings DB and return the 
-	# result as an array of objects of class $class
+	/**
+	 * Execute a query $sql on the settings DB and return the result 
+	 * as an array of objects of class $class
+	 * @param  string $class Classname of result objects
+	 * @param  string $sql   SQL query
+	 * @return array         object sof class $class
+	 */
 	function sfind($class, $sql) {
 		$stmt = $this->mydb->query($sql,PDO::FETCH_CLASS, $class);		
 		$this->last_error = $stmt->errorCode();
@@ -75,9 +95,18 @@ class BicBucStriim {
 		return $items;
 	}
 
+	/**
+	 * Find all configuration values in the settings DB
+	 * @return array configuration values
+	 */
 	function configs() {
 		return $this->sfind('Config','select * from configs');	
 	}
+
+	/**
+	 * Save all configuration values in the settings DB
+	 * @param  $array 	$configs 	configuration values
+	 */
 	function saveConfigs($configs) {
 		$sql = 'update configs set val=:val where name=:name';
 		$stmt = $this->mydb->prepare($sql);
@@ -91,13 +120,22 @@ class BicBucStriim {
 
 	############# Calibre Library functions ################
 
-	# Is the Calibre library open?
+	/**
+	 * Is the Calibre library open?
+	 * @return boolean	true if open, else false
+	 */
 	function libraryOk() {
 		return (!is_null($this->calibre));
 	}
 
-	# Execute a query $sql on the Calibre DB and return the 
-	# result as an array of objects of class $class
+	/**
+	 * Execute a query $sql on the Calibre DB and return the result 
+	 * as an array of objects of class $class
+	 * 
+	 * @param  [type] $class [description]
+	 * @param  [type] $sql   [description]
+	 * @return [type]        [description]
+	 */
 	function find($class, $sql) {
 		$stmt = $this->calibre->query($sql,PDO::FETCH_CLASS, $class);		
 		$this->last_error = $stmt->errorCode();
@@ -106,7 +144,12 @@ class BicBucStriim {
 		return $items;
 	}
 
-	# Return a single object or NULL if not found
+	/**
+	 * Return a single object or NULL if not found
+	 * @param  string $class 	[description]
+	 * @param  string $sql   	[description]
+	 * @return object 				instance of class $class or NULL
+	 */
 	function findOne($class, $sql) {
 		$result = $this->find($class, $sql);
 		if ($result == NULL || $result == FALSE)
@@ -124,12 +167,13 @@ class BicBucStriim {
 	 * @param  integer $index=0     page index
 	 * @param  integer $length=100  length of page
 	 * @param  string  $search=NULL search pattern for sort/name fields
+	 * @param  integer $id=NULL     optional author/tag/series ID	 * 
 	 * @return array                an array with current page (key 'page'),
 	 *                              number of pages (key 'pages'),
 	 *                              an array of $class instances (key 'entries') or NULL
 	 */
-	function findSlice($class, $index=0, $length=100, $search=NULL) {
-		if ($index < 0 || $length < 1 || !in_array($class, array('Book','Author','Tag', 'Series')))
+	function findSlice($class, $index=0, $length=100, $search=NULL, $id=NULL) {
+		if ($index < 0 || $length < 1 || !in_array($class, array('Book','Author','Tag', 'Series', 'SeriesBook', 'TagBook', 'AuthorBook')))
 			return array('page'=>0,'pages'=>0,'entries'=>NULL);
 		$offset = $index * $length;		
 		switch($class) {
@@ -142,6 +186,15 @@ class BicBucStriim {
 					$query = 'select a.id, a.name, a.sort, count(bal.id) as anzahl from authors as a left join books_authors_link as bal on a.id = bal.author where lower(a.name) like \'%'.strtolower($search).'%\' group by a.id order by a.sort limit '.$length.' offset '.$offset;	
 				}
 				break;
+			case 'AuthorBook':
+				if (is_null($search)) {
+	        $count = 'select count(*) from (select BAL.book, Books.* from books_authors_link BAL, books Books where Books.id=BAL.book and author = '.$id.')';
+	        $query = 'select BAL.book, Books.* from books_authors_link BAL, books Books where Books.id=BAL.book and author = '.$id.' order by Books.sort limit '.$length.' offset '.$offset;
+	      } else {
+	        $count = 'select count(*) from (select BAL.book, Books.* from books_authors_link BAL, books Books where Books.id=BAL.book and author = '.$id.') where lower(sort) like \'%'.strtolower($search).'%\'';
+	        $query = 'select BAL.book, Books.* from books_authors_link BAL, books Books where Books.id=BAL.book and author ='.$id.' and lower(Books.sort) like \'%'.strtolower($search).'%\' order by Books.sort limit '.$length.' offset '.$offset;
+	      }
+	      break;
 			case 'Book': 
 				if (is_null($search)) {
 					$count = 'select count(*) from books';
@@ -159,7 +212,16 @@ class BicBucStriim {
 					$count = 'select count(*) from series where lower(name) like \'%'.strtolower($search).'%\'';
 					$query = 'select series.id, series.name, count(bsl.id) as anzahl from series left join books_series_link as bsl on series.id = bsl.series where lower(series.name) like \'%'.strtolower($search).'%\' group by series.id order by series.name limit '.$length.' offset '.$offset;	
 				}
-				break;				
+				break;			
+			case 'SeriesBook':
+				if (is_null($search)) {
+					$count = 'select count (*) from (select BSL.book, Books.* from books_series_link BSL, books Books where Books.id=BSL.book and series = '.$id.')';
+					$query = 'select BSL.book, Books.* from books_series_link BSL, books Books where Books.id=BSL.book and series = '.$id.' order by series_index limit '.$length.' offset '.$offset;	          
+				} else {
+					$count = 'select count (*) from (select BSL.book, Books.* from books_series_link BSL, books Books where Books.id=BSL.book and series = '.$id.') where lower(sort) like \'%'.strtolower($search).'%\'';
+					$query = 'select BSL.book, Books.* from books_series_link BSL, books Books where Books.id=BSL.book and series = '.$id.' and lower(Books.sort) like \'%'.strtolower($search).'%\' order by series_index limit '.$length.' offset '.$offset;	
+				}
+				break;			
 			case 'Tag': 
 				if (is_null($search)) {
 					$count = 'select count(*) from tags';
@@ -169,6 +231,15 @@ class BicBucStriim {
 					$query = 'select tags.id, tags.name, count(btl.id) as anzahl from tags left join books_tags_link as btl on tags.id = btl.tag where lower(tags.name) like \'%'.strtolower($search).'%\' group by tags.id order by tags.name limit '.$length.' offset '.$offset;	
 				}
 				break;
+			case 'TagBook':
+				if (is_null($search)) {
+					$count = 'select count (*) from (select BTL.book, Books.* from books_tags_link BTL, books Books where Books.id=BTL.book and tag = '.$id.')';
+					$query = 'select BTL.book, Books.* from books_tags_link BTL, books Books where Books.id=BTL.book and tag = '.$id.' order by Books.sort limit '.$length.' offset '.$offset;
+				}	else {
+					$count = 'select count (*) from (select BTL.book, Books.* from books_tags_link BTL, books Books where Books.id=BTL.book and tag = '.$id.') where lower(sort) like \'%'.strtolower($search).'%\'';
+					$query = 'select BTL.book, Books.* from books_tags_link BTL, books Books where Books.id=BTL.book and tag = '.$id.' and lower(Books.sort) like \'%'.strtolower($search).'%\' order by Books.sort limit '.$length.' offset '.$offset;
+				}			
+				break;	
 		}
 		$no_entries = $this->count($count);
 		$no_pages = (int) ($no_entries / $length);
@@ -178,8 +249,13 @@ class BicBucStriim {
 		return array('page'=>$index, 'pages'=>$no_pages, 'entries'=>$entries);
 	}
 
-	# Return the number (int) of rows for a SQL COUNT Statement, e.g.
-	# SELECT COUNT(*) FROM books;
+	/**
+	 * Return the number (int) of rows for a SQL COUNT Statement, e.g.
+	 * SELECT COUNT(*) FROM books;
+	 * 
+	 * @param  string 	$sql 	sql query
+	 * @return int      			nuber of result rows
+	 */
 	function count($sql) {
 		$result = $this->calibre->query($sql)->fetchColumn(); 
 		if ($result == NULL || $result == FALSE)
@@ -189,13 +265,20 @@ class BicBucStriim {
 	}
 
 
-	# Return the 30 most recent books
+	/**
+	 * Return the 30 most recent books, sorted by modification date
+	 * @return array of books
+	 */
 	function last30Books() {
 		$books = $this->find('Book','select * from books order by timestamp desc limit 30');		
 		return $books;
 	}
 
-	# Find a single author and return the details plus all books.
+	/**
+	 * Find a single author and return the details plus all books.
+	 * @param  integer $id 	author id
+	 * @return array     		array with elements: author data, books
+	 */
 	function authorDetails($id) {
 		$author = $this->findOne('Author', 'select * from authors where id='.$id);
 		if (is_null($author)) return NULL;
@@ -207,10 +290,33 @@ class BicBucStriim {
 		}
 		return array('author' => $author, 'books' => $books);
 	}
+	
+	/**
+	 * Find a single author and return the details plus some books.
+	 * 
+	 * @param  integer $id     author id
+	 * @param  integer $index  page index
+	 * @param  integer $length page length
+	 * @return array           array with elements: author data, current page, 
+	 *                               no. of pages, $length entries
+	 */
+	function authorDetailsSlice($id, $index=0, $length=100) {
+		$author = $this->findOne('Author', 'select * from authors where id='.$id);
+		if (is_null($author)) return NULL;
+		$slice = $this->findSlice('AuthorBook', $index, $length, NULL, $id);
+		return array('author' => $author)+$slice;
+	}
 
-	# Search a list of authors defined by the parameters $index and $length.
-	# If $search is defined it is used to filter the names, ignoring case.
-	# Return an array with elements: current page, no. of pages, $length entries
+	/**
+	 * Search a list of authors defined by the parameters $index and $length.
+	 * If $search is defined it is used to filter the names, ignoring case.
+	 * 
+	 * @param  integer $index  page index
+	 * @param  integer $length page length
+	 * @param  string  $search search string
+	 * @return array 				with elements: current page, 
+	 *                      no. of pages, $length entries
+	 */
 	function authorsSlice($index=0, $length=100, $search=NULL) {
 		return $this->findSlice('Author', $index, $length, $search);
 	}
@@ -233,6 +339,13 @@ class BicBucStriim {
 	}
 
 	# Returns a tag and the related books
+	#
+	
+	/**
+	 * Returns a tag and the related books
+	 * @param  integer $id 	tag id
+	 * @return array     		array with elements: tag data, books
+	 */
 	function tagDetails($id) {
 		$tag = $this->findOne('Tag', 'select * from tags where id='.$id);
 		if (is_null($tag)) return NULL;
@@ -243,6 +356,22 @@ class BicBucStriim {
 			array_push($books, $book);
 		}
 		return array('tag' => $tag, 'books' => $books);
+	}
+
+	/**
+	 * Find a single tag and return the details plus some books.
+	 * 
+	 * @param  integer $id     tagid
+	 * @param  integer $index  page index
+	 * @param  integer $length page length
+	 * @return array           array with elements: tag data, current page, 
+	 *                               no. of pages, $length entries
+	 */
+	function tagDetailsSlice($id, $index=0, $length=100) {
+		$tag = $this->findOne('Tag', 'select * from tags where id='.$id);
+		if (is_null($tag)) return NULL;
+		$slice = $this->findSlice('TagBook', $index, $length, NULL, $id);
+		return array('tag' => $tag)+$slice;
 	}
 
 	# Search a list of tags defined by the parameters $index and $length.
@@ -480,7 +609,12 @@ class BicBucStriim {
 		return $filtered_books;
 	}
 
-	# Returns the path to the cover image of a book or NULL.
+	/**
+	 * Returns the path to the cover image of a book or NULL.
+	 * @param  int 		$id   book id
+	 * @param  string $file file name
+	 * @return string       full path to image file or NULL
+	 */
 	function titleFile($id, $file) {
 		$book = $this->title($id);
 		if (is_null($book)) 
@@ -495,12 +629,29 @@ class BicBucStriim {
 	 * @param  int 		$id series id
 	 * @return array  an array with series details (key 'series') and 
 	 *                the related books (key 'books')
+	 * @deprecated since 0.9.3
 	 */
 	function seriesDetails($id) {
 		$series = $this->findOne('Series', 'select * from series where id='.$id);
 		if (is_null($series)) return NULL;
 		$books = $this->find('Book', 'select BSL.book, Books.* from books_series_link BSL, books Books where Books.id=BSL.book and series='.$id.' order by series_index');
 		return array('series' => $series, 'books' => $books);
+	}
+
+	/**
+	 * Find a single series and return the details plus some books.
+	 * 
+	 * @param  integer $id     series id
+	 * @param  integer $index  page index
+	 * @param  integer $length page length
+	 * @return array           array with elements: series data, current page, 
+	 *                               no. of pages, $length entries
+	 */
+	function seriesDetailsSlice($id, $index=0, $length=100) {
+		$series = $this->findOne('Series', 'select * from series where id='.$id);
+		if (is_null($series)) return NULL;
+		$slice = $this->findSlice('SeriesBook', $index, $length, NULL, $id);
+		return array('series' => $series)+$slice;
 	}
 
 	/**

@@ -25,14 +25,14 @@ class TestOfSiteSeries extends WebTestCase {
 		$this->assertTrue($this->get($this->testhost.'serieslist/0/'));
 		$this->clickLink('Serie Grimmelshausen 2');
 		$this->assertResponse(200);
-		$this->assertEqual($this->testhost.'series/1/', $this->getUrl());
+		$this->assertEqual($this->testhost.'series/1/0/', $this->getUrl());
 	}
 
 	/*
 	Check the series details, the display of information
 	 */
 	public function testSeriesDetails() {
-		$this->assertTrue($this->get($this->testhost.'series/1/'));
+		$this->assertTrue($this->get($this->testhost.'series/1/0/'));
 		$this->assertTitle('BicBucStriim :: Series Details');	
 		$this->assertText('Books in series "Serie Grimmelshausen"');		
 		$this->assertLink('seltzame Springinsfeld, Der (2012)');		

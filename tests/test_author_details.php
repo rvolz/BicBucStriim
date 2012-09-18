@@ -14,7 +14,7 @@ class TestOfAuthorDetails extends WebTestCase {
 	Check the author details, the display of information
 	 */
 	public function testAuthorDetails() {
-		$this->assertTrue($this->get($this->testhost.'authors/8'));
+		$this->assertTrue($this->get($this->testhost.'authors/8/0/'));
 		$this->assertTitle('BicBucStriim :: Author Details');	
 		$this->assertText('Books by Paul Heyse');
 		$this->assertLink('Neues Leben (2012)');		

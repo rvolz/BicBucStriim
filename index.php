@@ -174,11 +174,14 @@ $app->post('/admin/', 'admin_change_json');
 #$app->get('/admin/access/', 'admin_is_protected');
 $app->post('/admin/access/check/', 'admin_checkaccess');
 $app->get('/admin/error/:id', 'admin_error');
-$app->get('/authors/:id/', 'htmlCheckConfig', 'author');
+#$app->get('/authors/:id/', 'htmlCheckConfig', 'author');
+$app->get('/authors/:id/:page/', 'htmlCheckConfig', 'authorDetailsSlice');
 $app->get('/authorslist/:id/', 'htmlCheckConfig', 'authorsSlice');
-$app->get('/series/:id/', 'htmlCheckConfig', 'series');
+#$app->get('/series/:id/', 'htmlCheckConfig', 'series');
+$app->get('/series/:id/:page/', 'htmlCheckConfig', 'seriesDetailsSlice');
 $app->get('/serieslist/:id/', 'htmlCheckConfig', 'seriesSlice');
-$app->get('/tags/:id/', 'htmlCheckConfig', 'tag');
+#$app->get('/tags/:id/', 'htmlCheckConfig', 'tag');
+$app->get('/tags/:id/:page/', 'htmlCheckConfig', 'tagDetailsSlice');
 $app->get('/tagslist/:id/', 'htmlCheckConfig', 'tagsSlice');
 $app->get('/titles/:id/', 'htmlCheckConfig','title');
 $app->get('/titles/:id/showaccess/', 'htmlCheckConfig', 'showaccess');
@@ -641,7 +644,10 @@ function authorsSlice($index=0) {
 		'search' => $search));
 }
 
-# Details for a single author -> /authors/:id
+/**
+ * Details for a single author -> /authors/:id
+ * @deprecated since 0.9.3
+ */
 function author($id) {
 	global $app, $globalSettings, $bbs;
 
@@ -656,6 +662,32 @@ function author($id) {
 		'books' => $details['books']));
 }
 
+/**
+ * Details for a single author -> /authors/:id/:page/
+ * Shows the detail data for the author plus a paginated list of books
+ * 
+ * @param  integer $id    author id
+ * @param  integer $index page index for book list
+ * @return HTML page 
+ */
+function authorDetailsSlice($id, $index=0) {
+  global $app, $globalSettings, $bbs;
+  
+  $app->getLog()->debug('seriesDetailsSlice started with index '.$index);
+	$tl = $bbs->authorDetailsSlice($id, $index, $globalSettings['pagentries']);
+	if (is_null($tl)) {
+		$app->getLog()->debug('no author '.$id);
+		$app->notFound();
+	}
+
+	$app->render('author_detail.html',array(
+		'page' => mkPage($globalSettings['langa']['author_details']),
+		'url' => 'authors/'.$id,	
+		'author' => $tl['author'],
+		'books' => $tl['entries'],
+		'curpage' => $tl['page'],
+		'pages' =>  $tl['pages']));
+	}
 
 /**
  * Return a HTML page of series at page $index. 
@@ -684,6 +716,7 @@ function seriesSlice($index=0) {
 /**
  * Return a HTML page with details of series $id, /series/:id
  * @param  int 		$id series id
+ * @deprecated since 0.9.3
  */
 function series($id) {
 	global $app, $globalSettings, $bbs;
@@ -697,6 +730,32 @@ function series($id) {
 		'page' => mkPage($globalSettings['langa']['series_details']), 
 		'series' => $details['series'], 
 		'books' => $details['books']));
+}
+
+/**
+ * Details for a single series -> /series/:id/:page/
+ * Shows the detail data for the series plus a paginated list of books
+ * 
+ * @param  integer $id    series id
+ * @param  integer $index page index for books
+ * @return HTML page
+ */
+function seriesDetailsSlice ($id, $index=0) {
+  global $app, $globalSettings, $bbs;
+
+	$app->getLog()->debug('seriesDetailsSlice started with index '.$index);
+	$tl = $bbs->seriesDetailsSlice($id, $index, $globalSettings['pagentries']);
+	if (is_null($tl)) {
+		$app->getLog()->debug('no series '.$id);
+		$app->notFound();		
+	}
+	$app->render('series_detail.html',array(
+		'page' => mkPage($globalSettings['langa']['series_details']),
+    'url' => 'series/'.$id, 
+		'series' => $tl['series'], 
+		'books' => $tl['entries'],
+    'curpage' => $tl['page'],
+    'pages' => $tl['pages']));   
 }
 
 
@@ -718,7 +777,8 @@ function tagsSlice($index=0) {
 		'search' => $search));
 }
 
-#Details of a single tag -> /tags/:id
+# Details for a single tag -> /tags/:id/:page
+# @deprecated since 0.9.3
 function tag($id) {
 	global $app, $globalSettings, $bbs;
 
@@ -730,6 +790,32 @@ function tag($id) {
 	$app->render('tag_detail.html',array('page' => mkPage($globalSettings['langa']['tag_details']), 
 		'tag' => $details['tag'], 
 		'books' => $details['books']));
+}
+
+/**
+ * Details for a single tag -> /tags/:id/:page/
+ * Shows the detail data for the tag plus a paginated list of books
+ * 
+ * @param  integer $id    series id
+ * @param  integer $index page index for books
+ * @return HTML page
+ */
+function tagDetailsSlice ($id, $index=0) {
+  global $app, $globalSettings, $bbs;
+
+	$app->getLog()->debug('tagDetailsSlice started with index '.$index);
+	$tl = $bbs->tagDetailsSlice($id, $index, $globalSettings['pagentries']);
+	if (is_null($tl)) {
+		$app->getLog()->debug('no tag '.$id);
+		$app->notFound();		
+	}
+	$app->render('tag_detail.html',array(
+		'page' => mkPage($globalSettings['langa']['tag_details']),
+    'url' => 'tag/'.$id, 
+		'tag' => $tl['tag'], 
+		'books' => $tl['entries'],
+    'curpage' => $tl['page'],
+    'pages' => $tl['pages']));   
 }
 
 #####
