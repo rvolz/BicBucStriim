@@ -9,9 +9,10 @@
 require 'vendor/autoload.php';
 require_once 'vendor/slim/slim/Slim/View.php';
 
+require_once 'lib/BicBucStriim/langs.php';
+require_once 'lib/BicBucStriim/l10n.php';
 require_once 'lib/BicBucStriim/bicbucstriim.php';
 require_once 'lib/BicBucStriim/opds_generator.php';
-require_once 'lib/BicBucStriim/langs.php';
 
 # Allowed languages, i.e. languages with translations
 $allowedLangs = array('de','en','fr','nl');
@@ -50,8 +51,6 @@ $app->configureMode('production','confprod');
 $app->configureMode('development','confdev');
 $app->configureMode('debug','confdebug');
 $app->view()->getEnvironment()->addExtension(new Twig_Extensions_Slim());
-# TODO: use proper translation support
-# $app->view()->getEnvironment()->addExtension(new Twig_Extensions_Extension_I18n());
 
 /**
  * Configure app for production
@@ -106,6 +105,8 @@ $globalSettings = array();
 $globalSettings['appname'] = $appname;
 $globalSettings['version'] = $appversion;
 $globalSettings['sep'] = ' :: ';
+# Find the user language, either one of the allowed languages or
+# English as a fallback.
 $globalSettings['lang'] = getUserLang($allowedLangs, $fallbackLang);
 if ($globalSettings['lang'] == 'de')
 	$globalSettings['langa'] = $langde;
@@ -115,6 +116,9 @@ elseif ($globalSettings['lang'] == 'nl')
 	$globalSettings['langa'] = $langnl;
 else
 	$globalSettings['langa'] = $langen;
+# Store the English messages as an alternative for incomplete translations
+$globalSettings['langb'] = $langen;
+$globalSettings['l10n'] = new L10n($globalSettings['lang'], $globalSettings['langa'], $globalSettings['langb']);
 
 # Set the number of items per page
 if ($app->config('mode') == 'development')
@@ -204,6 +208,9 @@ $app->get('/opds/serieslist/:initial/', 'opdsCheckConfig', 'opdsBySeriesNamesFor
 $app->get('/opds/serieslist/:initial/:id/', 'opdsCheckConfig', 'opdsBySeries');
 $app->run();
 
+/*********************************************************************
+ * HTML functions
+ ********************************************************************/
 
 /**
  * Check the configuration DB and open it
@@ -245,6 +252,13 @@ function check_config() {
 
 # Check if the configuration is valid:
 # - If there is no bbs db --> show error
+
+/**
+ * Check if the configuration is valid: 
+ * - If there is no bbs db --> show error
+ * - If Calibre dir is undefined -> goto admin page
+ * - If Calibre dir is undefined -> goto admin page
+ */
 function htmlCheckConfig() {
 	global $app, $globalSettings;
 
@@ -253,9 +267,9 @@ function htmlCheckConfig() {
 	# No config --> error
 	if ($result === 1) {
 		$app->render('error.html', array(
-			'page' => mkPage($globalSettings['langa']['error']), 
-			'title' => $globalSettings['langa']['error'], 
-			'error' => $globalSettings['langa']['no_config']));
+			'page' => mkPage(getMessageString('error')), 
+			'title' => getMessageString('error'), 
+			'error' => getMessageString('no_config')));
 		return;
 	} elseif ($result === 2) {
 		# After installation, no calibre dir defined, goto admin page
@@ -268,47 +282,61 @@ function htmlCheckConfig() {
 	} 
 }
 
+/**
+ * 404 page for invalid URLs
+ */
 function myNotFound() {
 	global $app, $globalSettings;
 	$app->render('error.html', array(
-		'page' => mkPage($globalSettings['langa']['not_found1']), 
-		'title' => $globalSettings['langa']['not_found1'], 
-		'error' => $globalSettings['langa']['not_found2']));
+		'page' => mkPage(getMessageString('not_found1')), 
+		'title' => getMessageString('not_found1'), 
+		'error' => getMessageString('not_found2')));
 }
 
-# Index page -> /
+/**
+ * Generate the main page with the 30 mos recent titles
+ */
 function main() {
 	global $app, $globalSettings, $bbs;
 
 	$books = $bbs->last30Books();
 	$app->render('index_last30.html',array(
-		'page' => mkPage($globalSettings['langa']['dl30'],1), 
+		'page' => mkPage(getMessageString('dl30'),1), 
 		'books' => $books));	
 }
 
-# Admin page -> /admin/
+/**
+ * Generate the admin page -> /admin/
+ */
 function admin() {
 	global $app, $globalSettings, $bbs;
 
 	$app->render('admin.html',array(
-		'page' => mkPage($globalSettings['langa']['admin']),
+		'page' => mkPage(getMessageString('admin')),
 		'isadmin' => is_admin()));
 }
 
-# Is the key in globalSettings?
+/**
+ * Is the key in globalSettings?
+ * @param  string  	$key 	key for config value
+ * @return boolean      	true = key available
+ */
 function has_global_setting($key) {
 	return (isset($globalSettings[$key]) && !empty($globalSettings[$key]));
 }
 
-# Is there a valid - existing - Calibre directory?
+/**
+ * Is there a valid - existing - Calibre directory?
+ * @return boolean 	true if available
+ */
 function has_valid_calibre_dir() {
 	return (has_global_setting(CALIBRE_DIR) && 
 		BicBucStriim::checkForCalibre($globalSettings[CALIBRE_DIR]));
 }
 
-/*
-Check for admin permissions. If no admin password is defined
-everyone has admin permissions.
+/**
+ * Check for admin permissions. If no admin password is defined 
+ * everyone has admin permissions.
  */
 function is_admin() {
 	$apw = getAdminPassword();
@@ -323,7 +351,9 @@ function is_admin() {
 	}	
 }
 
-# Processes changes in the admin page -> POST /admin/
+/**
+ * Processes changes in the admin page -> POST /admin/
+ */
 function admin_change_json() {
 	global $app, $globalSettings, $bbs;
 	$app->getLog()->debug('admin_change: started');	
@@ -331,8 +361,8 @@ function admin_change_json() {
 	if (!is_admin()) {
 		$app->getLog()->warn('admin_change: no admin permission');	
 		$app->render('admin.html',array(
-			'page' => mkPage($globalSettings['langa']['admin']),
-			'messages' => array($globalSettings['langa']['invalid_password']),
+			'page' => mkPage(getMessageString('admin')),
+			'messages' => array(getMessageString('invalid_password')),
 			'isadmin' => false));
 		return;
 	}
@@ -377,7 +407,7 @@ function admin_change_json() {
 	if (count($errors) > 0) {
 		$app->getLog()->error('admin_change: ended with error '.var_export($errors, true));	
 		$app->render('admin.html',array(
-		'page' => mkPage($globalSettings['langa']['admin']), 
+		'page' => mkPage(getMessageString('admin')), 
 		'isadmin' => true,
 		'errors' => $errors));	
 	} else {
@@ -399,14 +429,16 @@ function admin_change_json() {
 		}
 		$app->getLog()->debug('admin_change: ended');	
 		$app->render('admin.html',array(
-			'page' => mkPage($globalSettings['langa']['admin']), 
-			'messages' => array($globalSettings['langa']['changes_saved']),
+			'page' => mkPage(getMessageString('admin')), 
+			'messages' => array(getMessageString('changes_saved')),
 			'isadmin' => true,
 			));	
 	}
 }
 
-# Checks access to the admin page -> /admin/access/check
+/**
+ * Checks access to the admin page -> /admin/access/check
+ */
 function admin_checkaccess() {
 	global $app, $globalSettings;
 
@@ -423,8 +455,8 @@ function admin_checkaccess() {
 		$app->getLog()->debug('admin_checkaccess failed');
 		#$app->response()->status(401);
 		$app->render('admin.html',array(
-			'page' => mkPage($globalSettings['langa']['admin']),
-			'messages' => array($globalSettings['langa']['invalid_password']),
+			'page' => mkPage(getMessageString('admin')),
+			'messages' => array(getMessageString('invalid_password')),
 			'isadmin' => false));
 	}
 }
@@ -458,7 +490,7 @@ function titlesSlice($index=0) {
 	} else
 		$tl = $bbs->titlesSlice($index,$globalSettings['pagentries']);
 	$app->render('titles.html',array(
-		'page' => mkPage($globalSettings['langa']['titles'],2), 
+		'page' => mkPage(getMessageString('titles'),2), 
 		'url' => 'titleslist',
 		'books' => $tl['entries'],
 		'curpage' => $tl['page'],
@@ -477,7 +509,7 @@ function title($id) {
 		return;
 	}	
 	$app->render('title_detail.html',
-		array('page' => mkPage($globalSettings['langa']['book_details']), 
+		array('page' => mkPage(getMessageString('book_details')), 
 			'calibre_dir' => $calibre_dir,
 			'book' => $details['book'], 
 			'authors' => $details['authors'],
@@ -496,7 +528,7 @@ function showaccess($id) {
 
 	$app->getLog()->debug('showaccess called for '.$id);			
 	$app->render('password_dialog.html',
-		array('page' => mkPage($globalSettings['langa']['check_access'],0,true), 
+		array('page' => mkPage(getMessageString('check_access'),0,true), 
 					'bookid' => $id));
 }
 
@@ -636,7 +668,7 @@ function authorsSlice($index=0) {
 	else
 		$tl = $bbs->authorsSlice($index,$globalSettings['pagentries']);
 	$app->render('authors.html',array(
-		'page' => mkPage($globalSettings['langa']['authors'],3), 
+		'page' => mkPage(getMessageString('authors'),3), 
 		'url' => 'authorslist',
 		'authors' => $tl['entries'],
 		'curpage' => $tl['page'],
@@ -657,7 +689,7 @@ function author($id) {
 		$app->notFound();		
 	}
 	$app->render('author_detail.html',array(
-		'page' => mkPage($globalSettings['langa']['author_details']), 
+		'page' => mkPage(getMessageString('author_details')), 
 		'author' => $details['author'], 
 		'books' => $details['books']));
 }
@@ -681,7 +713,7 @@ function authorDetailsSlice($id, $index=0) {
 	}
 
 	$app->render('author_detail.html',array(
-		'page' => mkPage($globalSettings['langa']['author_details']),
+		'page' => mkPage(getMessageString('author_details')),
 		'url' => 'authors/'.$id,	
 		'author' => $tl['author'],
 		'books' => $tl['entries'],
@@ -704,7 +736,7 @@ function seriesSlice($index=0) {
 	} else
 		$tl = $bbs->seriesSlice($index,$globalSettings['pagentries']);
 	$app->render('series.html',array(
-		'page' => mkPage($globalSettings['langa']['series'],5), 
+		'page' => mkPage(getMessageString('series'),5), 
 		'url' => 'serieslist',
 		'series' => $tl['entries'],
 		'curpage' => $tl['page'],
@@ -727,7 +759,7 @@ function series($id) {
 		$app->notFound();		
 	}
 	$app->render('series_detail.html',array(
-		'page' => mkPage($globalSettings['langa']['series_details']), 
+		'page' => mkPage(getMessageString('series_details')), 
 		'series' => $details['series'], 
 		'books' => $details['books']));
 }
@@ -750,7 +782,7 @@ function seriesDetailsSlice ($id, $index=0) {
 		$app->notFound();		
 	}
 	$app->render('series_detail.html',array(
-		'page' => mkPage($globalSettings['langa']['series_details']),
+		'page' => mkPage(getMessageString('series_details')),
     'url' => 'series/'.$id, 
 		'series' => $tl['series'], 
 		'books' => $tl['entries'],
@@ -769,7 +801,7 @@ function tagsSlice($index=0) {
 	else
 		$tl = $bbs->tagsSlice($index,$globalSettings['pagentries']);
 	$app->render('tags.html',array(
-		'page' => mkPage($globalSettings['langa']['tags'],4), 
+		'page' => mkPage(getMessageString('tags'),4), 
 		'url' => 'tagslist',
 		'tags' => $tl['entries'],
 		'curpage' => $tl['page'],
@@ -787,7 +819,8 @@ function tag($id) {
 		$app->getLog()->debug("no tag");
 		$app->notFound();		
 	}
-	$app->render('tag_detail.html',array('page' => mkPage($globalSettings['langa']['tag_details']), 
+	$app->render('tag_detail.html',array(
+		'page' => mkPage(getMessageString('tag_details')), 
 		'tag' => $details['tag'], 
 		'books' => $details['books']));
 }
@@ -810,7 +843,7 @@ function tagDetailsSlice ($id, $index=0) {
 		$app->notFound();		
 	}
 	$app->render('tag_detail.html',array(
-		'page' => mkPage($globalSettings['langa']['tag_details']),
+		'page' => mkPage(getMessageString('tag_details')),
     'url' => 'tag/'.$id, 
 		'tag' => $tl['tag'], 
 		'books' => $tl['entries'],
@@ -818,9 +851,9 @@ function tagDetailsSlice ($id, $index=0) {
     'pages' => $tl['pages']));   
 }
 
-#####
-##### OPDS Catalog functions
-#####
+/*********************************************************************
+ * OPDS Catalog functions
+ ********************************************************************/
 
 function opdsCheckConfig() {
 	global $we_have_config, $app;
@@ -838,12 +871,13 @@ function opdsCheckConfig() {
  * Generate and send the OPDS root navigation catalog
  */
 function opdsRoot() {
-	global $app, $appversion, $bbs;
+	global $app, $appversion, $bbs, $globalSettings;
 
 	$app->getLog()->debug('opdsRoot started');			
 	$gen = new OpdsGenerator($app->request()->getRootUri(), $appversion, 
 		$bbs->calibre_dir,
-		date(DATE_ATOM,$bbs->calibre_last_modified));
+		date(DATE_ATOM,$bbs->calibre_last_modified),
+		$globalSettings['l10n']);
 	$cat = $gen->rootCatalog(NULL);	
 	$app->response()->status(200);
 	$app->response()->header('Content-Type',OpdsGenerator::OPDS_MIME_NAV);
@@ -860,7 +894,7 @@ function opdsRoot() {
  * so books without formats are removed from the output.
  */
 function opdsNewest() {
-	global $app, $appversion, $bbs;
+	global $app, $appversion, $bbs, $globalSettings;
 
 	$app->getLog()->debug('opdsNewest started');			
 	$just_books = $bbs->last30Books();
@@ -874,7 +908,8 @@ function opdsNewest() {
 	$app->getLog()->debug('opdsNewest: details found');			
 	$gen = new OpdsGenerator($app->request()->getRootUri(), $appversion, 
 		$bbs->calibre_dir,
-		date(DATE_ATOM,$bbs->calibre_last_modified));
+		date(DATE_ATOM,$bbs->calibre_last_modified),
+		$globalSettings['l10n']);
 	$app->response()->status(200);
 	$app->response()->header('Content-type',OpdsGenerator::OPDS_MIME_ACQ);
 	$gen->newestCatalog('php://output', $books, false);
@@ -907,7 +942,8 @@ function opdsByTitle($index=0) {
 		$nextPage = NULL;
 	$gen = new OpdsGenerator($app->request()->getRootUri(), $appversion, 
 		$bbs->calibre_dir,
-		date(DATE_ATOM,$bbs->calibre_last_modified));
+		date(DATE_ATOM,$bbs->calibre_last_modified),
+		$globalSettings['l10n']);
 	$app->response()->status(200);
 	$app->response()->header('Content-type',OpdsGenerator::OPDS_MIME_ACQ);
 	$gen->titlesCatalog('php://output', $books, is_protected(NULL), 
@@ -926,7 +962,8 @@ function opdsByAuthorInitial() {
 	$app->getLog()->debug('opdsByAuthorInitial: initials found');			
 	$gen = new OpdsGenerator($app->request()->getRootUri(), $appversion, 
 		$bbs->calibre_dir,
-		date(DATE_ATOM,$bbs->calibre_last_modified));
+		date(DATE_ATOM,$bbs->calibre_last_modified),
+		$globalSettings['l10n']);
 	$app->response()->status(200);
 	$app->response()->header('Content-type',OpdsGenerator::OPDS_MIME_NAV);
 	$gen->authorsRootCatalog('php://output', $initials);
@@ -937,14 +974,15 @@ function opdsByAuthorInitial() {
  * Return a page with author names for a initial
  */
 function opdsByAuthorNamesForInitial($initial) {
-	global $app, $appversion, $bbs;
+	global $app, $appversion, $bbs, $globalSettings;
 
 	$app->getLog()->debug('opdsByAuthorNamesForInitial started, showing initial '.$initial);			
 	$authors = $bbs->authorsNamesForInitial($initial);
 	$app->getLog()->debug('opdsByAuthorNamesForInitial: initials found');			
 	$gen = new OpdsGenerator($app->request()->getRootUri(), $appversion, 
 		$bbs->calibre_dir,
-		date(DATE_ATOM,$bbs->calibre_last_modified));
+		date(DATE_ATOM,$bbs->calibre_last_modified),
+		$globalSettings['l10n']);
 	$app->response()->status(200);
 	$app->response()->header('Content-type',OpdsGenerator::OPDS_MIME_NAV);
 	$gen->authorsNamesForInitialCatalog('php://output', $authors, $initial);
@@ -957,7 +995,7 @@ function opdsByAuthorNamesForInitial($initial) {
  * @param  int 		$id      author id
  */
 function opdsByAuthor($initial,$id) {
-	global $app, $appversion, $bbs;
+	global $app, $appversion, $bbs, $globalSettings;
 
 	$app->getLog()->debug('opdsByAuthor started, showing initial '.$initial.', id '.$id);			
 	$adetails = $bbs->authorDetails($id);
@@ -965,7 +1003,8 @@ function opdsByAuthor($initial,$id) {
 	$app->getLog()->debug('opdsByAuthor: details found');			
 	$gen = new OpdsGenerator($app->request()->getRootUri(), $appversion, 
 		$bbs->calibre_dir,
-		date(DATE_ATOM,$bbs->calibre_last_modified));
+		date(DATE_ATOM,$bbs->calibre_last_modified),
+		$globalSettings['l10n']);
 	$app->response()->status(200);
 	$app->response()->header('Content-type',OpdsGenerator::OPDS_MIME_ACQ);
 	$gen->booksForAuthorCatalog('php://output', $books, $initial, 
@@ -977,14 +1016,15 @@ function opdsByAuthor($initial,$id) {
  * Return a page with tag initials
  */
 function opdsByTagInitial() {
-	global $app, $appversion, $bbs;
+	global $app, $appversion, $bbs, $globalSettings;
 
 	$app->getLog()->debug('opdsByTagInitial started');			
 	$initials = $bbs->tagsInitials();
 	$app->getLog()->debug('opdsByTagInitial: initials found');			
 	$gen = new OpdsGenerator($app->request()->getRootUri(), $appversion, 
 		$bbs->calibre_dir,
-		date(DATE_ATOM,$bbs->calibre_last_modified));
+		date(DATE_ATOM,$bbs->calibre_last_modified),
+		$globalSettings['l10n']);
 	$app->response()->status(200);
 	$app->response()->header('Content-type',OpdsGenerator::OPDS_MIME_NAV);
 	$gen->tagsRootCatalog('php://output', $initials);
@@ -995,14 +1035,15 @@ function opdsByTagInitial() {
  * Return a page with author names for a initial
  */
 function opdsByTagNamesForInitial($initial) {
-	global $app, $appversion, $bbs;
+	global $app, $appversion, $bbs, $globalSettings;
 
 	$app->getLog()->debug('opdsByTagNamesForInitial started, showing initial '.$initial);			
 	$tags = $bbs->tagsNamesForInitial($initial);
 	$app->getLog()->debug('opdsByTagNamesForInitial: initials found');			
 	$gen = new OpdsGenerator($app->request()->getRootUri(), $appversion, 
 		$bbs->calibre_dir,
-		date(DATE_ATOM,$bbs->calibre_last_modified));
+		date(DATE_ATOM,$bbs->calibre_last_modified),
+		$globalSettings['l10n']);
 	$app->response()->status(200);
 	$app->response()->header('Content-type',OpdsGenerator::OPDS_MIME_NAV);
 	$gen->tagsNamesForInitialCatalog('php://output', $tags, $initial);
@@ -1015,7 +1056,7 @@ function opdsByTagNamesForInitial($initial) {
  * @param  int 		$id      tag id
  */
 function opdsByTag($initial,$id) {
-	global $app, $appversion, $bbs;
+	global $app, $appversion, $bbs, $globalSettings;
 
 	$app->getLog()->debug('opdsByTag started, showing initial '.$initial.', id '.$id);			
 	$adetails = $bbs->tagDetails($id);
@@ -1023,7 +1064,8 @@ function opdsByTag($initial,$id) {
 	$app->getLog()->debug('opdsByTag: details found');			
 	$gen = new OpdsGenerator($app->request()->getRootUri(), $appversion, 
 		$bbs->calibre_dir,
-		date(DATE_ATOM,$bbs->calibre_last_modified));
+		date(DATE_ATOM,$bbs->calibre_last_modified),
+		$globalSettings['l10n']);
 	$app->response()->status(200);
 	$app->response()->header('Content-type',OpdsGenerator::OPDS_MIME_ACQ);
 	$gen->booksForTagCatalog('php://output', $books, $initial, 
@@ -1035,14 +1077,15 @@ function opdsByTag($initial,$id) {
  * Return a page with series initials
  */
 function opdsBySeriesInitial() {
-	global $app, $appversion, $bbs;
+	global $app, $appversion, $bbs, $globalSettings;
 
 	$app->getLog()->debug('opdsBySeriesInitial started');			
 	$initials = $bbs->seriesInitials();
 	$app->getLog()->debug('opdsBySeriesInitial: initials found');			
 	$gen = new OpdsGenerator($app->request()->getRootUri(), $appversion, 
 		$bbs->calibre_dir,
-		date(DATE_ATOM,$bbs->calibre_last_modified));
+		date(DATE_ATOM,$bbs->calibre_last_modified),
+		$globalSettings['l10n']);
 	$app->response()->status(200);
 	$app->response()->header('Content-type',OpdsGenerator::OPDS_MIME_NAV);
 	$gen->seriesRootCatalog('php://output', $initials);
@@ -1053,14 +1096,15 @@ function opdsBySeriesInitial() {
  * Return a page with author names for a initial
  */
 function opdsBySeriesNamesForInitial($initial) {
-	global $app, $appversion, $bbs;
+	global $app, $appversion, $bbs, $globalSettings;
 
 	$app->getLog()->debug('opdsBySeriesNamesForInitial started, showing initial '.$initial);			
 	$tags = $bbs->seriesNamesForInitial($initial);
 	$app->getLog()->debug('opdsBySeriesNamesForInitial: initials found');			
 	$gen = new OpdsGenerator($app->request()->getRootUri(), $appversion, 
 		$bbs->calibre_dir,
-		date(DATE_ATOM,$bbs->calibre_last_modified));
+		date(DATE_ATOM,$bbs->calibre_last_modified),
+		$globalSettings['l10n']);
 	$app->response()->status(200);
 	$app->response()->header('Content-type',OpdsGenerator::OPDS_MIME_NAV);
 	$gen->seriesNamesForInitialCatalog('php://output', $tags, $initial);
@@ -1073,7 +1117,7 @@ function opdsBySeriesNamesForInitial($initial) {
  * @param  int 		$id      tag id
  */
 function opdsBySeries($initial,$id) {
-	global $app, $appversion, $bbs;
+	global $app, $appversion, $bbs, $globalSettings;
 
 	$app->getLog()->debug('opdsBySeries started, showing initial '.$initial.', id '.$id);			
 	$adetails = $bbs->seriesDetails($id);
@@ -1081,7 +1125,8 @@ function opdsBySeries($initial,$id) {
 	$app->getLog()->debug('opdsBySeries: details found');			
 	$gen = new OpdsGenerator($app->request()->getRootUri(), $appversion, 
 		$bbs->calibre_dir,
-		date(DATE_ATOM,$bbs->calibre_last_modified));
+		date(DATE_ATOM,$bbs->calibre_last_modified),
+		$globalSettings['l10n']);
 	$app->response()->status(200);
 	$app->response()->header('Content-type',OpdsGenerator::OPDS_MIME_ACQ);
 	$gen->booksForSeriesCatalog('php://output', $books, $initial, 
@@ -1090,9 +1135,10 @@ function opdsBySeries($initial,$id) {
 }
 
 
-#####
-##### Utility and helper functions, private
-#####
+/*********************************************************************
+ * Utility and helper functions, private
+ ********************************************************************/
+
 
 /**
  * Check whether the book download must be protected. 
@@ -1174,6 +1220,32 @@ function getDownloadPassword() {
 }
 
 /**
+ * Return a localized message string for $id. 
+ *
+ * If there is no defined message for $id in the current language the function
+ * looks for an alterantive in English. If that also fails an error message 
+ * is returned.
+ * 
+ * @param  string $id message id
+ * @return string     localized message string
+ */
+function getMessageString($id) {
+	global $app, $globalSettings;
+	$msg = $globalSettings['langa'][$id];
+	if (!is_null($msg))
+		return $msg;
+	else {
+		$app->getLog()->warn('getMessageString: undefined message string for '.$id);		
+		$msg = $globalSettings['langb'][$id];
+		if (!is_null($msg))
+			return $msg;
+		else
+			return 'Undefined message!';
+	} 
+}
+
+
+/**
  * Get the value of the cookie
  * @param string $name 	cookie name
  * @return string 			cookie value or NULL if not available
@@ -1204,7 +1276,6 @@ function setOurCookie($name, $value) {
 
 
 /**
- * getUserLangs()
  * Returns the user language, priority:
  * 1. Language in $_GET['lang']
  * 2. Language in $_SESSION['lang']
