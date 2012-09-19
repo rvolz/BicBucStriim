@@ -108,17 +108,9 @@ $globalSettings['sep'] = ' :: ';
 # Find the user language, either one of the allowed languages or
 # English as a fallback.
 $globalSettings['lang'] = getUserLang($allowedLangs, $fallbackLang);
-if ($globalSettings['lang'] == 'de')
-	$globalSettings['langa'] = $langde;
-elseif ($globalSettings['lang'] == 'fr')
-	$globalSettings['langa'] = $langfr;
-elseif ($globalSettings['lang'] == 'nl')
-	$globalSettings['langa'] = $langnl;
-else
-	$globalSettings['langa'] = $langen;
-# Store the English messages as an alternative for incomplete translations
-$globalSettings['langb'] = $langen;
-$globalSettings['l10n'] = new L10n($globalSettings['lang'], $globalSettings['langa'], $globalSettings['langb']);
+$globalSettings['l10n'] = new L10n($globalSettings['lang']);
+$globalSettings['langa'] = $globalSettings['l10n']->langa;
+$globalSettings['langb'] = $globalSettings['l10n']->langb;
 
 # Set the number of items per page
 if ($app->config('mode') == 'development')
@@ -1231,17 +1223,9 @@ function getDownloadPassword() {
  */
 function getMessageString($id) {
 	global $app, $globalSettings;
-	$msg = $globalSettings['langa'][$id];
-	if (!is_null($msg))
-		return $msg;
-	else {
-		$app->getLog()->warn('getMessageString: undefined message string for '.$id);		
-		$msg = $globalSettings['langb'][$id];
-		if (!is_null($msg))
-			return $msg;
-		else
-			return 'Undefined message!';
-	} 
+	#$msg = $globalSettings['langa'][$id];
+	$msg = $globalSettings['l10n']->message($id);
+	return $msg;
 }
 
 

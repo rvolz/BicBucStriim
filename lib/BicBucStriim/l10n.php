@@ -2,6 +2,7 @@
 /**
 * Localization helper 
 */
+require_once 'langs.php';
 
 class L10n {
 	/**
@@ -26,13 +27,19 @@ class L10n {
 	 * for incomplete translations.
 	 * 
 	 * @param string $lang  user language (according to client)
-	 * @param string $langa primary language message strings  
-	 * @param string $lang  secondary language message strings
 	 */
-	function __construct($lang, $langa, $langb) {		
+	function __construct($lang) {		
+		global $langde, $langen, $langfr, $langnl;
+		if ($lang == 'de')
+			$this->langa = $langde;
+		elseif ($lang == 'fr')
+			$this->langa = $langfr;
+		elseif ($lang == 'nl')
+			$this->langa = $langnl;
+		else
+			$this->langa = $langen;
+		$this->langb = $langen;
 		$this->user_lang = $lang;
-		$this->langa = $langa;
-		$this->langb = $langb;
 	}
 
 	/**

@@ -8,6 +8,7 @@
  */
 set_include_path("tests");
 require_once('lib/simpletest/autorun.php');
+require_once('lib/BicBucStriim/l10n.php');
 require_once('lib/BicBucStriim/bicbucstriim.php');
 require_once('lib/BicBucStriim/opds_generator.php');
 
@@ -23,6 +24,7 @@ class TestOfOpdsGenerator extends UnitTestCase {
 	var $gen;
 
 	function setUp() {
+		global $langen;
 		if (file_exists(self::DATA))
 			system("rm -rf ".self::DATA);	
     mkdir(self::DATA);
@@ -30,7 +32,8 @@ class TestOfOpdsGenerator extends UnitTestCase {
     copy(self::DB2, self::DATADB);
     $this->bbs = new BicBucStriim(self::DATADB);
     $this->bbs->openCalibreDb(self::CDB2);
-		$this->gen = new OpdsGenerator('/bbs', '0.9.0', $this->bbs->calibre_dir, date(DATE_ATOM, strtotime('2012-01-01T11:59:59')));    
+    $l10n = new L10n('en');
+		$this->gen = new OpdsGenerator('/bbs', '0.9.0', $this->bbs->calibre_dir, date(DATE_ATOM, strtotime('2012-01-01T11:59:59')), $l10n);    
 	}
 
 	function tearDown() {
