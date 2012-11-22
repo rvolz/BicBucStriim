@@ -8,7 +8,7 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 	<title>Installation check, BicBucStriim</title>
 	<meta name="viewport" content="width=device-width,initial-scale=1">
-  <link rel="stylesheet" href="style/jquery/jquery.mobile-1.2.0-alpha.1.min.css">
+  <link rel="stylesheet" href="style/jquery/jquery.mobile-1.2.0.min.css">
   <link rel="stylesheet" href="style/style.css">
 	<script src="js/libs/modernizr-2.5-respond-1.1.0.min.js"></script>
 </head>
@@ -56,13 +56,16 @@
           </td>
         </tr>        
         <tr>
-          <td>Is <em>data/metadata.db</em> writeable?</td>
+          <td>Is <em>data/data.db</em> writeable?</td>
           <td>
             {% if mwrit == true %}
             OK
             {% else %}
-            The file <em>data/metadata.db</em> doesn't exist or is not writeable! 
+            ERROR (File does not exist or is not writeable!)
             {% endif %}
+          </td>
+          <td>
+            The file <em>data/data.db</em> is part of the BicBucStriim package and contains the configuration data. To be able to save 
           </td>
         </tr>        
         <tr>
@@ -71,9 +74,24 @@
             {% if hsql != false %}
             OK
             {% else %}
-            No sqlite3 installed! Please install PHP support for sqlite3.
+            ERROR (sqlite3 is not installed)
             {% endif %}
           </td>
+          <td>
+            The Sqlite3 database library is required to read the Calibre library data. Sqlite support for PHP is often contained in a module named like <em>php5-sqlite</em>. Please install the Sqlite3 module.
+          </td>
+        <tr>
+          <td>Is GD version 2 (or higher) installed?</td>
+          <td>
+            {% if hgd2 == true %}
+            OK (GD version {{hgd2v}} found)
+            {% else %}
+            ERROR (GD not installed or too old, found {{hgd2v}})
+            {% endif %}
+          <td>
+             The GD image library is necessary for thumbnail generation. GD support for PHP is often contained in a module named like <em>php5-gd</em>. Please install the GD module.
+          </td>
+        </tr>                  
         </tr>        
       </table>
     </div>
@@ -82,8 +100,8 @@
     </div>      
   </div> <!-- page -->
 
-  <script src="js/libs/jquery-1.7.2.min.js"></script>
-  <script src="js/libs/jquery.mobile-1.2.0-alpha.1.min.js"></script>
+  <script src="js/libs/jquery-1.8.3.min.js"></script>
+  <script src="js/libs/jquery.mobile-1.2.0.min.js"></script>
   <script src="js/libs/jquery.cookie.js"></script>
   <script src="js/script.js"></script>
 </body>
