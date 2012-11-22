@@ -3,6 +3,9 @@
 
 // German
 $langde = array('admin' => 'Konfiguration',
+	#***
+	'admin_invalid_page_size' => 'Die eingestellte Seitengröße war ungültig. Sie muss zwischen 1 und 100 liegen.',
+	#***
 	'admin_pw1' => 'Admin Passwort',
 	'admin_pw2' => 'Admin Passwort',
 	'admin_pw_expl' => 'Optional: Tragen sie hier ein Passwort ein, um den Zugang zu den Admin-Einstellungen einzuschränken.',
@@ -42,7 +45,7 @@ $langde = array('admin' => 'Konfiguration',
 	'no_config' => 'config.php nicht gefunden oder fehlerhaft. Bitte kopieren Sie config.php.template nach config.php und nehmen Sie dort ihre Einstellungen vor.',
 	'not_found1' => 'Nicht gefunden!',
 	'not_found2' => 'Die angeforderte Ressource konnte nicht gefunden werden. Dies sollte eigentlich nicht passieren. Bitte prüfen Sie, ob ihre Calibre-Datenbank defekt ist.',
-
+	#***
  	'opds_authors' => 'Autoren: ',
 	'opds_books' => 'Bücher: ',
 	'opds_series' => 'Reihen: ',
@@ -71,7 +74,9 @@ $langde = array('admin' => 'Konfiguration',
 	'opds_by_tag4' => 'Alle Schlagwörter für ',
 	'opds_by_tag5' => 'Schlagwortliste',
 	'opds_by_tag6' => 'Alle Bücher für Schlagwort ',
-
+	'page_size' => 'Seitengröße',
+	'page_size_expl' => 'Anzahl der Elemente in einer Liste. Erhöhen Sie den Wert, um mehr Titel, Autoren, ... pro Seite anzuzeigen. Standard ist 30, Maximum 100',
+	#***
 	'pagination_next' => 'vor',
 	'pagination_page' => 'Seite',
 	'pagination_prev' => 'zurück',
@@ -96,6 +101,9 @@ $langde = array('admin' => 'Konfiguration',
 
 // English
 $langen = array('admin' => 'Configuration',
+	#***
+	'admin_invalid_page_size' => 'The reqeuested page size is invalid. Please choose a value between 1 and 100.',
+	#***
 	'admin_pw1' => 'Admin Password',
 	'admin_pw2' => 'Admin Password',
 	'admin_pw_expl' => 'Optional: Enter a password to protect the admin page from changes by others.',
@@ -135,7 +143,7 @@ $langen = array('admin' => 'Configuration',
 	'no_config' => 'config.php not found or in bad shape. Please copy config.php.template to config.php and make your configuration changes there.',
 	'not_found1' => 'Not found!',
 	'not_found2' => 'The requested ressource is not available. This should not happen. Please check your Calibre library for defects.',
-
+	#***
 	'opds_authors' => 'Authors: ',
 	'opds_books' => 'Books: ',
 	'opds_series' => 'Series: ',
@@ -164,7 +172,9 @@ $langen = array('admin' => 'Configuration',
 	'opds_by_tag4' => 'All tags for ',
 	'opds_by_tag5' => 'Tags list',
 	'opds_by_tag6' => 'All books for tag ',
-
+	'page_size' => 'Page size',
+	'page_size_expl' => 'Number of elements in a list. Increase to show more titles, authors ... per page. Default is 30, max is 100',
+	#***
 	'pagination_next' => 'next',
 	'pagination_page' => 'Page',
 	'pagination_prev' => 'previous',

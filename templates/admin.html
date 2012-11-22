@@ -14,8 +14,12 @@
 		<p class="error">{{page.glob.langa.invalid_calibredir2}}</p>
 	{% elseif error == 2 %}
 		<p class="error">{{page.glob.langa.invalid_password2}}</p>
-	{% else %}
+	{% elseif error == 3 %}
 		<p class="error">{{page.glob.langa.admin_pw_required2}}</p>
+	{% elseif error == 4 %}
+		<p class="error">{{page.glob.langa.admin_invalid_page_size}}</p>		
+	{% else %}
+		<p class="error">{{page.glob.langa.unknown_error1}}</p>
 	{% endif %}
 	{% endfor %}
 
@@ -74,7 +78,18 @@
 				{{page.glob.langa.switch_yes}}
 			</option>
 		</select>
-		<p>{{page.glob.langa.thumb_gen_clipped_expl}}</p>						
+		<p>{{page.glob.langa.thumb_gen_clipped_expl}}</p>
+	</fieldset>	
+	<fieldset data-role="fieldcontain">
+		<label for="page_size">{{page.glob.langa.page_size}}</label>
+		<input name="page_size" id="page_size" 
+			type="range" 
+			value="{{page.glob.page_size}}"
+			min="1"
+			max="100"
+			step="1"
+		/>
+		<p>{{page.glob.langa.page_size_expl}}</p>
 	</fieldset>	
 	<button type="submit">{{page.glob.langa.save}}</button>	
 </form>

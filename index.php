@@ -38,7 +38,8 @@ define('GLOB_DL_PASSWORD', 'glob_dl_password');
 define('DB_VERSION', 'db_version');
 # Thumbnail generation method
 define('THUMB_GEN_CLIPPED', 'thumb_gen_clipped');
-
+# Page size for list views, no. of elemens
+define('PAGE_SIZE', 'page_size');
 
 # Init app and routes
 $app = new Slim(array(
@@ -113,12 +114,6 @@ $globalSettings['l10n'] = new L10n($globalSettings['lang']);
 $globalSettings['langa'] = $globalSettings['l10n']->langa;
 $globalSettings['langb'] = $globalSettings['l10n']->langb;
 
-# Set the number of items per page
-if ($app->config('mode') == 'development')
-	$globalSettings['pagentries'] = 2;
-else
-	$globalSettings['pagentries'] = 30;
-
 # Check if libmcrypt is available
 $globalSettings['crypt'] = function_exists('mcrypt_encrypt');
 $app->getLog()->info('Encryption '.($globalSettings['crypt']==true ? '' : 'not ').'available');
@@ -152,6 +147,9 @@ if ($bbs->dbOk()) {
 			case THUMB_GEN_CLIPPED:
 				$globalSettings[THUMB_GEN_CLIPPED] = $config->val;
 				break;				
+			case PAGE_SIZE:
+				$globalSettings[PAGE_SIZE] = $config->val;
+				break;								
 			default:
 				$app->getLog()->warn(join('',array('Unknown configuration, name: ',
 					$config->name,', value: ',$config->val)));	
@@ -202,7 +200,6 @@ $app->get('/opds/serieslist/:initial/:id/', 'opdsCheckConfig', 'opdsBySeries');
 $app->run();
 
 /*********************************************************************
- * HTML functions
  * Development only functions
  ********************************************************************/
 
@@ -306,7 +303,7 @@ function myNotFound() {
 function main() {
 	global $app, $globalSettings, $bbs;
 
-	$books = $bbs->last30Books();
+	$books = $bbs->last30Books($globalSettings[PAGE_SIZE]);
 	$app->render('index_last30.html',array(
 		'page' => mkPage(getMessageString('dl30'),1), 
 		'books' => $books));	
@@ -376,7 +373,7 @@ function admin_change_json() {
 	$nconfigs = array();
 	$req_configs = $app->request()->post();
 	$errors = array();
-
+	$app->getLog()->warn('admin_change: '.var_export($req_configs,true));	
 	## Check for consistency - calibre directory
 	# Calibre dir is still empty and no change in sight --> error
 	if (!has_valid_calibre_dir() && empty($req_configs[CALIBRE_DIR]))
@@ -410,6 +407,14 @@ function admin_change_json() {
 		}
 	}
 
+	## Check for a change in page size, min 1, max 100
+	if ($req_configs[PAGE_SIZE] != $globalSettings[PAGE_SIZE]) {
+		if ($req_configs[PAGE_SIZE] < 1 || $req_configs[PAGE_SIZE] > 100) {
+			$app->getLog()->warn('admin_change: Invalid page size requested: '.$req_configs[PAGE_SIZE]);
+			array_push($errors, 4);
+		}
+	}
+	
 	# Don't save just return the error status
 	if (count($errors) > 0) {
 		$app->getLog()->error('admin_change: ended with error '.var_export($errors, true));	
@@ -493,9 +498,9 @@ function titlesSlice($index=0) {
 	$search = $app->request()->get('search');
 	if (isset($search)) {
 		$app->getLog()->debug("titlesSlice: search=".$search);
-		$tl = $bbs->titlesSlice($index,$globalSettings['pagentries'],$search);
+		$tl = $bbs->titlesSlice($index,$globalSettings[PAGE_SIZE],$search);
 	} else
-		$tl = $bbs->titlesSlice($index,$globalSettings['pagentries']);
+		$tl = $bbs->titlesSlice($index,$globalSettings[PAGE_SIZE]);
 	$app->render('titles.html',array(
 		'page' => mkPage(getMessageString('titles'),2), 
 		'url' => 'titleslist',
@@ -671,9 +676,9 @@ function authorsSlice($index=0) {
 
 	$search = $app->request()->get('search');
 	if (isset($search))
-		$tl = $bbs->authorsSlice($index,$globalSettings['pagentries'],$search);	
+		$tl = $bbs->authorsSlice($index,$globalSettings[PAGE_SIZE],$search);	
 	else
-		$tl = $bbs->authorsSlice($index,$globalSettings['pagentries']);
+		$tl = $bbs->authorsSlice($index,$globalSettings[PAGE_SIZE]);
 	$app->render('authors.html',array(
 		'page' => mkPage(getMessageString('authors'),3), 
 		'url' => 'authorslist',
@@ -713,7 +718,7 @@ function authorDetailsSlice($id, $index=0) {
   global $app, $globalSettings, $bbs;
   
   $app->getLog()->debug('seriesDetailsSlice started with index '.$index);
-	$tl = $bbs->authorDetailsSlice($id, $index, $globalSettings['pagentries']);
+	$tl = $bbs->authorDetailsSlice($id, $index, $globalSettings[PAGE_SIZE]);
 	if (is_null($tl)) {
 		$app->getLog()->debug('no author '.$id);
 		$app->notFound();
@@ -739,9 +744,9 @@ function seriesSlice($index=0) {
 	$search = $app->request()->get('search');
 	if (isset($search)) {
 		$app->getLog()->debug('seriesSlice: search '.$search);			
-		$tl = $bbs->seriesSlice($index,$globalSettings['pagentries'],$search);	
+		$tl = $bbs->seriesSlice($index,$globalSettings[PAGE_SIZE],$search);	
 	} else
-		$tl = $bbs->seriesSlice($index,$globalSettings['pagentries']);
+		$tl = $bbs->seriesSlice($index,$globalSettings[PAGE_SIZE]);
 	$app->render('series.html',array(
 		'page' => mkPage(getMessageString('series'),5), 
 		'url' => 'serieslist',
@@ -783,7 +788,7 @@ function seriesDetailsSlice ($id, $index=0) {
   global $app, $globalSettings, $bbs;
 
 	$app->getLog()->debug('seriesDetailsSlice started with index '.$index);
-	$tl = $bbs->seriesDetailsSlice($id, $index, $globalSettings['pagentries']);
+	$tl = $bbs->seriesDetailsSlice($id, $index, $globalSettings[PAGE_SIZE]);
 	if (is_null($tl)) {
 		$app->getLog()->debug('no series '.$id);
 		$app->notFound();		
@@ -804,9 +809,9 @@ function tagsSlice($index=0) {
 
 	$search = $app->request()->get('search');
 	if (isset($search))
-		$tl = $bbs->tagsSlice($index,$globalSettings['pagentries'],$search);
+		$tl = $bbs->tagsSlice($index,$globalSettings[PAGE_SIZE],$search);
 	else
-		$tl = $bbs->tagsSlice($index,$globalSettings['pagentries']);
+		$tl = $bbs->tagsSlice($index,$globalSettings[PAGE_SIZE]);
 	$app->render('tags.html',array(
 		'page' => mkPage(getMessageString('tags'),4), 
 		'url' => 'tagslist',
@@ -844,7 +849,7 @@ function tagDetailsSlice ($id, $index=0) {
   global $app, $globalSettings, $bbs;
 
 	$app->getLog()->debug('tagDetailsSlice started with index '.$index);
-	$tl = $bbs->tagDetailsSlice($id, $index, $globalSettings['pagentries']);
+	$tl = $bbs->tagDetailsSlice($id, $index, $globalSettings[PAGE_SIZE]);
 	if (is_null($tl)) {
 		$app->getLog()->debug('no tag '.$id);
 		$app->notFound();		
@@ -937,9 +942,9 @@ function opdsByTitle($index=0) {
 	$app->getLog()->debug('opdsByTitle started, showing page '.$index);			
 	$search = $app->request()->get('search');
 	if (isset($search))
-		$tl = $bbs->titlesSlice($index,$globalSettings['pagentries'],$search);
+		$tl = $bbs->titlesSlice($index,$globalSettings[PAGE_SIZE],$search);
 	else
-		$tl = $bbs->titlesSlice($index,$globalSettings['pagentries']);
+		$tl = $bbs->titlesSlice($index,$globalSettings[PAGE_SIZE]);
 	$app->getLog()->debug('opdsByTitle: books found');			
 	$books = $bbs->titleDetailsFilteredOpds($tl['entries']);
 	$app->getLog()->debug('opdsByTitle: details found');
@@ -1309,7 +1314,7 @@ function getUserLang($allowedLangs, $fallbackLang) {
   return $fallbackLang;
 }
 
-#Utility function to server files
+# Utility function to serve files
 function readfile_chunked($filename) {
 	global $app;
 	$app->getLog()->debug('readfile_chunked '.$filename);

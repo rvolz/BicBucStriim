@@ -5,6 +5,8 @@
 
 require 'rake/clean'
 require 'rake/packagetask'
+#require 'cucumber'
+#require 'cucumber/rake/task'
 require 'fileutils'
 require 'sqlite3'
 
@@ -40,7 +42,8 @@ task :package2 do |t|
     "db_version" => "1",
     "glob_dl_choice" => "0",
     "glob_dl_password" => "7094e7dc2feb759758884333c2f4a6bdc9a16bb2",
-    "thumb_gen_clipped" => "1"
+    "thumb_gen_clipped" => "1",
+    "page_size" => "30",
   }.each do |pair|
     db.execute "insert into configs values ( ?, ? )", pair
   end
@@ -106,6 +109,7 @@ if env
     puts "Deploying code"
     rm_rf code_target+"/."
     cp_r "./pkg/#{APPNAME}-#{VERSION}/.", code_target
+    cp code_target+"/data/data.db", code_target+"/data/data.backup"
     chmod_R 0777,"#{code_target}/data"
     puts "Deploying test fixtures"    
     rm_rf lib_target+"/."
@@ -121,7 +125,8 @@ if env
 
     env.cli("sync","-f#{code_target}/", "-t/var/www/bbs")    
     env.cli("sync","-f#{lib_target}/","-t/tmp/calibre")    
-    #env.cli("ssh", '-c "sudo chmod -R ga+w /var/www/bbs/data"')
+    # a backup db for reset during testing
+    #env.cli("ssh", '-c "sudo cp /var/www/bbs/data/data.db /var/www/bbs/data/data.backup"')
   end
 
   desc "Starts a ssh shell in the VM"
@@ -138,8 +143,16 @@ end
 
 desc "Integration testing (via integration test environment)"
 task :itest => [:itest_deploy] do |t|  
-  sh "php tests/test_integration.php"
+  #sh "php tests/test_integration.php"
+  sh "cucumber features --format=pretty"
 end
+
+
+# Cucumber::Rake::Task.new(:features) do |t|
+#   t.cucumber_opts = "features --format pretty"
+# end
+# desc "Real Integration testing (via integration test environment)"
+# task :features => [:itest_deploy]
 
 desc "Copy the current version to the NAS for testing"
 task :copy2nas => [:package2] do |t|

@@ -266,11 +266,12 @@ class BicBucStriim {
 
 
 	/**
-	 * Return the 30 most recent books, sorted by modification date
+	 * Return the most recent books, sorted by modification date.
+	 * @param  nrOfTitles	number of titles, page size. Default is 30.
 	 * @return array of books
 	 */
-	function last30Books() {
-		$books = $this->find('Book','select * from books order by timestamp desc limit 30');		
+	function last30Books($nrOfTitles=30) {
+		$books = $this->find('Book','select * from books order by timestamp desc limit '.$nrOfTitles);		
 		return $books;
 	}
 

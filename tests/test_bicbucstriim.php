@@ -46,10 +46,14 @@ class TestOfBicBucStriim extends UnitTestCase {
 	}
 
 	function testLast30() {		
-		$result = $this->bbs->last30Books();
+		$result = $this->bbs->last30Books(30);
 		$this->assertEqual(0, $this->bbs->last_error);
 		$this->assertFalse($result === FALSE);
 		$this->assertEqual(7, count($result));
+		$result = $this->bbs->last30Books(2);
+		$this->assertEqual(0, $this->bbs->last_error);
+		$this->assertFalse($result === FALSE);
+		$this->assertEqual(2, count($result));
 	}
 
 	function testAuthorsSlice() {
