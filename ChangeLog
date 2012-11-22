@@ -1,3 +1,11 @@
+2012-09-XX Version 0.9.4
+
+
+
+2012-09-22 Version 0.9.3
+
+* security fix: issue #12, admin password was displayed in password dialog
+
 2012-08-08 Version 0.9.2
 
 * fixed issue #4, sort order of books in series now according to field series_index
