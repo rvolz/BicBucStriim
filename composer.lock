@@ -2,18 +2,153 @@
     "hash": "a6514da7a0cdff193ddb1c76af912730",
     "packages": [
         {
-            "package": "slim/extras",
+            "name": "slim/extras",
             "version": "dev-release-1.0.3",
-            "source-reference": "07ca603f59f59e7919049272264fb79bf4c8266e",
-            "commit-date": "1341419294"
+            "source": {
+                "type": "git",
+                "url": "https://github.com/codeguy/Slim-Extras",
+                "reference": "07ca603f59f59e7919049272264fb79bf4c8266e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://github.com/codeguy/Slim-Extras/zipball/07ca603f59f59e7919049272264fb79bf4c8266e",
+                "reference": "07ca603f59f59e7919049272264fb79bf4c8266e",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.2.0"
+            },
+            "type": "library",
+            "installation-source": "source",
+            "autoload": {
+                "psr-0": {
+                    "Twig_Extensions_": "View/Extension/",
+                    "Middleware_": "",
+                    "View_": "",
+                    "Log_": ""
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Andrew Smith",
+                    "email": "a.smith@silentworks.co.uk",
+                    "homepage": "http://silentworks.co.uk/",
+                    "role": null
+                },
+                {
+                    "name": "Josh Lockhart",
+                    "email": "info@joshlockhart.com",
+                    "homepage": "http://www.joshlockhart.com/",
+                    "role": null
+                }
+            ],
+            "description": "Extras package for Slim Framework. Authentication Middlewares, Log Writers, Template Parser Views, etc...",
+            "homepage": "http://github.com/codeguy/Slim-Extras",
+            "keywords": [
+                "templating",
+                "extensions",
+                "middleware",
+                "loggers"
+            ],
+            "time": "2012-07-04 16:28:14"
         },
         {
-            "package": "slim/slim",
-            "version": "1.6.5"
+            "name": "slim/slim",
+            "version": "1.6.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/codeguy/Slim",
+                "reference": "1.6.5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://github.com/codeguy/Slim/zipball/1.6.5",
+                "reference": "1.6.5",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.2.0"
+            },
+            "type": "library",
+            "installation-source": "dist",
+            "autoload": {
+                "psr-0": {
+                    "Slim": "Slim/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Josh Lockhart",
+                    "email": "info@joshlockhart.com",
+                    "homepage": "http://www.joshlockhart.com/",
+                    "role": null
+                }
+            ],
+            "description": "Slim Framework, a micro framework for PHP 5",
+            "homepage": "http://github.com/codeguy/Slim",
+            "keywords": [
+                "microframework",
+                "rest",
+                "router"
+            ]
         },
         {
-            "package": "twig/twig",
-            "version": "v1.9.1"
+            "name": "twig/twig",
+            "version": "v1.9.1",
+            "source": {
+                "type": "git",
+                "url": "git://github.com/fabpot/Twig.git",
+                "reference": "v1.9.1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://github.com/fabpot/Twig/zipball/v1.9.1",
+                "reference": "v1.9.1",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.2.4"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.9-dev"
+                }
+            },
+            "installation-source": "dist",
+            "autoload": {
+                "psr-0": {
+                    "Twig_": "lib/"
+                }
+            },
+            "license": [
+                "BSD-3"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com",
+                    "homepage": null,
+                    "role": null
+                },
+                {
+                    "name": "Armin Ronacher",
+                    "email": "armin.ronacher@active-4.com",
+                    "homepage": null,
+                    "role": null
+                }
+            ],
+            "description": "Twig, the flexible, fast, and secure template language for PHP",
+            "homepage": "http://twig.sensiolabs.org",
+            "keywords": [
+                "templating"
+            ]
         }
     ],
     "packages-dev": null,

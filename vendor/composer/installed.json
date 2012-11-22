@@ -19,6 +19,11 @@
         },
         "type": "library",
         "installation-source": "dist",
+        "autoload": {
+            "psr-0": {
+                "Slim": "Slim/"
+            }
+        },
         "license": [
             "MIT"
         ],
@@ -36,12 +41,7 @@
             "microframework",
             "rest",
             "router"
-        ],
-        "autoload": {
-            "psr-0": {
-                "Slim": "Slim/"
-            }
-        }
+        ]
     },
     {
         "name": "twig/twig",
@@ -68,6 +68,11 @@
             }
         },
         "installation-source": "dist",
+        "autoload": {
+            "psr-0": {
+                "Twig_": "lib/"
+            }
+        },
         "license": [
             "BSD-3"
         ],
@@ -89,12 +94,7 @@
         "homepage": "http://twig.sensiolabs.org",
         "keywords": [
             "templating"
-        ],
-        "autoload": {
-            "psr-0": {
-                "Twig_": "lib/"
-            }
-        }
+        ]
     },
     {
         "name": "slim/extras",
@@ -116,6 +116,14 @@
         },
         "type": "library",
         "installation-source": "source",
+        "autoload": {
+            "psr-0": {
+                "Twig_Extensions_": "View/Extension/",
+                "Middleware_": "",
+                "View_": "",
+                "Log_": ""
+            }
+        },
         "license": [
             "MIT"
         ],
@@ -140,14 +148,6 @@
             "extensions",
             "middleware",
             "loggers"
-        ],
-        "autoload": {
-            "psr-0": {
-                "Twig_Extensions_": "View/Extension/",
-                "Middleware_": "",
-                "View_": "",
-                "Log_": ""
-            }
-        }
+        ]
     }
 ]

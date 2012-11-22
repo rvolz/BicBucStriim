@@ -162,12 +162,12 @@ class ClassLoader
      */
     public function findFile($class)
     {
-        if (isset($this->classMap[$class])) {
-            return $this->classMap[$class];
-        }
-
         if ('\\' == $class[0]) {
             $class = substr($class, 1);
+        }
+
+        if (isset($this->classMap[$class])) {
+            return $this->classMap[$class];
         }
 
         if (false !== $pos = strrpos($class, '\\')) {
@@ -201,5 +201,7 @@ class ClassLoader
         if ($this->useIncludePath && $file = stream_resolve_include_path($classPath)) {
             return $file;
         }
+
+        return $this->classMap[$class] = false;
     }
 }
