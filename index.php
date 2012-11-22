@@ -81,6 +81,7 @@ function confdev() {
 		'cookies.secret_key' => 'b4924c3579e2850a6fad8597da7ad24bf43ab78e',
 
 	));
+	$app->get('/dev/reset', 'devReset');
 	$app->getLog()->info($appname.' '.$appversion.': Running in development mode.');
 }
 
@@ -162,7 +163,7 @@ if ($bbs->dbOk()) {
 	$we_have_config = false;
 }
 
-# Init routes
+###### Init routes for production
 $app->notFound('myNotFound');
 $app->get('/', 'htmlCheckConfig', 'main');
 $app->get('/admin/', 'admin');
@@ -202,6 +203,20 @@ $app->run();
 
 /*********************************************************************
  * HTML functions
+ * Development only functions
+ ********************************************************************/
+
+/**
+ * Reset the database and delete all dynamic data (thumbnails etc.)
+ * for testing.
+ */
+function devReset() {
+	system("cp data/data.backup data/data.db");
+	system("rm data/thm*.png");
+}
+
+/*********************************************************************
+ * Production functions
  ********************************************************************/
 
 /**
