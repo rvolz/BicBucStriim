@@ -118,9 +118,6 @@ $globalSettings['langb'] = $globalSettings['l10n']->langb;
 $globalSettings['crypt'] = function_exists('mcrypt_encrypt');
 $app->getLog()->info('Encryption '.($globalSettings['crypt']==true ? '' : 'not ').'available');
 
-# Timestamps in UTC, mostly for OPDS
-date_default_timezone_set('UTC');
-
 # Add globals from DB
 $bbs = new BicBucStriim();
 if ($bbs->dbOk()) {

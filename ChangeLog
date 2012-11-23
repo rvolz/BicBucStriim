@@ -1,6 +1,9 @@
 2012-09-XX Version 0.9.4
 
-
+* 
+* new: installation check page, installcheck.php
+* new: dutch translation
+* updated dependencies (jQuery 1.8.3, jQuery Mobile 1.2.0)
 
 2012-09-22 Version 0.9.3
 
@@ -21,7 +24,6 @@
 * new: pagination for titles, authors, series and tags makes navigation in larger libraries easier
 * new: OPDS catalog support
 * updated: added more details to list views, thanks to DarkHunter85 
-
 
 2012-06-18 Version 0.8.0
 
