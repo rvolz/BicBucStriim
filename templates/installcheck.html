@@ -15,89 +15,275 @@
 <body>
   <!--[if lt IE 7]><p class=chromeframe>Your browser is <em>ancient!</em> <a href="http://browsehappy.com/">Upgrade to a different browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to experience this site.</p><![endif]-->
 
+  
   <div data-role="page" data-title="{{ page.title }}" {% block pid %}{% endblock %}>
     <div data-role="header" data-position="inline">                  
+      <h1>Installation check</h1>
     </div>
     <div data-role="content">      
-      <h1>Installation check for BicBucStriim</h1>
+      <h2>Explanation</h2>
+      <p>
+        This page executes various checks regarding the environment and the installation 
+        directory of BicBucStriim. It checks for typical problems that users had in the 
+        past.
+      </p>
       <table>
         <tr>
-          <td>Apache server?</td>
-          <td>
-            {% if is_a == true %}
-            OK
-            {% else %}
-            No Apache server found. BicBucStriim should work with other HTTP servers, too. But it needs URL rewriting as defined in the file <em>.htaccess</em>. Please check.
-            {% endif %}
-          </td>
+          <td><img src="img/bbs-light-green.png" width="32"/></td>
+          <td>Everything ok.</td>
         </tr>
         <tr>
-          <td>Server software/version</td>
-          <td>{{srv}}</td>
+          <td><img src="img/bbs-light-yellow.png" width="32"/></td>
+          <td>There could be a problem, click on the info button to see the explanation.</td>
         </tr>
         <tr>
-          <td>Is URL rewriting (mod_rewrite) enabled?</td>
-          <td>
-            {% if mre == true %}
-            OK
-            {% else %}
-            Unable to check. Please check manually.
-            {% endif %}
-          </td>
+          <td><img src="img/bbs-light-red.png" width="32"/></td>
+          <td>A problem, please click on the info button to see the explanation.</td>
         </tr>
-        <tr>
-          <td>Is the <em>data</em> directory writeable?</td>
-          <td>
-            {% if dwrit == true %}
-            OK
-            {% else %}
-            The <em>data</em> directory doesn't exist or is not writeable! 
-            {% endif %}
-          </td>
-        </tr>        
-        <tr>
-          <td>Is <em>data/data.db</em> writeable?</td>
-          <td>
-            {% if mwrit == true %}
-            OK
-            {% else %}
-            ERROR (File does not exist or is not writeable!)
-            {% endif %}
-          </td>
-          <td>
-            The file <em>data/data.db</em> is part of the BicBucStriim package and contains the configuration data. To be able to save 
-          </td>
-        </tr>        
-        <tr>
-          <td>Is sqlite3 installed?</td>
-          <td>
-            {% if hsql != false %}
-            OK
-            {% else %}
-            ERROR (sqlite3 is not installed)
-            {% endif %}
-          </td>
-          <td>
-            The Sqlite3 database library is required to read the Calibre library data. Sqlite support for PHP is often contained in a module named like <em>php5-sqlite</em>. Please install the Sqlite3 module.
-          </td>
-        <tr>
-          <td>Is GD version 2 (or higher) installed?</td>
-          <td>
-            {% if hgd2 == true %}
-            OK (GD version {{hgd2v}} found)
-            {% else %}
-            ERROR (GD not installed or too old, found {{hgd2v}})
-            {% endif %}
-          <td>
-             The GD image library is necessary for thumbnail generation. GD support for PHP is often contained in a module named like <em>php5-gd</em>. Please install the GD module.
-          </td>
-        </tr>                  
-        </tr>        
       </table>
+      <h2>Checks</h2>
+      <ul data-role="listview"> 
+        <li>
+          <h3>
+            <a href="#popupApache" data-role="button" 
+              data-inline="true" data-mini="true" data-icon="info" data-iconpos="notext"
+              data-rel="popup">
+              info
+            </a>
+            Apache web server?
+          </h3>
+          {% if is_a == true %}
+            <img src="img/bbs-light-green.png" />
+            <p>
+              Yes, {{srv}}.
+            </p>
+          {% else %}
+            <img src="img/bbs-light-yellow.png" />
+            <p>
+              No.
+            </p>
+          {%endif%}
+        </li>
+        <li>
+          <h3>
+            <a href="#popupPhp" data-role="button" 
+              data-inline="true" data-mini="true" data-icon="info" data-iconpos="notext"
+              data-rel="popup">
+              info
+            </a>
+            PHP version 5.2+?
+          </h3>
+          {% if is_a == true %}
+            <img src="img/bbs-light-green.png" align="center"/>
+            <p>
+              Yes, found version {{phpv}}.
+            </p>
+          {% else %}
+            <img src="img/bbs-light-red.png" />
+            <p>
+              No, found vrsion {{phpv}}.
+            </p>
+          {%endif%}
+        </li>
+        <li>
+          <h3>            
+            <a href="#popupUrlRewrite" data-role="button" 
+              data-inline="true" data-mini="true" data-icon="info" data-iconpos="notext"
+              data-rel="popup">
+              info
+            </a>
+            Is URL rewriting enabled?
+          </h3>
+          {% if mre == true %}
+            <img src="img/bbs-light-green.png" />            
+            <p>
+              Yes.
+            </p>
+          {% else %}
+            {% if is_a == true %}
+              <img src="img/bbs-light-red.png" />
+              <p>
+                No.
+              </p>
+            {% else %}
+              <img src="img/bbs-light-yellow.png" />
+              <p>                
+                No Apache, please verify manually.
+              </p>
+            {% endif %}
+          {% endif %}  
+        </li>
+        <li>
+          <h3>            
+            <a href="#popupSqlite3" data-role="button" 
+              data-inline="true" data-mini="true" data-icon="info" data-iconpos="notext"
+              data-rel="popup">
+              info
+            </a>
+            Is Sqlite3 installed?
+          </h3>
+          {% if hsql != false %}
+            <img src="img/bbs-light-green.png" />
+            <p>
+              Yes.
+            </p>
+          {% else %}
+            <img src="img/bbs-light-red.png" />
+            <p>
+              No.
+            </p>
+          {% endif %}          
+        <li>
+          <h3>            
+            <a href="#popupGD2" data-role="button" 
+              data-inline="true" data-mini="true" data-icon="info" data-iconpos="notext"
+              data-rel="popup">
+              info
+            </a>
+            Is GD version 2 (or higher) installed?
+          </h3>
+          {% if hgd2 == true %}
+            <img src="img/bbs-light-green.png" />
+            <p>
+              Yes, found version {{hgd2v}}.
+            </p>
+          {% else %}
+            <img src="img/bbs-light-red.png" />
+            <p>
+              {% if hgd2v == "" %}
+                No.
+              {% else %}
+                No, found {{hgd2v}}.
+              {% endif %}
+            </p>
+          {% endif %}          
+        </li>                  
+        <li>
+          <h3>            
+            <a href="#popupOPD" data-role="button" 
+              data-inline="true" data-mini="true" data-icon="info" data-iconpos="notext"
+              data-rel="popup">
+              info
+            </a>
+            Is the <em>open_basedir</em> restriction in effect? 
+          </h3>
+          {% if opd == "" %}
+            <img src="img/bbs-light-green.png" />            
+            <p>
+              No.                                          
+            </p>            
+          {% else %}
+            <img src="img/bbs-light-yellow.png" />            
+            <p>
+              Yes, open_basedir = {{opd}}               
+            </p>
+          {% endif %}
+        </li>                
+        <li>
+          <h3>            
+            <a href="#popupDataDir" data-role="button" 
+              data-inline="true" data-mini="true" data-icon="info" data-iconpos="notext"
+              data-rel="popup">
+              info
+            </a>
+            Is the <em>data</em> directory writeable?
+          </h3>
+          {% if dwrit == true %}
+            <img src="img/bbs-light-green.png" />            
+            <p>
+              Yes.
+            </p>
+          {% else %}
+            <img src="img/bbs-light-red.png" />            
+            <p>
+              No.
+            </p>
+          {% endif %}
+        </li>        
+        <li>
+          <h3>
+            <a href="#popupDataDb" data-role="button" 
+              data-inline="true" data-mini="true" data-icon="info" data-iconpos="notext"
+              data-rel="popup">
+              info
+            </a>
+            Is <em>data/data.db</em> writeable?
+          </h3>
+          {% if mwrit == true %}
+            <img src="img/bbs-light-green.png" />
+            <p>
+              Yes.
+            </p>
+          {% else %}
+            <img src="img/bbs-light-red.png" />
+            <p>
+              No.
+            </p>            
+          {% endif %}                    
+        </li>        
+      </ul>
     </div>
     <div data-role="footer" class="footer">
       {% include "footer.html" %}
-    </div>      
+    </div>  
+    <div id="popupOPD" data-role="popup" data-theme="e">
+      <p>
+        The PHP <em>open_basedir</em> setting is a security measure that restricts file access for
+        PHP applications to a list of specified directories mentioned in the variable. Many 
+        NAS devices use this setting. Please make sure that the installation directory is included
+        in the list. To do this, just append the installation directory to the list, e.g. <code>...:/volume1/www/bbs</code>.
+      </p>
+    </div>
+    <div id="popupUrlRewrite" data-role="popup" data-theme="e">
+      <p>
+        BicBucStriim contains a <em>.htaccess</em> file that enables URL rewriting
+        on Apache servers automatically. If this is an Apache web server and the check failed, 
+        please change the URL rewriting (mod_rewrite) settings of your server/device. 
+      </p>
+      <p>
+        If this is no Apache web server, you have to verify manually that URL 
+        rewriting is enabled.
+      </p>
+    </div>
+    <div id="popupSqlite3" data-role="popup" data-theme="e">
+      <p>
+        The Sqlite3 database library is required to read the Calibre library data. 
+        Sqlite support for PHP is often contained in a module like <em>php5-sqlite</em>.
+        Please install the Sqlite3 support if the check failed. 
+      </p>
+    </div>
+    <div id="popupGD2" data-role="popup" data-theme="e">
+      <p>
+         The GD image library is necessary for thumbnail generation. 
+         GD support for PHP is often contained in a module like <em>php5-gd</em>. 
+         Please install or update the module if the check failed.
+      </p>
+    </div>
+    <div id="popupDataDir" data-role="popup" data-theme="e">
+      <p>
+        The <em>bbs/data</em> directory contains the configuration database and thumbnails.
+        If it doesn't exist or is not writeable the application can't store anything. If the 
+        check failed, please create the directory and/or change the access rights.
+      </p>
+    </div>
+    <div id="popupDataDb" data-role="popup" data-theme="e">
+      <p>
+        The file <em>bbs/data/data.db</em> is part of the BicBucStriim package and stores your configuration data. If the check failed, please verify that it exists and is writeable.
+      </p>      
+    </div>
+    <div id="popupPhp" data-role="popup" data-theme="e">
+      <p>
+        BicBucStriim requires PHP 5.2 or higher. Otherwise some functions might fail.
+      </p>
+    </div>
+    <div id="popupApache" data-role="popup" data-theme="e">
+      <p>
+        BicBucStriim works with Apache and other web servers. However, the 
+        included configuration file <em>.htaccess</em> is for Apache only. If you are 
+        using a different web server please make sure that features like  
+        <em>URL rewriting</em> are enabled.
+      </p>
+    </div>    
   </div> <!-- page -->
 
   <script src="js/libs/jquery-1.8.3.min.js"></script>

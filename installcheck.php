@@ -1,7 +1,7 @@
 <?php
 
 /**
- * BicBucStriim
+ * BicBucStriim installation check
  *
  * Copyight 2012 Rainer Volz
  * Licensed under MIT License, see LICENSE
@@ -84,7 +84,9 @@ echo $template->render(array(
 	'hgd2' => $gde,
 	'hgd2v' => $gdv,
 	'dwrit' => fw('./data'),
-	'mwrit' => fw('./data/data.db')
+	'mwrit' => fw('./data/data.db'),
+	'opd' => ini_get('open_basedir'),
+	'phpv' => phpversion(),	
 	));
 
 #echo phpinfo();
