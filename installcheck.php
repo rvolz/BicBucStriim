@@ -58,6 +58,24 @@ function get_gd_version() {
   return $gd_version_number; 
 } 
 
+function check_calibre($dir) {
+	$ret = 2;	
+	if (file_exists($dir) && is_readable($dir)) {
+		$mdb = realpath($dir).'/metadata.db';
+		if (file_exists($mdb)) {
+			$ret = 1;
+		}
+	} 
+	return $ret;
+}
+
+if (isset($_POST['calibre_dir'])) {
+	$calibre_dir = $_POST['calibre_dir'];
+	$cd = check_calibre($calibre_dir);
+} else {
+	$calibre_dir = null;
+	$cd = null;
+}
 
 $srv = $_SERVER['SERVER_SOFTWARE'];
 $is_a = is_apache($srv) ;
@@ -80,6 +98,8 @@ echo $template->render(array(
 	'is_a' => $is_a,
 	'srv' => $srv,
 	'mre' => $mre,
+	'calibre_dir'=> $calibre_dir,
+	'cd' => $cd,
 	'hsql' => has_sqlite(),
 	'hgd2' => $gde,
 	'hgd2v' => $gdv,

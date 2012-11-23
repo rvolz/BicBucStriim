@@ -41,6 +41,54 @@
           <td>A problem, please click on the info button to see the explanation.</td>
         </tr>
       </table>
+      <hr/>
+      <h2>Calibre library check</h2>
+      <p>
+        Enter the path to your Calibre library to check accessibility. A Calibre 
+        library directory contains the file <em>metadata.db</em> plus various subdirectories 
+        for authors and books.
+      </p>
+      <p>
+        The test tries to find <em>metadata.db</em> in the directory you enter, 
+        and will check if that directory is readable for the application. 
+      </p>
+      <p>
+        If the test fails (red light), check:
+        <ul>
+          <li>that the directory really exists</li>
+          <li>that it contains the files mentioned above</li>
+          <li>
+            that it is readable for the application 
+            (see also the <em>open_basedir</em> check below)
+          </li>
+        </ul>
+      </p>
+      <table>
+        <tr>
+          <td class="80column">
+            {% if cd == 0 %}
+              &nbsp;
+            {% else %}
+              {% if cd == 1 %}
+                <img src="img/bbs-light-green.png" />
+              {% else %}
+                <img src="img/bbs-light-red.png" />
+              {% endif %}
+            {% endif %}              
+          </td>
+          <td>
+            <form action="installcheck.php" method="post" id="calibrecheckform">
+              <fieldset data-role="fieldcontain">
+                <label for="calibre_dir">Calibre directory</label>
+                <input name="calibre_dir" id="calibre_dir" type="text" 
+                  value="{{calibre_dir}}" placeholder="Example: /volume1/books" />
+              </fieldset>
+              <button type="submit">Check</button> 
+            </form>
+          </td>
+        </tr>
+      </table>
+      <hr/>
       <h2>Environment checks</h2>
       <ul data-role="listview"> 
         <li>
