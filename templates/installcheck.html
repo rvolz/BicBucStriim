@@ -41,7 +41,7 @@
           <td>A problem, please click on the info button to see the explanation.</td>
         </tr>
       </table>
-      <h2>Checks</h2>
+      <h2>Environment checks</h2>
       <ul data-role="listview"> 
         <li>
           <h3>
@@ -251,8 +251,12 @@
       <p>
         The PHP <em>open_basedir</em> setting is a security measure that restricts file access for
         PHP applications to a list of specified directories mentioned in the variable. Many 
-        NAS devices use this setting. Please make sure that the installation directory is included
-        in the list. To do this, just append the installation directory to the list, e.g. <code>...:/volume1/www/bbs</code>.
+        NAS devices use this setting. 
+      </p>
+      <p>
+        If your Calibre library is located outside your web server root, which is often the case,
+        it should be included in the open_basedir list. To include it, just append the name of your 
+        Calibre directory to this list, e.g. <code>...:/volume1/books</code> (don't forget the colon in front).
       </p>
     </div>
     <div id="popupUrlRewrite" data-role="popup" data-theme="e">
