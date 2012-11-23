@@ -115,6 +115,27 @@
         </li>
         <li>
           <h3>            
+            <a href="#popupMcrypt" data-role="button" 
+              data-inline="true" data-mini="true" data-icon="info" data-iconpos="notext"
+              data-rel="popup">
+              info
+            </a>
+            Is Mcrypt enabled?
+          </h3>
+          {% if mcrypt == true %}
+            <img src="img/bbs-light-green.png" />            
+            <p>
+              Yes.
+            </p>
+          {% else %}            
+            <img src="img/bbs-light-yellow.png" />
+            <p>                
+              No.
+            </p>
+          {% endif %}  
+        </li>
+        <li>
+          <h3>            
             <a href="#popupSqlite3" data-role="button" 
               data-inline="true" data-mini="true" data-icon="info" data-iconpos="notext"
               data-rel="popup">
@@ -243,6 +264,18 @@
       <p>
         If this is no Apache web server, you have to verify manually that URL 
         rewriting is enabled.
+      </p>
+    </div>
+    <div id="popupMcrypt" data-role="popup" data-theme="e">
+      <p>
+        Mcrypt is used to encrypt browser cookies that contain passwords. BicBucStriim works 
+        without it, but then transmits passwords unencrypted. In a secure home network 
+        this is usually not a problem.
+      </p>
+      <p>
+        In case you are using BicBucStriim over the Internet, you might consider 
+        enabling mcrypt to protect your password information. In order to enable mcrypt, install
+        a module like <em>php5-mcrypt</em>.
       </p>
     </div>
     <div id="popupSqlite3" data-role="popup" data-theme="e">

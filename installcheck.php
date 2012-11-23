@@ -84,6 +84,7 @@ echo $template->render(array(
 	'hgd2' => $gde,
 	'hgd2v' => $gdv,
 	'dwrit' => fw('./data'),
+	'mcrypt' => function_exists('mcrypt_encrypt'),
 	'mwrit' => fw('./data/data.db'),
 	'opd' => ini_get('open_basedir'),
 	'phpv' => phpversion(),	
