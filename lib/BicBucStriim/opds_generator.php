@@ -109,6 +109,8 @@ class OpdsGenerator {
     $this->navigationCatalogLink($this->bbs_root.'/opds/', 'start');
     $this->navigationCatalogLink($this->bbs_root.'/opds/', 'up');
     $this->acquisitionCatalogLink($this->bbs_root.'/opds/titleslist/0/','first');
+    if ($page > 0)
+      $this->acquisitionCatalogLink($this->bbs_root.'/opds/titleslist/'.($page-1).'/','previous');
     if (!is_null($next))
       $this->acquisitionCatalogLink($this->bbs_root.'/opds/titleslist/'.$next.'/','next');
     $this->acquisitionCatalogLink($this->bbs_root.'/opds/titleslist/'.$last.'/', 'last');
@@ -423,23 +425,31 @@ class OpdsGenerator {
    * @param  int      $next      number of the nextPage to show, or NULL
    * @param  int      $last      number of the last page
    * @param  string   $search    search terms
+   * @param  int      $total     total number of search results
+   * @param  int      $page_size number of entries per search page
    * @return XML stream          the search result feed
    */
-  function searchCatalog($of=NULL, $entries, $protected, $page, $next, $last, $search) {
+  function searchCatalog($of=NULL, $entries, $protected, $page, $next, $last, $search, $total, $page_size) {
     $this->openStream($of);
     $this->header('opds_by_search1', 
       'opds_by_search2',
-      '/opds/search/'.$page.':'.urlencode($search),
+      '/opds/searchlist/'.$page.':'.urlencode($search),
       ': '.$search);
-    $this->acquisitionCatalogLink($this->bbs_root.'/opds/search/'.$page.'/','self');
+    $this->acquisitionCatalogLink($this->bbs_root.'/opds/searchlist/'.$page.'/','self');
     $this->navigationCatalogLink($this->bbs_root.'/opds/', 'start');
     $this->navigationCatalogLink($this->bbs_root.'/opds/', 'up');
     
-    $this->acquisitionCatalogLink($this->bbs_root.'/opds/search/0/','first');
+    $this->acquisitionCatalogLink($this->bbs_root.'/opds/searchlist/0/','first');
+    if ($page > 0)
+      $this->acquisitionCatalogLink($this->bbs_root.'/opds/searchlist/'.($page-1).'/','previous');
     if (!is_null($next))
-      $this->acquisitionCatalogLink($this->bbs_root.'/opds/search/'.$next.'/','next');
-    $this->acquisitionCatalogLink($this->bbs_root.'/opds/search/'.$last.'/', 'last');
-    # the Query
+      $this->acquisitionCatalogLink($this->bbs_root.'/opds/searchlist/'.$next.'/','next');
+    $this->acquisitionCatalogLink($this->bbs_root.'/opds/searchlist/'.$last.'/', 'last');
+    # response elements    
+    $this->xmlw->writeElement('opensearch:totalResults', $total);
+    $this->xmlw->writeElement('opensearch:startIndex', $page*$page_size);
+    $this->xmlw->writeElement('opensearch:itemsPerPage', $page_size);
+    # the query
     $this->xmlw->startElement('Query');
         $this->xmlw->writeAttribute('role', 'request');
         $this->xmlw->writeAttribute('searchTerms', $search);

@@ -183,8 +183,6 @@ $app->get('/titles/:id/file/:file', 'htmlCheckConfig', 'book');
 $app->get('/titles/:id/thumbnail/', 'htmlCheckConfig', 'thumbnail');
 $app->get('/titleslist/:id/', 'htmlCheckConfig', 'titlesSlice');
 $app->get('/opds/', 'opdsCheckConfig', 'opdsRoot');
-$app->get('/opds/opensearch.xml', 'opdsCheckConfig', 'opdsSearchDescriptor');
-$app->get('/opds/search/:id/', 'opdsCheckConfig', 'opdsBySearch');
 $app->get('/opds/newest/', 'opdsCheckConfig', 'opdsNewest');
 $app->get('/opds/titleslist/:id/', 'opdsCheckConfig', 'opdsByTitle');
 $app->get('/opds/authorslist/', 'opdsCheckConfig', 'opdsByAuthorInitial');
@@ -196,6 +194,8 @@ $app->get('/opds/tagslist/:initial/:id/', 'opdsCheckConfig', 'opdsByTag');
 $app->get('/opds/serieslist/', 'opdsCheckConfig', 'opdsBySeriesInitial');
 $app->get('/opds/serieslist/:initial/', 'opdsCheckConfig', 'opdsBySeriesNamesForInitial');
 $app->get('/opds/serieslist/:initial/:id/', 'opdsCheckConfig', 'opdsBySeries');
+$app->get('/opds/opensearch.xml', 'opdsCheckConfig', 'opdsSearchDescriptor');
+$app->get('/opds/searchlist/:id/', 'opdsCheckConfig', 'opdsBySearch');
 $app->run();
 
 /*********************************************************************
@@ -1155,7 +1155,7 @@ function opdsSearchDescriptor() {
 		$globalSettings['l10n']);
 	$app->response()->status(200);
 	$app->response()->header('Content-type',OpdsGenerator::OPENSEARCH_MIME);
-	$gen->searchDescriptor('php://output', '/opds/search/0/');
+	$gen->searchDescriptor('php://output', '/opds/searchlist/0/');
 	$app->getLog()->debug('opdsSearchDescriptor ended');				
 }
 
@@ -1182,7 +1182,8 @@ function opdsBySearch($index=0) {
 	$app->response()->status(200);
 	$app->response()->header('Content-type',OpdsGenerator::OPDS_MIME_ACQ);
 	$gen->searchCatalog('php://output', $books, is_protected(NULL), 
-		$tl['page'], getNextSearchPage($tl), getLastSearchPage($tl), $search);
+		$tl['page'], getNextSearchPage($tl), getLastSearchPage($tl), $search, 
+		$tl['total'], $globalSettings[PAGE_SIZE]);
 	$app->getLog()->debug('opdsBySearch ended');			
 }
 

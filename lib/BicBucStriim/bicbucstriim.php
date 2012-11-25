@@ -246,7 +246,7 @@ class BicBucStriim {
 		if ($no_entries % $length > 0)
 			$no_pages += 1;
 		$entries = $this->find($class,$query);
-		return array('page'=>$index, 'pages'=>$no_pages, 'entries'=>$entries);
+		return array('page'=>$index, 'pages'=>$no_pages, 'entries'=>$entries, 'total' => $no_entries);
 	}
 
 	/**
