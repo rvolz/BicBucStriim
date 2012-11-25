@@ -184,7 +184,7 @@ $app->get('/titles/:id/thumbnail/', 'htmlCheckConfig', 'thumbnail');
 $app->get('/titleslist/:id/', 'htmlCheckConfig', 'titlesSlice');
 $app->get('/opds/', 'opdsCheckConfig', 'opdsRoot');
 $app->get('/opds/opensearch.xml', 'opdsCheckConfig', 'opdsSearchDescriptor');
-$app->get('/opds/search/', 'opdsCheckConfig', 'opdsSearch');
+$app->get('/opds/search/:id/', 'opdsCheckConfig', 'opdsBySearch');
 $app->get('/opds/newest/', 'opdsCheckConfig', 'opdsNewest');
 $app->get('/opds/titleslist/:id/', 'opdsCheckConfig', 'opdsByTitle');
 $app->get('/opds/authorslist/', 'opdsCheckConfig', 'opdsByAuthorInitial');
@@ -947,10 +947,6 @@ function opdsByTitle($index=0) {
 	$app->getLog()->debug('opdsByTitle: books found');			
 	$books = $bbs->titleDetailsFilteredOpds($tl['entries']);
 	$app->getLog()->debug('opdsByTitle: details found');
-	if ($tl['page'] < $tl['pages']-1)
-		$nextPage = $tl['page']+1;
-	else
-		$nextPage = NULL;
 	$gen = new OpdsGenerator($app->request()->getRootUri(), $appversion, 
 		$bbs->calibre_dir,
 		date(DATE_ATOM,$bbs->calibre_last_modified),
@@ -958,7 +954,7 @@ function opdsByTitle($index=0) {
 	$app->response()->status(200);
 	$app->response()->header('Content-type',OpdsGenerator::OPDS_MIME_ACQ);
 	$gen->titlesCatalog('php://output', $books, is_protected(NULL), 
-		$tl['page'], $nextPage, $tl['pages']-1);
+		$tl['page'], getNextSearchPage($tl), getLastSearchPage($tl));
 	$app->getLog()->debug('opdsByTitle ended');			
 }
 
@@ -1159,12 +1155,35 @@ function opdsSearchDescriptor() {
 		$globalSettings['l10n']);
 	$app->response()->status(200);
 	$app->response()->header('Content-type',OpdsGenerator::OPENSEARCH_MIME);
-	$gen->searchDescriptor('php://output', 'search/');
+	$gen->searchDescriptor('php://output', '/opds/search/0/');
 	$app->getLog()->debug('opdsSearchDescriptor ended');				
 }
 
-function opdsSearch() {
+function opdsBySearch($index=0) {
+	global $app, $appversion, $bbs, $globalSettings;
 
+	$app->getLog()->debug('opdsBySearch started, showing page '.$index);			
+	$search = $app->request()->get('search');
+	if (!isset($search)) {
+		$app->getLog()->error('opdsBySearch called without search criteria, page '.$index);			
+		// 400 Bad request
+		$app->response()->status(400);
+		return;
+	}	
+	$app->getLog()->debug('opdsBySearch search '.$search);			
+	$tl = $bbs->titlesSlice($index,$globalSettings[PAGE_SIZE],$search);	
+	$app->getLog()->debug('opdsBySearch: books found');			
+	$books = $bbs->titleDetailsFilteredOpds($tl['entries']);
+	$app->getLog()->debug('opdsBySearch: details found');	
+	$gen = new OpdsGenerator($app->request()->getRootUri(), $appversion, 
+		$bbs->calibre_dir,
+		date(DATE_ATOM,$bbs->calibre_last_modified),
+		$globalSettings['l10n']);
+	$app->response()->status(200);
+	$app->response()->header('Content-type',OpdsGenerator::OPDS_MIME_ACQ);
+	$gen->searchCatalog('php://output', $books, is_protected(NULL), 
+		$tl['page'], getNextSearchPage($tl), getLastSearchPage($tl), $search);
+	$app->getLog()->debug('opdsBySearch ended');			
 }
 
 /*********************************************************************
@@ -1268,6 +1287,31 @@ function getMessageString($id) {
 	return $msg;
 }
 
+/**
+ * Calcluate the next page number for search results
+ * @param  array $tl search result
+ * @return int       page index or NULL
+ */
+function getNextSearchPage($tl) {
+	if ($tl['page'] < $tl['pages']-1)
+		$nextPage = $tl['page']+1;
+	else
+		$nextPage = NULL;
+	return $nextPage;
+}
+
+/**
+ * Caluclate the last page numberfor search results
+ * @param  array $tl 	search result
+ * @return int     		page index
+ */
+function getLastSearchPage($tl) {
+	if ($tl['pages'] == 0)
+		$lastPage = 0;
+	else
+		$lastPage = $tl['pages']-1;	
+	return $lastPage;
+}
 
 /**
  * Get the value of the cookie

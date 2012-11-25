@@ -60,6 +60,10 @@ $langde = array('admin' => 'Konfiguration',
 	'opds_by_author6' => 'Alle Bücher von ',
 	'opds_by_newest1' => 'Die neuesten',
 	'opds_by_newest2' => 'Die neuesten Titel',
+	#***
+	'opds_by_search1' => 'Nach Suche',
+	'opds_by_search2' => 'Ergebnisse der Suche',
+	#***
 	'opds_by_series1' => 'Nach Buchreihe',
 	'opds_by_series2' => 'Reihen und ihre Titel',
 	'opds_by_series3' => 'Reihen nach Initialen',
@@ -158,6 +162,10 @@ $langen = array('admin' => 'Configuration',
 	'opds_by_author6' => 'All books by ',
 	'opds_by_newest1' => 'By Newest',
 	'opds_by_newest2' => 'The 30 most recent titles',
+	#***
+	'opds_by_search1' => 'By Search',
+	'opds_by_search2' => 'Search results',
+	#***
 	'opds_by_series1' => 'By Series',
 	'opds_by_series2' => 'Series and their titles',
 	'opds_by_series3' => 'Series by their initials',

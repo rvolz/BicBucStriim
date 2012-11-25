@@ -91,7 +91,7 @@ class OpdsGenerator {
   }
 
   /**
-   * Generate an paginated acquisition catalog for the all books
+   * Generate a paginated acquisition catalog for the all books
    * @param  string   $of=NULL   output URI or NULL for string output
    * @param  array    $entries   an array of Book
    * @param  boolean  $protected true = we need password authentication before a download
@@ -111,7 +111,7 @@ class OpdsGenerator {
     $this->acquisitionCatalogLink($this->bbs_root.'/opds/titleslist/0/','first');
     if (!is_null($next))
       $this->acquisitionCatalogLink($this->bbs_root.'/opds/titleslist/'.$next.'/','next');
-    $this->navigationCatalogLink($this->bbs_root.'/opds/titleslist/'.$last.'/', 'last');
+    $this->acquisitionCatalogLink($this->bbs_root.'/opds/titleslist/'.$last.'/', 'last');
     # Content
     foreach($entries as $entry)
       $this->partialAcquisitionEntry($entry, $protected);
@@ -359,14 +359,90 @@ class OpdsGenerator {
     return $this->closeStream($of);
   }
 
+  /**
+   * Create an OpenSearch descriptor
+   * @param  string $of=NULL    output URI or NULL for string output
+   * @param  sringg $fragment   path fragment for search operation
+   * @return XML stream         the OpenSearch descriptor
+   */
   function searchDescriptor($of=NULL, $fragment) {
-    $url= '/serieslist/'.$initial.'/'.$series->id.'/';
     $this->openStream($of);
-    $this->xmlw->startElement('Url');
-    $this->xmlw->writeAttribute('type', OPDS_MIME_CATALOG);
-    $this->xmlw->writeAttribute('template', $this->bbs_root.$url.'?{searchTerms}');
-    $this->xmlw->endElement();    
+    $this->xmlw->startDocument( '1.0' , 'UTF-8' );
+    $this->xmlw->startElement('OpenSearchDescription');
+      $this->xmlw->writeAttribute('xmlns','http://a9.com/-/spec/opensearch/1.1/');
+      $this->xmlw->writeElement('ShortName','BicBucStriim');
+      $this->xmlw->writeElement('Description','Search for books on BicBucStriim');
+      $this->xmlw->writeElement('InputEncoding','UTF-8');
+      $this->xmlw->writeElement('OutputEncoding','UTF-8');
+      // TODO Image Element
+      
+      // TODO HTML?
+      // $this->xmlw->startElement('Url');
+      //   $this->xmlw->writeAttribute('type', 'text/html');
+      //   $this->xmlw->writeAttribute('template', $this->bbs_root.$fragment.'?search={searchTerms}');
+      // $this->xmlw->endElement();          
+      $this->xmlw->startElement('Url');
+        $this->xmlw->writeAttribute('type', 'application/atom+xml');
+        $this->xmlw->writeAttribute('template', $this->bbs_root.$fragment.'?search={searchTerms}');
+      $this->xmlw->endElement();    
+      $this->xmlw->startElement('Url');
+        $this->xmlw->writeAttribute('type', self::OPDS_MIME_CATALOG);
+        $this->xmlw->writeAttribute('template', $this->bbs_root.$fragment.'?search={searchTerms}');
+      $this->xmlw->endElement();    
+
+      // TODO Tags?
+      // $this->xmlw->startElement('Url');
+      //   $this->xmlw->writeAttribute('type', 'x-suggestions+xml');
+      //   $this->xmlw->writeAttribute('rel', 'suggestions');
+      //   $this->xmlw->writeAttribute('template', $this->bbs_root.$fragment.'?search={searchTerms}');
+      // $this->xmlw->endElement();    
+      // 
+      // TODO Tags?
+      // $this->xmlw->startElement('Url');
+      //   $this->xmlw->writeAttribute('type', 'application/x-suggestions+json');
+      //   $this->xmlw->writeAttribute('rel', 'suggestions');
+      //   $this->xmlw->writeAttribute('template', $this->bbs_root.$fragment.'?search={searchTerms}');
+      // $this->xmlw->endElement();    
+      
+      $this->xmlw->startElement('Query');
+        $this->xmlw->writeAttribute('role', 'example');
+        $this->xmlw->writeAttribute('searchTerms', 'example');
+      $this->xmlw->endElement();    
+    $this->xmlw->endElement(); 
+    $this->xmlw->endDocument();   
     return $this->closeStream($of); 
+  }
+
+  /**
+   * Generate a paginated acquisition catalog for books as search results
+   * @param  string   $of=NULL   output URI or NULL for string output
+   * @param  array    $entries   an array of Book
+   * @param  boolean  $protected true = we need password authentication before a download
+   * @param  int      $page      number of page to show, minimum 0
+   * @param  int      $next      number of the nextPage to show, or NULL
+   * @param  int      $last      number of the last page
+   * @param  string   $search    search terms
+   * @return XML stream          the search result feed
+   */
+  function searchCatalog($of=NULL, $entries, $protected, $page, $next, $last, $search) {
+    $this->openStream($of);
+    $this->header('opds_by_search1', 
+      'opds_by_search2',
+      '/opds/search/'.$page.':'.urlencode($search),
+      ': '.$search);
+    # TODO Search link?
+    $this->acquisitionCatalogLink($this->bbs_root.'/opds/search/'.$page.'/','self');
+    $this->navigationCatalogLink($this->bbs_root.'/opds/', 'start');
+    $this->navigationCatalogLink($this->bbs_root.'/opds/', 'up');
+    $this->acquisitionCatalogLink($this->bbs_root.'/opds/search/0/','first');
+    if (!is_null($next))
+      $this->acquisitionCatalogLink($this->bbs_root.'/opds/search/'.$next.'/','next');
+    $this->acquisitionCatalogLink($this->bbs_root.'/opds/search/'.$last.'/', 'last');
+    # Content
+    foreach($entries as $entry)
+      $this->partialAcquisitionEntry($entry, $protected);
+    $this->footer();
+    return $this->closeStream($of);
   }
 
 ############ Common stuff ############
@@ -432,7 +508,7 @@ class OpdsGenerator {
    * @param  string $title_ext optional extionsion for title, not translated
    */
   function header($title, $subtitle,$id, $title_ext='') {
-    $this->xmlw->startDocument('1.0','UTF-8');
+    $this->xmlw->startDocument('1.0', 'UTF-8');
     $this->xmlw->startElement('feed');
     $this->xmlw->writeAttribute('xmlns:dc', 'http://purl.org/dc/terms/'); 
     $this->xmlw->writeAttribute('xmlns:opds', 'http://opds-spec.org/2010/catalog'); 
@@ -446,7 +522,7 @@ class OpdsGenerator {
     $this->xmlw->startElement('author');
     $this->xmlw->writeElement('name', 'BicBucStriim '.$this->bbs_version);
     # TODO: textmulch url for feed uri
-    $this->xmlw->writeElement('uri', 'http://rvolz.gihub.com/BicBucStriim');
+    $this->xmlw->writeElement('uri', 'http://rvolz.github.com/BicBucStriim');
     $this->xmlw->endElement();
     #$this->xmlw->writeElement('id', $this->bbs_root.$id);
     $this->xmlw->writeElement('id', 'urn:bbs:calibre:'.$id);
@@ -560,6 +636,7 @@ class OpdsGenerator {
     else  
       $this->xmlw->openURI($of);
     $this->xmlw->setIndent(true);
+    
   }
 
   /**
