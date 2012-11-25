@@ -52,7 +52,7 @@ class OpdsGenerator {
       '/opds/');
     $this->navigationCatalogLink($this->bbs_root.'/opds/', 'self');
     $this->navigationCatalogLink($this->bbs_root.'/opds/', 'start');
-    $this->link($this->bbs_root.'/opds/opensearch.xml', 'application/opensearchdescription+xml', 'search', 'Search in BicBucStriim');
+    $this->searchLink();
     # Subcatalogs
     $this->navigationEntry($this->l10n->message('opds_by_newest1'), '/opds/newest/', $this->l10n->message('opds_by_newest2'), '/newest/', 
       self::OPDS_MIME_ACQ, 'http://opds-spec.org/sort/new');
@@ -371,9 +371,10 @@ class OpdsGenerator {
     $this->xmlw->startElement('OpenSearchDescription');
       $this->xmlw->writeAttribute('xmlns','http://a9.com/-/spec/opensearch/1.1/');
       $this->xmlw->writeElement('ShortName','BicBucStriim');
-      $this->xmlw->writeElement('Description','Search for books on BicBucStriim');
+      $this->xmlw->writeElement('Description',$this->l10n->message('opds_by_search3'));
       $this->xmlw->writeElement('InputEncoding','UTF-8');
       $this->xmlw->writeElement('OutputEncoding','UTF-8');
+      $this->xmlw->writeElement('Language',$this->l10n->user_lang);
       // TODO Image Element
       
       // TODO HTML?
@@ -430,14 +431,20 @@ class OpdsGenerator {
       'opds_by_search2',
       '/opds/search/'.$page.':'.urlencode($search),
       ': '.$search);
-    # TODO Search link?
     $this->acquisitionCatalogLink($this->bbs_root.'/opds/search/'.$page.'/','self');
     $this->navigationCatalogLink($this->bbs_root.'/opds/', 'start');
     $this->navigationCatalogLink($this->bbs_root.'/opds/', 'up');
+    
     $this->acquisitionCatalogLink($this->bbs_root.'/opds/search/0/','first');
     if (!is_null($next))
       $this->acquisitionCatalogLink($this->bbs_root.'/opds/search/'.$next.'/','next');
     $this->acquisitionCatalogLink($this->bbs_root.'/opds/search/'.$last.'/', 'last');
+    # the Query
+    $this->xmlw->startElement('Query');
+        $this->xmlw->writeAttribute('role', 'request');
+        $this->xmlw->writeAttribute('searchTerms', $search);
+        $this->xmlw->writeAttribute('startPage', 0);
+      $this->xmlw->endElement();    
     # Content
     foreach($entries as $entry)
       $this->partialAcquisitionEntry($entry, $protected);
@@ -623,6 +630,15 @@ class OpdsGenerator {
    */
   function indirectDownloadLink($href, $type) {
     $this->link($href, 'text/html', 'http://opds-spec.org/acquisition',NULL,$type);
+  }
+
+  /**
+   * Link to the OpenSearch document
+   * @return xml    XML link to OpenSearch
+   */
+  function searchLink() {
+    $this->link($this->bbs_root.'/opds/opensearch.xml', 'application/opensearchdescription+xml', 
+      'search', $this->l10n->message('opds_by_search3'));
   }
 
   /**
