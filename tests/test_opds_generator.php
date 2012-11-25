@@ -71,6 +71,15 @@ class TestOfOpdsGenerator extends UnitTestCase {
 		$this->assertTrue($this->opdsValidate($feed,'1.1'));
 	}
 
+	function testRootCatalogOpenSearch() {
+		$xml = $this->gen->rootCatalog();
+		$feed = new SimpleXMLElement($xml);
+		$this->assertEqual(3,count($feed->link));
+		$oslnk = $feed->link[2];
+		$this->assertEqual(OpdsGenerator::OPENSEARCH_MIME,(string)$oslnk['type']);
+		$this->assertTrue(strpos((string)$oslnk['href'],'opensearch.xml')>0);
+	}
+
 	function testPartialAcquisitionEntry() {
 		$expected = '<entry>
  <id>urn:bicbucstriim:/bbs/titles/2</id>

@@ -183,6 +183,8 @@ $app->get('/titles/:id/file/:file', 'htmlCheckConfig', 'book');
 $app->get('/titles/:id/thumbnail/', 'htmlCheckConfig', 'thumbnail');
 $app->get('/titleslist/:id/', 'htmlCheckConfig', 'titlesSlice');
 $app->get('/opds/', 'opdsCheckConfig', 'opdsRoot');
+$app->get('/opds/opensearch.xml', 'opdsCheckConfig', 'opdsSearchDescriptor');
+$app->get('/opds/search/', 'opdsCheckConfig', 'opdsSearch');
 $app->get('/opds/newest/', 'opdsCheckConfig', 'opdsNewest');
 $app->get('/opds/titleslist/:id/', 'opdsCheckConfig', 'opdsByTitle');
 $app->get('/opds/authorslist/', 'opdsCheckConfig', 'opdsByAuthorInitial');
@@ -1143,6 +1145,27 @@ function opdsBySeries($initial,$id) {
 	$app->getLog()->debug('opdsBySeries ended');				
 }
 
+/**
+ * Return the 
+ * @return [type] [description]
+ */
+function opdsSearchDescriptor() {
+	global $app, $appversion, $bbs, $globalSettings;	
+
+	$app->getLog()->debug('opdsSearchDescriptor started');		
+	$gen = new OpdsGenerator($app->request()->getRootUri(), $appversion, 
+		$bbs->calibre_dir,
+		date(DATE_ATOM,$bbs->calibre_last_modified),
+		$globalSettings['l10n']);
+	$app->response()->status(200);
+	$app->response()->header('Content-type',OpdsGenerator::OPENSEARCH_MIME);
+	$gen->searchDescriptor('php://output', 'search/');
+	$app->getLog()->debug('opdsSearchDescriptor ended');				
+}
+
+function opdsSearch() {
+
+}
 
 /*********************************************************************
  * Utility and helper functions, private

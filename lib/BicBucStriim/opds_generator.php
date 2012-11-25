@@ -6,12 +6,16 @@ require_once 'l10n.php';
  */
 class OpdsGenerator {
 
+  # Common catalog
+  const OPDS_MIME_CATALOG = 'application/atom+xml;profile=opds-catalog';
   # Pure navigation feeds
   const OPDS_MIME_NAV = 'application/atom+xml;profile=opds-catalog;kind=navigation';
   # Feeds with acquisition links
   const OPDS_MIME_ACQ = 'application/atom+xml;profile=opds-catalog;kind=acquisition';
   # General format for a book details entry document
   const OPDS_MIME_ENTRY = 'application/atom+xml;type=entry;profile=opds-catalog';
+  # OpenSearch 
+  const OPENSEARCH_MIME = 'application/opensearchdescription+xml';
 
   var $bbs_root;
   var $bbs_version;
@@ -46,10 +50,9 @@ class OpdsGenerator {
     $this->header('opds_root_title', 
       'opds_root_subtitle',
       '/opds/');
-    # TODO Search link?
     $this->navigationCatalogLink($this->bbs_root.'/opds/', 'self');
     $this->navigationCatalogLink($this->bbs_root.'/opds/', 'start');
-    #$this->link($this->bbs_root.'/opds/opensearch.xml', 'application/opensearchdescription+xml', 'search', 'Search in BicBucStriim');
+    $this->link($this->bbs_root.'/opds/opensearch.xml', 'application/opensearchdescription+xml', 'search', 'Search in BicBucStriim');
     # Subcatalogs
     $this->navigationEntry($this->l10n->message('opds_by_newest1'), '/opds/newest/', $this->l10n->message('opds_by_newest2'), '/newest/', 
       self::OPDS_MIME_ACQ, 'http://opds-spec.org/sort/new');
@@ -356,6 +359,15 @@ class OpdsGenerator {
     return $this->closeStream($of);
   }
 
+  function searchDescriptor($of=NULL, $fragment) {
+    $url= '/serieslist/'.$initial.'/'.$series->id.'/';
+    $this->openStream($of);
+    $this->xmlw->startElement('Url');
+    $this->xmlw->writeAttribute('type', OPDS_MIME_CATALOG);
+    $this->xmlw->writeAttribute('template', $this->bbs_root.$url.'?{searchTerms}');
+    $this->xmlw->endElement();    
+    return $this->closeStream($of); 
+  }
 
 ############ Common stuff ############
   /**
