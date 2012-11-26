@@ -6,6 +6,8 @@ require_once 'l10n.php';
  */
 class OpdsGenerator {
 
+  # ATOM catalog
+  const ATOM_CATALOG = 'application/atom+xml';
   # Common catalog
   const OPDS_MIME_CATALOG = 'application/atom+xml;profile=opds-catalog';
   # Pure navigation feeds
@@ -369,7 +371,7 @@ class OpdsGenerator {
    */
   function searchDescriptor($of=NULL, $fragment) {
     $this->openStream($of);
-    $this->xmlw->startDocument( '1.0' , 'UTF-8' );
+    $this->xmlw->startDocument('1.0', 'UTF-8');
     $this->xmlw->startElement('OpenSearchDescription');
       $this->xmlw->writeAttribute('xmlns','http://a9.com/-/spec/opensearch/1.1/');
       $this->xmlw->writeElement('ShortName','BicBucStriim');
@@ -385,7 +387,7 @@ class OpdsGenerator {
       //   $this->xmlw->writeAttribute('template', $this->bbs_root.$fragment.'?search={searchTerms}');
       // $this->xmlw->endElement();          
       $this->xmlw->startElement('Url');
-        $this->xmlw->writeAttribute('type', 'application/atom+xml');
+        $this->xmlw->writeAttribute('type', self::ATOM_CATALOG);
         $this->xmlw->writeAttribute('template', $this->bbs_root.$fragment.'?search={searchTerms}');
       $this->xmlw->endElement();    
       $this->xmlw->startElement('Url');

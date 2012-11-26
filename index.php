@@ -1142,8 +1142,7 @@ function opdsBySeries($initial,$id) {
 }
 
 /**
- * Return the 
- * @return [type] [description]
+ * Format and send the OpenSearch descriptor document
  */
 function opdsSearchDescriptor() {
 	global $app, $appversion, $bbs, $globalSettings;	
@@ -1159,6 +1158,12 @@ function opdsSearchDescriptor() {
 	$app->getLog()->debug('opdsSearchDescriptor ended');				
 }
 
+/**
+ * Create and send the catalog page for the current search criteria. 
+ * The search criteria is a GET paramter string.
+ * 
+ * @param  integer $index index of page in search
+ */
 function opdsBySearch($index=0) {
 	global $app, $appversion, $bbs, $globalSettings;
 
