@@ -624,7 +624,16 @@ class BicBucStriim {
 			return Utilities::bookPath($this->calibre_dir,$book->path,$file);
 	}
 
-	
+	/**
+	 * Return the formats for a book 
+	 * @param  int 		$bookid Calibre book id
+	 * @return array  				the formats for the book
+	 */
+	function titleGetFormats($bookid) {
+		return $this->find('Data', 'select * from data where book='.$bookid);
+	}
+
+
 	/**
 	 * Find a single series and return the details plus all books.
 	 * @param  int 		$id series id

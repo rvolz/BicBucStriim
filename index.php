@@ -302,10 +302,18 @@ function myNotFound() {
 function main() {
 	global $app, $globalSettings, $bbs;
 
+	$ts1 = time();
 	$books = $bbs->last30Books($globalSettings[PAGE_SIZE]);
+	$ts2 = time();
+	$formats = array();
+	foreach ($books as $book) {
+		$book->formats = $bbs->titleGetFormats($book->id);
+	}
+	$ts3 = time();
 	$app->render('index_last30.html',array(
 		'page' => mkPage(getMessageString('dl30'),1), 
 		'books' => $books));	
+	$app->getLog()->debug(sprintf("main: time getting books %u, time getting formats %u", $ts2-$ts1, $ts3-$ts2));	
 }
 
 /**
@@ -500,6 +508,8 @@ function titlesSlice($index=0) {
 		$tl = $bbs->titlesSlice($index,$globalSettings[PAGE_SIZE],$search);
 	} else
 		$tl = $bbs->titlesSlice($index,$globalSettings[PAGE_SIZE]);
+	foreach ($tl['entries'] as $book)
+		$book->formats = $bbs->titleGetFormats($book->id);
 	$app->render('titles.html',array(
 		'page' => mkPage(getMessageString('titles'),2), 
 		'url' => 'titleslist',
@@ -722,7 +732,8 @@ function authorDetailsSlice($id, $index=0) {
 		$app->getLog()->debug('no author '.$id);
 		$app->notFound();
 	}
-
+	foreach ($tl['entries'] as $book)
+		$book->formats = $bbs->titleGetFormats($book->id);
 	$app->render('author_detail.html',array(
 		'page' => mkPage(getMessageString('author_details')),
 		'url' => 'authors/'.$id,	
@@ -792,6 +803,8 @@ function seriesDetailsSlice ($id, $index=0) {
 		$app->getLog()->debug('no series '.$id);
 		$app->notFound();		
 	}
+	foreach ($tl['entries'] as $book)
+		$book->formats = $bbs->titleGetFormats($book->id);
 	$app->render('series_detail.html',array(
 		'page' => mkPage(getMessageString('series_details')),
     'url' => 'series/'.$id, 
@@ -853,6 +866,8 @@ function tagDetailsSlice ($id, $index=0) {
 		$app->getLog()->debug('no tag '.$id);
 		$app->notFound();		
 	}
+	foreach ($tl['entries'] as $book)
+		$book->formats = $bbs->titleGetFormats($book->id);
 	$app->render('tag_detail.html',array(
 		'page' => mkPage(getMessageString('tag_details')),
     'url' => 'tag/'.$id, 

@@ -8,13 +8,7 @@
 	</header>
 	<ul data-role="listview">
 		{% for book in books %}
-		<li>
-			<a href="{{page.rot}}/titles/{{book.id}}">
-				<img src="{{page.rot}}/titles/{{ book.id }}/thumbnail" />
-				<h3>{{ book.sort }} ({{ book.pubdate|date("Y") }})</h3>
-  			<p>{{book.author_sort}}</p>
-			</a>
-		</li>
+			{% include "title_entry.html" %}
 		{% endfor %}	
 	</ul>
 </section>
