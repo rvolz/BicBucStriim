@@ -105,6 +105,11 @@ $langde = array('admin' => 'Konfiguration',
 // English
 $langen = array('admin' => 'Configuration',
 	#***
+	'admin_check_version' => 'Check version',
+	'admin_check_version_legend' => 'Check for a new BicBucStriim version',
+	'admin_new_version' => 'New version %s is available, you have %s',
+	'admin_check_url' => 'Visit %s to download it',
+	'admin_no_new_version' => 'Your version %s is current',
 	'admin_invalid_page_size' => 'The reqeuested page size is invalid. Please choose a value between 1 and 100.',
 	#***
 	'admin_pw1' => 'Admin Password',

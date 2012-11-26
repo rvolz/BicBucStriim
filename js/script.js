@@ -46,4 +46,15 @@ $(document).on('pageinit', function() {
 		}
 	}
 
+	$('#admin_check_version').on('click', function(){
+		$.ajaxSetup({async:false});
+		//var root = $('.checkdl').data('proot');		
+		var jh = $.getJSON("version/")
+		.success(function(data) {
+			$('#flash').append(data.msg);
+		});		
+		$.ajaxSetup({async:true});
+		return false;
+	});
+
 });

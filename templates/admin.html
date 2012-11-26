@@ -6,7 +6,7 @@
 
 <div id="flash">
 	{% for message in messages %}
-		<p class="success">{{message}}</p></div>	
+		<p class="success">{{message}}</p>
 	{% endfor %}
 
 	{% for error in errors %}
@@ -35,6 +35,21 @@
 	<button type="submit">{{page.glob.langa.check_access}}</button>	
 </form>
 {% else %}
+<div data-role="collapsible" data-collapsed="true">
+<h2>{{ page.glob.langa.admin_check_version }}</h2>
+<div class="ui-grid-a">
+	<div class="ui-block-a">
+		<p>{{page.glob.langa.admin_check_version_legend}}</p>
+	</div>
+	<div class="ui-block-b">
+		<button id="admin_check_version" name="admin_check_version">
+			{{page.glob.langa.admin_check_version}}
+		</button>			
+	</div>
+	</div>
+</div>
+<div data-role="collapsible" data-collapsed="false">
+<h2>{{ page.glob.langa.admin }}</h2>
 <form action="{{page.rot}}/admin/" method="post" id="adminform">
 	<fieldset data-role="fieldcontain">
 		<label for="calibre_dir">{{page.glob.langa.calibre_dir1}}</label>
@@ -93,5 +108,6 @@
 	</fieldset>	
 	<button type="submit">{{page.glob.langa.save}}</button>	
 </form>
+</div>
 {% endif %}
 {% endblock %}

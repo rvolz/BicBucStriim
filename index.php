@@ -22,6 +22,9 @@ $fallbackLang = 'en';
 $appname = 'BicBucStriim';
 # App version
 $appversion = '0.9.4';
+# URL for version information
+#define('VERSION_URL', 'http://projekte.textmulch.de/bicbucstriim/version.json');
+define('VERSION_URL', 'file:///var/www/version.json');
 # Cookie name for global download protection
 define('GLOBAL_DL_COOKIE', 'glob_dl_access');
 # Cookie name for admin access
@@ -165,6 +168,7 @@ $app->get('/admin/', 'admin');
 $app->post('/admin/', 'admin_change_json');
 #$app->get('/admin/access/', 'admin_is_protected');
 $app->post('/admin/access/check/', 'admin_checkaccess');
+$app->get('/admin/version/', 'admin_check_version');
 $app->get('/admin/error/:id', 'admin_error');
 #$app->get('/authors/:id/', 'htmlCheckConfig', 'author');
 $app->get('/authors/:id/:page/', 'htmlCheckConfig', 'authorDetailsSlice');
@@ -478,6 +482,33 @@ function admin_checkaccess() {
 			'messages' => array(getMessageString('invalid_password')),
 			'isadmin' => false));
 	}
+}
+
+
+function admin_check_version() {
+	global $app, $globalSettings;	
+	$app->getLog()->debug("admin version-check started");
+	$contents = file_get_contents(VERSION_URL);	
+	$versionInfo = json_decode($contents);	
+	$versionAnswer = array();
+	if ($versionInfo->{'version'} > $globalSettings['version']) {
+		$versionAnswer['newVersion'] = 'true';
+		$msg1 = sprintf(getMessageString('admin_new_version'),$versionInfo->{'version'},$globalSettings['version']);
+		$msg2 = sprintf("<a href=\"%s\">%s</a>",$versionInfo->{'url'},$versionInfo->{'url'});
+		$msg3 = sprintf(getMessageString('admin_check_url'),$msg2);
+		$versionAnswer['msg'] = '<p class="success">'.$msg1.'. '.$msg3.'</p>'; 
+		$app->getLog()->debug("admin version-check new version ".$versionInfo->{'version'});
+	} else {
+		$versionAnswer['newVersion'] = 'false';
+		$msg1 = sprintf(getMessageString('admin_no_new_version'),$globalSettings['version']);
+		$versionAnswer['msg'] = '<p class="success">'.$msg1.'</p>'; 
+	}
+	$answer = json_encode($versionAnswer);
+	$app->getLog()->debug("admin version-check ended");
+	$app->response()->status(200);
+	$app->response()->header('Content-type','application/json');
+	$app->response()->header('Content-Length',strlen($answer));
+	$app->response()->body($answer);
 }
 
 # Check if the admin page is protected by a password
