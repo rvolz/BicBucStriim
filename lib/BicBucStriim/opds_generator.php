@@ -53,8 +53,7 @@ class OpdsGenerator {
       'opds_root_subtitle',
       '/opds/');
     $this->navigationCatalogLink($this->bbs_root.'/opds/', 'self');
-    $this->navigationCatalogLink($this->bbs_root.'/opds/', 'start');
-    $this->searchLink();
+    $this->navigationCatalogLink($this->bbs_root.'/opds/', 'start');    
     # Subcatalogs
     $this->navigationEntry($this->l10n->message('opds_by_newest1'), '/opds/newest/', $this->l10n->message('opds_by_newest2'), '/newest/', 
       self::OPDS_MIME_ACQ, 'http://opds-spec.org/sort/new');
@@ -81,7 +80,7 @@ class OpdsGenerator {
     $this->header('opds_by_newest1', 
       'opds_by_newest2',
       '/opds/newest/');
-    # TODO Search link?
+    $this->searchLink();
     $this->acquisitionCatalogLink($this->bbs_root.'/opds/newest/','self');
     $this->navigationCatalogLink($this->bbs_root.'/opds/', 'start');
     $this->navigationCatalogLink($this->bbs_root.'/opds/', 'up');
@@ -106,7 +105,7 @@ class OpdsGenerator {
     $this->header('opds_by_title1', 
       'opds_by_title2',
       '/opds/titles/');
-    # TODO Search link?
+    $this->searchLink();
     $this->acquisitionCatalogLink($this->bbs_root.'/opds/titleslist/'.$page.'/','self');
     $this->navigationCatalogLink($this->bbs_root.'/opds/', 'start');
     $this->navigationCatalogLink($this->bbs_root.'/opds/', 'up');
@@ -133,7 +132,6 @@ class OpdsGenerator {
     $this->header('opds_by_author1', 
       'opds_by_author3',
       '/opds/authorslist/');
-    # TODO Search link?
     $this->navigationCatalogLink($this->bbs_root.'/opds/authorslist/','self');
     $this->navigationCatalogLink($this->bbs_root.'/opds/', 'start');
     $this->navigationCatalogLink($this->bbs_root.'/opds/', 'up');
@@ -160,7 +158,6 @@ class OpdsGenerator {
       'opds_by_author5',
       $url,
       '"'.$initial.'"');
-    # TODO Search link?
     $this->navigationCatalogLink($this->bbs_root.$url,'self');
     $this->navigationCatalogLink($this->bbs_root.'/opds/', 'start');
     $this->navigationCatalogLink($this->bbs_root.'/opds/authorslist/', 'up');
@@ -213,7 +210,6 @@ class OpdsGenerator {
     $this->header('opds_by_tag1', 
       'opds_by_tag3',
       '/opds/tagslist/');
-    # TODO Search link?
     $this->navigationCatalogLink($this->bbs_root.'/opds/tagslist/','self');
     $this->navigationCatalogLink($this->bbs_root.'/opds/', 'start');
     $this->navigationCatalogLink($this->bbs_root.'/opds/', 'up');
@@ -240,7 +236,6 @@ class OpdsGenerator {
       'opds_by_tag5',
       $url,
       '"'.$initial.'"');
-    # TODO Search link?
     $this->navigationCatalogLink($this->bbs_root.$url,'self');
     $this->navigationCatalogLink($this->bbs_root.'/opds/', 'start');
     $this->navigationCatalogLink($this->bbs_root.'/opds/tagslist/', 'up');
@@ -293,7 +288,6 @@ class OpdsGenerator {
     $this->header('opds_by_series1', 
       'opds_by_series3',
       '/opds/serieslist/');
-    # TODO Search link?
     $this->navigationCatalogLink($this->bbs_root.'/opds/serieslist/','self');
     $this->navigationCatalogLink($this->bbs_root.'/opds/', 'start');
     $this->navigationCatalogLink($this->bbs_root.'/opds/', 'up');
@@ -320,7 +314,6 @@ class OpdsGenerator {
       'opds_by_series5',
       $url,
       '"'.$initial.'"');
-    # TODO Search link?
     $this->navigationCatalogLink($this->bbs_root.$url,'self');
     $this->navigationCatalogLink($this->bbs_root.'/opds/', 'start');
     $this->navigationCatalogLink($this->bbs_root.'/opds/serieslist/', 'up');
