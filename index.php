@@ -23,8 +23,7 @@ $appname = 'BicBucStriim';
 # App version
 $appversion = '0.9.4';
 # URL for version information
-#define('VERSION_URL', 'http://projekte.textmulch.de/bicbucstriim/version.json');
-define('VERSION_URL', 'file:///var/www/version.json');
+define('VERSION_URL', 'http://projekte.textmulch.de/bicbucstriim/version.json');
 # Cookie name for global download protection
 define('GLOBAL_DL_COOKIE', 'glob_dl_access');
 # Cookie name for admin access

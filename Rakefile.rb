@@ -9,6 +9,7 @@ require 'rake/packagetask'
 #require 'cucumber/rake/task'
 require 'fileutils'
 require 'sqlite3'
+require 'json'
 
 APPNAME = 'BicBucStriim'
 VERSION = '0.9.4'
@@ -158,6 +159,19 @@ end
 desc "Copy the current version to the NAS for testing"
 task :copy2nas => [:package2] do |t|
 	sh "rsync -rv pkg/#{APPNAME}-#{VERSION}/ /Volumes/web/bbs"
+end
+
+desc "Generate and copy version information file to server"
+task :install_version_info do |t|
+  version_info = {
+    :version => VERSION,
+    :url => 'http://github.com/rvolz/bicbucstriim/downloads'
+  }
+  File.open('version.json','w') do |f|
+    f.puts version_info.to_json
+  end
+  sh "scp version.json projekte.textmulch.de:~/tm_projekte/bicbucstriim/version.json"
+  rm 'version.json'
 end
 
 task :default => [:clobber, :package2]
