@@ -43,6 +43,8 @@ define('DB_VERSION', 'db_version');
 define('THUMB_GEN_CLIPPED', 'thumb_gen_clipped');
 # Page size for list views, no. of elemens
 define('PAGE_SIZE', 'page_size');
+# Displayed app name for page title
+define('DISPLAY_APP_NAME', 'display_app_name');
 
 # Init app and routes
 $app = new Slim(array(
@@ -116,6 +118,7 @@ $globalSettings['lang'] = getUserLang($allowedLangs, $fallbackLang);
 $globalSettings['l10n'] = new L10n($globalSettings['lang']);
 $globalSettings['langa'] = $globalSettings['l10n']->langa;
 $globalSettings['langb'] = $globalSettings['l10n']->langb;
+$globalSettings[DISPLAY_APP_NAME] = $appname;
 
 # Check if libmcrypt is available
 $globalSettings['crypt'] = function_exists('mcrypt_encrypt');
@@ -149,6 +152,9 @@ if ($bbs->dbOk()) {
 				break;				
 			case PAGE_SIZE:
 				$globalSettings[PAGE_SIZE] = $config->val;
+				break;								
+			case DISPLAY_APP_NAME:
+				$globalSettings[DISPLAY_APP_NAME] = $config->val;
 				break;								
 			default:
 				$app->getLog()->warn(join('',array('Unknown configuration, name: ',
@@ -488,20 +494,27 @@ function admin_checkaccess() {
 function admin_check_version() {
 	global $app, $globalSettings;	
 	$app->getLog()->debug("admin version-check started");
-	$contents = file_get_contents(VERSION_URL);	
-	$versionInfo = json_decode($contents);	
 	$versionAnswer = array();
-	if ($versionInfo->{'version'} > $globalSettings['version']) {
-		$versionAnswer['newVersion'] = 'true';
-		$msg1 = sprintf(getMessageString('admin_new_version'),$versionInfo->{'version'},$globalSettings['version']);
-		$msg2 = sprintf("<a href=\"%s\">%s</a>",$versionInfo->{'url'},$versionInfo->{'url'});
-		$msg3 = sprintf(getMessageString('admin_check_url'),$msg2);
-		$versionAnswer['msg'] = '<p class="success">'.$msg1.'. '.$msg3.'</p>'; 
-		$app->getLog()->debug("admin version-check new version ".$versionInfo->{'version'});
-	} else {
+	$contents = file_get_contents(VERSION_URL);	
+	if ($contents == false) {
 		$versionAnswer['newVersion'] = 'false';
-		$msg1 = sprintf(getMessageString('admin_no_new_version'),$globalSettings['version']);
+		$msg1 = sprintf(getMessageString('admin_new_version_error'),$globalSettings['version']);
 		$versionAnswer['msg'] = '<p class="success">'.$msg1.'</p>'; 
+	} else {
+		$versionInfo = json_decode($contents);	
+		
+		if ($versionInfo->{'version'} > $globalSettings['version']) {
+			$versionAnswer['newVersion'] = 'true';
+			$msg1 = sprintf(getMessageString('admin_new_version'),$versionInfo->{'version'},$globalSettings['version']);
+			$msg2 = sprintf("<a href=\"%s\">%s</a>",$versionInfo->{'url'},$versionInfo->{'url'});
+			$msg3 = sprintf(getMessageString('admin_check_url'),$msg2);
+			$versionAnswer['msg'] = '<p class="success">'.$msg1.'. '.$msg3.'</p>'; 
+			$app->getLog()->debug("admin version-check new version ".$versionInfo->{'version'});
+		} else {
+			$versionAnswer['newVersion'] = 'false';
+			$msg1 = sprintf(getMessageString('admin_no_new_version'),$globalSettings['version']);
+			$versionAnswer['msg'] = '<p class="success">'.$msg1.'</p>'; 
+		}		
 	}
 	$answer = json_encode($versionAnswer);
 	$app->getLog()->debug("admin version-check ended");
@@ -1279,9 +1292,9 @@ function mkPage($subtitle='', $menu=0, $dialog=false) {
 	global $app, $globalSettings;
 
 	if ($subtitle == '') 
-		$title = $globalSettings['appname'];
+		$title = $globalSettings[DISPLAY_APP_NAME];
 	else
-		$title = $globalSettings['appname'].$globalSettings['sep'].$subtitle;
+		$title = $globalSettings[DISPLAY_APP_NAME].$globalSettings['sep'].$subtitle;
 	$rot = $app->request()->getRootUri();
 	$page = array('title' => $title, 
 		'rot' => $rot,

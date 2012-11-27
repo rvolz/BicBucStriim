@@ -3,8 +3,14 @@
 
 // German
 $langde = array('admin' => 'Konfiguration',
-	#***
-	'admin_invalid_page_size' => 'Die eingestellte Seitengröße war ungültig. Sie muss zwischen 1 und 100 liegen.',
+	#---
+	'admin_check_version' => 'Auf neue Version prüfen',
+	'admin_check_version_legend' => 'Prüfen, ob mittlerweile eine neue Version von BicBucStriim vorliegt.',
+	'admin_check_url' => 'Gehen Sie zu %s, um die neue Version herunter zu laden',
+	'admin_invalid_page_size' => 'Die eingestellte Seitengröße war ungültig. Sie muss zwischen 1 und 100 liegen.',	
+	'admin_new_version' => 'Die neue Version %s ist verfügbar. Die ist Version %s',
+	'admin_new_version_error' => 'Versionsinformationen konnten nicht geladen werden. Bitte prüfen Sie die manuell.',
+	'admin_no_new_version' => 'Die Version %s ist aktuell',
 	#***
 	'admin_pw1' => 'Admin Passwort',
 	'admin_pw2' => 'Admin Passwort',
@@ -26,6 +32,10 @@ $langde = array('admin' => 'Konfiguration',
 	'check_access' => 'Freischalten',
 	'check_access_info' => 'Diese Buch ist passwortgeschützt. Bitte freischalten, um es herunter zu laden.',
 	'comment' => 'Beschreibung',
+	#---
+	'display_app_name' => 'Alternativer Titel',
+	'display_app_name_expl' => 'Wenn die Anwendung einen aussagekräftigeren Namen anzeigen soll. Wird im Seitentitel angezeigt.',
+	#***	
 	'dl30' => 'Die neuesten',
 	'download' => 'Herunterladen',
 	'error' => 'Fehler',
@@ -45,7 +55,7 @@ $langde = array('admin' => 'Konfiguration',
 	'no_config' => 'config.php nicht gefunden oder fehlerhaft. Bitte kopieren Sie config.php.template nach config.php und nehmen Sie dort ihre Einstellungen vor.',
 	'not_found1' => 'Nicht gefunden!',
 	'not_found2' => 'Die angeforderte Ressource konnte nicht gefunden werden. Dies sollte eigentlich nicht passieren. Bitte prüfen Sie, ob ihre Calibre-Datenbank defekt ist.',
-	#***
+	#---
  	'opds_authors' => 'Autoren: ',
 	'opds_books' => 'Bücher: ',
 	'opds_series' => 'Reihen: ',
@@ -104,13 +114,14 @@ $langde = array('admin' => 'Konfiguration',
 
 // English
 $langen = array('admin' => 'Configuration',
-	#***
+	#---
+	'admin_check_url' => 'Visit %s to download it',
 	'admin_check_version' => 'Check version',
 	'admin_check_version_legend' => 'Check for a new BicBucStriim version',
+	'admin_invalid_page_size' => 'The reqeuested page size is invalid. Please choose a value between 1 and 100.',	
 	'admin_new_version' => 'New version %s is available, you have %s',
-	'admin_check_url' => 'Visit %s to download it',
+	'admin_new_version_error' => 'Unable to load new version information. Please check manually.',
 	'admin_no_new_version' => 'Your version %s is current',
-	'admin_invalid_page_size' => 'The reqeuested page size is invalid. Please choose a value between 1 and 100.',
 	#***
 	'admin_pw1' => 'Admin Password',
 	'admin_pw2' => 'Admin Password',
@@ -132,6 +143,10 @@ $langen = array('admin' => 'Configuration',
 	'check_access' => 'Submit Password',
 	'check_access_info' => 'This book is protected. Please enter your password to enable the book download.',
 	'comment' => 'Description',
+	#---
+	'display_app_name' => 'Alternative page title',
+	'display_app_name_expl' => 'In case you would like to give your Calibre library a more descriptive name. Will be displayed in page titles.',
+	#***	
 	'dl30' => 'Most recent',
 	'download' => 'Download',
 	'error' => 'Error',
@@ -151,7 +166,7 @@ $langen = array('admin' => 'Configuration',
 	'no_config' => 'config.php not found or in bad shape. Please copy config.php.template to config.php and make your configuration changes there.',
 	'not_found1' => 'Not found!',
 	'not_found2' => 'The requested ressource is not available. This should not happen. Please check your Calibre library for defects.',
-	#***
+	#---
 	'opds_authors' => 'Authors: ',
 	'opds_books' => 'Books: ',
 	'opds_series' => 'Series: ',

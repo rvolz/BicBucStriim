@@ -1,6 +1,7 @@
 2012-12-XX Version 1.0.0
 
 * changed: title entries now show available formats
+* new: app title is now configurable
 * new: title search for OPDS
 * new: installation check page, installcheck.php
 * new: dutch translation

@@ -44,6 +44,7 @@ task :package2 do |t|
     "glob_dl_password" => "7094e7dc2feb759758884333c2f4a6bdc9a16bb2",
     "thumb_gen_clipped" => "1",
     "page_size" => "30",
+    "display_app_name" => "BicBucStriim",
   }.each do |pair|
     db.execute "insert into configs values ( ?, ? )", pair
   end
