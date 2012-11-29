@@ -71,14 +71,7 @@ class TestOfOpdsGenerator extends UnitTestCase {
 		$this->assertTrue($this->opdsValidate($feed,'1.1'));
 	}
 
-	function testRootCatalogOpenSearch() {
-		$xml = $this->gen->rootCatalog();
-		$feed = new SimpleXMLElement($xml);
-		$this->assertEqual(3,count($feed->link));
-		$oslnk = $feed->link[2];
-		$this->assertEqual(OpdsGenerator::OPENSEARCH_MIME,(string)$oslnk['type']);
-		$this->assertTrue(strpos((string)$oslnk['href'],'opensearch.xml')>0);
-	}
+	
 
 	function testPartialAcquisitionEntry() {
 		$expected = '<entry>
@@ -153,6 +146,19 @@ function testPartialAcquisitionEntryWithProtection() {
 		$this->assertTrue($this->opdsValidate($feed,'1.0'));
 		$this->assertTrue($this->opdsValidate($feed,'1.1'));
 	}
+
+	function testTitlesCatalogOpenSearch() {
+		$tl = $this->bbs->titlesSlice(0,2);
+		$books = $this->bbs->titleDetailsFilteredOpds($tl['entries']);		
+		$xml = $this->gen->titlesCatalog(NULL,$books,false, 
+			$tl['page'],$tl['page']+1,$tl['pages']-1);
+		$feed = new SimpleXMLElement($xml);
+		$this->assertEqual(7,count($feed->link));
+		$oslnk = $feed->link[0];
+		$this->assertEqual(OpdsGenerator::OPENSEARCH_MIME,(string)$oslnk['type']);
+		$this->assertTrue(strpos((string)$oslnk['href'],'opensearch.xml')>0);
+	}
+
 
 	function testAuthorsInitialCatalogValidation() {
 		$feed = self::DATA.'/feed.xml';
