@@ -3,10 +3,10 @@ When /^I click on menu item (.+)$/ do |menu|
 end
 
 Then /^the app switches to the home view$/ do
-  page.should have_content 'Most recent 30'
+  page.should have_content 'Most recent'
 end
 
-Then /^the menu item (.+) is active$/ do
+Then /^the menu item (.+) is active$/ do |arg1|
   pending # express the regexp above with the code you wish you had
 end
 

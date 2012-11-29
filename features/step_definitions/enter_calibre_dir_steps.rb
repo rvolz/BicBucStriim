@@ -26,5 +26,5 @@ end
 
 And /^I can navigate to the home page$/ do
   click_link 'Home'
-  page.should have_content 'Most recent 30'
+  page.should have_content 'Most recent'
 end
