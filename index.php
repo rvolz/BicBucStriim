@@ -22,6 +22,9 @@ $fallbackLang = 'en';
 $appname = 'BicBucStriim';
 # App version
 $appversion = '0.9.4';
+# Current DB schema version
+define('DB_SCHEMA_VERSION', '2');
+
 # URL for version information
 define('VERSION_URL', 'http://projekte.textmulch.de/bicbucstriim/version.json');
 # Cookie name for global download protection
@@ -117,6 +120,14 @@ $globalSettings['lang'] = getUserLang($allowedLangs, $fallbackLang);
 $globalSettings['l10n'] = new L10n($globalSettings['lang']);
 $globalSettings['langa'] = $globalSettings['l10n']->langa;
 $globalSettings['langb'] = $globalSettings['l10n']->langb;
+# Init admin settings with std values, for upgrades or db errors
+$globalSettings[ADMIN_PW] = '';
+$globalSettings[CALIBRE_DIR] = '';
+$globalSettings[DB_VERSION] = DB_SCHEMA_VERSION;
+$globalSettings[GLOB_DL_PASSWORD] = '7094e7dc2feb759758884333c2f4a6bdc9a16bb2';
+$globalSettings[GLOB_DL_CHOICE] = 0;
+$globalSettings[THUMB_GEN_CLIPPED] = 1;
+$globalSettings[PAGE_SIZE] = 30;
 $globalSettings[DISPLAY_APP_NAME] = $appname;
 
 # Check if libmcrypt is available
@@ -389,7 +400,16 @@ function admin_change_json() {
 	$nconfigs = array();
 	$req_configs = $app->request()->post();
 	$errors = array();
-	$app->getLog()->warn('admin_change: '.var_export($req_configs,true));	
+	$messages = array();
+	$app->getLog()->debug('admin_change: '.var_export($req_configs,true));	
+
+	## For 1.0: run a silent db update
+	# TODO post 1.0: replace with an updater 
+	if ($globalSettings[DB_VERSION] =! DB_SCHEMA_VERSION) {
+		$app->getLog()->warn('admin_change: old db schema detected. running update');							
+		$bbs->updateDbSchema1to2();		
+	}
+
 	## Check for consistency - calibre directory
 	# Calibre dir is still empty and no change in sight --> error
 	if (!has_valid_calibre_dir() && empty($req_configs[CALIBRE_DIR]))
@@ -453,7 +473,7 @@ function admin_change_json() {
 		# Save changes
 		if (count($nconfigs) > 0) {
 			$bbs->saveConfigs($nconfigs);
-			$app->getLog()->debug('admin_change: changes saved');	
+			$app->getLog()->debug('admin_change: changes saved');					
 		}
 		$app->getLog()->debug('admin_change: ended');	
 		$app->render('admin.html',array(

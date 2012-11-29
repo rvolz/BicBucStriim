@@ -37,10 +37,11 @@ task :package2 do |t|
       val varchar(256)
     );    
   SQL
+  db.execute('create unique index configs_names on configs(name);')
   {
     "admin_pw" => "",
     "calibre_dir" => "",
-    "db_version" => "1",
+    "db_version" => "2",
     "glob_dl_choice" => "0",
     "glob_dl_password" => "7094e7dc2feb759758884333c2f4a6bdc9a16bb2",
     "thumb_gen_clipped" => "1",
@@ -145,8 +146,9 @@ end
 
 desc "Integration testing (via integration test environment)"
 task :itest => [:itest_deploy] do |t|  
-  #sh "php tests/test_integration.php"
   sh "cucumber features --format=pretty"
+  #sh "curl http://localhost:8080/bbs/dev/reset"
+  sh "php tests/test_integration.php"
 end
 
 

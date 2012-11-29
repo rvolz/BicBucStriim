@@ -104,14 +104,22 @@ class BicBucStriim {
 	}
 
 	/**
+	 * Update the DB to version 2 by creating the index necessary for saveConfigs.
+	 */
+	function updateDbSchema1to2() {
+		$this->mydb->exec('create unique index configs_names on configs(name)');
+		$this->mydb->exec('update configs set val=\'2\' where name=\'db_version\'');
+	}
+
+
+	/**
 	 * Save all configuration values in the settings DB
 	 * @param  $array 	$configs 	configuration values
 	 */
 	function saveConfigs($configs) {
-		$sql = 'update configs set val=:val where name=:name';
+		$sql = 'insert or replace into configs values (:name, :val)';
 		$stmt = $this->mydb->prepare($sql);
 		$this->mydb->beginTransaction();
-		#$this->mydb->exec('delete from configs');
 		foreach ($configs as $config) {
 			$stmt->execute(array('name' => $config->name, 'val' => $config->val));
 		}

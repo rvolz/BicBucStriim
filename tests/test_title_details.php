@@ -1,7 +1,7 @@
 <?php
 set_include_path("tests");
 require_once('lib/simpletest/autorun.php');
-
+require_once('lib/simpletest/web_tester.php');
 /*
 Extended test for the functionality of the title details page.
  */

@@ -10,39 +10,6 @@ class TestOfSiteSimple extends WebTestCase {
 	# The external integration test site
 	private $testhost = 'http://localhost:8080/bbs/';
 
-	/*
-	Just after installation the home page is redirected 
-	to the admin page for configuration
-	*/
-	public function testInitialRedirect() {
-		$this->setMaximumRedirects(0);
-		$this->assertTrue($this->get($this->testhost));
-		$this->assertResponse(302);
-		$this->setMaximumRedirects(2);
-		$this->assertTrue($this->get($this->testhost));
-		$this->assertResponse(200);
-		$this->assertEqual($this->testhost.'admin/', $this->getUrl());
-		$this->assertTitle('BicBucStriim :: Configuration');
-	}
-
-	/*
-	Only enter the path to the Calibre library. 
-	No admin or download password set.
-	If the calibre dir does not exists, show an error, else svae the settings.
-	*/
-	public function testAdminCalibreDir() {
-		$this->assertTrue($this->get($this->testhost));
-		$this->setField('calibre_dir', '/tmp/no_calibre_library');
-		$this->clickSubmit('Save');
-		$this->assertResponse(200);
-		$this->assertText('The configured Calibre directory cannot be used');
-
-		$this->assertTrue($this->get($this->testhost));
-		$this->setField('calibre_dir', '/tmp/calibre');
-		$this->clickSubmit('Save');
-		$this->assertResponse(200);
-		$this->assertText('Changes saved');		
-	}
 
 	/*
 	If a valid calibre dir is saved the start page shows the last 30 books.
@@ -50,21 +17,9 @@ class TestOfSiteSimple extends WebTestCase {
 	public function testStartPage() {
 		$this->assertTrue($this->get($this->testhost));
 		$this->assertResponse(200);
-		$this->assertTitle('BicBucStriim :: Most recent 30');	
-		$this->assertLink('The Stones of Venice, Volume II (2012)');
-		$this->assertLink('Lob der Faulheit (2012)');
-	}
-
-	/*
-	No admin password set. Access admin page without password challenge or
-	admin access cookie.
-	*/
-	public function testAccessAdminPage() {
-		$this->assertNoCookie('admin_access');
-		$this->assertTrue($this->get($this->testhost.'admin/'));
-		$this->assertResponse(200);
-		$this->assertTitle('BicBucStriim :: Configuration');
-		$this->assertField('calibre_dir', '/tmp/calibre');		
+		$this->assertTitle('BicBucStriim :: Most recent');	
+		$this->assertLink('Stones of Venice, Volume II, The (2012)');
+		$this->assertLink('Neues Leben (2012)');
 	}
 
 	/*
@@ -90,8 +45,8 @@ class TestOfSiteSimple extends WebTestCase {
 	 */
 	public function testTitleThumbnails() {
 		$this->assertTrue($this->get($this->testhost.'titleslist/0/'));
-		$this->assertPattern('/<img src="\/bbs\/titles\/1\/thumbnail\/"/');
-		$this->assertTrue($this->get($this->testhost.'titles/1/thumbnail/'));
+		$this->assertPattern('/<img src="\/bbs\/titles\/4\/thumbnail"/');
+		$this->assertTrue($this->get($this->testhost.'titles/4/thumbnail/'));
 		$this->assertResponse(200);
 		$this->assertMime('image/jpeg;base64');		
 	}
