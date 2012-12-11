@@ -100,6 +100,7 @@ echo $template->render(array(
 	'mre' => $mre,
 	'calibre_dir'=> $calibre_dir,
 	'cd' => $cd,
+	'htaccess' => file_exists('./.htaccess'),
 	'hsql' => has_sqlite(),
 	'hgd2' => $gde,
 	'hgd2v' => $gdv,

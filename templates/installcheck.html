@@ -130,9 +130,37 @@
           {% else %}
             <img src="img/bbs-light-red.png" />
             <p>
-              No, found vrsion {{phpv}}.
+              No, found version {{phpv}}.
             </p>
           {%endif%}
+        </li>
+        <li>
+          <h3>            
+            <a href="#popupHtaccess" data-role="button" 
+              data-inline="true" data-mini="true" data-icon="info" data-iconpos="notext"
+              data-rel="popup">
+              info
+            </a>
+            Does <em>.htaccess</em> exist?
+          </h3>
+          {% if htaccess == true %}
+            <img src="img/bbs-light-green.png" />            
+            <p>
+              Yes.
+            </p>
+          {% else %}
+            {% if is_a == true %}
+              <img src="img/bbs-light-red.png" />
+              <p>
+                No.
+              </p>
+            {% else %}
+              <img src="img/bbs-light-yellow.png" />
+              <p>                
+                No Apache, please ensure URL rewriting manually.
+              </p>
+            {% endif %}
+          {% endif %}  
         </li>
         <li>
           <h3>            
@@ -308,9 +336,17 @@
         Calibre directory to this list, e.g. <code>...:/volume1/books</code> (don't forget the colon in front).
       </p>
     </div>
+    <div id="popupHtaccess" data-role="popup" data-theme="e">
+      <p>
+        BicBucStriim contains a <em>.htaccess</em> file that enables <em>URL rewriting</em>
+        on Apache servers automatically. If the check failed this is probably due to 
+        an unpack problem. Sometime unzippers don't unpack hidden files (i.e. files 
+        whose names start with a dot) properly. Try a different unzip application.        
+      </p>
+    </div>    
     <div id="popupUrlRewrite" data-role="popup" data-theme="e">
       <p>
-        BicBucStriim contains a <em>.htaccess</em> file that enables URL rewriting
+        BicBucStriim contains a <em>.htaccess</em> file that enables <em>URL rewriting</em>
         on Apache servers automatically. If this is an Apache web server and the check failed, 
         please change the URL rewriting (mod_rewrite) settings of your server/device. 
       </p>
