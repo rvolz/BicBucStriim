@@ -11,16 +11,15 @@ BicBucStriim is a simple PHP application that runs in the Apache/PHP environment
 Features & Issues
 -----------------
 
-* shows the 30 most recent titles on the index page
+* shows the most recent titles on the index page
 * provides listing/filtering/searching of book titles, authors, tags and series
 * shows detail pages (including download links) for authors and books
-* speaks English, Fench, German
+* speaks Dutch, English, French, German
 * is ready for mobile clients (tested with Kindle, iPhone, iPad)
 * provides a download protection for books (optional, think "parental control")
 * provides OPDS book catalogs for reading apps like Stanza
 * has an admin GUI for configuration
 
-* no search yet for OPDS clients
 * book download for OPDS is only possible when download protection is off
 
 
@@ -29,14 +28,32 @@ Install
 
 The easy way assumes that BicBucStriim lives right below the web root of your device and can be addressed like `http://<your ip>/bbs/`:
 
-* Download a installation archive from [GitHub](https://github.com/rvolz/BicBucStriim/downloads).
-* Unarchive the downloaded archive below the web server root of your NAS (e.g. "/volume1/web" on a Synology device)
+* [Download](http://projekte.textmulch.de/bicbucstriim/downloads/BicBucStriim-1.0.0.zip) an installation archive.
+* Unarchive the downloaded archive below the web server root of your NAS (e.g. "/volume1/web" on a Synology device).
 * Rename the newly created directory (e.g. BicBucStriim-0.8.0.zip) to "bbs".
 * NOTE: If you don't want to use the directory name *bbs* simply change the included .htaccess file accordingly
 * The "data" directory and its contents must be writeable for all. Depending on your method of unarchiving this might be already the case. However, in case you experience access error just use a terminal to correct this: `chmod -R ga+w data`. 
 * BicBucStriim should now be working, start your web browser and navigate to `http://<address of your NAS>/bbs/`
 * A freshly installed BicBucStriim app will show you the admin section, where you will have tell the app where your Calibre library is located. Everything else is optional. Just have a look.
 * OPDS catalogs are availabe at http://.../bbs/opds/
+
+Upgrading
+---------
+
+If you are already using BicBucStriim and don't want to lose your configuration and thumbnails:
+
+* Backup your old BicBucStriim installation, eg. `mv bbs bbs.old`
+* Install the new version
+* Remove the data directory, eg. `rm -rf bbs/data`
+* Copy our old data directory, eg. `cp -R bbs.old/data bbs`
+* Use `chmod -R ga+w bbs/data` to correct the permissions after copying
+
+After that BicBucStriim should work again.
+
+Troubleshooting
+---------------
+
+If you encounter problems, use the installation test to check your environment. Invoke this test by navigating to `http://<NAS address>/bbs/installcheck.php`. This test checks for problems that users experienced in the past.
 
 
 Requirements

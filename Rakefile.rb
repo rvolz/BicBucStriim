@@ -12,7 +12,7 @@ require 'sqlite3'
 require 'json'
 
 APPNAME = 'BicBucStriim'
-VERSION = '0.9.4'
+VERSION = '1.0.0'
 
 begin
   require 'vagrant'
