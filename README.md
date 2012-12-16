@@ -37,6 +37,8 @@ The easy way assumes that BicBucStriim lives right below the web root of your de
 * A freshly installed BicBucStriim app will show you the admin section, where you will have tell the app where your Calibre library is located. Everything else is optional. Just have a look.
 * OPDS catalogs are availabe at http://.../bbs/opds/
 
+NOTE (for developers): the installation archives contain generated files, which are not immediately available in the source tree, git tarballs.  This will hopefully change in the future.
+
 Upgrading
 ---------
 
