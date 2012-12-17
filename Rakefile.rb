@@ -168,7 +168,7 @@ desc "Generate and copy version information file to server"
 task :install_version_info do |t|
   version_info = {
     :version => VERSION,
-    :url => 'http://github.com/rvolz/bicbucstriim/downloads'
+    :url => 'http://projekte.textmulch.de/bicbucstriim/downloads/BicBucStriim-1.0.0.zip'
   }
   File.open('version.json','w') do |f|
     f.puts version_info.to_json
