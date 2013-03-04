@@ -933,11 +933,11 @@ function tagDetailsSlice ($id, $index=0) {
 		$book->formats = $bbs->titleGetFormats($book->id);
 	$app->render('tag_detail.html',array(
 		'page' => mkPage(getMessageString('tag_details')),
-    'url' => 'tag/'.$id, 
+    	'url' => 'tags/'.$id, 
 		'tag' => $tl['tag'], 
 		'books' => $tl['entries'],
-    'curpage' => $tl['page'],
-    'pages' => $tl['pages']));   
+    	'curpage' => $tl['page'],
+    	'pages' => $tl['pages']));   
 }
 
 /*********************************************************************
