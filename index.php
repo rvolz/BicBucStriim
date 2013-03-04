@@ -21,7 +21,7 @@ $fallbackLang = 'en';
 # Application Name
 $appname = 'BicBucStriim';
 # App version
-$appversion = '1.0.0';
+$appversion = '1.0.1';
 # Current DB schema version
 define('DB_SCHEMA_VERSION', '2');
 
