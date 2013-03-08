@@ -39,6 +39,10 @@ define('CALIBRE_DIR', 'calibre_dir');
 define('GLOB_DL_CHOICE', 'glob_dl_choice');
 # Global download password
 define('GLOB_DL_PASSWORD', 'glob_dl_password');
+# Global tags choice
+define('TAG_PROTECT_CHOICE', 'tag_protect_choice');
+# Global tag name protect
+define('TAG_PROTECT_FIELD', 'tag_protect_field');
 # BicBucStriim DB version
 define('DB_VERSION', 'db_version');
 # Thumbnail generation method
@@ -126,6 +130,8 @@ $globalSettings[CALIBRE_DIR] = '';
 $globalSettings[DB_VERSION] = DB_SCHEMA_VERSION;
 $globalSettings[GLOB_DL_PASSWORD] = '7094e7dc2feb759758884333c2f4a6bdc9a16bb2';
 $globalSettings[GLOB_DL_CHOICE] = 0;
+$globalSettings[TAG_PROTECT_FIELD] = 'magazines';
+$globalSettings[TAG_PROTECT_CHOICE] = 0;
 $globalSettings[THUMB_GEN_CLIPPED] = 1;
 $globalSettings[PAGE_SIZE] = 30;
 $globalSettings[DISPLAY_APP_NAME] = $appname;
@@ -157,6 +163,12 @@ if ($bbs->dbOk()) {
 			case GLOB_DL_CHOICE:
 				$globalSettings[GLOB_DL_CHOICE] = $config->val;
 				break;
+			case TAG_PROTECT_CHOICE:
+				$globalSettings[TAG_PROTECT_CHOICE] = $config->val;
+				break;
+			case TAG_PROTECT_FIELD:
+				$globalSettings[TAG_PROTECT_FIELD] = $config->val;
+				break;	
 			case THUMB_GEN_CLIPPED:
 				$globalSettings[THUMB_GEN_CLIPPED] = $config->val;
 				break;				
@@ -1285,19 +1297,46 @@ function opdsBySearch($index=0) {
  * @return boolean  true - the user must enter a password, else no authentication necessary
  */
 function is_protected($id=NULL) {
-	global $app, $globalSettings;
+	global $app, $calibre_dir, $globalSettings, $bbs;
 
 	$pw = getDownloadPassword();
+	//field need to check for tag protection
+	$tgc 	= $globalSettings[TAG_PROTECT_CHOICE];
+	$ctags	= $globalSettings[TAG_PROTECT_FIELD];
+	
+	$details = $bbs->titleDetails($id);
+	$allTags = $details['tags'];
+	
+	//search if tag is the same as in admin settings
+	foreach ($allTags as &$aTag) {
+	//$app->getLog()->debug('tagss: '.$alTag->name);
+		$tagName = $aTag->name;
+		$ct = 0;
+		
+		if($tagName == $ctags){
+			$ct = 1;
+		}
+	}
+	
 	if (!is_null($pw)) {
 		$glob_dl_cookie = getOurCookie(GLOBAL_DL_COOKIE);
 		$app->getLog()->debug('is_protected: global download protection enabled, cookie: '.$glob_dl_cookie);
-		if (is_null($glob_dl_cookie))
-			return true;
-		else {
-			if ($glob_dl_cookie === $pw)
-				return false;
-			else
+		
+		//check if tag selection is active
+		if($tgc != 1){
+			if (is_null($glob_dl_cookie))
 				return true;
+			else {
+				if ($glob_dl_cookie === $pw)
+					return false;
+				else
+					return true;
+			}
+		//if tag selection is active, check if control is ok
+		}elseif($tgc == 1 && $ct == 1){
+			return true;
+		}else{
+			return false;
 		}
 	} else {
 		$app->getLog()->debug('is_protected: global download protection disabled');		
