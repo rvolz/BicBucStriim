@@ -21,7 +21,7 @@ $fallbackLang = 'en';
 # Application Name
 $appname = 'BicBucStriim';
 # App version
-$appversion = '1.0.0';
+$appversion = '1.0.1';
 # Current DB schema version
 define('DB_SCHEMA_VERSION', '2');
 
@@ -1307,9 +1307,12 @@ function is_protected($id=NULL) {
 	$details = $bbs->titleDetails($id);
 	$allTags = $details['tags'];
 	
+	//check if tags exist for this book, if ok then search
+	//need to add codefor checking this
+	
 	//search if tag is the same as in admin settings
 	foreach ($allTags as &$aTag) {
-	//$app->getLog()->debug('tagss: '.$alTag->name);
+	//$app->getLog()->debug('tagname: '.$alTag->name);
 		$tagName = $aTag->name;
 		$ct = 0;
 		
