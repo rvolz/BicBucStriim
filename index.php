@@ -1311,13 +1311,15 @@ function is_protected($id=NULL) {
 	//need to add codefor checking this
 	
 	//search if tag is the same as in admin settings
-	foreach ($allTags as &$aTag) {
-	//$app->getLog()->debug('tagname: '.$alTag->name);
-		$tagName = $aTag->name;
-		$ct = 0;
-		
-		if($tagName == $ctags){
-			$ct = 1;
+	$ct = 0;
+	if(!is_null($pw) && $tgc == 1){
+		foreach ($allTags as &$aTag) {
+		//$app->getLog()->debug('tagname: '.$alTag->name);
+			$tagName = $aTag->name;
+			
+			if($tagName == $ctags){
+				$ct = 1;
+			}
 		}
 	}
 	
