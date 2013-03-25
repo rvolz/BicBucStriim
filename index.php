@@ -579,6 +579,7 @@ function titlesSlice($index=0) {
 	$app->getLog()->debug("titlesSlice started for index ".$index);
 	$search = $app->request()->get('search');
 	if (isset($search)) {
+		$search = rtrim($search);
 		$app->getLog()->debug("titlesSlice: search=".$search);
 		$tl = $bbs->titlesSlice($index,$globalSettings[PAGE_SIZE],$search);
 	} else
