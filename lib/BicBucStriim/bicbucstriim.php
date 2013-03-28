@@ -562,6 +562,12 @@ class BicBucStriim {
 			$tag = $this->findOne('Tag', 'select * from tags where id='.$tid->tag);
 			array_push($tags, $tag);
 		}
+		$lang_id = $this->findOne('BookLanguageLink', 'select * from books_languages_link where book='.$id);
+		$lang_code = $this->findOne('Language', 'select * from languages where id='.$lang_id->lang_code);
+		if (is_null($lang_code))
+			$lang_text = '';
+		else
+			$lang_text = $lang_code->lang_code;
 		$formats = $this->find('Data', 'select * from data where book='.$id);
 		$comment = $this->findOne('Comment', 'select * from comments where book='.$id);
 		if (is_null($comment))
@@ -569,7 +575,7 @@ class BicBucStriim {
 		else
 			$comment_text = $comment->text;		
 		return array('book' => $book, 'authors' => $authors, 'series' => $series, 'tags' => $tags, 
-			'formats' => $formats, 'comment' => $comment_text);
+			'formats' => $formats, 'comment' => $comment_text, 'language' => $lang_text);
 	}
 
 	/**
@@ -593,9 +599,23 @@ class BicBucStriim {
 			$tag = $this->findOne('Tag', 'select * from tags where id='.$tid->tag);
 			array_push($tags, $tag);
 		}
+		$lang_id = $this->findOne('BookLanguageLink', 'select * from books_languages_link where book='.$book->id);
+		$lang_code = $this->findOne('Language', 'select * from languages where id='.$lang_id->lang_code);
+		if (is_null($lang_code))
+			$lang_text = '';
+		else
+			$lang_text = $lang_code->lang_code;
+		$comment = $this->findOne('Comment', 'select * from comments where book='.$book->id);
+		if (is_null($comment))
+			$comment_text = '';
+		else
+			$comment_text = $comment->text;
+			# Strip html excluding the most basic tags and remove all tag attributes
+			$comment_text = strip_tags($comment_text, '<div><strong><i><em><b><p><br><br/>');
+			$comment_text = preg_replace("/<([a-z][a-z0-9]*)[^>]*?(\/?)>/i",'<$1$2>', $comment_text);
 		$formats = $this->find('Data', 'select * from data where book='.$book->id);
 		return array('book' => $book, 'authors' => $authors, 'tags' => $tags, 
-			'formats' => $formats);
+			'formats' => $formats, 'comment' => $comment_text, 'language' => $lang_text);
 	}
 
 	/**

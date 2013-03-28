@@ -627,6 +627,7 @@ function title($id) {
 			'tags' => $details['tags'], 
 			'formats'=>$details['formats'], 
 			'comment' => $details['comment'],
+			'language' => $details['language'],
 			'kindle_format' => $kindle_format,
 			'kindle_from_email' => $globalSettings[KINDLE_FROM_EMAIL],
 			'protect_dl' => is_protected($id))
