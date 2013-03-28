@@ -562,6 +562,12 @@ class BicBucStriim {
 			$tag = $this->findOne('Tag', 'select * from tags where id='.$tid->tag);
 			array_push($tags, $tag);
 		}
+		$lang_id = $this->findOne('BookLanguageLink', 'select * from books_languages_link where book='.$id);
+		$lang_code = $this->findOne('Language', 'select * from languages where id='.$lang_id->lang_code);
+		if (is_null($lang_code))
+			$lang_text = '';
+		else
+			$lang_text = $lang_code->lang_code;
 		$formats = $this->find('Data', 'select * from data where book='.$id);
 		$comment = $this->findOne('Comment', 'select * from comments where book='.$id);
 		if (is_null($comment))
@@ -569,7 +575,7 @@ class BicBucStriim {
 		else
 			$comment_text = $comment->text;		
 		return array('book' => $book, 'authors' => $authors, 'series' => $series, 'tags' => $tags, 
-			'formats' => $formats, 'comment' => $comment_text);
+			'formats' => $formats, 'comment' => $comment_text, 'language' => $lang_text);
 	}
 
 	/**
@@ -593,9 +599,23 @@ class BicBucStriim {
 			$tag = $this->findOne('Tag', 'select * from tags where id='.$tid->tag);
 			array_push($tags, $tag);
 		}
+		$lang_id = $this->findOne('BookLanguageLink', 'select * from books_languages_link where book='.$book->id);
+		$lang_code = $this->findOne('Language', 'select * from languages where id='.$lang_id->lang_code);
+		if (is_null($lang_code))
+			$lang_text = '';
+		else
+			$lang_text = $lang_code->lang_code;
+		$comment = $this->findOne('Comment', 'select * from comments where book='.$book->id);
+		if (is_null($comment))
+			$comment_text = '';
+		else
+			$comment_text = $comment->text;
+			# Strip html excluding the most basic tags and remove all tag attributes
+			$comment_text = strip_tags($comment_text, '<div><strong><i><em><b><p><br><br/>');
+			$comment_text = preg_replace("/<([a-z][a-z0-9]*)[^>]*?(\/?)>/i",'<$1$2>', $comment_text);
 		$formats = $this->find('Data', 'select * from data where book='.$book->id);
 		return array('book' => $book, 'authors' => $authors, 'tags' => $tags, 
-			'formats' => $formats);
+			'formats' => $formats, 'comment' => $comment_text, 'language' => $lang_text);
 	}
 
 	/**
@@ -619,7 +639,7 @@ class BicBucStriim {
 	}
 
 	/**
-	 * Returns the path to the cover image of a book or NULL.
+	 * Returns the path to the file of a book or NULL.
 	 * @param  int 		$id   book id
 	 * @param  string $file file name
 	 * @return string       full path to image file or NULL
@@ -641,6 +661,25 @@ class BicBucStriim {
 		return $this->find('Data', 'select * from data where book='.$bookid);
 	}
 
+	/**
+	 * Returns a Kindle supported format of a book or NULL.
+	 * We always return the best of the available formats supported by Kindle devices
+	 * E.g. when there is both a Mobi and a PDF file for a given book, we always return the Mobi
+	 * @param  int 		$id   		book id	
+	 * @return object   $format 	the kindle format object for the book or NULL
+	 */
+	function titleGetKindleFormat($id) {
+		$book = $this->title($id);
+		if (is_null($book)) return NULL;
+		$formats = $this->find("Data", "select * from data where book=".$id." AND (format='AZW' OR format='AZW3' OR format='MOBI' OR format='HTML' OR format='PDF')");
+		if(empty($formats))
+			return NULL;
+		else {
+			usort($formats, array($this, 'kindleFormatSort'));
+			$format=$formats[0];
+		}
+		return $format;
+	}
 
 	/**
 	 * Find a single series and return the details plus all books.
@@ -723,5 +762,35 @@ class BicBucStriim {
 		}
 		return $grouped_items;
 	}
+
+	/**
+	 * Usort helper function
+	 * sorts the formats array-of-objects by priority set by kindleformats array
+	 */
+	function kindleFormatSort($a, $b) 
+	{ 
+	  //global $kindleformats;
+	  $kindleformats[0] = "AZW3"; 
+	  $kindleformats[1] = "AZW"; 
+	  $kindleformats[3] = "MOBI"; 
+	  $kindleformats[4] = "HTML";
+	  $kindleformats[5] = "PDF";
+
+	  foreach($kindleformats as $key => $value) 
+	    { 
+	      if($a->format == $value) 
+	        { 
+	          return 0; 
+	          break; 
+	        } 
+
+	      if($b->format == $value) 
+	        { 
+	          return 1; 
+	          break; 
+	        } 
+	    } 
+	} 
+
 }
 ?>
