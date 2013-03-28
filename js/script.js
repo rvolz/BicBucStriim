@@ -58,3 +58,62 @@ $(document).on('pageinit', function() {
 	});
 
 });
+
+/* Send-to-Kindle Ajax function 
+Target-Url: /titles/:id/kindle/:file via POST
+request-data: email
+*/
+
+$(document).on('pageinit', function() {
+
+	var buttontext = "";
+	$("#ajax-form").submit(function(e) {
+	//$('#ajax-form').on('submit',function(e){
+	  //e.preventDefault();	 
+	  buttontext = $("#ajax-form-button").attr("value");
+	  var kindleEmail = $.trim($("#kindleEmail").val());
+	  $("#ajax-form-button").button('disable');
+	  $.mobile.showPageLoadingMsg();
+	  $.ajax({
+	    type: "POST",
+	    url: $("#ajax-form").attr("action"),
+	    data: ({email: kindleEmail}),
+	    cache: false,
+	    dataType: "text",
+	    success: onSuccess,
+	  });
+	  return false;
+	});
+
+	$("#ajax-message").ajaxError(function(event, request, settings, exception) {
+	$.mobile.hidePageLoadingMsg();
+	$("#ajax-message").text("Error! HTTP Code: " + request.status);
+	setTimeout(function() { 
+	  $("#ajax-form-button").button('enable');
+	  $("#ajax-message").text('');
+	}, 3000);
+	});
+
+	function onSuccess(data)
+	{
+	  data = $.trim(data);
+	  $.mobile.hidePageLoadingMsg();
+	  $("#ajax-form-button").attr('value',data);
+	  $("#ajax-form-button").button('refresh');
+	  setTimeout(function() { 
+	    $("#ajax-form-button").attr('value',buttontext);
+	    $("#ajax-form-button").button('refresh');
+	    $("#ajax-form-button").button('enable');
+	  }, 2000);
+
+	}
+
+	/* If cookie 'kindleEmail' is found, pre-populate form input*/
+	if ($.cookie('kindle_email')) {
+		$("#kindleEmail").attr('value',$.cookie('kindle_email'));
+	}
+
+});
+
+
+
