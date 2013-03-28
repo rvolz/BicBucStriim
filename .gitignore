@@ -7,3 +7,4 @@ pkg
 tests/work
 tests/data
 .vagrant
+screenshot*

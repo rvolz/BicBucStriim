@@ -1,4 +1,4 @@
-Before("~@initial") do  
+Before("~@initial") do  	
 	visit "/dev/reset"
   visit "/"
   fill_in('calibre_dir', :with => '/tmp/calibre')

@@ -9,7 +9,7 @@ Vagrant::Config.run do |config|
 
   # Every Vagrant virtual environment requires a box to build off of.
   # In this case Ubuntu Server 12.04 i386
-  config.vm.box = "ub-1204-386"
+  config.vm.box = "quantal-server-386"
 
   # Forward a port from the guest to the host, which allows for outside
   # computers to access the VM, whereas host only networking does not.

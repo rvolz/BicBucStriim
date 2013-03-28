@@ -32,12 +32,14 @@ Feature: Protect book downloads with a global password
 		Then the page shows the download options
 		And the cookie "glob_dl_access" is set
 
+	@javascript
 	Scenario: no access without password
 		Given I choose admin download protection, using password "admin"
 		When a user navigates to book page "4"
 		And enters the password "noadmin"
 		Then the page shows an error 
 
+	@remove
 	Scenario: no direct download without password
 		Given I choose admin download protection, using password "admin"
 		When a user downloads a boook directly

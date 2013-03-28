@@ -7,6 +7,7 @@ When /^I navigate to the titleslist page$/ do
 end
 
 Then /^I get redirected to the admin page$/ do
-  page.status_code.should == 200
+	# Not supported by Selenium
+  # page.status_code.should == 200
   page.should have_content 'BicBucStriim :: Configuration'
 end

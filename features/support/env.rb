@@ -1,18 +1,21 @@
-gem 'capybara', '=1.1.3'
+gem 'capybara'
 require 'capybara'
 require 'capybara/cucumber'
-require 'capybara/webkit'
+require 'capybara/poltergeist'
 require 'capybara-screenshot'
 require 'capybara-screenshot/cucumber'
-#require 'capybara/poltergeist'
 Capybara.run_server = false
 Capybara.app_host = 'http://localhost:8080/bbs/'
-Capybara.default_driver = :webkit
-#Capybara.javascript_driver = :poltergeist
+Capybara.register_driver :selenium do |app|
+  	require 'selenium/webdriver'
+  	profile = Selenium::WebDriver::Firefox::Profile.new
+ 		profile["intl.accept_languages"] = "en-us,en"
+  	Capybara::Selenium::Driver.new(app, :profile => profile)
+	end
+Capybara.default_driver = :selenium
 
-World do
-	Capybara::Session.new(:webkit)
-	Capybara.current_session.driver.header 'Accept-Language', 'en'
+World do	
+	Capybara::Session.new(:selenium)	
 	Capybara::Screenshot.register_filename_prefix_formatter(:rspec) do |example|
     "screenshot-#{example.description.gsub(' ', '-')}"
   end
