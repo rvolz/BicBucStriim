@@ -619,7 +619,7 @@ class BicBucStriim {
 	}
 
 	/**
-	 * Returns the path to the cover image of a book or NULL.
+	 * Returns the path to the file of a book or NULL.
 	 * @param  int 		$id   book id
 	 * @param  string $file file name
 	 * @return string       full path to image file or NULL
@@ -641,6 +641,25 @@ class BicBucStriim {
 		return $this->find('Data', 'select * from data where book='.$bookid);
 	}
 
+	/**
+	 * Returns a Kindle supported format of a book or NULL.
+	 * We always return the best of the available formats supported by Kindle devices
+	 * E.g. when there is both a Mobi and a PDF file for a given book, we always return the Mobi
+	 * @param  int 		$id   		book id	
+	 * @return object   $format 	the kindle format object for the book or NULL
+	 */
+	function titleGetKindleFormat($id) {
+		$book = $this->title($id);
+		if (is_null($book)) return NULL;
+		$formats = $this->find("Data", "select * from data where book=".$id." AND (format='AZW' OR format='AZW3' OR format='MOBI' OR format='HTML' OR format='PDF')");
+		if(empty($formats))
+			return NULL;
+		else {
+			usort($formats, array($this, 'kindleFormatSort'));
+			$format=$formats[0];
+		}
+		return $format;
+	}
 
 	/**
 	 * Find a single series and return the details plus all books.
@@ -723,5 +742,35 @@ class BicBucStriim {
 		}
 		return $grouped_items;
 	}
+
+	/**
+	 * Usort helper function
+	 * sorts the formats array-of-objects by priority set by kindleformats array
+	 */
+	function kindleFormatSort($a, $b) 
+	{ 
+	  //global $kindleformats;
+	  $kindleformats[0] = "AZW3"; 
+	  $kindleformats[1] = "AZW"; 
+	  $kindleformats[3] = "MOBI"; 
+	  $kindleformats[4] = "HTML";
+	  $kindleformats[5] = "PDF";
+
+	  foreach($kindleformats as $key => $value) 
+	    { 
+	      if($a->format == $value) 
+	        { 
+	          return 0; 
+	          break; 
+	        } 
+
+	      if($b->format == $value) 
+	        { 
+	          return 1; 
+	          break; 
+	        } 
+	    } 
+	} 
+
 }
 ?>
