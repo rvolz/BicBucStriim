@@ -51,8 +51,8 @@ define('DISPLAY_APP_NAME', 'display_app_name');
 # Init app and routes
 $app = new Slim(array(
 	'view' => new View_Twig(),
-	'mode' => 'production',
-	#'mode' => 'development',
+	#'mode' => 'production',
+	'mode' => 'development',
 ));
 
 $app->configureMode('production','confprod');
@@ -568,7 +568,7 @@ function titlesSlice($index=0) {
 	$search = $app->request()->get('search');
 	if (isset($search)) {
 		$app->getLog()->debug("titlesSlice: search=".$search);
-		$tl = $bbs->titlesSlice($index,$globalSettings[PAGE_SIZE],$search);
+		$tl = $bbs->titlesSlice($index,$globalSettings[PAGE_SIZE],trim($search));
 	} else
 		$tl = $bbs->titlesSlice($index,$globalSettings[PAGE_SIZE]);
 	foreach ($tl['entries'] as $book)
@@ -748,7 +748,7 @@ function authorsSlice($index=0) {
 
 	$search = $app->request()->get('search');
 	if (isset($search))
-		$tl = $bbs->authorsSlice($index,$globalSettings[PAGE_SIZE],$search);	
+		$tl = $bbs->authorsSlice($index,$globalSettings[PAGE_SIZE],trim($search));	
 	else
 		$tl = $bbs->authorsSlice($index,$globalSettings[PAGE_SIZE]);
 	$app->render('authors.html',array(
@@ -817,7 +817,7 @@ function seriesSlice($index=0) {
 	$search = $app->request()->get('search');
 	if (isset($search)) {
 		$app->getLog()->debug('seriesSlice: search '.$search);			
-		$tl = $bbs->seriesSlice($index,$globalSettings[PAGE_SIZE],$search);	
+		$tl = $bbs->seriesSlice($index,$globalSettings[PAGE_SIZE],trim($search));	
 	} else
 		$tl = $bbs->seriesSlice($index,$globalSettings[PAGE_SIZE]);
 	$app->render('series.html',array(
@@ -884,7 +884,7 @@ function tagsSlice($index=0) {
 
 	$search = $app->request()->get('search');
 	if (isset($search))
-		$tl = $bbs->tagsSlice($index,$globalSettings[PAGE_SIZE],$search);
+		$tl = $bbs->tagsSlice($index,$globalSettings[PAGE_SIZE],trim($search));
 	else
 		$tl = $bbs->tagsSlice($index,$globalSettings[PAGE_SIZE]);
 	$app->render('tags.html',array(
