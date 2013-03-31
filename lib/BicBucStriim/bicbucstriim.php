@@ -600,11 +600,15 @@ class BicBucStriim {
 			array_push($tags, $tag);
 		}
 		$lang_id = $this->findOne('BookLanguageLink', 'select * from books_languages_link where book='.$book->id);
-		$lang_code = $this->findOne('Language', 'select * from languages where id='.$lang_id->lang_code);
-		if (is_null($lang_code))
+		if (is_null($lang_id))
 			$lang_text = '';
-		else
-			$lang_text = $lang_code->lang_code;
+		else {
+			$lang_code = $this->findOne('Language', 'select * from languages where id='.$lang_id->lang_code);
+			if (is_null($lang_code))
+				$lang_text = '';
+			else
+				$lang_text = $lang_code->lang_code;			
+		}
 		$comment = $this->findOne('Comment', 'select * from comments where book='.$book->id);
 		if (is_null($comment))
 			$comment_text = '';
