@@ -3,6 +3,7 @@
 
 // German
 $langde = array('admin' => 'Konfiguration',
+	'admin_check_version' => 'Auf neue Version prüfen',
 	'admin_check_version_legend' => 'Prüfen, ob mittlerweile eine neue Version von BicBucStriim vorliegt.',
 	'admin_check_url' => 'Gehen Sie zu %s, um die neue Version herunter zu laden',
 	'admin_invalid_page_size' => 'Die eingestellte Seitengröße war ungültig. Sie muss zwischen 1 und 100 liegen.',	
