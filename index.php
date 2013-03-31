@@ -8,6 +8,7 @@
  */ 
 require 'vendor/autoload.php';
 require_once 'vendor/slim/slim/Slim/View.php';
+require_once 'vendor/slim/extras/Log/FileWriter.php';
 require_once 'lib/BicBucStriim/langs.php';
 require_once 'lib/BicBucStriim/l10n.php';
 require_once 'lib/BicBucStriim/bicbucstriim.php';
@@ -77,12 +78,12 @@ function confprod() {
 	global $app, $appname, $appversion;
 	$app->config(array(
 		'debug' => false,
-		'log.enabled' => true, 
-		'log.level' => 3,
 		'cookies.lifetime' => '1 day',
 		'cookies.secret_key' => 'b4924c3579e2850a6fad8597da7ad24bf43ab78e',
 
 	));
+	$app->getLog()->setEnabled(true);
+	$app->getLog()->setLevel(Slim_Log::WARN);
 	$app->getLog()->info($appname.' '.$appversion.': Running in production mode.');
 }
 
@@ -93,13 +94,13 @@ function confdev() {
 	global $app, $appname, $appversion;
 	$app->config(array(
 		'debug' => true,
-		'log.enabled' => true, 
-		'log.level' => 4,
 		'cookies.lifetime' => '5 minutes',
 		'cookies.secret_key' => 'b4924c3579e2850a6fad8597da7ad24bf43ab78e',
 
 	));
 	$app->get('/dev/reset', 'devReset');
+	$app->getLog()->setEnabled(true);
+	$app->getLog()->setLevel(Slim_Log::DEBUG);
 	$app->getLog()->info($appname.' '.$appversion.': Running in development mode.');
 }
 
@@ -110,12 +111,12 @@ function confdebug() {
 	global $app, $appname, $appversion;
 	$app->config(array(
 		'debug' => true,
-		'log.enabled' => true, 
-		'log.writer' => new Slim_LogFileWriter(fopen('./data/bbs.log','a')),
-		'log.level' => 4,
 		'cookies.lifetime' => '1 day',
 		'cookies.secret_key' => 'b4924c3579e2850a6fad8597da7ad24bf43ab78e',
 	));
+	$app->getLog()->setEnabled(true);
+	$app->getLog()->setLevel(Slim_Log::DEBUG);
+	$app->getLog()->setWriter(new Log_FileWriter(array('path' => './data', 'name_format' => 'Y-m-d\.\l\o\g')));
 	$app->getLog()->info($appname.' '.$appversion.': Running in debug mode.');
 }
 
