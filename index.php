@@ -8,11 +8,11 @@
  */ 
 require 'vendor/autoload.php';
 require_once 'vendor/slim/slim/Slim/View.php';
-
 require_once 'lib/BicBucStriim/langs.php';
 require_once 'lib/BicBucStriim/l10n.php';
 require_once 'lib/BicBucStriim/bicbucstriim.php';
 require_once 'lib/BicBucStriim/opds_generator.php';
+require_once 'vendor/email.php';
 
 # Allowed languages, i.e. languages with translations
 $allowedLangs = array('de','en','fr','nl');
