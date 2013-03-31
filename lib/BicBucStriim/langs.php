@@ -3,15 +3,12 @@
 
 // German
 $langde = array('admin' => 'Konfiguration',
-	#---
-	'admin_check_version' => 'Auf neue Version prüfen',
 	'admin_check_version_legend' => 'Prüfen, ob mittlerweile eine neue Version von BicBucStriim vorliegt.',
 	'admin_check_url' => 'Gehen Sie zu %s, um die neue Version herunter zu laden',
 	'admin_invalid_page_size' => 'Die eingestellte Seitengröße war ungültig. Sie muss zwischen 1 und 100 liegen.',	
 	'admin_new_version' => 'Die neue Version %s ist verfügbar. Die ist Version %s',
 	'admin_new_version_error' => 'Versionsinformationen konnten nicht geladen werden. Bitte prüfen Sie die manuell.',
 	'admin_no_new_version' => 'Die Version %s ist aktuell',
-	#***
 	'admin_pw1' => 'Admin Passwort',
 	'admin_pw2' => 'Admin Passwort',
 	'admin_pw_expl' => 'Optional: Tragen sie hier ein Passwort ein, um den Zugang zu den Admin-Einstellungen einzuschränken.',
@@ -32,10 +29,8 @@ $langde = array('admin' => 'Konfiguration',
 	'check_access' => 'Freischalten',
 	'check_access_info' => 'Diese Buch ist passwortgeschützt. Bitte freischalten, um es herunter zu laden.',
 	'comment' => 'Beschreibung',
-	#---
 	'display_app_name' => 'Alternativer Titel',
 	'display_app_name_expl' => 'Wenn die Anwendung einen aussagekräftigeren Namen anzeigen soll. Wird im Seitentitel angezeigt.',
-	#***	
 	'dl30' => 'Die neuesten',
 	'download' => 'Herunterladen',
 	'error' => 'Fehler',

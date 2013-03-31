@@ -31,14 +31,16 @@ end
 
 Then /^the download is protected$/ do
   page.has_selector?('div.dl_access')
-  page.has_css?('div.dl_access', :visible => true)
-  page.has_css?('div.dl_download', :visible => false)
+  click_on 'Download'
+  page.should have_css('p', :text => 'This book is protected. Please enter your password to enable the book download.', :visible => true)
+  page.should have_no_css('p', :text => 'Press a button to download the book in the respective format.', :visible => true)
 end
 
 Then /^the page shows the download options$/ do
   page.has_selector?('div.dl_download')
-  page.has_css?('div.dl_access', :visible => false)
-  page.has_css?('div.dl_download', :visible => true)
+  click_on 'Download'
+  page.should have_no_css('p', :text => 'This book is protected. Please enter your password to enable the book download.', :visible => true)
+  page.should have_css('p', :text => 'Press a button to download the book in the respective format.', :visible => true)
 end
 
 Then /^the cookie "(.+)" is set$/ do |arg1|
