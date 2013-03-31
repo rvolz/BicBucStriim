@@ -158,7 +158,7 @@ class OpdsGenerator {
       'opds_by_author5',
       $url,
       '"'.$initial.'"');
-    $this->navigationCatalogLink($this->bbs_root.$url,'self');
+    $this->navigationCatalogLink($this->bbs_root.'/opds'.$url,'self');
     $this->navigationCatalogLink($this->bbs_root.'/opds/', 'start');
     $this->navigationCatalogLink($this->bbs_root.'/opds/authorslist/', 'up');
     # TODO next/prev
@@ -188,7 +188,7 @@ class OpdsGenerator {
       '',
       $url,
       '"'.$author->name.'"');
-    $this->acquisitionCatalogLink($this->bbs_root.$url,'self');
+    $this->acquisitionCatalogLink($this->bbs_root.'/opds'.$url,'self');
     $this->navigationCatalogLink($this->bbs_root.'/opds/', 'start');
     $this->navigationCatalogLink($this->bbs_root.'/opds/authorslist/'.$initial.'/', 'up');
     # Content
@@ -236,7 +236,7 @@ class OpdsGenerator {
       'opds_by_tag5',
       $url,
       '"'.$initial.'"');
-    $this->navigationCatalogLink($this->bbs_root.$url,'self');
+    $this->navigationCatalogLink($this->bbs_root.'/opds'.$url,'self');
     $this->navigationCatalogLink($this->bbs_root.'/opds/', 'start');
     $this->navigationCatalogLink($this->bbs_root.'/opds/tagslist/', 'up');
     # TODO next/prev
@@ -266,7 +266,7 @@ class OpdsGenerator {
       '',
       $url,
       '"'.$tag->name.'"');
-    $this->acquisitionCatalogLink($this->bbs_root.$url,'self');
+    $this->acquisitionCatalogLink($this->bbs_root.'/opds'.$url,'self');
     $this->navigationCatalogLink($this->bbs_root.'/opds/', 'start');
     $this->navigationCatalogLink($this->bbs_root.'/opds/tagslist/'.$initial.'/', 'up');
     # Content
@@ -314,7 +314,7 @@ class OpdsGenerator {
       'opds_by_series5',
       $url,
       '"'.$initial.'"');
-    $this->navigationCatalogLink($this->bbs_root.$url,'self');
+    $this->navigationCatalogLink($this->bbs_root.'/opds'.$url,'self');
     $this->navigationCatalogLink($this->bbs_root.'/opds/', 'start');
     $this->navigationCatalogLink($this->bbs_root.'/opds/serieslist/', 'up');
     # TODO next/prev
@@ -344,7 +344,7 @@ class OpdsGenerator {
       '',
       $url,
       '"'.$series->name.'"');
-    $this->acquisitionCatalogLink($this->bbs_root.$url,'self');
+    $this->acquisitionCatalogLink($this->bbs_root.'/opds'.$url,'self');
     $this->navigationCatalogLink($this->bbs_root.'/opds/', 'start');
     $this->navigationCatalogLink($this->bbs_root.'/opds/serieslist/'.$initial.'/', 'up');
     # Content
@@ -474,7 +474,15 @@ class OpdsGenerator {
     $this->xmlw->startElement('author');
     $this->xmlw->writeElement('name',$entry['book']->author_sort);
     $this->xmlw->endElement();    
+    $this->xmlw->startElement('content');
+    $this->xmlw->writeAttribute('type', 'text/html');
+    $this->xmlw->writeRaw($entry['comment']);
+    $this->xmlw->endElement(); 
+    $this->xmlw->startElement("dc:language");
+    $this->xmlw->text($entry['language']);
+    $this->xmlw->endElement();
     $this->thumbnailLink($titleLink.'/thumbnail/');
+    $this->imageLink($titleLink.'/cover/');
     #$this->detailsLink($titleLink.'/thumbnail/');
     foreach($entry['formats'] as $format) {
       $fname = $format->name;
@@ -485,6 +493,12 @@ class OpdsGenerator {
         $this->indirectDownloadLink($titleLink.'/showaccess/', $mt);
        else      
         $this->directDownloadLink($titleLink.'/file/'.urlencode($fname).'.'.$ext,$mt);
+    }
+    foreach($entry['tags'] as $category) {
+      $this->xmlw->startElement('category');
+      $this->xmlw->writeAttribute('term', $category->name);
+      $this->xmlw->writeAttribute('label', $category->name);
+      $this->xmlw->endElement();
     }
 
     $this->xmlw->endElement();
@@ -607,7 +621,7 @@ class OpdsGenerator {
    * @param  string $href link URL for image
    */
   function imageLink($href) {
-    $this->link($href, 'image/png', 'http://opds-spec.org/image/image');
+    $this->link($href, 'image/jpeg', 'http://opds-spec.org/image');
   }
 
   /**

@@ -13,8 +13,10 @@ class Book extends Item {}
 class BookAuthorLink extends Item {}
 class BookSeriesLink extends Item {}
 class BookTagLink extends Item {}
+class BookLanguageLink extends Item {}
 class Comment extends Item {}
 class Data extends Item {}
+class Language extends Item {}
 class Series extends Item {}
 class SeriesBook extends Item {}
 class Tag extends Item {}
@@ -66,7 +68,7 @@ class Utilities {
 			return 'application/epub+zip';
 		else if (preg_match('/mobi$/', $file_path) == 1) 
 			return 'application/x-mobipocket-ebook';
-		else if (preg_match('/azw$/', $file_path) == 1) 
+		else if (preg_match('/azw3?$/', $file_path) == 1) 
 			return 'application/vnd.amazon.ebook';
 		else if (preg_match('/pdf$/', $file_path) == 1) 
 			return 'application/pdf';

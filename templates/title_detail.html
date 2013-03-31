@@ -41,6 +41,36 @@
 			</div>
 		</div>
 	</div>
+	{% if kindle_format %} 
+	<div data-role="collapsible">
+		<h2>{{page.glob.langa.send_to_kindle}}</h2>
+		{% if protect_dl == true %} 
+		<div class="dl_access">
+			<p>
+				{{ page.glob.langa.check_access_info }}
+			</p>
+			<a data-role="button" data-rel="dialog" href="{{page.rot}}/titles/{{book.id}}/showaccess/">
+				{{ page.glob.langa.check_access }}
+			</a>
+		</div>
+		{% endif %}	
+		<div class ="dl_download" {% if protect_dl == true %} hidden="true" {% endif %}>
+			<p>
+				{{ page.glob.langa.presskey2 }} </br> <strong>{{kindle_from_email}}</strong> {{ page.glob.langa.presskey3 }} 
+			</p>
+			<div data-role="controlgroup" >
+				<form action="{{page.rot}}/titles/{{book.id}}/kindle/{{kindle_format.name|url_encode()}}.{{kindle_format.format|lower}}" method="POST" id="ajax-form" data-ajax="false">
+					<div data-role="fieldcontain" class="ui-hide-label">
+						<label for="kindleEmail" >{{page.glob.langa.kindle_to_email}}</label>
+						<input type="email" id="kindleEmail" data-inline="true" data-clear-btn="true" name="kindleEmail" value="" placeholder="{{page.glob.langa.kindle_to_email}}" />
+						<center><h3 id="ajax-message"></h3></center>
+						<input id="ajax-form-button" type="submit" data-inline="true" data-theme="b" value="{{page.glob.langa.send_now}}"/>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	{% endif %}
 	<aside class="title_detail_image">
 			{% if book.has_cover %}		
 				<img src="{{page.rot}}/titles/{{ book.id }}/cover/" />
@@ -68,6 +98,14 @@
 				<a data-role="button" data-mini="true" data-inline="true" href="{{page.rot}}/tags/{{tag.id}}/0/">{{ tag.name }}</a>
 				{% endfor %}
 			</p>
+		</div>
+		<div id="language">
+				<h2>{{page.glob.langa.language}}</h2>			
+				<div>
+				
+					{{ language }}
+				
+				</div>
 		</div>
 		<div id="comment">
 				<h2>{{page.glob.langa.comment}}</h2>			

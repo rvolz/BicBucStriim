@@ -31,6 +31,8 @@ define('VERSION_URL', 'http://projekte.textmulch.de/bicbucstriim/version.json');
 define('GLOBAL_DL_COOKIE', 'glob_dl_access');
 # Cookie name for admin access
 define('ADMIN_COOKIE', 'admin_access');
+# Cookie name to store Kindle email address
+define('KINDLE_COOKIE', 'kindle_email');
 # Admin password
 define('ADMIN_PW', 'admin_pw');
 # Calibre library path
@@ -47,6 +49,10 @@ define('TAG_PROTECT_FIELD', 'tag_protect_field');
 define('DB_VERSION', 'db_version');
 # Thumbnail generation method
 define('THUMB_GEN_CLIPPED', 'thumb_gen_clipped');
+# Send-To-Kindle enabled/disabled
+define('KINDLE', 'kindle');
+# Send-To-Kindle from-address
+define('KINDLE_FROM_EMAIL', 'kindle_from_email');
 # Page size for list views, no. of elemens
 define('PAGE_SIZE', 'page_size');
 # Displayed app name for page title
@@ -132,6 +138,8 @@ $globalSettings[GLOB_DL_PASSWORD] = '7094e7dc2feb759758884333c2f4a6bdc9a16bb2';
 $globalSettings[GLOB_DL_CHOICE] = 0;
 $globalSettings[TAG_PROTECT_FIELD] = 'magazines';
 $globalSettings[TAG_PROTECT_CHOICE] = 0;
+$globalSettings[KINDLE] = 0;
+$globalSettings[KINDLE_FROM_EMAIL] = '';
 $globalSettings[THUMB_GEN_CLIPPED] = 1;
 $globalSettings[PAGE_SIZE] = 30;
 $globalSettings[DISPLAY_APP_NAME] = $appname;
@@ -169,6 +177,12 @@ if ($bbs->dbOk()) {
 			case TAG_PROTECT_FIELD:
 				$globalSettings[TAG_PROTECT_FIELD] = $config->val;
 				break;	
+			case KINDLE:
+				$globalSettings[KINDLE] = $config->val;
+				break;				
+			case KINDLE_FROM_EMAIL:
+				$globalSettings[KINDLE_FROM_EMAIL] = $config->val;
+				break;		
 			case THUMB_GEN_CLIPPED:
 				$globalSettings[THUMB_GEN_CLIPPED] = $config->val;
 				break;				
@@ -212,6 +226,7 @@ $app->get('/titles/:id/showaccess/', 'htmlCheckConfig', 'showaccess');
 $app->post('/titles/:id/checkaccess/', 'htmlCheckConfig', 'checkaccess');
 $app->get('/titles/:id/cover/', 'htmlCheckConfig', 'cover');
 $app->get('/titles/:id/file/:file', 'htmlCheckConfig', 'book');
+$app->post('/titles/:id/kindle/:file', 'htmlCheckConfig', 'kindle');
 $app->get('/titles/:id/thumbnail/', 'htmlCheckConfig', 'thumbnail');
 $app->get('/titleslist/:id/', 'htmlCheckConfig', 'titlesSlice');
 $app->get('/opds/', 'opdsCheckConfig', 'opdsRoot');
@@ -443,6 +458,15 @@ function admin_change_json() {
 			array_push($errors, 2);
 		}
 	}			
+	## More consistency checks - kindle feature
+	# Switch off Kindle feature, if no valid email address supplied 
+	if ($req_configs[KINDLE] == "1") {
+		if(empty($req_configs[KINDLE_FROM_EMAIL])) {
+			array_push($errors, 5);
+		} elseif (!isEMailValid($req_configs[KINDLE_FROM_EMAIL])) {
+			array_push($errors, 5);
+		}
+	}			
 
 	## Check for a change in the thumbnail generation method
 	if ($req_configs[THUMB_GEN_CLIPPED] != $globalSettings[THUMB_GEN_CLIPPED]) {
@@ -603,6 +627,7 @@ function title($id) {
 		$app->notFound();
 		return;
 	}	
+	$kindle_format = ($globalSettings[KINDLE] == 1) ? $bbs->titleGetKindleFormat($id): NULL;
 	$app->render('title_detail.html',
 		array('page' => mkPage(getMessageString('book_details')), 
 			'calibre_dir' => $calibre_dir,
@@ -612,6 +637,9 @@ function title($id) {
 			'tags' => $details['tags'], 
 			'formats'=>$details['formats'], 
 			'comment' => $details['comment'],
+			'language' => $details['language'],
+			'kindle_format' => $kindle_format,
+			'kindle_from_email' => $globalSettings[KINDLE_FROM_EMAIL],
 			'protect_dl' => is_protected($id))
 	);
 }
@@ -750,6 +778,49 @@ function book($id, $file) {
 		header("Content-length: ".filesize($bookpath));
 		header("Content-type: ".Utilities::titleMimeType($bookpath));
 		readfile_chunked($bookpath);
+	}
+}
+
+
+# Send the selected file to a Kindle e-mail address
+# Route: /titles/:id/kindle/:file
+function kindle($id, $file) {
+	global $app, $bbs, $globalSettings;
+	$book = $bbs->title($id);
+	if (is_null($book)) {
+		$app->getLog()->debug("kindle: book not found: ".$id);
+		$app->response()->status(404);
+		return;
+	}	
+	if (is_protected($id)) {
+		$app->getLog()->warn("kindle: attempt to send a protected book, ".$id);		
+		$app->response()->status(401);
+		return;
+	}
+	# Validate request e-mail format
+	$to_email = $app->request()->post('email');
+	if (!isEMailValid($to_email)) {
+		$app->getLog()->debug("kindle: invalid email, ".$to_email);	
+		echo getMessageString('error_invalid_email');
+		return;
+	} else {
+		$app->deleteCookie(KINDLE_COOKIE);
+		$bookpath = $bbs->titleFile($id, $file);
+		$app->getLog()->debug("kindle: requested file ".$bookpath);
+		$subject = 'BicBucStriim eBook delivery';
+		# try to send with email.class
+		try {
+			$email = new Email($bookpath, $subject, $to_email, $globalSettings[KINDLE_FROM_EMAIL]);
+		# if there was an exception, log it and return gracefully
+		} catch(Exception $e) {
+			$app->getLog()->error('kindle: Email exception '.$e->getMessage());
+			$app->response()->status(401);
+			return;
+		}
+		$app->getLog()->debug('kindle: book delivered to '.$to_email);
+		# Store e-mail address in cookie so user needs to enter it only once
+		$app->setCookie(KINDLE_COOKIE, $to_email);
+		echo getMessageString('send_success');
 	}
 }
 
@@ -1523,6 +1594,10 @@ function readfile_chunked($filename) {
 	$status = fclose($handle);
 	return $status;
 	
+}
+# Check for valid email address format
+function isEMailValid($mail) {
+	return (filter_var($mail, FILTER_VALIDATE_EMAIL) !== FALSE);
 }
 
 
