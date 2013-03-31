@@ -145,6 +145,10 @@ $globalSettings[THUMB_GEN_CLIPPED] = 1;
 $globalSettings[PAGE_SIZE] = 30;
 $globalSettings[DISPLAY_APP_NAME] = $appname;
 
+$knownConfigs = array(ADMIN_PW, CALIBRE_DIR, DB_VERSION, GLOB_DL_PASSWORD, GLOB_DL_CHOICE, 
+	TAG_PROTECT_CHOICE, TAG_PROTECT_FIELD, KINDLE, KINDLE_FROM_EMAIL, THUMB_GEN_CLIPPED, PAGE_SIZE, 
+	DISPLAY_APP_NAME);
+
 # Check if libmcrypt is available
 $globalSettings['crypt'] = function_exists('mcrypt_encrypt');
 $app->getLog()->info('Encryption '.($globalSettings['crypt']==true ? '' : 'not ').'available');
@@ -156,52 +160,26 @@ if ($bbs->dbOk()) {
 	$we_have_config = true;
 	$css = $bbs->configs();
 	foreach ($css as $config) {
-		switch ($config->name) {
-			case ADMIN_PW:
-				$globalSettings[ADMIN_PW] = $config->val;
-				break;			
-			case CALIBRE_DIR:
-				$globalSettings[CALIBRE_DIR] = $config->val;
-				break;
-			case DB_VERSION:
-				$globalSettings[DB_VERSION] = $config->val;
-				break;
-			case GLOB_DL_PASSWORD:
-				$globalSettings[GLOB_DL_PASSWORD] = $config->val;
-				break;
-			case GLOB_DL_CHOICE:
-				$globalSettings[GLOB_DL_CHOICE] = $config->val;
-				break;
-			case TAG_PROTECT_CHOICE:
-				$globalSettings[TAG_PROTECT_CHOICE] = $config->val;
-				break;
-			case TAG_PROTECT_FIELD:
-				$globalSettings[TAG_PROTECT_FIELD] = $config->val;
-				break;	
-			case KINDLE:
-				$globalSettings[KINDLE] = $config->val;
-				break;				
-			case KINDLE_FROM_EMAIL:
-				$globalSettings[KINDLE_FROM_EMAIL] = $config->val;
-				break;		
-			case THUMB_GEN_CLIPPED:
-				$globalSettings[THUMB_GEN_CLIPPED] = $config->val;
-				break;				
-			case PAGE_SIZE:
-				$globalSettings[PAGE_SIZE] = $config->val;
-				break;								
-			case DISPLAY_APP_NAME:
-				$globalSettings[DISPLAY_APP_NAME] = $config->val;
-				break;								
-			default:
-				$app->getLog()->warn(join('',array('Unknown configuration, name: ',
-					$config->name,', value: ',$config->val)));	
-		}
+		if (in_array($config->name, $knownConfigs)) 
+			$globalSettings[$config->name] = $config->val;
+		else 
+			$app->getLog()->warn(join('',
+				array('Unknown configuration, name: ', $config->name,', value: ',$config->val)));	
 	}
 	$app->getLog()->debug("config loaded");
 } else {
-	$app->getLog()->debug("no config db found");
-	$we_have_config = false;
+	$app->getLog()->info("no config db found - creating a new one with default values");
+	$bbs->createDataDb();
+	$bbs = new BicBucStriim();
+	$cnfs = array();
+	foreach($knownConfigs as $name) {
+		$cnf = new Config();
+		$cnf->name = $name;
+		$cnf->val = $globalSettings[$name];
+		array_push($cnfs, $cnf);
+	}
+	$bbs->saveConfigs($cnfs);
+	$we_have_config = true;
 }
 
 ###### Init routes for production

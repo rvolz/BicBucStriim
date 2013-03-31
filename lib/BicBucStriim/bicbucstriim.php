@@ -43,7 +43,6 @@ class BicBucStriim {
 		$this->data_dir = dirname($dataPath);
 		$this->thumb_dir = $this->data_dir;
 		if (file_exists($rp) && is_writeable($rp)) {
-			$this->calibre_last_modified = filemtime($rp);
 			$this->mydb = new PDO('sqlite:'.$rp, NULL, NULL, array());
 			$this->mydb->setAttribute(1002, 'SET NAMES utf8');
 			$this->mydb->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -55,6 +54,21 @@ class BicBucStriim {
 	}
 
 	/**
+	 * Create an empty BBS DB. The thumbnails are stored in the same directory as the db.
+	 * The create DB is empty and must be filled separately.
+	 * @param string $dataPath Path to BBS DB
+	 */
+	function createDataDb($dataPath='data/data.db') {
+		$this->mydb = new PDO('sqlite:'.$dataPath, NULL, NULL, array());
+		$this->mydb->setAttribute(1002, 'SET NAMES utf8');
+		$this->mydb->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+		$this->mydb->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+		$this->mydb->exec('create table configs (name varchar(30),val varchar(256))');   
+		$this->mydb->exec('create unique index configs_names on configs(name)');
+		$this->mydb = null;
+	}
+
+	/**
 	 * Open the Calibre DB
 	 * @param  string $calibrePath 	Path to claibre library
 	 */
@@ -62,6 +76,7 @@ class BicBucStriim {
 		$rp = realpath($calibrePath);
 		$this->calibre_dir = dirname($rp);
 		if (file_exists($rp) && is_readable($rp)) {
+			$this->calibre_last_modified = filemtime($rp);
 			$this->calibre = new PDO('sqlite:'.$rp, NULL, NULL, array());
 			$this->calibre->setAttribute(1002, 'SET NAMES utf8');
 			$this->calibre->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
