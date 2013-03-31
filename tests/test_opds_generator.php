@@ -82,9 +82,13 @@ class TestOfOpdsGenerator extends UnitTestCase {
  <author>
   <name>Grimmelshausen, Hans Jakob Christoffel von</name>
  </author>
+ <content type="text/html"></content>
+ <dc:language>deu</dc:language>
  <link href="/bbs/titles/2/thumbnail/" type="image/png" rel="http://opds-spec.org/image/thumbnail"/>
+ <link href="/bbs/titles/2/cover/" type="image/jpeg" rel="http://opds-spec.org/image"/>
  <link href="/bbs/titles/2/file/Trutz+Simplex+-+Hans+Jakob+Christoffel+von+Grimmelshausen.epub" type="application/epub+zip" rel="http://opds-spec.org/acquisition"/>
  <link href="/bbs/titles/2/file/Trutz+Simplex+-+Hans+Jakob+Christoffel+von+Grimmelshausen.mobi" type="application/x-mobipocket-ebook" rel="http://opds-spec.org/acquisition"/>
+ <category term="Biografien &amp; Memoiren" label="Biografien &amp; Memoiren"/>
 </entry>
 ';
 		$just_book = $this->bbs->title(2);
@@ -106,13 +110,17 @@ function testPartialAcquisitionEntryWithProtection() {
  <author>
   <name>Grimmelshausen, Hans Jakob Christoffel von</name>
  </author>
+ <content type="text/html"></content>
+ <dc:language>deu</dc:language>
  <link href="/bbs/titles/2/thumbnail/" type="image/png" rel="http://opds-spec.org/image/thumbnail"/>
+ <link href="/bbs/titles/2/cover/" type="image/jpeg" rel="http://opds-spec.org/image"/>
  <link href="/bbs/titles/2/showaccess/" type="text/html" rel="http://opds-spec.org/acquisition">
   <opds:indirectAcquisition type="application/epub+zip"/>
  </link>
  <link href="/bbs/titles/2/showaccess/" type="text/html" rel="http://opds-spec.org/acquisition">
   <opds:indirectAcquisition type="application/x-mobipocket-ebook"/>
  </link>
+ <category term="Biografien &amp; Memoiren" label="Biografien &amp; Memoiren"/>
 </entry>
 ';
 		$just_book = $this->bbs->title(2);

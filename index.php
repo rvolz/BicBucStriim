@@ -136,7 +136,7 @@ $globalSettings[CALIBRE_DIR] = '';
 $globalSettings[DB_VERSION] = DB_SCHEMA_VERSION;
 $globalSettings[GLOB_DL_PASSWORD] = '7094e7dc2feb759758884333c2f4a6bdc9a16bb2';
 $globalSettings[GLOB_DL_CHOICE] = 0;
-$globalSettings[TAG_PROTECT_FIELD] = 'magazines';
+$globalSettings[TAG_PROTECT_FIELD] = 'protected';
 $globalSettings[TAG_PROTECT_CHOICE] = 0;
 $globalSettings[KINDLE] = 0;
 $globalSettings[KINDLE_FROM_EMAIL] = '';
@@ -1359,66 +1359,74 @@ function opdsBySearch($index=0) {
 
 /**
  * Check whether the book download must be protected. 
- * The ID parameter is for future use (selective download protection)
  *
  * If libmcrypt is available, encrypted cookies are used.
  * 
- * @param  int  		$id book id, currently not used
+ * @param  int  		$id book id
  * @return boolean  true - the user must enter a password, else no authentication necessary
  */
-function is_protected($id=NULL) {
+function is_protected($id) {
 	global $app, $calibre_dir, $globalSettings, $bbs;
+	$protected = false;
 
 	$pw = getDownloadPassword();
+	if (!is_null($pw)) {
+		$glob_dl_cookie = getOurCookie(GLOBAL_DL_COOKIE);
+		$app->getLog()->debug('is_protected: download protection enabled, cookie: '.$glob_dl_cookie);
+		
+		//check if tag selection is active
+		$tgc 	= $globalSettings[TAG_PROTECT_CHOICE];
+		if ($tgc == 0) { // No selective protection by tags
+			$app->getLog()->debug('is_protected: using global download protection');		
+			$protected = checkPWCookie($glob_dl_cookie, $pw);
+		} else { // tag selection is active, check if control is ok
+			$app->getLog()->debug('is_protected: using selective download protection');		
+			$has_protective_tag = isProtectedByTag($id);
+			if ($has_protective_tag) {
+				$protected = checkPWCookie($glob_dl_cookie, $pw);
+			} else {
+				$protected = false;
+			}
+		}
+	} else {
+		$app->getLog()->debug('is_protected: download protection disabled');		
+		$protected = false;
+	}
+	$app->getLog()->debug('is_protected: result '+$protected);		
+	return $protected;
+}
+
+function checkPWCookie($cookie, $pw) {
+	if (is_null($cookie))
+		return true;
+	else {
+		if ($cookie === $pw)
+			return false;
+		else
+			return true;
+	}
+}
+
+# Utility to check whether the book with ID $id contains a tag, that is marked as protected
+function isProtectedByTag($id) {
+	global $globalSettings, $bbs;
+
 	//field need to check for tag protection
-	$tgc 	= $globalSettings[TAG_PROTECT_CHOICE];
 	$ctags	= $globalSettings[TAG_PROTECT_FIELD];
 	
 	$details = $bbs->titleDetails($id);
 	$allTags = $details['tags'];
 	
-	//check if tags exist for this book, if ok then search
-	//need to add codefor checking this
-	
 	//search if tag is the same as in admin settings
-	$ct = 0;
-	if(!is_null($pw) && $tgc == 1){
-		foreach ($allTags as &$aTag) {
-		//$app->getLog()->debug('tagname: '.$alTag->name);
-			$tagName = $aTag->name;
-			
-			if($tagName == $ctags){
-				$ct = 1;
-			}
+	$ct = false;
+	foreach ($allTags as &$aTag) {
+		$tagName = $aTag->name;			
+		if ($tagName == $ctags){
+			$ct = true;
 		}
 	}
-	
-	if (!is_null($pw)) {
-		$glob_dl_cookie = getOurCookie(GLOBAL_DL_COOKIE);
-		$app->getLog()->debug('is_protected: global download protection enabled, cookie: '.$glob_dl_cookie);
-		
-		//check if tag selection is active
-		if($tgc != 1){
-			if (is_null($glob_dl_cookie))
-				return true;
-			else {
-				if ($glob_dl_cookie === $pw)
-					return false;
-				else
-					return true;
-			}
-		//if tag selection is active, check if control is ok
-		}elseif($tgc == 1 && $ct == 1){
-			return true;
-		}else{
-			return false;
-		}
-	} else {
-		$app->getLog()->debug('is_protected: global download protection disabled');		
-		return false;
-	}
+	return $ct;
 }
-
 
 # Utility function to fill the page array
 function mkPage($subtitle='', $menu=0, $dialog=false) {

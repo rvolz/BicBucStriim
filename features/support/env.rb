@@ -10,6 +10,10 @@ Capybara.register_driver :selenium do |app|
   	require 'selenium/webdriver'
   	profile = Selenium::WebDriver::Firefox::Profile.new
  		profile["intl.accept_languages"] = "en-us,en"
+ 		profile["browser.cache.disk.enable"] = false
+		profile["browser.cache.memory.enable"] = false
+		profile["browser.cache.offline.enable"] = false
+		profile["network.http.use-cache"] = false
   	Capybara::Selenium::Driver.new(app, :profile => profile)
 	end
 Capybara.default_driver = :selenium

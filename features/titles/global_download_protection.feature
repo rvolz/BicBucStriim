@@ -7,7 +7,7 @@ Feature: Protect book downloads with a global password
 		Given I choose no download protection
 		When a user navigates to book page "4"
 		Then the page shows the download options
-		
+	
 	Scenario: download protected with admin password
 		Given I choose admin download protection, using password "admin"
 		When a user navigates to book page "4"
@@ -22,13 +22,16 @@ Feature: Protect book downloads with a global password
 		Given I choose admin download protection, using password "admin"
 		When a user navigates to book page "4"
 		And enters the password "admin"
+		And a user navigates to book page "4"
 		Then the page shows the download options
 		And the cookie "glob_dl_access" is set
+
 
 	Scenario: access with separate password
 		Given I choose separate download protection, using password "separate"
 		When a user navigates to book page "4"
 		And enters the password "separate"
+		And a user navigates to book page "4"
 		Then the page shows the download options
 		And the cookie "glob_dl_access" is set
 
