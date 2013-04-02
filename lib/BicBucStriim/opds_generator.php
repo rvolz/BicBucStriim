@@ -476,7 +476,7 @@ class OpdsGenerator {
     $this->xmlw->endElement();    
     $this->xmlw->startElement('content');
     $this->xmlw->writeAttribute('type', 'text/html');
-    $this->xmlw->writeRaw($entry['comment']);
+    $this->xmlw->text($entry['comment']);
     $this->xmlw->endElement(); 
     $this->xmlw->startElement("dc:language");
     $this->xmlw->text($entry['language']);
