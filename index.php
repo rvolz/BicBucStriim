@@ -780,20 +780,20 @@ function kindle($id, $file) {
 	$to_email = $app->request()->post('email');
 	if (!isEMailValid($to_email)) {
 		$app->getLog()->debug("kindle: invalid email, ".$to_email);	
-		echo getMessageString('error_invalid_email');
+		$app->response()->status(400);
 		return;
 	} else {
 		$app->deleteCookie(KINDLE_COOKIE);
 		$bookpath = $bbs->titleFile($id, $file);
 		$app->getLog()->debug("kindle: requested file ".$bookpath);
-		$subject = 'BicBucStriim eBook delivery';
+		$subject = $globalSettings[DISPLAY_APP_NAME];
 		# try to send with email.class
 		try {
 			$email = new Email($bookpath, $subject, $to_email, $globalSettings[KINDLE_FROM_EMAIL]);
 		# if there was an exception, log it and return gracefully
 		} catch(Exception $e) {
 			$app->getLog()->error('kindle: Email exception '.$e->getMessage());
-			$app->response()->status(401);
+			$app->response()->status(503);
 			return;
 		}
 		$app->getLog()->debug('kindle: book delivered to '.$to_email);
