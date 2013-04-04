@@ -29,7 +29,7 @@
 			<p>
 				{{ page.glob.langa.presskey }}
 			</p>
-			<div data-role="controlgroup" data-type="horizontal">
+			<div data-role="controlgroup" data-type="horizontal" class="downButtons">
 				{% for format in formats %}				
 						<a data-role="button" 
 							{% if page.glob.glob_dl_toggle == true %} disabled="true" {% endif %} 
@@ -38,38 +38,33 @@
 								{{ format.format }}
 						</a>
 				{% endfor %}
+				{% if kindle_format %}
+					<input id="kindleButton" type="button" data-inline="true" data-icon="forward" value="{{page.glob.langa.send_to_kindle}}" />
+				{% endif %}
 			</div>
 		</div>
 	</div>
-	{% if kindle_format %} 
-	<div data-role="collapsible">
-		<h2>{{page.glob.langa.send_to_kindle}}</h2>
-		{% if protect_dl == true %} 
-		<div class="dl_access">
-			<p>
-				{{ page.glob.langa.check_access_info }}
-			</p>
-			<a data-role="button" data-rel="dialog" href="{{page.rot}}/titles/{{book.id}}/showaccess/">
-				{{ page.glob.langa.check_access }}
-			</a>
+	{% if kindle_format %}
+	    <div data-role="popup" id="kindlePopup" data-overlay-theme="a" data-theme="c" style="max-width:450px;" class="ui-corner-all" data-transition="pop">
+	      <div data-role="header" data-theme="a" class="ui-corner-top">
+	        <h1>{{page.glob.langa.send_to_kindle}}</h1>
+	      </div>
+	      <div data-role="content" data-theme="d" class="ui-corner-bottom ui-content">
+	        <h4 class="ui-title">{{ page.glob.langa.presskey2 }}</h4>
+	        <p><em>{{kindle_from_email}}</em> {{ page.glob.langa.presskey3 }}</p>
+			<form action="{{page.rot}}/titles/{{book.id}}/kindle/{{kindle_format.name|url_encode()}}.{{kindle_format.format|lower}}" method="POST" id="ajax-form" data-ajax="false">
+			<div style="padding:5px 0 0 5px;max-width:280px;">
+				<label for="kindleEmail" class="ui-hidden-accessible">{{page.glob.langa.kindle_to_email}}</label>
+				<input type="email" name="kindleEmail" id="kindleEmail" value="" placeholder="{{page.glob.langa.kindle_to_email}}" data-theme="d" data-clear-btn="true" />
+		  	</div>
+	      	<div id="ajax-message" style="height:0.7em;padding-bottom:5px;">
+	        	<span id="msg" style="color:red;display:none;"><small>{{ page.glob.langa.error_kindle_send }}</small></span> 
+	      	</div>
+	      	<input id="ajax-form-button" type="submit" data-inline="true" data-theme="b" value="{{page.glob.langa.send_now}}"/>
+	      	<a href="#" data-role="button" data-inline="true" data-rel="back" data-theme="c">{{page.glob.langa.cancel}}</a>  
+	        </form> 
+		  </div>
 		</div>
-		{% endif %}	
-		<div class ="dl_download" {% if protect_dl == true %} hidden="true" {% endif %}>
-			<p>
-				{{ page.glob.langa.presskey2 }} </br> <strong>{{kindle_from_email}}</strong> {{ page.glob.langa.presskey3 }} 
-			</p>
-			<div data-role="controlgroup" >
-				<form action="{{page.rot}}/titles/{{book.id}}/kindle/{{kindle_format.name|url_encode()}}.{{kindle_format.format|lower}}" method="POST" id="ajax-form" data-ajax="false">
-					<div data-role="fieldcontain" class="ui-hide-label">
-						<label for="kindleEmail" >{{page.glob.langa.kindle_to_email}}</label>
-						<input type="email" id="kindleEmail" data-inline="true" data-clear-btn="true" name="kindleEmail" value="" placeholder="{{page.glob.langa.kindle_to_email}}" />
-						<center><h3 id="ajax-message"></h3></center>
-						<input id="ajax-form-button" type="submit" data-inline="true" data-theme="b" value="{{page.glob.langa.send_now}}"/>
-					</div>
-				</form>
-			</div>
-		</div>
-	</div>
 	{% endif %}
 	<aside class="title_detail_image">
 			{% if book.has_cover %}		

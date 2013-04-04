@@ -87,25 +87,24 @@ $(document).on('pageinit', function() {
 
 	$("#ajax-message").ajaxError(function(event, request, settings, exception) {
 	$.mobile.hidePageLoadingMsg();
-	$("#ajax-message").text("Error! HTTP Code: " + request.status);
+	//$("#ajax-message").text("Error! HTTP Code: " + request.status);
+	$("#ajax-message").find('span#msg').fadeIn();
 	setTimeout(function() { 
 	  $("#ajax-form-button").button('enable');
-	  $("#ajax-message").text('');
-	}, 3000);
+	  $("#ajax-message").find('span#msg').fadeOut(); 
+	}, 2000);
 	});
 
 	function onSuccess(data)
 	{
 	  data = $.trim(data);
 	  $.mobile.hidePageLoadingMsg();
-	  $("#ajax-form-button").attr('value',data);
-	  $("#ajax-form-button").button('refresh');
-	  setTimeout(function() { 
-	    $("#ajax-form-button").attr('value',buttontext);
-	    $("#ajax-form-button").button('refresh');
-	    $("#ajax-form-button").button('enable');
-	  }, 2000);
-
+	  $( "#kindlePopup" ).popup( "close" )
+	  $("#kindleButton").attr('value',data);
+	  $("#kindleButton").buttonMarkup({ icon: "check" });
+	  $("#kindleButton").button('refresh');
+	  $("#kindleButton").button('disable');
+	  $(".downButtons").controlgroup('refresh', true);
 	}
 
 	/* If cookie 'kindleEmail' is found, pre-populate form input*/
@@ -115,5 +114,7 @@ $(document).on('pageinit', function() {
 
 });
 
-
+$(document).on('vclick', '#kindleButton', function(){
+  $('#kindlePopup').popup('open', { positionTo: 'window', transition: 'pop' } );
+});
 
