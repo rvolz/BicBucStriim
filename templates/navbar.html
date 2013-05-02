@@ -1,14 +1,8 @@
 {% if curpage != NULL %}
 	{% if curpage > 0 %}
-		<a  data-icon="arrow-l" data-role="button" class="ui-btn-left" 
+		<a  data-icon="arrow-l" data-role="button" class="ui-btn-left"
 				href="{{page.rot}}/{{url}}/{{curpage - 1}}/{% if search != NULL %}?search={{search}}{% endif %}">
 			{{page.glob.langa.pagination_prev}}
-		</a>	
-	{% endif %}
-	{% if curpage+1 < pages %}
-		<a data-icon="arrow-r" data-role="button" class="ui-btn-right" 
-			 href="{{page.rot}}/{{url}}/{{curpage + 1}}/{% if search != NULL %}?search={{search}}{% endif %}">
-			{{page.glob.langa.pagination_next}}
 		</a>	
 	{% endif %}
 	<h1>
@@ -18,13 +12,24 @@
 			{{page.glob.langa.pagination_page}} 
 		{% endif %}
 		{{ curpage+1 }}/{{ pages }}
-		</h1>
+	</h1>
+	{% if curpage+1 < pages %}
+		<a data-icon="arrow-r" data-role="button"  class="ui-btn-right"
+			 href="{{page.rot}}/{{url}}/{{curpage + 1}}/{% if search != NULL %}?search={{search}}{% endif %}">
+			{{page.glob.langa.pagination_next}}
+		</a>	
+	{% endif %}
+
 {% else %}
-	<a href="{{page.rot}}/admin/" data-icon="gear" class="ui-btn-left">{{ page.glob.langa.admin_short }}</a>
+	<a href="{{page.rot}}/admin/" data-icon="gear" class="ui-btn-left">
+		{{ page.glob.langa.admin_short }}
+	</a>
 	<h1>{{ page.title }}</h1>
-{% endif %}
-{% if page.menu == 0 %}
-<a  data-icon="back" data-rel="back" class="ui-btn-right">{{ page.glob.langa.back }}</a>
+	{% if page.menu == 0 %}
+		<a  data-icon="back" data-rel="back" class="ui-btn-right">
+			{{ page.glob.langa.back }}
+		</a>
+	{% endif %}
 {% endif %}
 <div data-role="navbar">
 	<ul>		
