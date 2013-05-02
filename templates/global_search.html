@@ -39,13 +39,13 @@
 		<h3>{{page.glob.langa.tags}}:  {{tags_total}}</h3>
 		<ul data-role="listview" data-filter="false">	
 			{% for tag in tags %}
-				<li data-theme="a">
+				<li>
 					<a href="{{page.rot}}/tags/{{ tag.id }}/0/">{{ tag.name }}
 					<span class="ui-li-count">{{ tag.anzahl }}</span></a>
 				</li>
 		  {% endfor %}
 		  {% if more_tags %}
-		  		<li>
+		  		<li data-theme="a">
 		  			<a href="{{page.rot}}/tagslist/0/?search={{search}}">{{tags_total}} {{page.glob.langa.tags}}...</a>
 				</li>
 			{% endif %}
