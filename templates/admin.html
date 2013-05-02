@@ -24,7 +24,13 @@
 		<p class="error">{{page.glob.langa.unknown_error1}}</p>
 	{% endif %}
 	{% endfor %}
-
+	{% if errors %}
+		<p>
+			<a href="{{page.rot}}/installcheck.php">
+				{{page.glob.langa.check_installation}}
+			</a>
+		</p>
+	{% endif %}
 </div>	
 
 {% if isadmin == false %}
