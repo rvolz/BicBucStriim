@@ -10,7 +10,7 @@ end
 
 @javascript
 When /^I navigate to the home page$/ do
-	all(:link, 'Home')[1].click
+	all(:link, 'Home')[0].click
 end
 
 Then /^I see my (\d+) newest books$/ do |arg1|  

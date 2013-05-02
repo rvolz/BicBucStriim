@@ -1,0 +1,71 @@
+{% extends 'main.html' %}
+
+{% block headerlinks %}
+{% endblock %}
+
+{% block content %}
+<div data-role="collapsible-set">
+	<div data-role="collapsible">
+		<h3>{{page.glob.langa.titles}}: {{books_total}}</h3>
+		<ul data-role="listview" data-filter="false">	
+			{% for book in books %}
+				{% include "title_entry.html" %}
+		  	{% endfor %}
+		  	{% if more_books %}
+		  		<li data-theme="a">
+		  			<a href="{{page.rot}}/titleslist/0/?search={{search}}">{{books_total}} {{page.glob.langa.titles}} ...</a>
+				</li>
+			{% endif %}
+		</ul>
+	</div>
+	<div data-role="collapsible">
+		<h3>{{page.glob.langa.authors}}:  {{authors_total}}</h3>
+		<ul data-role="listview" data-filter="false">	
+			{% for author in authors %}
+				<li>
+				<a href="{{page.rot}}/authors/{{ author.id }}/0/">{{ author.sort }}
+					<span class="ui-li-count">{{author.anzahl}}</span>
+				</a>
+			</li>
+		  {% endfor %}
+		  {% if more_authors %}
+		  		<li data-theme="a">
+		  			<a href="{{page.rot}}/authorslist/0/?search={{search}}">{{authors_total}} {{page.glob.langa.authors}}...</a>
+				</li>
+			{% endif %}
+		</ul>
+	</div>
+	<div data-role="collapsible">
+		<h3>{{page.glob.langa.tags}}:  {{tags_total}}</h3>
+		<ul data-role="listview" data-filter="false">	
+			{% for tag in tags %}
+				<li data-theme="a">
+					<a href="{{page.rot}}/tags/{{ tag.id }}/0/">{{ tag.name }}
+					<span class="ui-li-count">{{ tag.anzahl }}</span></a>
+				</li>
+		  {% endfor %}
+		  {% if more_tags %}
+		  		<li>
+		  			<a href="{{page.rot}}/tagslist/0/?search={{search}}">{{tags_total}} {{page.glob.langa.tags}}...</a>
+				</li>
+			{% endif %}
+		</ul>
+	</div>
+	<div data-role="collapsible">
+		<h3>{{page.glob.langa.series}}:  {{series_total}}</h3>
+		<ul data-role="listview" data-filter="false">	
+			{% for this_series in series %}
+				<li>
+				<a href="{{page.rot}}/series/{{ this_series.id }}/0/">{{ this_series.name }}
+				<span class="ui-li-count">{{ this_series.anzahl }}</span></a>
+			</li>
+		  {% endfor %}
+		  {% if more_series %}
+		  		<li data-theme="a">
+		  			<a href="{{page.rot}}/serieslist/0/?search={{search}}">{{series_total}} {{page.glob.langa.series}}...</a>
+				</li>
+			{% endif %}
+		</ul>
+	</div>
+</div>
+{% endblock %}

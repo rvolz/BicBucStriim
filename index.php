@@ -194,6 +194,7 @@ $app->get('/admin/error/:id', 'admin_error');
 #$app->get('/authors/:id/', 'htmlCheckConfig', 'author');
 $app->get('/authors/:id/:page/', 'htmlCheckConfig', 'authorDetailsSlice');
 $app->get('/authorslist/:id/', 'htmlCheckConfig', 'authorsSlice');
+$app->get('/search/', 'htmlCheckConfig', 'globalSearch');
 #$app->get('/series/:id/', 'htmlCheckConfig', 'series');
 $app->get('/series/:id/:page/', 'htmlCheckConfig', 'seriesDetailsSlice');
 $app->get('/serieslist/:id/', 'htmlCheckConfig', 'seriesSlice');
@@ -336,6 +337,7 @@ function main() {
 		$book->formats = $bbs->titleGetFormats($book->id);
 	}
 	$ts3 = time();
+
 	$app->render('index_last30.html',array(
 		'page' => mkPage(getMessageString('dl30'),1), 
 		'books' => $books));	
@@ -575,6 +577,36 @@ function admin_is_protected() {
 	}	
 }
 
+# Make a search over all categories. Returns only the first PAGES_SIZE items per category.
+# If there are more entries per category, there will be a link to the full results.
+function globalSearch() {
+	global $app, $globalSettings, $bbs;
+
+	$search = $app->request()->get('search');
+	$app->getLog()->debug("globalSearch started for search ".$search);
+	$tlb = $bbs->titlesSlice(0,$globalSettings[PAGE_SIZE],trim($search));
+	$tla = $bbs->authorsSlice(0,$globalSettings[PAGE_SIZE],trim($search));
+	$tlt = $bbs->tagsSlice(0,$globalSettings[PAGE_SIZE],trim($search));
+	$tls = $bbs->seriesSlice(0,$globalSettings[PAGE_SIZE],trim($search));
+	foreach ($tlb['entries'] as $book)
+		$book->formats = $bbs->titleGetFormats($book->id);
+	$app->render('global_search.html',array(
+		'page' => mkPage(getMessageString('pagination_search'),0), 
+		'books' => $tlb['entries'],
+		'books_total' => $tlb['total'] == -1 ? 0 : $tlb['total'],
+		'more_books' => ($tlb['total'] > $globalSettings[PAGE_SIZE]),
+		'authors' => $tla['entries'],
+		'authors_total' => $tla['total'] == -1 ? 0 : $tla['total'],
+		'more_authors' => ($tla['total'] > $globalSettings[PAGE_SIZE]),
+		'tags' => $tlt['entries'],
+		'tags_total' => $tlt['total'] == -1 ? 0 : $tlt['total'],
+		'more_tags' => ($tlt['total'] > $globalSettings[PAGE_SIZE]),
+		'series' => $tls['entries'],
+		'series_total' => $tls['total'] == -1 ? 0 : $tls['total'],
+		'more_series' => ($tls['total'] > $globalSettings[PAGE_SIZE]),
+		'search' => $search));
+}
+
 # A list of titles at $index -> /titlesList/:index
 function titlesSlice($index=0) {
 	global $app, $globalSettings, $bbs;
@@ -582,6 +614,7 @@ function titlesSlice($index=0) {
 	$app->getLog()->debug("titlesSlice started for index ".$index);
 	$search = $app->request()->get('search');
 	if (isset($search)) {
+		$app->getLog()->debug("search ".$search);
 		$tl = $bbs->titlesSlice($index,$globalSettings[PAGE_SIZE],trim($search));
 	} else
 		$tl = $bbs->titlesSlice($index,$globalSettings[PAGE_SIZE]);
