@@ -9,3 +9,10 @@
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule ^(.*)$ index.php [QSA,L]
 </IfModule>
+
+# protect database
+<FilesMatch data.db>
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
