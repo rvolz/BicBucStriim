@@ -2,7 +2,7 @@
 /**
  * BicBucStriim
  *
- * Copyight 2012 Rainer Volz
+ * Copyright 2012-2013 Rainer Volz
  * Licensed under MIT License, see LICENSE
  * 
  */ 
@@ -22,7 +22,7 @@ $fallbackLang = 'en';
 # Application Name
 $appname = 'BicBucStriim';
 # App version
-$appversion = '1.0.1';
+$appversion = '1.1.0';
 # Current DB schema version
 define('DB_SCHEMA_VERSION', '2');
 
@@ -62,8 +62,8 @@ define('DISPLAY_APP_NAME', 'display_app_name');
 # Init app and routes
 $app = new Slim(array(
 	'view' => new View_Twig(),
-	#'mode' => 'production',
-	'mode' => 'development',
+	'mode' => 'production',
+	#'mode' => 'development',
 ));
 
 $app->configureMode('production','confprod');
