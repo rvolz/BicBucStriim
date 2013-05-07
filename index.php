@@ -639,6 +639,8 @@ function title($id) {
 		$app->notFound();
 		return;
 	}	
+	$ccs = $bbs->customColumns($id);
+	sort($ccs);
 	$kindle_format = ($globalSettings[KINDLE] == 1) ? $bbs->titleGetKindleFormat($id): NULL;
 	$app->render('title_detail.html',
 		array('page' => mkPage(getMessageString('book_details')), 
@@ -650,6 +652,7 @@ function title($id) {
 			'formats'=>$details['formats'], 
 			'comment' => $details['comment'],
 			'language' => $details['language'],
+			'ccs' => $ccs,
 			'kindle_format' => $kindle_format,
 			'kindle_from_email' => $globalSettings[KINDLE_FROM_EMAIL],
 			'protect_dl' => is_protected($id))

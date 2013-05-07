@@ -589,8 +589,65 @@ class BicBucStriim {
 			$comment_text = '';
 		else
 			$comment_text = $comment->text;		
-		return array('book' => $book, 'authors' => $authors, 'series' => $series, 'tags' => $tags, 
-			'formats' => $formats, 'comment' => $comment_text, 'language' => $lang_text);
+		$customColumns = $this->customColumns($id);
+		return array('book' => $book, 
+			'authors' => $authors, 
+			'series' => $series, 
+			'tags' => $tags, 
+			'formats' => $formats, 
+			'comment' => $comment_text, 
+			'language' => $lang_text,
+			'custom' => $customColumns);
+	}
+
+	# Add a new cc value. If the key already exists, combine the values with a string join.
+	function addCc($def, $value, $result) {
+		if (array_key_exists($def->name, $result)) {
+			$oldv = $result[$def->name];
+			$oldv['value'] = $oldv['value'].', '.$value;
+			$result[$def->name] = $oldv;
+		} else
+			$result[$def->name] = array('name'=>$def->name,'type'=>$def->datatype, 'value'=>$value);
+		return $result;
+	}
+
+	/**
+	* Find the custom colums for a book.
+	* Composite columns are ignored, because there are (currently?) no values in 
+	* the db tables.
+	* @param  integer 	$book_id 	ID of the book
+	* @return array 				an array of arrays. one entry for each custom column
+	*								with name, type and value
+	*/
+	function customColumns($book_id){
+		$columns = $this->find('CustomColumns', 'select * from custom_columns');
+		$ccs = array();
+		foreach ($columns as $column) {
+			$column_id = $column->id;
+			if ($column->datatype == 'composite' || $column->datatype == 'series') {
+				# composites have no data in the tables; they are template expressions
+				# that are apparently evalued dynamically, so we ignore them
+				# series contain two data values -- one in the link table, one in the cc table -- handling?
+				continue;
+			} else if ($column->datatype == 'text' || $column->datatype == 'enumeration' || $column->datatype == 'rating') {
+				# these have extra link tables
+				$lvs = $this->find('BooksCustomColumnLink', 'select * from books_custom_column_'.$column_id.'_link where book='.$book_id);
+				foreach ($lvs as $lv) {
+					$cvs = $this->find('CustomColumn', 'select * from custom_column_'.$column_id.' where id='.$lv->value);
+					foreach ($cvs as $cv) {
+						$ccs = $this->addCc($column, $cv->value, $ccs);
+					}
+				}
+			} else {
+				# these need just the cc table
+				$cvs = $this->find('CustomColumn', 'select * from custom_column_'.$column_id.' where book='.$book_id);
+				foreach ($cvs as $cv) {
+					$ccs = $this->addCc($column, $cv->value, $ccs);
+				}
+			}
+		}
+
+		return $ccs;
 	}
 
 	/**

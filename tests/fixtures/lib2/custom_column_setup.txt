@@ -1,0 +1,44 @@
+# Custom Columns in Calibre library *lib2*
+
+* Col1: text, column for tag browser, - table books_custom_column_7_link, book, value
+* Col2: text, comma-separated, for tags  - table: books_custom_column_8_link, book, value
+* Col3: text, long text, comments
+* Col4: text, column for series information - table: books_custom_column_10_link, book, value, extra (real)
+* Col5: text with pre-defined values: W1, W2, W3 with corresponding colors red, green, blue - table: books_custom_column_11_link, book, value
+* Col6: date, default format
+* Col7: floating point number, default format 
+* Col8: integer number, default format
+* Col9: ratings - table: books_custom_column_6_link, book, value
+* Col10: boolean
+* Col11: composite column
+* Col12: composite column, like keywords
+
+
+## Column defintions
+
+### Table schema
+
+* id      INTEGER PRIMARY KEY AUTOINCREMENT,
+* label    TEXT NOT NULL,
+* name     TEXT NOT NULL,
+* datatype TEXT NOT NULL,
+* mark_for_delete   BOOL DEFAULT 0 NOT NULL,
+* editable BOOL DEFAULT 1 NOT NULL,
+* display  TEXT DEFAULT "{}" NOT NULL,
+* is_multiple BOOL DEFAULT 0 NOT NULL,
+* normalized BOOL NOT NULL,
+
+### Table content
+
+5|col8|Col8|int|0|1|{"number_format": null}|0|0
+6|col9|Col9|rating|0|1|{}|0|1
+7|col1|Col1|text|0|1|{"use_decorations": 0}|0|1
+8|col2|Col2|text|0|1|{"is_names": false}|1|1
+9|col3|Col3|comments|0|1|{}|0|0
+10|col4|Col4|series|0|1|{}|0|1
+11|col5|Col5|enumeration|0|1|{"enum_colors": ["red", "green", "blue"], "use_decorations": 0, "enum_values": ["W1", "W2", "W3"]}|0|1
+12|col6|Col6|datetime|0|1|{"date_format": null}|0|0
+13|col7|Col7|float|0|1|{"number_format": null}|0|0
+14|col12|Col12|composite|0|1|{"composite_template": "{title}: {author}", "composite_sort": "text", "contains_html": false, "make_category": false}|1|0
+15|col10|Col10|bool|0|1|{}|0|0
+16|col11|Col11|composite|0|1|{"composite_template": "{title}:{author}", "composite_sort": "text", "contains_html": false, "make_category": false, "use_decorations": 0}|0|0

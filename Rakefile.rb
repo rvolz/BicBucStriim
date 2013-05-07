@@ -5,6 +5,7 @@
 
 require 'rake/clean'
 require 'rake/packagetask'
+require 'less'
 #require 'cucumber'
 #require 'cucumber/rake/task'
 require 'fileutils'
@@ -23,6 +24,32 @@ rescue LoadError
   env = nil
   puts STDERR, "*** Vagrant not installed. Integration testing tasks disabled. ***"
 end
+
+SOURCE = "."
+LESS = File.join( SOURCE, "style")
+CONFIG = {
+  'less' => File.join( LESS, "" ),
+  'css' => File.join( LESS, "" ),
+  'input' => "style.less",
+  'output' => "style.css"
+}
+ 
+desc "Compile Less"
+task :lessc do
+  less = CONFIG['less']
+ 
+  input = File.join( less, CONFIG['input'] )
+  output = File.join( CONFIG['css'], CONFIG['output'] )
+ 
+  source = File.open( input, "r" ).read
+ 
+  parser = Less::Parser.new( :paths => [less] )
+  tree = parser.parse( source )
+ 
+  File.open( output, "w+" ) do |f|
+    f.puts tree.to_css( :compress => true )
+  end
+end # task :lessc
 
 desc "Make a release package"
 task :package2 do |t|
@@ -106,7 +133,7 @@ if env
   end
 
   desc "Deploy the current code for testing to the VM dirs"
-  task :itest_deploy2 => [:package2] do |t|    
+  task :itest_deploy2 => [:lessc, :package2] do |t|    
     code_target = "./tests/work/src"
     lib_target = "./tests/work/calibre"
 

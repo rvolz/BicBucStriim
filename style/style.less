@@ -20,14 +20,30 @@ body {
     width: 40%;
     float: left;
     img {
-      max-width: 100%;  
+      max-width: 90%;  
     }  
   }
   .title_details {  
     width: 55%;
     float: right;
     padding-left: 1%;
-  }  
+  } 
+
+}
+
+
+table#custom_columns_table {  
+  tbody th {
+    border-bottom: 1px dotted gray;
+    border-right: 1px dotted gray;
+    text-align: right;
+    vertical-align: top;
+    padding: 10px;
+  }
+  td {
+    border-bottom: 1px dotted gray;
+    padding: 10px;
+  }
 }
 
 .multicol (@cc: 1, @cgap: 20px) {
@@ -62,18 +78,22 @@ div#flash  {
 }  
 
 
-@media (max-width: 480px) {
-  .title_detail_image {
+@media (max-width: 768px) {
+  .title_detail .title_detail_image {
     float: none;
-    width: 100%;
+    margin-left:auto;
+    margin-right:auto;
+    img {
+      display:block;
+    }
   }
-  .title_details {  
+  .title_detail .title_details {  
+    margin-left:auto;
+    margin-right:auto;
     width: 100%;
     float: none;
-    padding-left: 1%;
   }
 }
-@media (max-width: 768px) {}
 @media (min-width: 768px) and (max-width: 980px) {}
 @media (min-width: 1200px) {}
 

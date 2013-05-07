@@ -67,9 +67,9 @@
 		</div>
 	{% endif %}
 	<aside class="title_detail_image">
-			{% if book.has_cover %}		
-				<img src="{{page.rot}}/titles/{{ book.id }}/cover/" />
-			{% endif %}		
+		{% if book.has_cover %}		
+		<img src="{{page.rot}}/titles/{{ book.id }}/cover/" />
+		{% endif %}		
 	</aside>
 	<section class="title_details">
 		<div id="authors" data-role="collapsible" data-collapsed="false">
@@ -94,23 +94,53 @@
 				{% endfor %}
 			</p>
 		</div>
-		<div id="language">
-				<h2>{{page.glob.langa.language}}</h2>			
-				<div>
-				
-					{{ language }}
-				
-				</div>
+		<div id="custom_columns" data-role="collapsible">
+			<h4>{{page.glob.langa.custom_columns}}</h4>			
+			<table id="custom_columns_table">
+				<tbody>
+					{% for cc in ccs %}
+					<tr>
+						<th>
+							{{cc.name}}
+						</th>
+						<td>
+							{% if cc.type == 'comments' %}
+								{% autoescape false %}{{cc.value}}{% endautoescape %}
+							{% else %}
+								{% if cc.type == 'rating' %}
+									{% set i = cc.value/2 %}
+									{% for y in 1..i %}
+										 &#10033
+									{% endfor %}
+								{% else %}
+									{% if cc.type == 'bool' %}
+										{% if cc.value == 1 %}
+										 	&#10004;
+										{% else %}	 
+											 &#10006;
+										{% endif %}			 
+									{% else %}
+										{{cc.value}}
+									{% endif %}	
+								{% endif %}
+							{% endif %}
+						</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
 		</div>
 		<div id="comment">
-				<h2>{{page.glob.langa.comment}}</h2>			
+			{% if comment%}
+				<h4>{{page.glob.langa.comment}}</h4>			
 				<div>
 					{% autoescape false %}
 					{{ comment }}
 					{% endautoescape %}
 				</div>
+			{% endif %}
 		</div>
-	</section>	
+	</section>
 </section>
 
 

@@ -11,16 +11,20 @@ class Author extends Item {}
 class AuthorBook extends Item {}
 class Book extends Item {}
 class BookAuthorLink extends Item {}
+class BooksCustomColumnLink extends Item {}
 class BookSeriesLink extends Item {}
 class BookTagLink extends Item {}
 class BookLanguageLink extends Item {}
 class Comment extends Item {}
+class CustomColumn extends Item {}
+class CustomColumns extends Item {}
 class Data extends Item {}
 class Language extends Item {}
 class Series extends Item {}
 class SeriesBook extends Item {}
 class Tag extends Item {}
 class TagBook extends Item {}
+
 
 # Confiuration items in the BBS DB
 class Config extends Item{}
