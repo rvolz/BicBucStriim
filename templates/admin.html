@@ -91,24 +91,6 @@
 		<input name="glob_dl_password" id="glob_dl_password" type="text" 
 			value="{{page.glob.glob_dl_password}}" placeholder="{{page.glob.langa.glob_dl_pw2}}" />
 	</fieldset>
-<fieldset data-role="fieldcontain">
-		<label for="kindle">{{page.glob.langa.kindle_enable}}</label>
-		<select name="kindle" id="kindle" data-role="slider">
-			<option value="0" {% if page.glob.kindle == "0" %}selected {%endif%}>
-				{{page.glob.langa.switch_no}}
-			</option>
-			<option value="1" {% if page.glob.kindle == "1" %}selected {%endif%}>
-				{{page.glob.langa.switch_yes}}
-			</option>
-		</select>
-		<p>{{page.glob.langa.kindle_expl}}</p>
-	</fieldset>	
-	<fieldset data-role="fieldcontain">
-		<label for="kindle_from_email">{{page.glob.langa.kindle_from_email1}}</label>
-		<input name="kindle_from_email" id="kindle_from_email" type="text" 
-			value="{{page.glob.kindle_from_email}}" placeholder="{{page.glob.langa.kindle_from_email2}}" />
-		<p>{{page.glob.langa.kindle_expl2}}</p>
-	</fieldset>
 	<fieldset data-role="fieldcontain">
 		<label for="tag_protect_choice">{{page.glob.langa.tag_protect}}</label>
 		<select name="tag_protect_choice" id="tag_protect_choice" data-role="slider">
@@ -125,6 +107,24 @@
 		<label for="tag_protect_field">{{page.glob.langa.tag_protect_field}}</label>
 		<input name="tag_protect_field" id="tag_protect_field" type="text" 
 			value="{{page.glob.tag_protect_field}}" placeholder="{{page.glob.langa.tag_protect_field_exp1}}" />
+	</fieldset>	
+	<fieldset data-role="fieldcontain">
+		<label for="kindle">{{page.glob.langa.kindle_enable}}</label>
+		<select name="kindle" id="kindle" data-role="slider">
+			<option value="0" {% if page.glob.kindle == "0" %}selected {%endif%}>
+				{{page.glob.langa.switch_no}}
+			</option>
+			<option value="1" {% if page.glob.kindle == "1" %}selected {%endif%}>
+				{{page.glob.langa.switch_yes}}
+			</option>
+		</select>
+		<p>{{page.glob.langa.kindle_expl}}</p>
+	</fieldset>	
+	<fieldset data-role="fieldcontain">
+		<label for="kindle_from_email">{{page.glob.langa.kindle_from_email1}}</label>
+		<input name="kindle_from_email" id="kindle_from_email" type="text" 
+			value="{{page.glob.kindle_from_email}}" placeholder="{{page.glob.langa.kindle_from_email2}}" />
+		<p>{{page.glob.langa.kindle_expl2}}</p>
 	</fieldset>
 	<fieldset data-role="fieldcontain">
 		<label for="thumb_gen_clipped">{{page.glob.langa.thumb_gen_clipped}}</label>

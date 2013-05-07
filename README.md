@@ -13,14 +13,18 @@ Features & Issues
 
 * shows the most recent titles on the index page
 * provides listing/filtering/searching of book titles, authors, tags and series
-* shows detail pages (including download links) for authors and books
+* shows detail pages (including download  & custom columns) for authors and books
 * speaks Dutch, English, French, German
 * is ready for mobile clients (tested with Kindle, iPhone, iPad)
-* provides a download protection for books (optional, think "parental control")
+* provides download protection for books (optional, think "parental control")
 * provides OPDS book catalogs for reading apps like Stanza
 * has an admin GUI for configuration
+* supports e-mailing of books
 
 * book download for OPDS is only possible when download protection is off
+* no virtual library support
+* only simple custom columns supported, no *composites*
+* e-mailing books needs sendmail
 
 
 Install
@@ -28,9 +32,9 @@ Install
 
 The easy way assumes that BicBucStriim lives right below the web root of your device and can be addressed like `http://<your ip>/bbs/`:
 
-* [Download](http://projekte.textmulch.de/bicbucstriim/downloads/BicBucStriim-1.0.0.zip) an installation archive.
+* [Download](http://projekte.textmulch.de/bicbucstriim/downloads/BicBucStriim-1.1.0.zip) an installation archive.
 * Unarchive the downloaded archive below the web server root of your NAS (e.g. "/volume1/web" on a Synology device).
-* Rename the newly created directory (e.g. BicBucStriim-0.8.0.zip) to "bbs".
+* Rename the newly created directory (e.g. BicBucStriim-1.1.0.zip) to "bbs".
 * NOTE: If you don't want to use the directory name *bbs* simply change the included .htaccess file accordingly
 * The "data" directory and its contents must be writeable for all. Depending on your method of unarchiving this might be already the case. However, in case you experience access error just use a terminal to correct this: `chmod -R ga+w data`. 
 * BicBucStriim should now be working, start your web browser and navigate to `http://<address of your NAS>/bbs/`
@@ -62,6 +66,7 @@ Requirements
 ------------
 * Apache web server with PHP 5.2+ and sqlite3 support
 * Optional: if mcrypt is available cookies will be encrypted
+* Optional: a working sendmail installation (PHP mail) to send books via e-mail
 
 License
 -------
@@ -70,7 +75,7 @@ BicBucStriim itself is licensed under the MIT license, for the licenses of the l
 
 (The MIT License)
 
-Copyright (c) 2012 Rainer Volz
+Copyright (c) 2012-2013 Rainer Volz
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the 'Software'), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
