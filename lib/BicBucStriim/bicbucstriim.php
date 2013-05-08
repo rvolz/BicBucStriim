@@ -552,6 +552,23 @@ class BicBucStriim {
 	}
 
 	/**
+	* Try to find the language of a book. Returns an emty string, if there is none.
+	* @param  int 		$book_id 	the Calibre book ID
+	* @return string 				the language string or an empty string
+	**/
+	function getLanguage($book_id) {
+		$lang_code = null;
+		$lang_id = $this->findOne('BookLanguageLink', 'select * from books_languages_link where book='.$book_id);
+		if (!is_null($lang_id))
+			$lang_code = $this->findOne('Language', 'select * from languages where id='.$lang_id->lang_code);
+		if (is_null($lang_code))
+			$lang_text = '';
+		else
+			$lang_text = $lang_code->lang_code;
+		return $lang_text;		
+	}
+
+	/**
 	 * Find a single book, its authors, series, tags, formats and comment.
 	 * @param  int 		$id 	the Calibre book ID
 	 * @return array     		the book and its authors, series, tags, formats, and comment/description
@@ -577,12 +594,7 @@ class BicBucStriim {
 			$tag = $this->findOne('Tag', 'select * from tags where id='.$tid->tag);
 			array_push($tags, $tag);
 		}
-		$lang_id = $this->findOne('BookLanguageLink', 'select * from books_languages_link where book='.$id);
-		$lang_code = $this->findOne('Language', 'select * from languages where id='.$lang_id->lang_code);
-		if (is_null($lang_code))
-			$lang_text = '';
-		else
-			$lang_text = $lang_code->lang_code;
+		$lang_text = $this->getLanguage($id);
 		$formats = $this->find('Data', 'select * from data where book='.$id);
 		$comment = $this->findOne('Comment', 'select * from comments where book='.$id);
 		if (is_null($comment))
