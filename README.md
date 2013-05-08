@@ -24,7 +24,7 @@ Features & Issues
 * book download for OPDS is only possible when download protection is off
 * no virtual library support
 * only simple custom columns supported, no *composites*
-* e-mailing books needs sendmail
+* e-mailing books needs PHP mail
 
 
 Install
@@ -41,7 +41,8 @@ The easy way assumes that BicBucStriim lives right below the web root of your de
 * A freshly installed BicBucStriim app will show you the admin section, where you will have tell the app where your Calibre library is located. Everything else is optional. Just have a look.
 * OPDS catalogs are availabe at http://.../bbs/opds/
 
-NOTE (for developers): the installation archives contain generated files, which are not immediately available in the source tree, git tarballs.  This will hopefully change in the future.
+For experienced users: you could also just clone the GitHub repository (https://github.com/rvolz/BicBucStriim), preferrably a released version (see https://github.com/rvolz/BicBucStriim/tags). However, the repository contains a lot of files that are only useful for development. The installation archives are therefore smaller.
+
 
 Upgrading
 ---------
@@ -66,7 +67,7 @@ Requirements
 ------------
 * Apache web server with PHP 5.2+ and sqlite3 support
 * Optional: if mcrypt is available cookies will be encrypted
-* Optional: a working sendmail installation (PHP mail) to send books via e-mail
+* Optional: a working PHP mail (sendmail) installation to send books via e-mail
 
 License
 -------
