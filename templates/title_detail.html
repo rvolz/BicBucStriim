@@ -94,6 +94,7 @@
 				{% endfor %}
 			</p>
 		</div>
+		{% if ccs %}
 		<div id="custom_columns" data-role="collapsible">
 			<h4>{{page.glob.langa.custom_columns}}</h4>			
 			<table id="custom_columns_table">
@@ -110,7 +111,7 @@
 								{% if cc.type == 'rating' %}
 									{% set i = cc.value/2 %}
 									{% for y in 1..i %}
-										 &#10033
+										 &#10033;
 									{% endfor %}
 								{% else %}
 									{% if cc.type == 'bool' %}
@@ -130,16 +131,17 @@
 				</tbody>
 			</table>
 		</div>
+		{% endif %}
+		{% if comment %}
 		<div id="comment">
-			{% if comment%}
 				<h4>{{page.glob.langa.comment}}</h4>			
 				<div>
 					{% autoescape false %}
 					{{ comment }}
 					{% endautoescape %}
 				</div>
-			{% endif %}
 		</div>
+		{% endif %}
 	</section>
 </section>
 
