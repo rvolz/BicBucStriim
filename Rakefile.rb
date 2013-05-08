@@ -53,30 +53,30 @@ end # task :lessc
 
 desc "Make a release package"
 task :package2 do |t|
-  mkdir "data"
-  chmod 0777, "data"
-  touch "data/data.db"
-  chmod 0777, "data/data.db"
-  db = SQLite3::Database.new "data/data.db"
-  rows = db.execute <<-SQL
-    create table configs (
-      name varchar(30),
-      val varchar(256)
-    );    
-  SQL
-  db.execute('create unique index configs_names on configs(name);')
-  {
-    "admin_pw" => "",
-    "calibre_dir" => "",
-    "db_version" => "2",
-    "glob_dl_choice" => "0",
-    "glob_dl_password" => "7094e7dc2feb759758884333c2f4a6bdc9a16bb2",
-    "thumb_gen_clipped" => "1",
-    "page_size" => "30",
-    "display_app_name" => "BicBucStriim",
-  }.each do |pair|
-    db.execute "insert into configs values ( ?, ? )", pair
-  end
+  # mkdir "data"
+  # chmod 0777, "data"
+  # touch "data/data.db"
+  # chmod 0777, "data/data.db"
+  # db = SQLite3::Database.new "data/data.db"
+  # rows = db.execute <<-SQL
+  #   create table configs (
+  #     name varchar(30),
+  #     val varchar(256)
+  #   );    
+  # SQL
+  # db.execute('create unique index configs_names on configs(name);')
+  # {
+  #   "admin_pw" => "",
+  #   "calibre_dir" => "",
+  #   "db_version" => "2",
+  #   "glob_dl_choice" => "0",
+  #   "glob_dl_password" => "7094e7dc2feb759758884333c2f4a6bdc9a16bb2",
+  #   "thumb_gen_clipped" => "1",
+  #   "page_size" => "30",
+  #   "display_app_name" => "BicBucStriim",
+  # }.each do |pair|
+  #   db.execute "insert into configs values ( ?, ? )", pair
+  # end
   Rake::PackageTask.new(APPNAME, VERSION) do |p|
     p.need_tar = true
     p.need_zip = true
@@ -108,7 +108,7 @@ task :package2 do |t|
 
   end
   Rake::Task['package'].invoke
-  rm_rf "data"
+  # rm_rf "data"
 end
 
 # Integration testing tasks only make sense when vagrant is installed.
