@@ -1,29 +1,31 @@
 [
     {
         "name": "slim/slim",
-        "version": "1.6.5",
-        "version_normalized": "1.6.5.0",
+        "version": "2.2.0",
+        "version_normalized": "2.2.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/codeguy/Slim",
-            "reference": "1.6.5"
+            "reference": "2.2.0"
         },
         "dist": {
             "type": "zip",
-            "url": "https://github.com/codeguy/Slim/zipball/1.6.5",
-            "reference": "1.6.5",
+            "url": "https://github.com/codeguy/Slim/archive/2.2.0.zip",
+            "reference": "2.2.0",
             "shasum": ""
         },
         "require": {
-            "php": ">=5.2.0"
+            "php": ">=5.3.0"
         },
+        "time": "2012-12-13 02:15:50",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
             "psr-0": {
-                "Slim": "Slim/"
+                "Slim": "."
             }
         },
+        "notification-url": "https://packagist.org/downloads/",
         "license": [
             "MIT"
         ],
@@ -31,11 +33,10 @@
             {
                 "name": "Josh Lockhart",
                 "email": "info@joshlockhart.com",
-                "homepage": "http://www.joshlockhart.com/",
-                "role": null
+                "homepage": "http://www.joshlockhart.com/"
             }
         ],
-        "description": "Slim Framework, a micro framework for PHP 5",
+        "description": "Slim Framework, a PHP micro framework",
         "homepage": "http://github.com/codeguy/Slim",
         "keywords": [
             "microframework",
@@ -45,26 +46,27 @@
     },
     {
         "name": "twig/twig",
-        "version": "v1.9.1",
-        "version_normalized": "1.9.1.0",
+        "version": "v1.12.3",
+        "version_normalized": "1.12.3.0",
         "source": {
             "type": "git",
-            "url": "git://github.com/fabpot/Twig.git",
-            "reference": "v1.9.1"
+            "url": "https://github.com/fabpot/Twig.git",
+            "reference": "v1.12.3"
         },
         "dist": {
             "type": "zip",
-            "url": "https://github.com/fabpot/Twig/zipball/v1.9.1",
-            "reference": "v1.9.1",
+            "url": "https://api.github.com/repos/fabpot/Twig/zipball/v1.12.3",
+            "reference": "v1.12.3",
             "shasum": ""
         },
         "require": {
             "php": ">=5.2.4"
         },
+        "time": "2013-04-08 12:40:11",
         "type": "library",
         "extra": {
             "branch-alias": {
-                "dev-master": "1.9-dev"
+                "dev-master": "1.12-dev"
             }
         },
         "installation-source": "dist",
@@ -73,21 +75,18 @@
                 "Twig_": "lib/"
             }
         },
+        "notification-url": "https://packagist.org/downloads/",
         "license": [
             "BSD-3"
         ],
         "authors": [
             {
                 "name": "Fabien Potencier",
-                "email": "fabien@symfony.com",
-                "homepage": null,
-                "role": null
+                "email": "fabien@symfony.com"
             },
             {
                 "name": "Armin Ronacher",
-                "email": "armin.ronacher@active-4.com",
-                "homepage": null,
-                "role": null
+                "email": "armin.ronacher@active-4.com"
             }
         ],
         "description": "Twig, the flexible, fast, and secure template language for PHP",
@@ -98,32 +97,34 @@
     },
     {
         "name": "slim/extras",
-        "version": "dev-release-1.0.3",
-        "version_normalized": "dev-release-1.0.3",
+        "version": "2.0.3",
+        "version_normalized": "2.0.3.0",
+        "target-dir": "Slim/Extras",
         "source": {
             "type": "git",
-            "url": "https://github.com/codeguy/Slim-Extras",
-            "reference": "07ca603f59f59e7919049272264fb79bf4c8266e"
+            "url": "https://github.com/codeguy/Slim-Extras.git",
+            "reference": "2.0.3"
         },
         "dist": {
             "type": "zip",
-            "url": "https://github.com/codeguy/Slim-Extras/zipball/07ca603f59f59e7919049272264fb79bf4c8266e",
-            "reference": "07ca603f59f59e7919049272264fb79bf4c8266e",
+            "url": "https://api.github.com/repos/codeguy/Slim-Extras/zipball/2.0.3",
+            "reference": "2.0.3",
             "shasum": ""
         },
         "require": {
-            "php": ">=5.2.0"
+            "php": ">=5.3.0",
+            "slim/slim": ">=2.0.0"
         },
+        "time": "2013-01-07 17:56:10",
         "type": "library",
-        "installation-source": "source",
+        "installation-source": "dist",
         "autoload": {
             "psr-0": {
-                "Twig_Extensions_": "View/Extension/",
-                "Middleware_": "",
-                "View_": "",
-                "Log_": ""
+                "Twig_Extensions_": "Views/Extension/",
+                "Slim\\Extras": "."
             }
         },
+        "notification-url": "https://packagist.org/downloads/",
         "license": [
             "MIT"
         ],
@@ -131,23 +132,20 @@
             {
                 "name": "Andrew Smith",
                 "email": "a.smith@silentworks.co.uk",
-                "homepage": "http://silentworks.co.uk/",
-                "role": null
+                "homepage": "http://www.silentworks.co.uk/"
             },
             {
                 "name": "Josh Lockhart",
                 "email": "info@joshlockhart.com",
-                "homepage": "http://www.joshlockhart.com/",
-                "role": null
+                "homepage": "http://www.joshlockhart.com/"
             }
         ],
-        "description": "Extras package for Slim Framework. Authentication Middlewares, Log Writers, Template Parser Views, etc...",
+        "description": "Extras package for the Slim Framework",
         "homepage": "http://github.com/codeguy/Slim-Extras",
         "keywords": [
-            "templating",
             "extensions",
             "middleware",
-            "loggers"
+            "templating"
         ]
     }
 ]

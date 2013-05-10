@@ -12,8 +12,8 @@
 /**
  * Interface implemented by compiler classes.
  *
- * @package    twig
- * @author     Fabien Potencier <fabien@symfony.com>
+ * @author Fabien Potencier <fabien@symfony.com>
+ * @deprecated since 1.12 (to be removed in 2.0)
  */
 interface Twig_CompilerInterface
 {
@@ -24,12 +24,12 @@ interface Twig_CompilerInterface
      *
      * @return Twig_CompilerInterface The current compiler instance
      */
-    function compile(Twig_NodeInterface $node);
+    public function compile(Twig_NodeInterface $node);
 
     /**
      * Gets the current PHP code after compilation.
      *
      * @return string The PHP code
      */
-    function getSource();
+    public function getSource();
 }

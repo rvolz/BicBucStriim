@@ -7,8 +7,6 @@
  * 
  */ 
 require 'vendor/autoload.php';
-require_once 'vendor/slim/slim/Slim/View.php';
-require_once 'vendor/slim/extras/Log/FileWriter.php';
 require_once 'lib/BicBucStriim/langs.php';
 require_once 'lib/BicBucStriim/l10n.php';
 require_once 'lib/BicBucStriim/bicbucstriim.php';
@@ -22,7 +20,7 @@ $fallbackLang = 'en';
 # Application Name
 $appname = 'BicBucStriim';
 # App version
-$appversion = '1.1.0';
+$appversion = '1.2.0-alpha';
 # Current DB schema version
 define('DB_SCHEMA_VERSION', '2');
 
@@ -60,16 +58,19 @@ define('PAGE_SIZE', 'page_size');
 define('DISPLAY_APP_NAME', 'display_app_name');
 
 # Init app and routes
-$app = new Slim(array(
-	'view' => new View_Twig(),
-	'mode' => 'production',
-	#'mode' => 'development',
+$app = new \Slim\Slim(array(
+	'view' => new \Slim\Extras\Views\Twig(),
+	#'mode' => 'production',
+	'mode' => 'development',
 ));
 
 $app->configureMode('production','confprod');
 $app->configureMode('development','confdev');
 $app->configureMode('debug','confdebug');
-$app->view()->getEnvironment()->addExtension(new Twig_Extensions_Slim());
+#$app->view()->getEnvironment()->addExtension(new \Slim\Extras\Views\Twig_Extensions_Slim());
+\Slim\Extras\Views\Twig::$twigExtensions = array(
+    'Twig_Extensions_Slim',
+);
 
 /**
  * Configure app for production
@@ -83,7 +84,7 @@ function confprod() {
 
 	));
 	$app->getLog()->setEnabled(true);
-	$app->getLog()->setLevel(Slim_Log::WARN);
+	$app->getLog()->setLevel(\Slim\Log::WARN);
 	$app->getLog()->info($appname.' '.$appversion.': Running in production mode.');
 }
 
@@ -100,7 +101,7 @@ function confdev() {
 	));
 	$app->get('/dev/reset', 'devReset');
 	$app->getLog()->setEnabled(true);
-	$app->getLog()->setLevel(Slim_Log::DEBUG);
+	$app->getLog()->setLevel(\Slim\Log::DEBUG);
 	$app->getLog()->info($appname.' '.$appversion.': Running in development mode.');
 }
 
@@ -115,8 +116,8 @@ function confdebug() {
 		'cookies.secret_key' => 'b4924c3579e2850a6fad8597da7ad24bf43ab78e',
 	));
 	$app->getLog()->setEnabled(true);
-	$app->getLog()->setLevel(Slim_Log::DEBUG);
-	$app->getLog()->setWriter(new Log_FileWriter(array('path' => './data', 'name_format' => 'Y-m-d\.\l\o\g')));
+	$app->getLog()->setLevel(\Slim\Log::DEBUG);
+	$app->getLog()->setWriter(new \Slim\Extras\Log\DateTimeFileWriter(array('path' => './data', 'name_format' => 'Y-m-d\.\l\o\g')));
 	$app->getLog()->info($appname.' '.$appversion.': Running in debug mode.');
 }
 
@@ -187,18 +188,13 @@ $app->notFound('myNotFound');
 $app->get('/', 'htmlCheckConfig', 'main');
 $app->get('/admin/', 'admin');
 $app->post('/admin/', 'admin_change_json');
-#$app->get('/admin/access/', 'admin_is_protected');
 $app->post('/admin/access/check/', 'admin_checkaccess');
 $app->get('/admin/version/', 'admin_check_version');
-$app->get('/admin/error/:id', 'admin_error');
-#$app->get('/authors/:id/', 'htmlCheckConfig', 'author');
 $app->get('/authors/:id/:page/', 'htmlCheckConfig', 'authorDetailsSlice');
 $app->get('/authorslist/:id/', 'htmlCheckConfig', 'authorsSlice');
 $app->get('/search/', 'htmlCheckConfig', 'globalSearch');
-#$app->get('/series/:id/', 'htmlCheckConfig', 'series');
 $app->get('/series/:id/:page/', 'htmlCheckConfig', 'seriesDetailsSlice');
 $app->get('/serieslist/:id/', 'htmlCheckConfig', 'seriesSlice');
-#$app->get('/tags/:id/', 'htmlCheckConfig', 'tag');
 $app->get('/tags/:id/:page/', 'htmlCheckConfig', 'tagDetailsSlice');
 $app->get('/tagslist/:id/', 'htmlCheckConfig', 'tagsSlice');
 $app->get('/titles/:id/', 'htmlCheckConfig','title');

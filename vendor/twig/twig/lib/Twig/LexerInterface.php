@@ -12,8 +12,8 @@
 /**
  * Interface implemented by lexer classes.
  *
- * @package    twig
- * @author     Fabien Potencier <fabien@symfony.com>
+ * @author Fabien Potencier <fabien@symfony.com>
+ * @deprecated since 1.12 (to be removed in 2.0)
  */
 interface Twig_LexerInterface
 {
@@ -25,5 +25,5 @@ interface Twig_LexerInterface
      *
      * @return Twig_TokenStream A token stream instance
      */
-    function tokenize($code, $filename = null);
+    public function tokenize($code, $filename = null);
 }

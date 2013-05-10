@@ -13,8 +13,7 @@
 /**
  * Compiles a node to PHP code.
  *
- * @package    twig
- * @author     Fabien Potencier <fabien@symfony.com>
+ * @author Fabien Potencier <fabien@symfony.com>
  */
 class Twig_Compiler implements Twig_CompilerInterface
 {
@@ -25,6 +24,7 @@ class Twig_Compiler implements Twig_CompilerInterface
     protected $debugInfo;
     protected $sourceOffset;
     protected $sourceLine;
+    protected $filename;
 
     /**
      * Constructor.
@@ -35,6 +35,11 @@ class Twig_Compiler implements Twig_CompilerInterface
     {
         $this->env = $env;
         $this->debugInfo = array();
+    }
+
+    public function getFilename()
+    {
+        return $this->filename;
     }
 
     /**
@@ -70,8 +75,13 @@ class Twig_Compiler implements Twig_CompilerInterface
         $this->lastLine = null;
         $this->source = '';
         $this->sourceOffset = 0;
-        $this->sourceLine = 0;
+        // source code starts at 1 (as we then increment it when we encounter new lines)
+        $this->sourceLine = 1;
         $this->indentation = $indentation;
+
+        if ($node instanceof Twig_Node_Module) {
+            $this->filename = $node->getAttribute('filename');
+        }
 
         $node->compile($this);
 
@@ -197,6 +207,8 @@ class Twig_Compiler implements Twig_CompilerInterface
     public function addDebugInfo(Twig_NodeInterface $node)
     {
         if ($node->getLine() != $this->lastLine) {
+            $this->write("// line {$node->getLine()}\n");
+
             // when mbstring.func_overload is set to 2
             // mb_substr_count() replaces substr_count()
             // but they have different signatures!
@@ -210,7 +222,6 @@ class Twig_Compiler implements Twig_CompilerInterface
             $this->debugInfo[$this->sourceLine] = $node->getLine();
 
             $this->lastLine = $node->getLine();
-            $this->write("// line {$node->getLine()}\n");
         }
 
         return $this;
@@ -244,9 +255,9 @@ class Twig_Compiler implements Twig_CompilerInterface
      */
     public function outdent($step = 1)
     {
-        // can't outdent by more steps that the current indentation level
+        // can't outdent by more steps than the current indentation level
         if ($this->indentation < $step) {
-            throw new Twig_Error('Unable to call outdent() as the indentation would become negative');
+            throw new LogicException('Unable to call outdent() as the indentation would become negative');
         }
 
         $this->indentation -= $step;

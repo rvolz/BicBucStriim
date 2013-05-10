@@ -96,10 +96,11 @@ The following options are available:
 
 * ``autoescape``: If set to ``true``, auto-escaping will be enabled by default
   for all templates (default to ``true``). As of Twig 1.8, you can set the
-  escaping strategy to use (``html``, ``js``, ``css``, ``false`` to disable,
-  or a PHP callback that takes the template "filename" and must return the
-  escaping strategy to use -- the callback cannot be a function name to avoid
-  collision with built-in escaping strategies).
+  escaping strategy to use (``html``, ``js``, ``false`` to disable).
+  As of Twig 1.9, you can set the escaping strategy to use (``css``, ``url``, 
+  ``html_attr``, or a PHP callback that takes the template "filename" and must 
+  return the escaping strategy to use -- the callback cannot be a function name
+  to avoid collision with built-in escaping strategies).
 
 * ``optimizations``: A flag that indicates which optimizations to apply
   (default to ``-1`` -- all optimizations are enabled; set it to ``0`` to
@@ -128,6 +129,9 @@ Here is a list of the built-in loaders Twig provides:
 ``Twig_Loader_Filesystem``
 ..........................
 
+.. versionadded:: 1.10
+    The ``prependPath()`` and support for namespaces were added in Twig 1.10.
+
 ``Twig_Loader_Filesystem`` loads templates from the file system. This loader
 can find templates in folders on the file system and is the preferred way to
 load them::
@@ -141,6 +145,26 @@ It can also look for templates in an array of directories::
 With such a configuration, Twig will first look for templates in
 ``$templateDir1`` and if they do not exist, it will fallback to look for them
 in the ``$templateDir2``.
+
+You can add or prepend paths via the ``addPath()`` and ``prependPath()``
+methods::
+
+    $loader->addPath($templateDir3);
+    $loader->prependPath($templateDir4);
+
+The filesystem loader also supports namespaced templates. This allows to group
+your templates under different namespaces which have their own template paths.
+
+When using the ``setPaths()``, ``addPath()``, and ``prependPath()`` methods,
+specify the namespace as the second argument (when not specified, these
+methods act on the "main" namespace)::
+
+    $loader->addPath($templateDir, 'admin');
+
+Namespaced templates can be accessed via the special
+``@namespace_name/template_path`` notation::
+
+    $twig->render('@admin/index.html', array());
 
 ``Twig_Loader_String``
 ......................
@@ -180,6 +204,35 @@ projects where storing all templates in a single PHP file might make sense.
     "changes" (the cache key being the source code of the template). If you
     don't want to see your cache grows out of control, you need to take care
     of clearing the old cache file by yourself.
+
+``Twig_Loader_Chain``
+.....................
+
+``Twig_Loader_Chain`` delegates the loading of templates to other loaders::
+
+    $loader1 = new Twig_Loader_Array(array(
+        'base.html' => '{% block content %}{% endblock %}',
+    ));
+    $loader2 = new Twig_Loader_Array(array(
+        'index.html' => '{% extends "base.twig" %}{% block content %}Hello {{ name }}{% endblock %}',
+        'base.html'  => 'Will never be loaded',
+    ));
+
+    $loader = new Twig_Loader_Chain(array($loader1, $loader2));
+
+    $twig = new Twig_Environment($loader);
+
+When looking for a template, Twig will try each loader in turn and it will
+return as soon as the template is found. When rendering the ``index.html``
+template from the above example, Twig will load it with ``$loader2`` but the
+``base.html`` template will be loaded from ``$loader1``.
+
+``Twig_Loader_Chain`` accepts any loader that implements
+``Twig_LoaderInterface``.
+
+.. note::
+
+    You can also add loaders via the ``addLoader()`` method.
 
 Create your own Loader
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -238,6 +291,11 @@ As an example, here is how the built-in ``Twig_Loader_String`` reads::
 The ``isFresh()`` method must return ``true`` if the current cached template
 is still fresh, given the last modification time, or ``false`` otherwise.
 
+.. tip::
+
+    As of Twig 1.11.0, you can also implement ``Twig_ExistsLoaderInterface``
+    to make your loader faster when used with the chain loader.
+
 Using Extensions
 ----------------
 
@@ -254,15 +312,12 @@ Twig comes bundled with the following extensions:
   to escape/unescape blocks of code.
 
 * *Twig_Extension_Sandbox*: Adds a sandbox mode to the default Twig
-  environment, making it safe to evaluated untrusted code.
+  environment, making it safe to evaluate untrusted code.
 
-* *Twig_Extension_Optimizer*: Optimizers the node tree before compilation.
+* *Twig_Extension_Optimizer*: Optimizes the node tree before compilation.
 
 The core, escaper, and optimizer extensions do not need to be added to the
-Twig environment, as they are registered by default. You can disable an
-already registered extension::
-
-    $twig->removeExtension('escaper');
+Twig environment, as they are registered by default.
 
 Built-in Extensions
 -------------------
@@ -279,60 +334,10 @@ Core Extension
 
 The ``core`` extension defines all the core features of Twig:
 
-* Tags:
-
-  * ``for``
-  * ``if``
-  * ``extends``
-  * ``include``
-  * ``block``
-  * ``filter``
-  * ``macro``
-  * ``import``
-  * ``from``
-  * ``set``
-  * ``spaceless``
-
-* Filters:
-
-  * ``date``
-  * ``format``
-  * ``replace``
-  * ``url_encode``
-  * ``json_encode``
-  * ``title``
-  * ``capitalize``
-  * ``upper``
-  * ``lower``
-  * ``striptags``
-  * ``join``
-  * ``reverse``
-  * ``length``
-  * ``sort``
-  * ``merge``
-  * ``default``
-  * ``keys``
-  * ``escape``
-  * ``e``
-
-* Functions:
-
-  * ``range``
-  * ``constant``
-  * ``cycle``
-  * ``parent``
-  * ``block``
-
-* Tests:
-
-  * ``even``
-  * ``odd``
-  * ``defined``
-  * ``sameas``
-  * ``null``
-  * ``divisibleby``
-  * ``constant``
-  * ``empty``
+* :doc:`Tags <tags/index>`;
+* :doc:`Filters <filters/index>`;
+* :doc:`Functions <functions/index>`;
+* :doc:`Tests <tests/index>`.
 
 Escaper Extension
 ~~~~~~~~~~~~~~~~~
@@ -418,10 +423,10 @@ The escaping rules are implemented as follows:
 
   .. code-block:: jinja
 
-        {% autoescape true js %}
-        {{ var|escape('html') }} {# will be escaped for html and javascript #}
-        {{ var }} {# will be escaped for javascript #}
-        {{ var|escape('js') }} {# won't be double-escaped #}
+        {% autoescape 'js' %}
+            {{ var|escape('html') }} {# will be escaped for html and javascript #}
+            {{ var }} {# will be escaped for javascript #}
+            {{ var|escape('js') }} {# won't be double-escaped #}
         {% endautoescape %}
 
 .. note::
@@ -490,6 +495,20 @@ to enable by passing them to the constructor::
     $optimizer = new Twig_Extension_Optimizer(Twig_NodeVisitor_Optimizer::OPTIMIZE_FOR);
 
     $twig->addExtension($optimizer);
+
+Twig supports the following optimizations:
+
+* ``Twig_NodeVisitor_Optimizer::OPTIMIZE_ALL``, enables all optimizations
+(this is the default value).
+* ``Twig_NodeVisitor_Optimizer::OPTIMIZE_NONE``, disables all optimizations.
+This reduces the compilation time, but it can increase the execution time
+and the consumed memory.
+* ``Twig_NodeVisitor_Optimizer::OPTIMIZE_FOR``, optimizes the ``for`` tag by
+removing the ``loop`` variable creation whenever possible.
+* ``Twig_NodeVisitor_Optimizer::OPTIMIZE_RAW_FILTER``, removes the ``raw``
+filter whenever possible.
+* ``Twig_NodeVisitor_Optimizer::OPTIMIZE_VAR_ACCESS``, simplifies the creation
+and access of variables in the compiled templates whenever possible.
 
 Exceptions
 ----------

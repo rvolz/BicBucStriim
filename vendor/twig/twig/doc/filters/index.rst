@@ -4,27 +4,33 @@ Filters
 .. toctree::
     :maxdepth: 1
 
-    date
-    format
-    replace
-    number_format
-    url_encode
-    json_encode
-    convert_encoding
-    title
+    abs
+    batch
     capitalize
-    nl2br
-    upper
-    lower
-    striptags
-    join
-    reverse
-    length
-    sort
+    convert_encoding
+    date
+    date_modify
     default
-    keys
     escape
-    raw
+    first
+    format
+    join
+    json_encode
+    keys
+    last
+    length
+    lower
+    nl2br
+    number_format
     merge
+    upper
+    raw
+    replace
+    reverse
     slice
+    sort
+    split
+    striptags
+    title
     trim
+    url_encode
