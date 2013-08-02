@@ -1,6 +1,8 @@
 2013-08-01 Version 1.2.0
 
 * Upgraded dependency Slim to version 2.3.1
+* Added dependeny slim/views, removed slim/extras
+* Upgraded dependency Twig to 1.13.1
 * PHP mcrypt extension is now required? (php5-mcrypt)
 
 2013-05-07 Version 1.1.0

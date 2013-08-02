@@ -91,7 +91,6 @@ task :package2 do |t|
     p.package_files.include("vendor/composer/*.*")
     p.package_files.include("vendor/slim/slim/*.*")
     p.package_files.include("vendor/slim/views/**/*.*")
-    p.package_files.include("vendor/slim/extras/**/*.*")
     p.package_files.include("vendor/slim/slim/Slim/**/*.*")
     p.package_files.include("vendor/twig/twig/*.*")
     p.package_files.include("vendor/twig/twig/ext/**/*.*")

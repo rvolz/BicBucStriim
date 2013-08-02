@@ -67,10 +67,6 @@ $app = new \Slim\Slim(array(
 $app->configureMode('production','confprod');
 $app->configureMode('development','confdev');
 $app->configureMode('debug','confdebug');
-#$app->view()->getEnvironment()->addExtension(new \Slim\Extras\Views\Twig_Extensions_Slim());
-#\Slim\Extras\Views\Twig::$twigExtensions = array(
-#    'Twig_Extensions_Slim',
-#);
 
 /**
  * Configure app for production
