@@ -121,8 +121,8 @@ class ClassLoader
     /**
      * Registers a set of classes, replacing any others previously set.
      *
-     * @param string       $prefix  The classes prefix
-     * @param array|string $paths   The location(s) of the classes
+     * @param string       $prefix The classes prefix
+     * @param array|string $paths  The location(s) of the classes
      */
     public function set($prefix, $paths)
     {
@@ -197,6 +197,7 @@ class ClassLoader
      */
     public function findFile($class)
     {
+        // work around for PHP 5.3.0 - 5.3.2 https://bugs.php.net/50731
         if ('\\' == $class[0]) {
             $class = substr($class, 1);
         }

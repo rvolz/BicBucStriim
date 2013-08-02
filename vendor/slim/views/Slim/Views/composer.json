@@ -1,9 +1,9 @@
 {
-    "name": "slim/extras",
+    "name": "slim/views",
     "type": "library",
-    "description": "Extras package for the Slim Framework",
-    "keywords": ["templating", "extensions", "middleware"],
-    "homepage": "http://github.com/codeguy/Slim-Extras",
+    "description": "Twig View Parser package for the Slim Framework",
+    "keywords": ["templating", "extensions", "slimphp"],
+    "homepage": "http://github.com/codeguy/Slim-Views",
     "license": "MIT",
     "authors": [
         {
@@ -13,7 +13,8 @@
         },
         {
             "name": "Andrew Smith",
-            "email": "a.smith@silentworks.co.uk"
+            "email": "a.smith@silentworks.co.uk",
+            "homepage": "http://thoughts.silentworks.co.uk/"
         }
     ],
     "require": {
@@ -22,9 +23,8 @@
     },
     "autoload": {
         "psr-0": {
-            "Twig_Extensions_": "Views/Extension/",
-            "Slim\\Extras": "."
+            "Slim\\Views": ""
         }
     },
-    "target-dir": "Slim/Extras"
+    "target-dir": "Slim/Views"
 }

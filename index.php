@@ -59,7 +59,7 @@ define('DISPLAY_APP_NAME', 'display_app_name');
 
 # Init app and routes
 $app = new \Slim\Slim(array(
-	'view' => new \Slim\Extras\Views\Twig(),
+	'view' => new \Slim\Views\Twig(),
 	#'mode' => 'production',
 	'mode' => 'development',
 ));
@@ -68,9 +68,9 @@ $app->configureMode('production','confprod');
 $app->configureMode('development','confdev');
 $app->configureMode('debug','confdebug');
 #$app->view()->getEnvironment()->addExtension(new \Slim\Extras\Views\Twig_Extensions_Slim());
-\Slim\Extras\Views\Twig::$twigExtensions = array(
-    'Twig_Extensions_Slim',
-);
+#\Slim\Extras\Views\Twig::$twigExtensions = array(
+#    'Twig_Extensions_Slim',
+#);
 
 /**
  * Configure app for production

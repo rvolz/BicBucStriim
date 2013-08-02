@@ -3,8 +3,11 @@
  * Slim - a micro PHP 5 framework
  *
  * @author      Josh Lockhart
+ * @author      Andrew Smith
  * @link        http://www.slimframework.com
- * @copyright   2011 Josh Lockhart
+ * @copyright   2013 Josh Lockhart
+ * @version     0.1.0
+ * @package     SlimViews
  *
  * MIT LICENSE
  *
@@ -27,41 +30,44 @@
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-namespace Slim\Extras\Views;
+namespace Slim\Views;
 
-/**
- * MustacheView
- *
- * The MustacheView is a Custom View class that renders templates using the
- * Mustache template language (http://mustache.github.com/) and the
- * [Mustache.php library](github.com/bobthecow/mustache.php).
- *
- * There is one field that you, the developer, will need to change:
- * - mustacheDirectory
- *
- * @package Slim
- * @author  Johnson Page <http://johnsonpage.org>
- */
-class Mustache extends \Slim\View
+use Slim\Slim;
+
+class TwigExtension extends \Twig_Extension
 {
-    /**
-     * @var string The path to the directory containing Mustache.php
-     */
-    public static $mustacheDirectory = null;
-
-    /**
-     * Renders a template using Mustache.php.
-     *
-     * @see View::render()
-     * @param string $template The template name specified in Slim::render()
-     * @return string
-     */
-    public function render($template)
+    public function getName()
     {
-        require_once self::$mustacheDirectory . '/Autoloader.php';
-        \Mustache_Autoloader::register(dirname(self::$mustacheDirectory));
-        $m = new \Mustache_Engine();
-        $contents = file_get_contents($this->getTemplatesDirectory() . '/' . ltrim($template, '/'));
-        return $m->render($contents, $this->data);
+        return 'slim';
+    }
+
+    public function getFunctions()
+    {
+        return array(
+            new \Twig_SimpleFunction('urlFor', array($this, 'urlFor')),
+            new \Twig_SimpleFunction('baseUrl', array($this, 'base')),
+            new \Twig_SimpleFunction('siteUrl', array($this, 'site')),
+        );
+    }
+
+    public function urlFor($name, $params = array(), $appName = 'default')
+    {
+        return Slim::getInstance($appName)->urlFor($name, $params);
+    }
+
+    public function site($url, $withUri = true, $appName = 'default')
+    {
+        return $this->base($withUri, $appName) . '/' . ltrim($url, '/');
+    }
+
+    public function base($withUri = true, $appName = 'default')
+    {
+        $req = Slim::getInstance($appName)->request();
+        $uri = $req->getUrl();
+
+        if ($withUri) {
+            $uri .= $req->getRootUri();
+        }
+        return $uri;
     }
 }
