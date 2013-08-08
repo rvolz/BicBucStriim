@@ -53,7 +53,7 @@ class TestOfOpdsGenerator extends UnitTestCase {
 
 	# Validation helper: validate opds
 	function opdsValidate($feed, $version) {
-		$cmd = 'cd ~/lib/java/opds-validator;java -jar OPDSvalidator.jar -v'.$version.' '.realpath($feed);
+		$cmd = 'cd ~/lib/java/opds-validator;java -jar OPDSValidator.jar -v'.$version.' '.realpath($feed);
 		$res = system($cmd);
 		if ($res != '') {
 			echo 'OPDS validation error: '.$res;
@@ -192,7 +192,7 @@ function testPartialAcquisitionEntryWithProtection() {
 		$feed = self::DATA.'/feed.xml';
 		$adetails = $this->bbs->authorDetails(5);
 		$books = $this->bbs->titleDetailsFilteredOpds($adetails['books']);
-		$xml = $this->gen->booksForAuthorCatalog($feed,$books, 'E', $adetails, false);
+		$xml = $this->gen->booksForAuthorCatalog($feed,$books, 'E', $adetails['author'], false);
 		$this->assertTrue(file_exists($feed));		
 		$this->assertTrue($this->opdsValidateSchema($feed));
 		$this->assertTrue($this->opdsValidate($feed,'1.0'));
@@ -223,7 +223,7 @@ function testPartialAcquisitionEntryWithProtection() {
 		$feed = self::DATA.'/feed.xml';
 		$adetails = $this->bbs->tagDetails(9);
 		$books = $this->bbs->titleDetailsFilteredOpds($adetails['books']);
-		$xml = $this->gen->booksForTagCatalog($feed,$books, 'B', $adetails, false);
+		$xml = $this->gen->booksForTagCatalog($feed,$books, 'B', $adetails['tag'], false);
 		$this->assertTrue(file_exists($feed));		
 		$this->assertTrue($this->opdsValidateSchema($feed));
 		$this->assertTrue($this->opdsValidate($feed,'1.0'));
@@ -254,7 +254,7 @@ function testPartialAcquisitionEntryWithProtection() {
 		$feed = self::DATA.'/feed.xml';
 		$adetails = $this->bbs->seriesDetails(1);
 		$books = $this->bbs->titleDetailsFilteredOpds($adetails['books']);
-		$xml = $this->gen->booksForSeriesCatalog($feed,$books, 'S', $adetails, false);
+		$xml = $this->gen->booksForSeriesCatalog($feed,$books, 'S', $adetails['series'], false);
 		$this->assertTrue(file_exists($feed));		
 		$this->assertTrue($this->opdsValidateSchema($feed));
 		$this->assertTrue($this->opdsValidate($feed,'1.0'));

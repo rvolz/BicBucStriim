@@ -17,6 +17,8 @@ Capybara.register_driver :selenium do |app|
   	Capybara::Selenium::Driver.new(app, :profile => profile)
 	end
 Capybara.default_driver = :selenium
+# Default is 2 seconds, and the VM is sometimes slow.
+Capybara.default_wait_time = 3
 
 World do	
 	Capybara::Session.new(:selenium)	

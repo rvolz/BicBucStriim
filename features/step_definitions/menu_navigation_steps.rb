@@ -3,7 +3,7 @@ When /^I click on menu item (.+)$/ do |menu|
 end
 
 Then /^the app switches to the home view$/ do
-  page.should have_content 'Most recent'
+  page.should have_content("Most recent")
 end
 
 Then /^the menu item (.+) is active$/ do |arg1|

@@ -9,7 +9,7 @@ class TestsAll extends TestSuite {
 		$this->addFile('test_custom_columns.php');
 		$this->addFile('test_db_upgrade.php');
 		$this->addFile('test_utilities.php');
-		#$this->addFile('test_opds_generator.php');
+		$this->addFile('test_opds_generator.php');
 	}
 }
 ?>

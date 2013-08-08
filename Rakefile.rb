@@ -174,9 +174,7 @@ end
 
 desc "Integration testing (via integration test environment)"
 task :itest => [:itest_deploy] do |t|  
-  sh "cucumber features --format=pretty"
-  #sh "curl http://localhost:8080/bbs/dev/reset"
-  sh "php tests/test_integration.php"
+  sh "cucumber features --format=pretty"  
 end
 
 

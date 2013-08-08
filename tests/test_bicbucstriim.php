@@ -330,7 +330,7 @@ class TestOfBicBucStriim extends UnitTestCase {
 	}
 
 	function testSeriesDetails() {
-		$result = $this->bbs->seriesDetails(3);
+		$result = $this->bbs->seriesDetails(5);
 		$this->assertEqual(0, $this->bbs->last_error);
 		$this->assertNotNull($result);
 		$this->assertEqual('Serie Rilke',$result['series']->name);
