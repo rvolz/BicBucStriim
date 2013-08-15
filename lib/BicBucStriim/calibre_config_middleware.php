@@ -26,18 +26,20 @@ class CalibreConfigMiddleware extends \Slim\Middleware {
 		$app = $this->app;
 		$request = $app->request;
 		
-		# 'After installation' scenario: here is a config DB but no valid connection to Calibre
-		if (empty($globalSettings[$this->calibreDir])) {
-			$app->getLog()->warn('check_config: Calibre library path not configured.');					
-			if ($app->request->getResourceUri() != '/admin/')
-				$app->redirect($app->request->getRootUri().'/admin/');
-		} else {
-			# Setup the connection to the Calibre metadata db
-			$clp = $globalSettings[$this->calibreDir].'/metadata.db';
-			$app->bbs->openCalibreDB($clp);
-			if (!$app->bbs->libraryOk()) {
-				$app->getLog()->error('check_config: Exception while opening metadata db '.$clp.'. Showing admin page.');	
-			} 
+		if ($request->getResourceUri() != '/login/') {
+			# 'After installation' scenario: here is a config DB but no valid connection to Calibre
+			if (empty($globalSettings[$this->calibreDir])) {
+				$app->getLog()->warn('check_config: Calibre library path not configured.');					
+				if ($app->request->getResourceUri() != '/admin/')
+					$app->redirect($app->request->getRootUri().'/admin/');
+			} else {
+				# Setup the connection to the Calibre metadata db
+				$clp = $globalSettings[$this->calibreDir].'/metadata.db';
+				$app->bbs->openCalibreDB($clp);
+				if (!$app->bbs->libraryOk()) {
+					$app->getLog()->error('check_config: Exception while opening metadata db '.$clp.'. Showing admin page.');	
+				} 
+			}				
 		}
 		$this->next->call();
 	}

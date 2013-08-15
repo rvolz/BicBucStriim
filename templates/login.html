@@ -1,0 +1,17 @@
+{% extends 'main.html' %}
+
+{% block pid %}id="login"{%endblock%}
+
+{% block headerlinks %}{% endblock %}
+
+{% block content %}
+  <form action="{{page.rot}}/login/" method="post" id="loginform" data-proot="{{page.rot}}">
+    <fieldset data-role="fieldcontain">
+      <label for="username">{{page.glob.langa.admin_username}}</label>
+      <input type="text" name="username" id="username" value="{{username}}" />
+      <label for="password">{{page.glob.langa.admin_userpw}}</label>
+      <input type="password" name="password" id="password" value="{{password}}" />
+    </fieldset >      
+    <button type="submit" name="login">{{page.glob.langa.login}}</button> 
+  </form>
+{% endblock %}

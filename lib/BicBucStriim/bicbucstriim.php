@@ -67,7 +67,7 @@ class BicBucStriim {
 		$this->mydb->exec('create unique index configs_names on configs(name)');
 		$this->mydb->exec('create table users (id integer primary key autoincrement, username varchar(30), password char(32), email varchar(256), languages varchar(256), tags (varchar(256)))');   
 		$this->mydb->exec('create unique index users_names on users(username)');		
-		$mdp = md5('admin');
+		$mdp = password_hash('admin', PASSWORD_BCRYPT);
 		$this->mydb->exec('insert into users (username, password) values ("admin", "'.$mdp.'")');		
 		$this->mydb = null;
 	}
@@ -134,9 +134,11 @@ class BicBucStriim {
 	 * Update the DB to version 3.
 	 */
 	function updateDbSchema1to3() {
-		$this->mydb->exec('create table users (id integer primary key autoincrement, username varchar(30), password char(32), email varchar(256), languages varchar(256), tags (varchar(256)))');   
+		$this->mydb->exec('create table users (id integer primary key autoincrement, 
+			username varchar(30), password char(32), 
+			email varchar(256), languages varchar(256), tags varchar(256))');   
 		$this->mydb->exec('create unique index users_names on users(username)');		
-		$mdp = md5('admin');
+		$mdp = password_hash('admin', PASSWORD_BCRYPT);
 		$this->mydb->exec('insert into users (username, password) values ("admin", "'.$mdp.'")');		
 		
 		$this->mydb->exec('update configs set val=\'3\' where name=\'db_version\'');

@@ -46,6 +46,18 @@ class OwnConfigMiddleware extends \Slim\Middleware {
 					$app->getLog()->warn(join('',
 						array('Unknown configuration, name: ', $config->name,', value: ',$config->val)));	
 			}
+
+			## For 1.0: run a silent db update
+			# TODO post 1.0: replace with an updater 
+			if ($globalSettings[DB_VERSION] === '1') {
+				$app->getLog()->info('admin_change: old db schema 1 detected. running update');							
+				$app->bbs->updateDbSchema1to2();		
+				$app->bbs->updateDbSchema1to3();		
+			} elseif ($globalSettings[DB_VERSION] === '2') {
+				$app->getLog()->info('admin_change: old db schema 2 detected. running update');							
+				$app->bbs->updateDbSchema1to3();		
+			}
+			
 			if (!isset($app->strong)) 
 				$app->strong = $this->getAuthProvider($app->bbs->mydb);
 			$app->getLog()->debug("config loaded");

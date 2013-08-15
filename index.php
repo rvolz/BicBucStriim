@@ -13,6 +13,7 @@ require_once 'lib/BicBucStriim/bicbucstriim.php';
 require_once 'lib/BicBucStriim/opds_generator.php';
 require_once 'lib/BicBucStriim/own_config_middleware.php';
 require_once 'lib/BicBucStriim/calibre_config_middleware.php';
+require_once 'lib/BicBucStriim/login_middleware.php';
 require_once 'vendor/email.php';
 
 # Allowed languages, i.e. languages with translations
@@ -155,6 +156,7 @@ $app->getLog()->info('Encryption '.($globalSettings['crypt']==true ? '' : 'not '
 $bbs = new BicBucStriim();
 $app->bbs = $bbs;
 $app->add(new \CalibreConfigMiddleware(CALIBRE_DIR));
+$app->add(new \LoginMiddleware($appname, array('js', 'img', 'style')));
 $app->add(new \OwnConfigMiddleware($knownConfigs));
 
 ###### Init routes for production
@@ -166,6 +168,8 @@ $app->post('/admin/access/check/', 'admin_checkaccess');
 $app->get('/admin/version/', 'admin_check_version');
 $app->get('/authors/:id/:page/', 'authorDetailsSlice');
 $app->get('/authorslist/:id/', 'authorsSlice');
+$app->get('/login/', 'show_login');
+$app->post('/login/', 'perform_login');
 $app->get('/search/', 'globalSearch');
 $app->get('/series/:id/:page/', 'seriesDetailsSlice');
 $app->get('/serieslist/:id/', 'seriesSlice');
@@ -310,7 +314,13 @@ function perform_login() {
 			$app->render('login.html', array(
 				'page' => mkPage(getMessageString('login')))); 			
 		} else {
-			$app->redirect($app->getRootUri());
+			$success = $app->strong->login($uname, $upw);
+			$app->getLog()->debug('login success: '.var_export($success,true));	
+			if($success)
+				$app->redirect($app->request->getRootUri());
+			else 
+				$app->render('login.html', array(
+					'page' => mkPage(getMessageString('login')))); 			
 		}
 	} else {
 		$app->render('login.html', array(
@@ -406,13 +416,6 @@ function admin_change_json() {
 	$errors = array();
 	$messages = array();
 	$app->getLog()->debug('admin_change: '.var_export($req_configs,true));	
-
-	## For 1.0: run a silent db update
-	# TODO post 1.0: replace with an updater 
-	if ($globalSettings[DB_VERSION] =! DB_SCHEMA_VERSION) {
-		$app->getLog()->warn('admin_change: old db schema detected. running update');							
-		$bbs->updateDbSchema1to2();		
-	}
 
 	## Check for consistency - calibre directory
 	# Calibre dir is still empty and no change in sight --> error
