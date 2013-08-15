@@ -21,9 +21,11 @@
 	{% endif %}
 
 {% else %}
+	{% if page.admin %}
 	<a href="{{page.rot}}/admin/" data-icon="gear" class="ui-btn-left">
 		{{ page.glob.langa.admin_short }}
 	</a>
+	{% endif %}
 	<h1>{{ page.title }}</h1>
 	{% if page.menu == 0 %}
 		<a  data-icon="back" data-rel="back" class="ui-btn-right">

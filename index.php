@@ -490,20 +490,17 @@ function has_valid_calibre_dir() {
 }
 
 /**
- * Check for admin permissions. If no admin password is defined 
- * everyone has admin permissions.
+ * Check for admin permissions. Currently this is only the user 
+ * <em>admin</em>, ID 1.
  */
 function is_admin() {
-	$apw = getAdminPassword();
-	if (is_null($apw))
-		return true;
-	else {
-		$admin_cookie = getOurCookie(ADMIN_COOKIE);
-		if (!is_null($admin_cookie) && $admin_cookie === $apw)
-			return true;
-		else
-			return false;
-	}	
+	global $app;
+	if ($app->strong->loggedIn()) {
+		$user = $app->strong->getUser();
+		return ($user['id'] === '1');
+	} else {
+		return false;
+	}
 }
 
 /**
@@ -1560,7 +1557,8 @@ function mkPage($subtitle='', $menu=0, $dialog=false) {
 		'glob' => $globalSettings,
 		'menu' => $menu,
 		'dialog' => $dialog,
-		'auth' => $auth);
+		'auth' => $auth,
+		'admin' => is_admin());
 	return $page;
 }
 
