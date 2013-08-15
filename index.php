@@ -29,24 +29,10 @@ define('DB_SCHEMA_VERSION', '3');
 
 # URL for version information
 define('VERSION_URL', 'http://projekte.textmulch.de/bicbucstriim/version.json');
-# Cookie name for global download protection
-define('GLOBAL_DL_COOKIE', 'glob_dl_access');
-# Cookie name for admin access
-define('ADMIN_COOKIE', 'admin_access');
 # Cookie name to store Kindle email address
 define('KINDLE_COOKIE', 'kindle_email');
-# Admin password
-define('ADMIN_PW', 'admin_pw');
 # Calibre library path
 define('CALIBRE_DIR', 'calibre_dir');
-# Global download choice
-define('GLOB_DL_CHOICE', 'glob_dl_choice');
-# Global download password
-define('GLOB_DL_PASSWORD', 'glob_dl_password');
-# Global tags choice
-define('TAG_PROTECT_CHOICE', 'tag_protect_choice');
-# Global tag name protect
-define('TAG_PROTECT_FIELD', 'tag_protect_field');
 # BicBucStriim DB version
 define('DB_VERSION', 'db_version');
 # Thumbnail generation method
@@ -132,26 +118,16 @@ $globalSettings['l10n'] = new L10n($globalSettings['lang']);
 $globalSettings['langa'] = $globalSettings['l10n']->langa;
 $globalSettings['langb'] = $globalSettings['l10n']->langb;
 # Init admin settings with std values, for upgrades or db errors
-$globalSettings[ADMIN_PW] = '';
 $globalSettings[CALIBRE_DIR] = '';
 $globalSettings[DB_VERSION] = DB_SCHEMA_VERSION;
-$globalSettings[GLOB_DL_PASSWORD] = '7094e7dc2feb759758884333c2f4a6bdc9a16bb2';
-$globalSettings[GLOB_DL_CHOICE] = 0;
-$globalSettings[TAG_PROTECT_FIELD] = 'protected';
-$globalSettings[TAG_PROTECT_CHOICE] = 0;
 $globalSettings[KINDLE] = 0;
 $globalSettings[KINDLE_FROM_EMAIL] = '';
 $globalSettings[THUMB_GEN_CLIPPED] = 1;
 $globalSettings[PAGE_SIZE] = 30;
 $globalSettings[DISPLAY_APP_NAME] = $appname;
 
-$knownConfigs = array(ADMIN_PW, CALIBRE_DIR, DB_VERSION, GLOB_DL_PASSWORD, GLOB_DL_CHOICE, 
-	TAG_PROTECT_CHOICE, TAG_PROTECT_FIELD, KINDLE, KINDLE_FROM_EMAIL, THUMB_GEN_CLIPPED, PAGE_SIZE, 
-	DISPLAY_APP_NAME);
-
-# Check if libmcrypt is available
-$globalSettings['crypt'] = function_exists('mcrypt_encrypt');
-$app->getLog()->info('Encryption '.($globalSettings['crypt']==true ? '' : 'not ').'available');
+$knownConfigs = array(CALIBRE_DIR, DB_VERSION, KINDLE, KINDLE_FROM_EMAIL, 
+	THUMB_GEN_CLIPPED, PAGE_SIZE, DISPLAY_APP_NAME);
 
 $bbs = new BicBucStriim();
 $app->bbs = $bbs;
@@ -170,7 +146,6 @@ $app->post('/admin/users/', 'admin_add_user');
 $app->get('/admin/users/:id/', 'admin_get_user');
 $app->put('/admin/users/:id/', 'admin_modify_user');
 $app->delete('/admin/users/:id/', 'admin_delete_user');
-$app->post('/admin/access/check/', 'admin_checkaccess');
 $app->get('/admin/version/', 'admin_check_version');
 $app->get('/authors/:id/:page/', 'authorDetailsSlice');
 $app->get('/authorslist/:id/', 'authorsSlice');
@@ -183,8 +158,6 @@ $app->get('/serieslist/:id/', 'seriesSlice');
 $app->get('/tags/:id/:page/', 'tagDetailsSlice');
 $app->get('/tagslist/:id/', 'tagsSlice');
 $app->get('/titles/:id/', 'title');
-$app->get('/titles/:id/showaccess/',  'showaccess');
-$app->post('/titles/:id/checkaccess/',  'checkaccess');
 $app->get('/titles/:id/cover/', 'cover');
 $app->get('/titles/:id/file/:file', 'book');
 $app->post('/titles/:id/kindle/:file', 'kindle');
@@ -598,31 +571,6 @@ function admin_change_json() {
 	}
 }
 
-/**
- * Checks access to the admin page -> /admin/access/check
- */
-function admin_checkaccess() {
-	global $app, $globalSettings;
-
-	$app->deleteCookie(ADMIN_COOKIE);
-	$password = $app->request()->post('admin_pwin');
-	$app->getLog()->debug('admin_checkaccess input: '.$password);
-
-	$apw = getAdminPassword();
-	if ($password == $apw) {
-		$app->getLog()->debug('admin_checkaccess succeded');
-		setOurCookie(ADMIN_COOKIE,$password);
-		$app->redirect($app->request()->getRootUri().'/admin/');
-	} else {		
-		$app->getLog()->debug('admin_checkaccess failed');
-		#$app->response()->status(401);
-		$app->render('admin.html',array(
-			'page' => mkPage(getMessageString('admin')),
-			'messages' => array(getMessageString('invalid_password')),
-			'isadmin' => false));
-	}
-}
-
 
 function admin_check_version() {
 	global $app, $globalSettings;	
@@ -657,22 +605,6 @@ function admin_check_version() {
 	$app->response()->body($answer);
 }
 
-# Check if the admin page is protected by a password
-# -> /admin/access/
-function admin_is_protected() {
-	global $app, $globalSettings;
-
-	$apw = getAdminPassword();
-	if (!is_null($apw)) {
-		$app->getLog()->debug('admin_is_protected: yes');
-		$app->response()->status(200);
-		$app->response()->body('1');
-	} else {		
-		$app->getLog()->debug('admin_is_protected: no');
-		$app->response()->status(200);
-		$app->response()->body('0');
-	}	
-}
 
 # Make a search over all categories. Returns only the first PAGES_SIZE items per category.
 # If there are more entries per category, there will be a link to the full results.
@@ -752,58 +684,10 @@ function title($id) {
 			'ccs' => $ccs,
 			'kindle_format' => $kindle_format,
 			'kindle_from_email' => $globalSettings[KINDLE_FROM_EMAIL],
-			'protect_dl' => is_protected($id))
+			'protect_dl' => false)
 	);
 }
 
-# Show the password dialog
-# Route: /titles/:id/showaccess/
-function showaccess($id) {
-	global $app, $globalSettings;
-
-	$app->getLog()->debug('showaccess called for '.$id);			
-	$app->render('password_dialog.html',
-		array('page' => mkPage(getMessageString('check_access'),0,true), 
-					'bookid' => $id));
-}
-
-/**
- * Check the access rights for a book and set a cookie if successful.
- * Sends 404 if unsuccessful.
- * Route: /titles/:id/checkaccess/
- *
- * If libmcrypt is available, encrypted cookies are used.
- * 
- * @param  int 		$id book id
- */
-function checkaccess($id) {
-	global $app, $calibre_dir, $globalSettings, $bbs;
-
-	$rot = $app->request()->getRootUri();
-	$book = $bbs->title($id);
-	if (is_null($book)) {
-		$app->getLog()->debug("checkaccess: book not found: ".$id);
-		$app->response()->status(404);
-		return;
-	}
-
-	$app->deleteCookie(GLOBAL_DL_COOKIE);
-	$password = $app->request()->post('password');
-	$app->getLog()->debug('checkaccess input: '.$password);
-
-	$cpw = getDownloadPassword();
-
-	if ($password == $cpw) {
-		$app->getLog()->debug('checkaccess succeded');
-
-		setOurCookie(GLOBAL_DL_COOKIE, $cpw);
-		$app->response()->status(200);
-	} else {		
-		$app->getLog()->debug('checkaccess failed');
-		$app->flash('error', $globalSettings['langa']['invalid_password']);
-		$app->response()->status(404);
-	}
-}
 
 # Return the cover for the book with ID. Calibre generates only JPEGs, so we always return a JPEG.
 # If there is no cover, return 404.
@@ -874,23 +758,19 @@ function book($id, $file) {
 		$app->getLog()->debug("no book file");
 		$app->notFound();
 	}	
-	if (is_protected($id)) {
-		$app->getLog()->warn("book: attempt to download a protected book, ".$id);		
-		$app->response()->status(401);
-	} else {
-		$app->getLog()->debug("book: file ".$file);
-		$bookpath = $bbs->titleFile($id, $file);
-		$app->getLog()->debug("book: path ".$bookpath);
 
-		/** readfile has problems with large files (e.g. PDF) caused by php memory limit
-		 * to avoid this the function readfile_chunked() is used. app->response() is not
-		 * working with this solution.
-		**/
-		//TODO: Use new streaming functions in SLIM 1.7.0 when released
-		header("Content-length: ".filesize($bookpath));
-		header("Content-type: ".Utilities::titleMimeType($bookpath));
-		readfile_chunked($bookpath);
-	}
+	$app->getLog()->debug("book: file ".$file);
+	$bookpath = $bbs->titleFile($id, $file);
+	$app->getLog()->debug("book: path ".$bookpath);
+
+	/** readfile has problems with large files (e.g. PDF) caused by php memory limit
+	 * to avoid this the function readfile_chunked() is used. app->response() is not
+	 * working with this solution.
+	**/
+	//TODO: Use new streaming functions in SLIM 1.7.0 when released
+	header("Content-length: ".filesize($bookpath));
+	header("Content-type: ".Utilities::titleMimeType($bookpath));
+	readfile_chunked($bookpath);
 }
 
 
@@ -904,11 +784,6 @@ function kindle($id, $file) {
 		$app->response()->status(404);
 		return;
 	}	
-	if (is_protected($id)) {
-		$app->getLog()->warn("kindle: attempt to send a protected book, ".$id);		
-		$app->response()->status(401);
-		return;
-	}
 	# Validate request e-mail format
 	$to_email = $app->request()->post('email');
 	if (!isEMailValid($to_email)) {
@@ -1469,76 +1344,6 @@ function opdsBySearch($index=0) {
  ********************************************************************/
 
 
-/**
- * Check whether the book download must be protected. 
- *
- * If libmcrypt is available, encrypted cookies are used.
- * 
- * @param  int  		$id book id
- * @return boolean  true - the user must enter a password, else no authentication necessary
- */
-function is_protected($id) {
-	global $app, $calibre_dir, $globalSettings, $bbs;
-	$protected = false;
-
-	$pw = getDownloadPassword();
-	if (!is_null($pw)) {
-		$glob_dl_cookie = getOurCookie(GLOBAL_DL_COOKIE);
-		$app->getLog()->debug('is_protected: download protection enabled, cookie: '.$glob_dl_cookie);
-		
-		//check if tag selection is active
-		$tgc 	= $globalSettings[TAG_PROTECT_CHOICE];
-		if ($tgc == 0) { // No selective protection by tags
-			$app->getLog()->debug('is_protected: using global download protection');		
-			$protected = checkPWCookie($glob_dl_cookie, $pw);
-		} else { // tag selection is active, check if control is ok
-			$app->getLog()->debug('is_protected: using selective download protection');		
-			$has_protective_tag = isProtectedByTag($id);
-			if ($has_protective_tag) {
-				$protected = checkPWCookie($glob_dl_cookie, $pw);
-			} else {
-				$protected = false;
-			}
-		}
-	} else {
-		$app->getLog()->debug('is_protected: download protection disabled');		
-		$protected = false;
-	}
-	$app->getLog()->debug('is_protected: result '+$protected);		
-	return $protected;
-}
-
-function checkPWCookie($cookie, $pw) {
-	if (is_null($cookie))
-		return true;
-	else {
-		if ($cookie === $pw)
-			return false;
-		else
-			return true;
-	}
-}
-
-# Utility to check whether the book with ID $id contains a tag, that is marked as protected
-function isProtectedByTag($id) {
-	global $globalSettings, $bbs;
-
-	//field need to check for tag protection
-	$ctags	= $globalSettings[TAG_PROTECT_FIELD];
-	
-	$details = $bbs->titleDetails($id);
-	$allTags = $details['tags'];
-	
-	//search if tag is the same as in admin settings
-	$ct = false;
-	foreach ($allTags as &$aTag) {
-		$tagName = $aTag->name;			
-		if ($tagName == $ctags){
-			$ct = true;
-		}
-	}
-	return $ct;
-}
 
 # Utility function to fill the page array
 function mkPage($subtitle='', $menu=0, $dialog=false) {
@@ -1562,34 +1367,6 @@ function mkPage($subtitle='', $menu=0, $dialog=false) {
 	return $page;
 }
 
-/**
- * Return the admin password or NULL if none is set.
- * @return string admin password or NULL
- */
-function getAdminPassword() {
-	global $globalSettings;
-
-	if (empty($globalSettings[ADMIN_PW])) 
-		return NULL;
-	else
-		return $globalSettings[ADMIN_PW];
-}
-
-/**
- * Return the download password or NULL if no download protection is set.
- * @return string download password or NULL
- */
-function getDownloadPassword() {
-	global $globalSettings;
-
-	if ($globalSettings[GLOB_DL_CHOICE] == "1") 
-		$cpw = $globalSettings[ADMIN_PW];
-	elseif ($globalSettings[GLOB_DL_CHOICE] == "2") 
-		$cpw = $globalSettings[GLOB_DL_PASSWORD];
-	else
-		$cpw = NULL;
-	return $cpw;
-}
 
 /**
  * Return a localized message string for $id. 
@@ -1633,36 +1410,6 @@ function getLastSearchPage($tl) {
 		$lastPage = $tl['pages']-1;	
 	return $lastPage;
 }
-
-/**
- * Get the value of the cookie
- * @param string $name 	cookie name
- * @return string 			cookie value or NULL if not available
- */
-function getOurCookie($name) {
-	global $app, $globalSettings;	
-	if ($globalSettings['crypt'] == true) {
-		$cookie = $app->getEncryptedCookie($name);	
-	} else {
-		$cookie = $app->getCookie($name);
-	}
-	return $cookie;
-}
-
-/**
- * Set a cookie
- * @param string $name 	cookie name
- * @param string $value cookie value
- */
-function setOurCookie($name, $value) {
-	global $app, $globalSettings;	
-	if ($globalSettings['crypt'] == true) {
-		$cookie = $app->setEncryptedCookie($name, $value);	
-	} else {
-		$cookie = $app->setCookie($name, $value);
-	}
-}
-
 
 /**
  * Returns the user language, priority:
