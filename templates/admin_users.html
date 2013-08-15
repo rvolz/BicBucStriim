@@ -1,0 +1,46 @@
+{% extends 'main.html' %}
+
+{% block pid %}id="padmin_users" data-ajax="false"{%endblock%}
+{% block content %}
+
+<header>
+	<h1>{{ page.glob.langa.admin_users }}</h1>
+</header>
+{% include "flash_messages.html" %}
+
+<h2>{{page.glob.langa.admin_users_legend1}}</h2>
+<form action="{{page.rot}}/admin/users/" method="post" id="newuserform" class="ui-form-a" data-proot="{{page.rot}}" >
+	<fieldset data-role="fieldcontain">
+		<label for="username">{{page.glob.langa.admin_username}}</label>
+		<input name="username" id="username" type="text" 
+			value="" placeholder="{{page.glob.langa.admin_username}}"/>
+	</fieldset>	
+	<fieldset data-role="fieldcontain">
+		<label for="password">{{page.glob.langa.admin_userpw}}</label>
+		<input name="password" id="password" type="password" 
+			value="" placeholder="{{page.glob.langa.admin_userpw}}"/>
+	</fieldset>	
+	<button data-ajax="true" data-icon="check">
+		{{page.glob.langa.save}}
+	</button>	
+</form>
+<h2>{{page.glob.langa.admin_users_legend2}}</h2>
+<ul id="users" data-role="listview" data-split-icon="delete" data-inset="true">
+{% for user in users %}
+	<li data-user="{{user.id}}">
+		<a href="{{page.rot}}/admin/users/{{user.id}}">
+			<h2>{{user.username}}</h2>
+		</a>
+		<a class="user_delete" href="#" data-user="{{user.id}}">
+			{{page.glob.langa.admin_users_delete}}
+		</a>
+	</li>
+{% endfor %}
+</ul>
+<div id="delete" data-role="popup" data-theme="e">
+	<h3>{{page.glob.langa.admin_users_delete}}?</h3>
+	<a id="delete_user" data-proot="{{page.rot}}" data-ajax="true" data-role="button" data-icon="check" data-mini="true">
+		{{page.glob.langa.admin_users_delete}}
+	</a>
+</div>
+{% endblock %}

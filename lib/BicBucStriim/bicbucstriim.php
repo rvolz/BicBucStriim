@@ -158,6 +158,94 @@ class BicBucStriim {
 		$this->mydb->commit();
 	}
 
+
+/**
+	 * Find all user records in the settings DB
+	 * @return array user data
+	 */
+	function users() {
+		return $this->sfind('User','select * from users');	
+	}
+
+	/**
+	 * Find a specific user in the settings DB
+	 * @return user data or NULL if not found
+	 */
+	function user($userid) {
+		$users = $this->sfind('User','select * from users where id = '.$userid);	
+		if (count($users) == 1)
+			return $users[0];
+		else
+			return NULL;
+	}
+
+	/**
+	 * Add a new user account.
+	 * @param $username string login name for the account, must be unique
+	 * @param $password string clear text password 
+	 * @return user account or null if there was an error
+	 */
+	function addUser($username, $password) {
+		password_hash($password, PASSWORD_BCRYPT);
+		try {
+			$this->mydb->exec('insert into users (username, password) values ("'.$username.'", "'.$mdp.'")');   				
+			$users = $this->sfind('User','select * from users where username = "'.$username.'"');	
+			return $users[0];
+		} catch (PDOException $e) {			
+			return null;
+		}		
+	}
+	
+	/**
+	 * Delete a user account from the database. The admin account (ID 1) can't be deleted.
+	 * @param $userid integer
+	 * @return true if a user was deleted else false
+	 */
+	function deleteUser($userid) {
+		if ($userid == 1)
+			return false;
+		else {
+			$nr = $this->mydb->exec('delete from users where id = '.$userid);   	
+			return ($nr > 0);
+		}
+	}
+
+	/**
+	 * Update an exisiting user account. The username cannot be changed.
+	 * @param $userid integer 
+	 * @param $password string new clear text password or old encrypted password
+	 * @param $languages string comma-delimited set of language identifiers
+	 * @param $tags string comma-delimited set of tags
+	 * @return updated user account or null if there was an error
+	 */
+	function changeUser($userid, $password, $languages, $tags) {
+		$mdp = password_hash($password, PASSWORD_BCRYPT);
+		$users = $this->sfind('User','select * from users where id = '.$userid);
+		if (count($users) > 0) {
+			if ($mdp != $users[0]->password)
+				$update_pw = $mdp;
+			else
+				$update_pw = $users[0]->password;
+			try {
+				$sql = 'UPDATE users SET password = :password, languages = :languages, tags = :tags WHERE id = :userid';
+				$stmt = $this->mydb->prepare($sql);
+				$stmt->bindParam(':password', $update_pw);
+				$stmt->bindParam(':languages', $languages);
+				$stmt->bindParam(':tags', $tags);
+				$stmt->bindParam(':userid', $userid);
+				$stmt->execute(); 
+				$users = $this->sfind('User','select * from users where id = '.$userid);
+				return $users[0];
+			} catch (PDOException $e) {
+				return null; 
+			}
+		} else {
+			return null;
+		}
+	}
+	
+
+
 	############# Calibre Library functions ################
 
 	/**

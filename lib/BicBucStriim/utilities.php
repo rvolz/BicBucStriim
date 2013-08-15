@@ -28,6 +28,7 @@ class TagBook extends Item {}
 
 # Confiuration items in the BBS DB
 class Config extends Item{}
+class User extends Item{}
 
 class Utilities {
 	/**

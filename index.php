@@ -163,7 +163,13 @@ $app->add(new \OwnConfigMiddleware($knownConfigs));
 $app->notFound('myNotFound');
 $app->get('/', 'main');
 $app->get('/admin/', 'admin');
-$app->post('/admin/', 'admin_change_json');
+$app->get('/admin/configuration/', 'admin_configuration');
+$app->post('/admin/configuration/', 'admin_change_json');
+$app->get('/admin/users/', 'admin_get_users');
+$app->get('/admin/users/:id/', 'admin_get_user');
+//$app->post('/admin/users/:id/', 'admin_add_user');
+$app->put('/admin/users/:id/', 'admin_modify_user');
+//$app->delete('/admin/users/:id/', 'admin_delete_user');
 $app->post('/admin/access/check/', 'admin_checkaccess');
 $app->get('/admin/version/', 'admin_check_version');
 $app->get('/authors/:id/:page/', 'authorDetailsSlice');
@@ -363,12 +369,68 @@ function main() {
  * Generate the admin page -> /admin/
  */
 function admin() {
-	global $app, $globalSettings, $bbs;
+	global $app;
 
 	$app->render('admin.html',array(
 		'page' => mkPage(getMessageString('admin')),
 		'isadmin' => is_admin()));
 }
+
+
+/**
+ * Generate the admin page -> /admin/
+ */
+function admin_configuration() {
+	global $app;
+
+	$app->render('admin_configuration.html',array(
+		'page' => mkPage(getMessageString('admin')),
+		'isadmin' => is_admin()));
+}
+
+function admin_get_users() {
+	global $app;
+
+	$users = $app->bbs->users();
+	$app->render('admin_users.html',array(
+		'page' => mkPage(getMessageString('admin_users')),
+		'users' => $users,
+		'isadmin' => is_admin()));
+}
+
+function admin_get_user($id) {
+	global $app;
+
+	$user = $app->bbs->user($id);
+	$app->getLog()->debug('admin_get_user: '.var_export($user, true));	
+	$app->render('admin_user.html',array(
+		'page' => mkPage(getMessageString('admin_users')),
+		'user' => $user,
+		'isadmin' => is_admin()));
+}
+
+function admin_modify_user($id) {
+	global $app;
+
+	$user_data = $app->request()->put();
+	$app->getLog()->debug('admin_modify_user: '.var_export($user_data, true));	
+	$user = $app->bbs->changeUser($id, $user_data['password'], 
+		$user_data['languages'], $user_data['tags']);
+	$resp = $app->response();
+	if (isset($user) && !is_null($user)) {
+		$resp->status(200);
+		$msg = getMessageString('admin_modified');
+	} else {
+		$resp->status(500);
+		$msg = getMessageString('admin_modify_error');
+	}
+	$answer = json_encode(array('user' => $user, 'msg' => $msg));
+	$resp->header('Content-type','application/json');
+	$resp->header('Content-Length',strlen($answer));
+	$resp->body($answer);
+}
+
+
 
 /**
  * Is the key in globalSettings?
@@ -414,7 +476,7 @@ function admin_change_json() {
 	# Check access permission
 	if (!is_admin()) {
 		$app->getLog()->warn('admin_change: no admin permission');	
-		$app->render('admin.html',array(
+		$app->render('admin_configuration.html',array(
 			'page' => mkPage(getMessageString('admin')),
 			'messages' => array(getMessageString('invalid_password')),
 			'isadmin' => false));
@@ -438,15 +500,6 @@ function admin_change_json() {
 				array_push($errors, 1);
 		}
 	} 
-	## More consistency checks - download protection
-	# Switch off DL protection, if there is a problem with the configuration
-	if ($req_configs[GLOB_DL_CHOICE] != "0") {
-		if($req_configs[GLOB_DL_CHOICE] == "1" && empty($req_configs[ADMIN_PW])) {
-			array_push($errors, 3);
-		} elseif ($req_configs[GLOB_DL_CHOICE] == "2" && empty($req_configs[GLOB_DL_PASSWORD])) {
-			array_push($errors, 2);
-		}
-	}			
 	## More consistency checks - kindle feature
 	# Switch off Kindle feature, if no valid email address supplied 
 	if ($req_configs[KINDLE] == "1") {
@@ -479,7 +532,7 @@ function admin_change_json() {
 	# Don't save just return the error status
 	if (count($errors) > 0) {
 		$app->getLog()->error('admin_change: ended with error '.var_export($errors, true));	
-		$app->render('admin.html',array(
+		$app->render('admin_configuration.html',array(
 		'page' => mkPage(getMessageString('admin')), 
 		'isadmin' => true,
 		'errors' => $errors));	
@@ -501,7 +554,7 @@ function admin_change_json() {
 			$app->getLog()->debug('admin_change: changes saved');					
 		}
 		$app->getLog()->debug('admin_change: ended');	
-		$app->render('admin.html',array(
+		$app->render('admin_configuration.html',array(
 			'page' => mkPage(getMessageString('admin')), 
 			'messages' => array(getMessageString('changes_saved')),
 			'isadmin' => true,

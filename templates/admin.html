@@ -2,163 +2,24 @@
 
 {% block pid %}id="padmin" data-ajax="false"{%endblock%}
 {% block content %}
-<h1>{{ page.glob.langa.admin }}</h1>
+<h1>{{ page.glob.langa.admin_short }}</h1>
 
-<div id="flash">
-	{% for message in messages %}
-		<p class="success">{{message}}</p>
-	{% endfor %}
+<ul data-role="listview">
+	<li>
+		<a href="{{page.rot}}/admin/configuration/">
+			<h2>{{page.glob.langa.admin}}</h2>
+		</a>
+	</li>
+	<li>
+		<a href="{{page.rot}}/admin/users/">
+			<h2>{{page.glob.langa.admin_users}}</h2>
+		</a>
+	</li>
+	<li>
+		<a href="{{page.rot}}/admin/version/">
+			<h2>{{page.glob.langa.admin_check_version}}</h2>
+		</a>
+	</li>
+</ul>
 
-	{% for error in errors %}
-	{% if error == 1 %}
-		<p class="error">{{page.glob.langa.invalid_calibredir2}}</p>
-	{% elseif error == 2 %}
-		<p class="error">{{page.glob.langa.invalid_password2}}</p>
-	{% elseif error == 3 %}
-		<p class="error">{{page.glob.langa.admin_pw_required2}}</p>
-	{% elseif error == 4 %}
-		<p class="error">{{page.glob.langa.admin_invalid_page_size}}</p>	
-	{% elseif error == 5 %}
-		<p class="error">{{page.glob.langa.invalid_email_address}}</p>		
-	{% else %}
-		<p class="error">{{page.glob.langa.unknown_error1}}</p>
-	{% endif %}
-	{% endfor %}
-	{% if errors %}
-		<p>
-			<a href="{{page.rot}}/installcheck.php">
-				{{page.glob.langa.check_installation}}
-			</a>
-		</p>
-	{% endif %}
-</div>	
-
-{% if isadmin == false %}
-<form action="{{page.rot}}/admin/access/check/" method="post" id="adminpwform">
-	<fieldset data-role="fieldcontain">
-		<label for="admin_pwin">{{page.glob.langa.admin_pw1}}</label>
-		<input name="admin_pwin" id="admin_pwin" type="password" 
-			value="" placeholder="{{page.glob.langa.admin_pw2}}" />
-	</fieldset>
-	<button type="submit">{{page.glob.langa.check_access}}</button>	
-</form>
-{% else %}
-<div data-role="collapsible" data-collapsed="true">
-<h2>{{ page.glob.langa.admin_check_version }}</h2>
-<div class="ui-grid-a">
-	<div class="ui-block-a">
-		<p>{{page.glob.langa.admin_check_version_legend}}</p>
-	</div>
-	<div class="ui-block-b">
-		<button id="admin_check_version" name="admin_check_version">
-			{{page.glob.langa.admin_check_version}}
-		</button>			
-	</div>
-	</div>
-</div>
-<div data-role="collapsible" data-collapsed="false">
-<h2>{{ page.glob.langa.admin }}</h2>
-<form action="{{page.rot}}/admin/" method="post" id="adminform">
-	<fieldset data-role="fieldcontain">
-		<label for="calibre_dir">{{page.glob.langa.calibre_dir1}}</label>
-		<input name="calibre_dir" id="calibre_dir" type="text" 
-			value="{{page.glob.calibre_dir}}" placeholder="{{page.glob.langa.calibre_dir2}}"/>
-		<p>{{page.glob.langa.calibre_dir_expl}}</p>					
-	</fieldset>	
-	<fieldset data-role="fieldcontain">
-		<label for="admin_pw">{{page.glob.langa.admin_pw1}}</label>
-		<input name="admin_pw" id="admin_pw" type="text" 
-			value="{{page.glob.admin_pw}}" placeholder="{{page.glob.langa.admin_pw2}}" />
-		<p>{{page.glob.langa.admin_pw_expl}}</p>
-	</fieldset>
-	<div data-role="fieldcontain">
-		<fieldset data-role="controlgroup">
-			<legend>{{page.glob.langa.glob_dl_legend}}</legend>
-			<input type="radio" name="glob_dl_choice" id="glob_dl_choice_1" value="0" 
-				{% if page.glob.glob_dl_choice == "0" %}checked {%endif%} />
-			<label for="glob_dl_choice_1">{{page.glob.langa.glob_dl_radio1}}</label>
-			<input type="radio" name="glob_dl_choice" id="glob_dl_choice_2" value="1" 
-				{% if page.glob.glob_dl_choice == "1" %}checked {%endif%} />
-			<label for="glob_dl_choice_2">{{page.glob.langa.glob_dl_radio2}}</label>			
-			<input type="radio" name="glob_dl_choice" id="glob_dl_choice_3" value="2" 
-				{% if page.glob.glob_dl_choice == "2" %}checked {%endif%} />
-			<label for="glob_dl_choice_3">{{page.glob.langa.glob_dl_radio3}}</label>			
-			<p>{{page.glob.langa.glob_dl_expl}}</p>						
-		</fieldset>		
-	</div>
-	<fieldset data-role="fieldcontain">
-		<label for="glob_dl_password">{{page.glob.langa.glob_dl_pw1}}</label>
-		<input name="glob_dl_password" id="glob_dl_password" type="text" 
-			value="{{page.glob.glob_dl_password}}" placeholder="{{page.glob.langa.glob_dl_pw2}}" />
-	</fieldset>
-	<fieldset data-role="fieldcontain">
-		<label for="tag_protect_choice">{{page.glob.langa.tag_protect}}</label>
-		<select name="tag_protect_choice" id="tag_protect_choice" data-role="slider">
-			<option value="0" {% if page.glob.tag_protect_choice == "0" %}selected {%endif%}>
-				{{page.glob.langa.switch_no}}
-			</option>
-			<option value="1" {% if page.glob.tag_protect_choice == "1" %}selected {%endif%}>
-				{{page.glob.langa.switch_yes}}
-			</option>
-		</select>
-		<p>{{page.glob.langa.tag_protect_expl}}</p>
-	</fieldset>
-	<fieldset data-role="fieldcontain">
-		<label for="tag_protect_field">{{page.glob.langa.tag_protect_field}}</label>
-		<input name="tag_protect_field" id="tag_protect_field" type="text" 
-			value="{{page.glob.tag_protect_field}}" placeholder="{{page.glob.langa.tag_protect_field_exp1}}" />
-	</fieldset>	
-	<fieldset data-role="fieldcontain">
-		<label for="kindle">{{page.glob.langa.kindle_enable}}</label>
-		<select name="kindle" id="kindle" data-role="slider">
-			<option value="0" {% if page.glob.kindle == "0" %}selected {%endif%}>
-				{{page.glob.langa.switch_no}}
-			</option>
-			<option value="1" {% if page.glob.kindle == "1" %}selected {%endif%}>
-				{{page.glob.langa.switch_yes}}
-			</option>
-		</select>
-		<p>{{page.glob.langa.kindle_expl}}</p>
-	</fieldset>	
-	<fieldset data-role="fieldcontain">
-		<label for="kindle_from_email">{{page.glob.langa.kindle_from_email1}}</label>
-		<input name="kindle_from_email" id="kindle_from_email" type="text" 
-			value="{{page.glob.kindle_from_email}}" placeholder="{{page.glob.langa.kindle_from_email2}}" />
-		<p>{{page.glob.langa.kindle_expl2}}</p>
-	</fieldset>
-	<fieldset data-role="fieldcontain">
-		<label for="thumb_gen_clipped">{{page.glob.langa.thumb_gen_clipped}}</label>
-		<select name="thumb_gen_clipped" id="thumb_gen_clipped" data-role="slider">
-			<option value="0" {% if page.glob.thumb_gen_clipped == "0" %}selected {%endif%}>
-				{{page.glob.langa.switch_no}}
-			</option>
-			<option value="1" {% if page.glob.thumb_gen_clipped == "1" %}selected {%endif%}>
-				{{page.glob.langa.switch_yes}}
-			</option>
-		</select>
-		<p>{{page.glob.langa.thumb_gen_clipped_expl}}</p>
-	</fieldset>	
-	<fieldset data-role="fieldcontain">
-		<label for="page_size">{{page.glob.langa.page_size}}</label>
-		<input name="page_size" id="page_size" 
-			type="range" 
-			value="{{page.glob.page_size}}"
-			min="1"
-			max="100"
-			step="1"
-		/>
-		<p>{{page.glob.langa.page_size_expl}}</p>
-	</fieldset>	
-	<fieldset data-role="fieldcontain">
-		<label for="display_app_name">{{page.glob.langa.display_app_name}}</label>
-		<input name="display_app_name" id="display_app_name" 
-			type="text" 
-			value="{{page.glob.display_app_name}}"
-		/>
-		<p>{{page.glob.langa.display_app_name_expl}}</p>
-	</fieldset>		
-	<button type="submit">{{page.glob.langa.save}}</button>	
-</form>
-</div>
-{% endif %}
 {% endblock %}
