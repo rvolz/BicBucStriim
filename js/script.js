@@ -1,5 +1,95 @@
-/* Author: Rainer Volz
-*/
+
+// Admin user management - user list
+$(document).on('pageinit', '#padmin_users', function() {
+
+	// Initiate the additon of a user handling via click
+	$('#newuserform').on('submit', function(event) {
+		event.preventDefault();
+		var user = {
+			username: $('#username').val(),
+			password: $('#password').val()
+		};
+		var root = $(this).data('proot');
+		$.ajaxSetup({async:false});
+		$.post(root+'/admin/users/', user, function(data, textStatus, jqXHR) {
+			var user = data.user;
+			var userLi = document.createElement('li'),
+				userA1 = document.createElement('a'),
+				userA1H2 = document.createElement('h2'),
+				userA2 = document.createElement('a');
+			userLi.dataset.user = user.id;
+			$(userA1).attr('href', root+'/admin/users/'+user.id);
+			$(userA1H2).text(user.username);
+			$(userA2).addClass('user_delete');
+			$(userA2).on('click', function(){
+				startUserDeletion(userA2);
+			});
+			$(userA2).attr('href', '#');
+			userA2.dataset.user = user.id;
+			$(userA2).attr('title', $('#users li:first a.user_delete').attr('title'));
+			$(userLi).append(userA1);
+			$(userLi).append(userA2);
+			$(userA1).append(userA1H2);
+			$(userLi).prependTo('#users');
+			$('#users').listview('refresh');
+			$('div#flash').empty().append('<p class="success">'+data.msg+'</p>');
+			$('#padmin_user').trigger('change');
+		})
+		.fail(function(data) {
+			$('div#flash').empty().append('<p class="error">'+data.msg+'</p>');
+			$('#padmin_user').trigger('change');		
+		});
+		$.ajaxSetup({async:true});
+		return false;
+	});
+
+	function startUserDeletion(that) {
+		var user = $(that).data('user');
+		deleteUser(user);
+	}
+
+	// Initiate the delete user handling via click
+	$('.user_delete').on('click', function(){
+		startUserDeletion(this);
+		return false;
+	});
+
+	// Initiate the delete user handling via swiping
+	$(document).on( "swipeleft swiperight", "#users li", function( event ) {
+       	startUserDeletion(this);        
+    });
+    
+	// Common delete handling, add the user id to the popoup and open it
+	function deleteUser(id) {
+		$('#delete_user').data('user',id);	
+		$('#delete').popup();	
+		$('#delete').popup('open');	
+	}
+	
+	// Finish the delete and close the popup
+	$('#delete_user').on('click', function(){
+		var user = $(this).data('user');
+		var root = $(this).data('proot');
+		var jh = $.ajax({
+			url: root+'/admin/users/'+user,
+			type: 'DELETE',
+			async: false,
+			success: function(data) {
+				$('#users li[data-user|='+user+']').remove();						
+				$('div#flash').empty().append('<p class="success">'+data.msg+'</p>');
+				$('#padmin_user').trigger('change');
+			},
+			error: function(data) {
+				$('div#flash').empty().append('<p class="error">'+data.msg+'</p>');
+				$('#padmin_user').trigger('change');		
+			}
+		});
+		$('#delete').popup('close');
+		$('#users').listview('refresh');
+		return false;
+	});
+});
+
 // Admin user management - single user
 $(document).on('pageinit', '#padmin_user', function() {
 	// Initiate the modification of a user handling via click

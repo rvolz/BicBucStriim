@@ -186,7 +186,7 @@ class BicBucStriim {
 	 * @return user account or null if there was an error
 	 */
 	function addUser($username, $password) {
-		password_hash($password, PASSWORD_BCRYPT);
+		$mdp = password_hash($password, PASSWORD_BCRYPT);
 		try {
 			$this->mydb->exec('insert into users (username, password) values ("'.$username.'", "'.$mdp.'")');   				
 			$users = $this->sfind('User','select * from users where username = "'.$username.'"');	

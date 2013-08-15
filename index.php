@@ -166,10 +166,10 @@ $app->get('/admin/', 'admin');
 $app->get('/admin/configuration/', 'admin_configuration');
 $app->post('/admin/configuration/', 'admin_change_json');
 $app->get('/admin/users/', 'admin_get_users');
+$app->post('/admin/users/', 'admin_add_user');
 $app->get('/admin/users/:id/', 'admin_get_user');
-//$app->post('/admin/users/:id/', 'admin_add_user');
 $app->put('/admin/users/:id/', 'admin_modify_user');
-//$app->delete('/admin/users/:id/', 'admin_delete_user');
+$app->delete('/admin/users/:id/', 'admin_delete_user');
 $app->post('/admin/access/check/', 'admin_checkaccess');
 $app->get('/admin/version/', 'admin_check_version');
 $app->get('/authors/:id/:page/', 'authorDetailsSlice');
@@ -407,6 +407,45 @@ function admin_get_user($id) {
 		'page' => mkPage(getMessageString('admin_users')),
 		'user' => $user,
 		'isadmin' => is_admin()));
+}
+
+function admin_add_user() {
+	global $app;
+
+	$user_data = $app->request()->post();
+	$app->getLog()->debug('admin_add_user: '.var_export($user_data, true));	
+	$user = $app->bbs->addUser($user_data['username'], $user_data['password']);
+	$resp = $app->response();
+	if (isset($user) && !is_null($user)) {
+		$resp->status(200);
+		$msg = getMessageString('admin_modified');
+	} else {
+		$resp->status(500);
+		$msg = getMessageString('admin_modify_error');
+	}
+	$answer = json_encode(array('user' => $user, 'msg' => $msg));
+	$resp->header('Content-type','application/json');
+	$resp->header('Content-Length',strlen($answer));
+	$resp->body($answer);
+}
+
+function admin_delete_user($id) {
+	global $app;
+
+	$app->getLog()->debug('admin_delete_user: '.var_export($id, true));	
+	$success = $app->bbs->deleteUser($id);
+	$resp = $app->response();
+	if ($success) {
+		$resp->status(200);
+		$msg = getMessageString('admin_modified');
+	} else {
+		$resp->status(500);
+		$msg = getMessageString('admin_modify_error');
+	}
+	$answer = json_encode(array('msg' => $msg));
+	$resp->header('Content-type','application/json');
+	$resp->header('Content-Length',strlen($answer));
+	$resp->body($answer);
 }
 
 function admin_modify_user($id) {
