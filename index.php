@@ -11,6 +11,8 @@ require_once 'lib/BicBucStriim/langs.php';
 require_once 'lib/BicBucStriim/l10n.php';
 require_once 'lib/BicBucStriim/bicbucstriim.php';
 require_once 'lib/BicBucStriim/opds_generator.php';
+require_once 'lib/BicBucStriim/own_config_middleware.php';
+require_once 'lib/BicBucStriim/calibre_config_middleware.php';
 require_once 'vendor/email.php';
 
 # Allowed languages, i.e. languages with translations
@@ -22,7 +24,7 @@ $appname = 'BicBucStriim';
 # App version
 $appversion = '1.2.0-alpha';
 # Current DB schema version
-define('DB_SCHEMA_VERSION', '2');
+define('DB_SCHEMA_VERSION', '3');
 
 # URL for version information
 define('VERSION_URL', 'http://projekte.textmulch.de/bicbucstriim/version.json');
@@ -150,57 +152,33 @@ $knownConfigs = array(ADMIN_PW, CALIBRE_DIR, DB_VERSION, GLOB_DL_PASSWORD, GLOB_
 $globalSettings['crypt'] = function_exists('mcrypt_encrypt');
 $app->getLog()->info('Encryption '.($globalSettings['crypt']==true ? '' : 'not ').'available');
 
-# Add globals from DB
 $bbs = new BicBucStriim();
-if ($bbs->dbOk()) {
-	$app->getLog()->debug("config db found");
-	$we_have_config = true;
-	$css = $bbs->configs();
-	foreach ($css as $config) {
-		if (in_array($config->name, $knownConfigs)) 
-			$globalSettings[$config->name] = $config->val;
-		else 
-			$app->getLog()->warn(join('',
-				array('Unknown configuration, name: ', $config->name,', value: ',$config->val)));	
-	}
-	$app->getLog()->debug("config loaded");
-} else {
-	$app->getLog()->info("no config db found - creating a new one with default values");
-	$bbs->createDataDb();
-	$bbs = new BicBucStriim();
-	$cnfs = array();
-	foreach($knownConfigs as $name) {
-		$cnf = new Config();
-		$cnf->name = $name;
-		$cnf->val = $globalSettings[$name];
-		array_push($cnfs, $cnf);
-	}
-	$bbs->saveConfigs($cnfs);
-	$we_have_config = true;
-}
+$app->bbs = $bbs;
+$app->add(new \CalibreConfigMiddleware(CALIBRE_DIR));
+$app->add(new \OwnConfigMiddleware($knownConfigs));
 
 ###### Init routes for production
 $app->notFound('myNotFound');
-$app->get('/', 'htmlCheckConfig', 'main');
+$app->get('/', 'main');
 $app->get('/admin/', 'admin');
 $app->post('/admin/', 'admin_change_json');
 $app->post('/admin/access/check/', 'admin_checkaccess');
 $app->get('/admin/version/', 'admin_check_version');
-$app->get('/authors/:id/:page/', 'htmlCheckConfig', 'authorDetailsSlice');
-$app->get('/authorslist/:id/', 'htmlCheckConfig', 'authorsSlice');
-$app->get('/search/', 'htmlCheckConfig', 'globalSearch');
-$app->get('/series/:id/:page/', 'htmlCheckConfig', 'seriesDetailsSlice');
-$app->get('/serieslist/:id/', 'htmlCheckConfig', 'seriesSlice');
-$app->get('/tags/:id/:page/', 'htmlCheckConfig', 'tagDetailsSlice');
-$app->get('/tagslist/:id/', 'htmlCheckConfig', 'tagsSlice');
-$app->get('/titles/:id/', 'htmlCheckConfig','title');
-$app->get('/titles/:id/showaccess/', 'htmlCheckConfig', 'showaccess');
-$app->post('/titles/:id/checkaccess/', 'htmlCheckConfig', 'checkaccess');
-$app->get('/titles/:id/cover/', 'htmlCheckConfig', 'cover');
-$app->get('/titles/:id/file/:file', 'htmlCheckConfig', 'book');
-$app->post('/titles/:id/kindle/:file', 'htmlCheckConfig', 'kindle');
-$app->get('/titles/:id/thumbnail/', 'htmlCheckConfig', 'thumbnail');
-$app->get('/titleslist/:id/', 'htmlCheckConfig', 'titlesSlice');
+$app->get('/authors/:id/:page/', 'authorDetailsSlice');
+$app->get('/authorslist/:id/', 'authorsSlice');
+$app->get('/search/', 'globalSearch');
+$app->get('/series/:id/:page/', 'seriesDetailsSlice');
+$app->get('/serieslist/:id/', 'seriesSlice');
+$app->get('/tags/:id/:page/', 'tagDetailsSlice');
+$app->get('/tagslist/:id/', 'tagsSlice');
+$app->get('/titles/:id/', 'title');
+$app->get('/titles/:id/showaccess/',  'showaccess');
+$app->post('/titles/:id/checkaccess/',  'checkaccess');
+$app->get('/titles/:id/cover/', 'cover');
+$app->get('/titles/:id/file/:file', 'book');
+$app->post('/titles/:id/kindle/:file', 'kindle');
+$app->get('/titles/:id/thumbnail/', 'thumbnail');
+$app->get('/titleslist/:id/', 'titlesSlice');
 $app->get('/opds/', 'opdsCheckConfig', 'opdsRoot');
 $app->get('/opds/newest/', 'opdsCheckConfig', 'opdsNewest');
 $app->get('/opds/titleslist/:id/', 'opdsCheckConfig', 'opdsByTitle');
@@ -314,6 +292,32 @@ function myNotFound() {
 		'title' => getMessageString('not_found1'), 
 		'error' => getMessageString('not_found2')));
 }
+
+function show_login() {
+	global $app, $globalSettings;
+	$app->render('login.html', array(
+		'page' => mkPage(getMessageString('login')))); 
+}
+
+function perform_login() {
+	global $app, $globalSettings, $bbs;
+	$login_data = $app->request()->post();
+	$app->getLog()->debug('login: '.var_export($login_data,true));	
+	if (isset($login_data['username']) && isset($login_data['password'])) {
+		$uname = $login_data['username'];
+		$upw = $login_data['password'];
+		if (empty($uname) || empty($upw)) {
+			$app->render('login.html', array(
+				'page' => mkPage(getMessageString('login')))); 			
+		} else {
+			$app->redirect($app->getRootUri());
+		}
+	} else {
+		$app->render('login.html', array(
+			'page' => mkPage(getMessageString('login')))); 			
+	}
+}
+
 
 /**
  * Generate the main page with the 30 mos recent titles
