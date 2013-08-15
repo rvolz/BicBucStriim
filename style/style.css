@@ -6,7 +6,7 @@ body{padding-top:60px;padding-bottom:40px;}
 .title_detail .title_details{width:55%;float:right;padding-left:1%;}
 table#custom_columns_table tbody th{border-bottom:1px dotted gray;border-right:1px dotted gray;text-align:right;vertical-align:top;padding:10px;}
 table#custom_columns_table td{border-bottom:1px dotted gray;padding:10px;}
-div.footer p{text-align:center;}
+div.footer p{text-align:center;font-size:80%;}
 fieldset p{font-size:80%;}
 div#flash{color:white;}div#flash p{padding:5px;}
 div#flash .success{background-color:green;}
