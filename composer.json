@@ -1,7 +1,8 @@
 {
 	"require": {
-    "slim/slim": "2.3.1",
-    "slim/views": "0.1.0",
-    "twig/twig": "1.13.1"
-  }
+	    "slim/slim": "2.3.1",
+    	"slim/strong": "dev-develop",
+    	"slim/views": "0.1.0",
+    	"twig/twig": "1.13.1"
+  	}
 }

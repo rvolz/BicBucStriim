@@ -3,8 +3,47 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "7f1e428e32daf3760a075c1b444130d6",
+    "hash": "12ea6954fc126b4e2aa6d73365c3ac14",
     "packages": [
+        {
+            "name": "ircmaxell/password-compat",
+            "version": "1.0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ircmaxell/password_compat.git",
+                "reference": "v1.0.3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ircmaxell/password_compat/zipball/v1.0.3",
+                "reference": "v1.0.3",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "lib/password.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Anthony Ferrara",
+                    "email": "ircmaxell@ircmaxell.com",
+                    "homepage": "http://blog.ircmaxell.com"
+                }
+            ],
+            "description": "A compatibility library for the proposed simplified password hashing algorithm: https://wiki.php.net/rfc/password_hash",
+            "homepage": "https://github.com/ircmaxell/password_compat",
+            "keywords": [
+                "hashing",
+                "password"
+            ],
+            "time": "2013-04-30 19:58:08"
+        },
         {
             "name": "slim/slim",
             "version": "2.3.1",
@@ -48,6 +87,54 @@
                 "router"
             ],
             "time": "2013-07-20 18:38:05"
+        },
+        {
+            "name": "slim/strong",
+            "version": "dev-develop",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/silentworks/Strong.git",
+                "reference": "55b411d2579259fb29e6f00cf8ab24e9b9216a67"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/silentworks/Strong/zipball/55b411d2579259fb29e6f00cf8ab24e9b9216a67",
+                "reference": "55b411d2579259fb29e6f00cf8ab24e9b9216a67",
+                "shasum": ""
+            },
+            "require": {
+                "ircmaxell/password-compat": "1.0.*",
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Strong": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Andrew Smith",
+                    "email": "a.smith@silentworks.co.uk",
+                    "homepage": "http://www.silentworks.co.uk/"
+                },
+                {
+                    "name": "Jakub Westfalewski",
+                    "email": "jwest@jwest.pl",
+                    "homepage": "http://jwest.pl/"
+                }
+            ],
+            "description": "Authentication Library with multiple drivers",
+            "homepage": "http://github.com/silentworks/Strong",
+            "keywords": [
+                "Authentication",
+                "extensions"
+            ],
+            "time": "2013-05-15 16:53:38"
         },
         {
             "name": "slim/views",
@@ -156,9 +243,9 @@
 
     ],
     "minimum-stability": "stable",
-    "stability-flags": [
-
-    ],
+    "stability-flags": {
+        "slim/strong": 20
+    },
     "platform": [
 
     ],

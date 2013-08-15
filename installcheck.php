@@ -69,6 +69,19 @@ function check_calibre($dir) {
 	return $ret;
 }
 
+function check_php() {
+	$pv = preg_split('/\./', phpversion());	
+	$maj = intval($pv[0]);
+	$min = intval($pv[1]);
+	if ($maj == 5 && $min >= 3) 
+		return true;
+	elseif ($maj > 5) 
+		return true;
+	else
+		return false;
+}
+
+
 if (isset($_POST['calibre_dir'])) {
 	$calibre_dir = $_POST['calibre_dir'];
 	$cd = check_calibre($calibre_dir);
@@ -89,11 +102,12 @@ if ($gdv >= 2)
 else 
 	$gde = false;
 
+
 $template = $twig->loadTemplate('installcheck.html');
 echo $template->render(array(
 	'page' => array(
 		'rot' => '', #$app->request()->getRootUri(),
-		'version' => '0.9.4'
+		'version' => '1.2.0-alpha'
 	),
 	'is_a' => $is_a,
 	'srv' => $srv,
@@ -108,7 +122,8 @@ echo $template->render(array(
 	'mcrypt' => function_exists('mcrypt_encrypt'),
 	'mwrit' => fw('./data/data.db'),
 	'opd' => ini_get('open_basedir'),
-	'phpv' => phpversion(),	
+	'php' => check_php(),
+	'phpv' => phpversion(),
 	));
 
 #echo phpinfo();
