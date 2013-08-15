@@ -22,3 +22,8 @@
 {% endif %}
 
 <p><a href="https://github.com/rvolz/BicBucStriim">BicBucStriim {{page.version}}</a>  &copy; 2012-{{"now"|date('Y')}} Rainer Volz</p>
+{% if page.auth %}
+<a data-icon="gear" data-role="button" class="ui-btn-right" href="{{page.rot}}/logout/">
+	{{page.glob.langa.logout}}
+</a>	
+{% endif %}

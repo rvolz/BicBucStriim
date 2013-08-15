@@ -170,6 +170,7 @@ $app->get('/authors/:id/:page/', 'authorDetailsSlice');
 $app->get('/authorslist/:id/', 'authorsSlice');
 $app->get('/login/', 'show_login');
 $app->post('/login/', 'perform_login');
+$app->get('/logout/', 'logout');
 $app->get('/search/', 'globalSearch');
 $app->get('/series/:id/:page/', 'seriesDetailsSlice');
 $app->get('/serieslist/:id/', 'seriesSlice');
@@ -326,6 +327,14 @@ function perform_login() {
 		$app->render('login.html', array(
 			'page' => mkPage(getMessageString('login')))); 			
 	}
+}
+
+function logout() {
+	global $app, $globalSettings;
+	if ($app->strong->loggedIn())
+		$app->strong->logout();
+	$app->render('logout.html', array(
+		'page' => mkPage(getMessageString('logout')))); 
 }
 
 
@@ -1451,13 +1460,15 @@ function mkPage($subtitle='', $menu=0, $dialog=false) {
 	else
 		$title = $globalSettings[DISPLAY_APP_NAME].$globalSettings['sep'].$subtitle;
 	$rot = $app->request()->getRootUri();
+	$auth = $app->strong->loggedIn();
 	$page = array('title' => $title, 
 		'rot' => $rot,
 		'h1' => $subtitle,
 		'version' => $globalSettings['version'],
 		'glob' => $globalSettings,
 		'menu' => $menu,
-		'dialog' => $dialog);
+		'dialog' => $dialog,
+		'auth' => $auth);
 	return $page;
 }
 

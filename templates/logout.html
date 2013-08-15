@@ -1,0 +1,14 @@
+{% extends 'main.html' %}
+
+{% block pid %}id="logout"{%endblock%}
+
+{% block headerlinks %}{% endblock %}
+
+{% block content %}
+<header>
+	<h1>{{page.glob.langa.logout}}</h1>	
+</header>  
+<p>
+{{page.glob.langa.logout_expl}}:  <a href="{{page.rot}}/login/">{{page.glob.langa.login}}</a>.
+</p>
+{% endblock %}
