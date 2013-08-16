@@ -163,20 +163,20 @@ $app->get('/titles/:id/file/:file', 'book');
 $app->post('/titles/:id/kindle/:file', 'kindle');
 $app->get('/titles/:id/thumbnail/', 'thumbnail');
 $app->get('/titleslist/:id/', 'titlesSlice');
-$app->get('/opds/', 'opdsCheckConfig', 'opdsRoot');
-$app->get('/opds/newest/', 'opdsCheckConfig', 'opdsNewest');
-$app->get('/opds/titleslist/:id/', 'opdsCheckConfig', 'opdsByTitle');
-$app->get('/opds/authorslist/', 'opdsCheckConfig', 'opdsByAuthorInitial');
-$app->get('/opds/authorslist/:initial/', 'opdsCheckConfig', 'opdsByAuthorNamesForInitial');
-$app->get('/opds/authorslist/:initial/:id/', 'opdsCheckConfig', 'opdsByAuthor');
-$app->get('/opds/tagslist/', 'opdsCheckConfig', 'opdsByTagInitial');
-$app->get('/opds/tagslist/:initial/', 'opdsCheckConfig', 'opdsByTagNamesForInitial');
-$app->get('/opds/tagslist/:initial/:id/', 'opdsCheckConfig', 'opdsByTag');
-$app->get('/opds/serieslist/', 'opdsCheckConfig', 'opdsBySeriesInitial');
-$app->get('/opds/serieslist/:initial/', 'opdsCheckConfig', 'opdsBySeriesNamesForInitial');
-$app->get('/opds/serieslist/:initial/:id/', 'opdsCheckConfig', 'opdsBySeries');
-$app->get('/opds/opensearch.xml', 'opdsCheckConfig', 'opdsSearchDescriptor');
-$app->get('/opds/searchlist/:id/', 'opdsCheckConfig', 'opdsBySearch');
+$app->get('/opds/', 'opdsRoot');
+$app->get('/opds/newest/', 'opdsNewest');
+$app->get('/opds/titleslist/:id/', 'opdsByTitle');
+$app->get('/opds/authorslist/', 'opdsByAuthorInitial');
+$app->get('/opds/authorslist/:initial/', 'opdsByAuthorNamesForInitial');
+$app->get('/opds/authorslist/:initial/:id/', 'opdsByAuthor');
+$app->get('/opds/tagslist/',  'opdsByTagInitial');
+$app->get('/opds/tagslist/:initial/', 'opdsByTagNamesForInitial');
+$app->get('/opds/tagslist/:initial/:id/', 'opdsByTag');
+$app->get('/opds/serieslist/', 'opdsBySeriesInitial');
+$app->get('/opds/serieslist/:initial/', 'opdsBySeriesNamesForInitial');
+$app->get('/opds/serieslist/:initial/:id/', 'opdsBySeries');
+$app->get('/opds/opensearch.xml', 'opdsSearchDescriptor');
+$app->get('/opds/searchlist/:id/', 'opdsBySearch');
 $app->run();
 
 /*********************************************************************
@@ -195,76 +195,6 @@ function devReset() {
 /*********************************************************************
  * Production functions
  ********************************************************************/
-
-/**
- * Check the configuration DB and open it
- * @return int 0 = ok
- *             1 = no config db
- *             2 = no calibre library path defined (after installation scenario)
- *             3 = error while opening the calibre db 
- */
-function check_config() {
-	global $we_have_config, $bbs, $app, $globalSettings;
-
-	$app->getLog()->debug('check_config started');
-	# No config --> error
-	if (!$we_have_config) {
-		$app->getLog()->error('check_config: No configuration found');
-		return(1);
-	}
-
-	# 'After installation' scenario: here is a config DB but no valid connection to Calibre
-	if ($we_have_config && $globalSettings[CALIBRE_DIR] === '') {
-		if ($app->request()->isPost() && $app->request()->getResourceUri() === '/admin/') {
-			# let go through
-		} else {
-			$app->getLog()->warn('check_config: Calibre library path not configured, showing admin page.');	
-			return(2);
-		}
-	}
-
-	# Setup the connection to the Calibre metadata db
-	$clp = $globalSettings[CALIBRE_DIR].'/metadata.db';
-	$bbs->openCalibreDB($clp);
-	if (!$bbs->libraryOk()) {
-		$app->getLog()->error('check_config: Exception while opening metadata db '.$clp.'. Showing admin page.');	
-		return(3);
-	} 	
-	$app->getLog()->debug('check_config ended');
-	return(0);
-}
-
-# Check if the configuration is valid:
-# - If there is no bbs db --> show error
-
-/**
- * Check if the configuration is valid: 
- * - If there is no bbs db --> show error
- * - If Calibre dir is undefined -> goto admin page
- * - If Calibre dir is undefined -> goto admin page
- */
-function htmlCheckConfig() {
-	global $app, $globalSettings;
-
-	$result = check_config();
-
-	# No config --> error
-	if ($result === 1) {
-		$app->render('error.html', array(
-			'page' => mkPage(getMessageString('error')), 
-			'title' => getMessageString('error'), 
-			'error' => getMessageString('no_config')));
-		return;
-	} elseif ($result === 2) {
-		# After installation, no calibre dir defined, goto admin page
-		$app->redirect($app->request()->getRootUri().'/admin');
-		return;
-	} elseif ($result === 3) {
-		# Calibre dir wrong? Goto admin page
-		$app->redirect($app->request()->getRootUri().'/admin');
-		return;
-	} 
-}
 
 /**
  * 404 page for invalid URLs
@@ -1013,17 +943,6 @@ function tagDetailsSlice ($id, $index=0) {
  * OPDS Catalog functions
  ********************************************************************/
 
-function opdsCheckConfig() {
-	global $we_have_config, $app;
-
-	$result = check_config();
-	if ($result != 0) {
-		$app->getLog()->error('opdsCheckConfig: Configuration invalid, check config error '.$result);	
-		$app->response()->status(500);
-		$app->response()->header('Content-type','text/html');
-		$app->response()->body('<p>BucBucStriim: Invalid Configuration.</p>');
-	}
-}
 
 /**
  * Generate and send the OPDS root navigation catalog

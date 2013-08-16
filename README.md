@@ -35,6 +35,7 @@ The easy way assumes that BicBucStriim lives right below the web root of your de
 * Rename the newly created directory (e.g. BicBucStriim-1.1.0.zip) to "bbs".
 * The "data" directory and its contents must be writeable for all. Depending on your method of unarchiving this might be already the case. However, in case you experience access error just use a terminal to correct this: `chmod -R ga+w data`. 
 * BicBucStriim should now be working, start your web browser and navigate to `http://<address of your NAS>/bbs/`
+* Login as the administrator with the default login *admin/admin* (don't forget to change the password afterwards).
 * A freshly installed BicBucStriim app will show you the admin section, where you will have tell the app where your Calibre library is located. Everything else is optional. Just have a look.
 * OPDS catalogs are availabe at http://.../bbs/opds/
 
