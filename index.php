@@ -1100,7 +1100,7 @@ function opdsByTitle($index=0) {
 		$globalSettings['l10n']);
 	$app->response()->status(200);
 	$app->response()->header('Content-type',OpdsGenerator::OPDS_MIME_ACQ);
-	$gen->titlesCatalog('php://output', $books, is_protected(NULL), 
+	$gen->titlesCatalog('php://output', $books, false, 
 		$tl['page'], getNextSearchPage($tl), getLastSearchPage($tl));
 	$app->getLog()->debug('opdsByTitle ended');			
 }
@@ -1162,7 +1162,7 @@ function opdsByAuthor($initial,$id) {
 	$app->response()->status(200);
 	$app->response()->header('Content-type',OpdsGenerator::OPDS_MIME_ACQ);
 	$gen->booksForAuthorCatalog('php://output', $books, $initial, 
-		$adetails['author'],is_protected(NULL));
+		$adetails['author'], false);
 	$app->getLog()->debug('opdsByAuthor ended');				
 }
 
@@ -1223,7 +1223,7 @@ function opdsByTag($initial,$id) {
 	$app->response()->status(200);
 	$app->response()->header('Content-type',OpdsGenerator::OPDS_MIME_ACQ);
 	$gen->booksForTagCatalog('php://output', $books, $initial, 
-		$adetails['tag'],is_protected(NULL));
+		$adetails['tag'],false);
 	$app->getLog()->debug('opdsByTag ended');				
 }
 
@@ -1284,7 +1284,7 @@ function opdsBySeries($initial,$id) {
 	$app->response()->status(200);
 	$app->response()->header('Content-type',OpdsGenerator::OPDS_MIME_ACQ);
 	$gen->booksForSeriesCatalog('php://output', $books, $initial, 
-		$adetails['series'],is_protected(NULL));
+		$adetails['series'],false);
 	$app->getLog()->debug('opdsBySeries ended');				
 }
 
@@ -1333,7 +1333,7 @@ function opdsBySearch($index=0) {
 		$globalSettings['l10n']);
 	$app->response()->status(200);
 	$app->response()->header('Content-type',OpdsGenerator::OPDS_MIME_ACQ);
-	$gen->searchCatalog('php://output', $books, is_protected(NULL), 
+	$gen->searchCatalog('php://output', $books, false, 
 		$tl['page'], getNextSearchPage($tl), getLastSearchPage($tl), $search, 
 		$tl['total'], $globalSettings[PAGE_SIZE]);
 	$app->getLog()->debug('opdsBySearch ended');			

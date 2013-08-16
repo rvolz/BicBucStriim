@@ -12,7 +12,7 @@ Features & Issues
 
 * shows the most recent titles on the index page
 * provides listing/filtering/searching of book titles, authors, tags and series
-* shows detail pages (including download  & custom columns) for authors and books
+* shows detail pages (including download & custom columns) for authors and books
 * speaks Dutch, English, French, German
 * is ready for mobile clients (tested with Kindle, iPhone, iPad)
 * provides download protection for books (optional, think "parental control")
@@ -20,9 +20,8 @@ Features & Issues
 * has an admin GUI for configuration
 * supports e-mailing of books
 
-* book download for OPDS is only possible when download protection is off
-* no virtual library support
-* only simple custom columns supported, no *composites*
+* no support for Calibre's virtual libraries
+* only simple custom columns supported
 * e-mailing books needs PHP mail
 
 
@@ -63,8 +62,7 @@ If you encounter problems, use the installation test to check your environment. 
 
 Requirements
 ------------
-* Apache web server with PHP 5.2+ and sqlite3 support
-* Optional: if mcrypt is available cookies will be encrypted
+* Apache web server with PHP 5.3+, including support for mcrypt and sqlite3
 * Optional: a working PHP mail (sendmail) installation to send books via e-mail
 
 License

@@ -6,9 +6,8 @@ use Strong\Strong;
 
 class LoginMiddleware extends \Slim\Middleware {
 
-    var $pdo;
-    var $realm;
-    var $static_resource_paths;
+    protected $realm;
+    protected $static_resource_paths;
 
     /**
      * Initialize the PDO connection and merge user
@@ -21,20 +20,29 @@ class LoginMiddleware extends \Slim\Middleware {
         $this->static_resource_paths = $statics;
     }
 
+    /**
+     * 
+     */
     public function call() {
         $app = $this->app;
         $request = $app->request;
         $resource = $request->getResourceUri();
-        $app->getLog()->debug('login: resource '.$resource);
+        $accept = $request->headers('ACCEPT');
+        $app->getLog()->debug('login resource: '.$resource);
+        $app->getLog()->debug('login accept: '.$accept);
         if ($this->is_static_resource($resource) || $this->is_authorized()) {
-            $app->getLog()->debug('login: access authorized');
-            $this->next->call();
-        } elseif ($resource === '/login/') {
-            $app->getLog()->debug('login: login page authorized');
             $this->next->call();
         } else {
-            $app->getLog()->debug('login: access not authorized');
-            if ($request->getMediaType() === 'application/json') {
+            if ($resource === '/login/') {
+                // special case login page
+                $app->getLog()->debug('login: login page authorized');
+                $this->next->call();        
+            } elseif (stripos($resource, '/opds') === 0) {
+                $app->getLog()->debug('login: unauthorized OPDS request');
+                $app->response['WWW-Authenticate'] = 'Basic realm="'.$this->realm.'"';
+                $app->halt(401,'Please authenticate');
+            } elseif ($accept === 'application/json') {
+                $app->getLog()->debug('login: unauthorized JSON request');
                 $app->response['WWW-Authenticate'] = 'Basic realm="'.$this->realm.'"';
                 $app->halt(401,'Please authenticate');
             } else {
@@ -49,10 +57,10 @@ class LoginMiddleware extends \Slim\Middleware {
      * belongs to a static resource path, else false.
      */
     protected function is_static_resource($resource) {
-        $path_parts = split("/", $resource);
+        $path_parts = preg_split('/\//', $resource);
         if (isset($path_parts)) {
             foreach ($this->static_resource_paths as $static_resource_path) {
-                if (strcasecmp($static_resource_path, $path_parts[1]) == 0)
+                if (strcasecmp($static_resource_path, $path_parts[1]) === 0)
                     return true;
             }    
         }
@@ -61,31 +69,61 @@ class LoginMiddleware extends \Slim\Middleware {
 
     /**
      * Check if the access request is authorized by a user. A request must either contain session data from 
-     * a previous login or contain a HTTP Basic <em>Authorization</em> header, which is then used to
+     * a previous login or contain a HTTP Basic authorization info, which is then used to
      * perform a login against the users table in the database. 
+     * @return true if authorized else false
      */
     protected function is_authorized() {
         $app = $this->app;
         $req = $app->request;
-        //$bbs = new BicBucStriim();
-        //$strong = new Strong(array('provider' => 'PDO', 'pdo' => $bbs->mydb));
         if ($app->strong->loggedIn()) {
+            // already logged in
             return true;
         } else {
-            $b64auth = $req->headers('Authorization');
-            if (isset($b64auth)) {
-                $auth_array1 = split(" ", $b64auth);
-                if (!isset($auth_array1) || strcasecmp('Basic', $auth_array1[0]) != 0)
-                    return false;
-                if (sizeof($auth_array1) != 2 || !isset($auth_array1[1]))
-                    return false;
-                $auth = base64_decode($auth_array1[1]);
-                $auth_array2 = split(":", $auth);
-                return $app->strong->login($auth_array2[0], $auth_array2[1]);
-            } else {
-                return false;
-            }
+            // not logged in - check for login info
+            $auth = $this->checkPhpAuth($req);
+            if (is_null($auth))
+                $auth = $this->checkHttpAuth($req);
+            // if auth info found check the database
+            if (is_null($auth))
+                return false; 
+            else
+                return $app->strong->login($auth[0], $auth[1]); 
         }
     }
+
+    /**
+     * Look for PHP authorization headers
+     * @param $request HTTP request
+     * @return array with username and pasword, or null
+     */
+    protected function checkPhpAuth($request) {
+        $authUser = $request->headers('PHP_AUTH_USER');
+        $authPass = $request->headers('PHP_AUTH_PW');  
+        if (!empty($authUser) && !empty($authPass))
+            return array($authUser, $authPass);
+        else
+            return null;
+    }
+
+    /**
+     * Look for a HTTP Authorization header and decode it
+     * @param $request HTTP request
+     * @return array with username and pasword, or null
+     */
+    protected function checkHttpAuth($request) {
+        $b64auth = $request->headers('Authorization');
+        if (!empty($b64auth)) {
+            $auth_array1 = preg_split('/ /', $b64auth);
+            if (!isset($auth_array1) || strcasecmp('Basic', $auth_array1[0]) != 0)
+                return null;
+            if (sizeof($auth_array1) != 2 || !isset($auth_array1[1]))
+                return null;
+            $auth = base64_decode($auth_array1[1]);
+            return preg_split('/:/', $auth);
+        } else
+            return null;
+    }
+
 }
 ?>
