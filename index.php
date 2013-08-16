@@ -948,19 +948,11 @@ function tagDetailsSlice ($id, $index=0) {
  * Generate and send the OPDS root navigation catalog
  */
 function opdsRoot() {
-	global $app, $appversion, $bbs, $globalSettings;
+	global $app;
 
-	$app->getLog()->debug('opdsRoot started');			
-	$gen = new OpdsGenerator($app->request()->getRootUri(), $appversion, 
-		$bbs->calibre_dir,
-		date(DATE_ATOM,$bbs->calibre_last_modified),
-		$globalSettings['l10n']);
+	$gen = mkOpdsGenerator($app);	
 	$cat = $gen->rootCatalog(NULL);	
-	$app->response()->status(200);
-	$app->response()->header('Content-Type',OpdsGenerator::OPDS_MIME_NAV);
-	$app->response()->header('Content-Length',strlen($cat));
-	$app->response()->body($cat);
-	$app->getLog()->debug('opdsRoot ended');			
+	mkOpdsResponse($app, $cat, OpdsGenerator::OPDS_MIME_NAV);
 }
 
 /**
@@ -971,26 +963,18 @@ function opdsRoot() {
  * so books without formats are removed from the output.
  */
 function opdsNewest() {
-	global $app, $appversion, $bbs, $globalSettings;
+	global $app;
 
-	$app->getLog()->debug('opdsNewest started');			
-	$just_books = $bbs->last30Books();
-	$app->getLog()->debug('opdsNewest: 30 books found');			
+	$just_books = $app->bbs->last30Books();
 	$books = array();
 	foreach ($just_books as $book) {
-		$record = $bbs->titleDetailsOpds($book);
+		$record = $app->bbs->titleDetailsOpds($book);
 		if (!empty($record['formats']))
 			array_push($books,$record);
 	}
-	$app->getLog()->debug('opdsNewest: details found');			
-	$gen = new OpdsGenerator($app->request()->getRootUri(), $appversion, 
-		$bbs->calibre_dir,
-		date(DATE_ATOM,$bbs->calibre_last_modified),
-		$globalSettings['l10n']);
-	$app->response()->status(200);
-	$app->response()->header('Content-type',OpdsGenerator::OPDS_MIME_ACQ);
-	$gen->newestCatalog('php://output', $books, false);
-	$app->getLog()->debug('opdsNewest ended');			
+	$gen = mkOpdsGenerator($app);	
+	$cat = $gen->newestCatalog(NULL, $books, false);
+	mkOpdsResponse($app, $cat, OpdsGenerator::OPDS_MIME_ACQ);
 }
 
 /**
@@ -1002,64 +986,42 @@ function opdsNewest() {
  * @param  integer $index=0 page index
  */
 function opdsByTitle($index=0) {
-	global $app, $appversion, $bbs, $globalSettings;
+	global $app, $globalSettings;
 
-	$app->getLog()->debug('opdsByTitle started, showing page '.$index);			
 	$search = $app->request()->get('search');
 	if (isset($search))
-		$tl = $bbs->titlesSlice($index,$globalSettings[PAGE_SIZE],$search);
+		$tl = $app->bbs->titlesSlice($index,$globalSettings[PAGE_SIZE], $search);
 	else
-		$tl = $bbs->titlesSlice($index,$globalSettings[PAGE_SIZE]);
-	$app->getLog()->debug('opdsByTitle: books found');			
-	$books = $bbs->titleDetailsFilteredOpds($tl['entries']);
-	$app->getLog()->debug('opdsByTitle: details found');
-	$gen = new OpdsGenerator($app->request()->getRootUri(), $appversion, 
-		$bbs->calibre_dir,
-		date(DATE_ATOM,$bbs->calibre_last_modified),
-		$globalSettings['l10n']);
-	$app->response()->status(200);
-	$app->response()->header('Content-type',OpdsGenerator::OPDS_MIME_ACQ);
-	$gen->titlesCatalog('php://output', $books, false, 
+		$tl = $app->bbs->titlesSlice($index,$globalSettings[PAGE_SIZE]);
+	$books = $app->bbs->titleDetailsFilteredOpds($tl['entries']);
+	$gen = mkOpdsGenerator($app);	
+	$cat = $gen->titlesCatalog(NULL, $books, false, 
 		$tl['page'], getNextSearchPage($tl), getLastSearchPage($tl));
-	$app->getLog()->debug('opdsByTitle ended');			
+	mkOpdsResponse($app, $cat, OpdsGenerator::OPDS_MIME_ACQ);
 }
 
 /**
  * Return a page with author names initials
  */
 function opdsByAuthorInitial() {
-	global $app, $appversion, $bbs, $globalSettings;
+	global $app;
 
-	$app->getLog()->debug('opdsByAuthorInitial started');			
-	$initials = $bbs->authorsInitials();
-	$app->getLog()->debug('opdsByAuthorInitial: initials found');			
-	$gen = new OpdsGenerator($app->request()->getRootUri(), $appversion, 
-		$bbs->calibre_dir,
-		date(DATE_ATOM,$bbs->calibre_last_modified),
-		$globalSettings['l10n']);
-	$app->response()->status(200);
-	$app->response()->header('Content-type',OpdsGenerator::OPDS_MIME_NAV);
-	$gen->authorsRootCatalog('php://output', $initials);
-	$app->getLog()->debug('opdsByAuthorInitial ended');			
+	$initials = $app->bbs->authorsInitials();
+	$gen = mkOpdsGenerator($app);	
+	$cat = $gen->authorsRootCatalog(NULL, $initials);
+	mkOpdsResponse($app, $cat, OpdsGenerator::OPDS_MIME_NAV);
 }
 
 /**
  * Return a page with author names for a initial
  */
 function opdsByAuthorNamesForInitial($initial) {
-	global $app, $appversion, $bbs, $globalSettings;
+	global $app;
 
-	$app->getLog()->debug('opdsByAuthorNamesForInitial started, showing initial '.$initial);			
-	$authors = $bbs->authorsNamesForInitial($initial);
-	$app->getLog()->debug('opdsByAuthorNamesForInitial: initials found');			
-	$gen = new OpdsGenerator($app->request()->getRootUri(), $appversion, 
-		$bbs->calibre_dir,
-		date(DATE_ATOM,$bbs->calibre_last_modified),
-		$globalSettings['l10n']);
-	$app->response()->status(200);
-	$app->response()->header('Content-type',OpdsGenerator::OPDS_MIME_NAV);
-	$gen->authorsNamesForInitialCatalog('php://output', $authors, $initial);
-	$app->getLog()->debug('opdsByAuthorNamesForInitial ended');			
+	$authors = $app->bbs->authorsNamesForInitial($initial);
+	$gen = mkOpdsGenerator($app);	
+	$cat = $gen->authorsNamesForInitialCatalog(NULL, $authors, $initial);
+	mkOpdsResponse($app, $cat, OpdsGenerator::OPDS_MIME_NAV);
 }
 
 /**
@@ -1068,59 +1030,38 @@ function opdsByAuthorNamesForInitial($initial) {
  * @param  int 		$id      author id
  */
 function opdsByAuthor($initial,$id) {
-	global $app, $appversion, $bbs, $globalSettings;
+	global $app;
 
-	$app->getLog()->debug('opdsByAuthor started, showing initial '.$initial.', id '.$id);			
-	$adetails = $bbs->authorDetails($id);
-	$books = $bbs->titleDetailsFilteredOpds($adetails['books']);
-	$app->getLog()->debug('opdsByAuthor: details found');			
-	$gen = new OpdsGenerator($app->request()->getRootUri(), $appversion, 
-		$bbs->calibre_dir,
-		date(DATE_ATOM,$bbs->calibre_last_modified),
-		$globalSettings['l10n']);
-	$app->response()->status(200);
-	$app->response()->header('Content-type',OpdsGenerator::OPDS_MIME_ACQ);
-	$gen->booksForAuthorCatalog('php://output', $books, $initial, 
+	$adetails = $app->bbs->authorDetails($id);
+	$books = $app->bbs->titleDetailsFilteredOpds($adetails['books']);
+	$gen = mkOpdsGenerator($app);	
+	$cat = $gen->booksForAuthorCatalog(NULL, $books, $initial, 
 		$adetails['author'], false);
-	$app->getLog()->debug('opdsByAuthor ended');				
+	mkOpdsResponse($app, $cat, OpdsGenerator::OPDS_MIME_ACQ);
 }
 
 /**
  * Return a page with tag initials
  */
 function opdsByTagInitial() {
-	global $app, $appversion, $bbs, $globalSettings;
+	global $app;
 
-	$app->getLog()->debug('opdsByTagInitial started');			
-	$initials = $bbs->tagsInitials();
-	$app->getLog()->debug('opdsByTagInitial: initials found');			
-	$gen = new OpdsGenerator($app->request()->getRootUri(), $appversion, 
-		$bbs->calibre_dir,
-		date(DATE_ATOM,$bbs->calibre_last_modified),
-		$globalSettings['l10n']);
-	$app->response()->status(200);
-	$app->response()->header('Content-type',OpdsGenerator::OPDS_MIME_NAV);
-	$gen->tagsRootCatalog('php://output', $initials);
-	$app->getLog()->debug('opdsByTagInitial ended');			
+	$initials = $app->bbs->tagsInitials();
+	$gen = mkOpdsGenerator($app);	
+	$cat = $gen->tagsRootCatalog(NULL, $initials);
+	mkOpdsResponse($app, $cat, OpdsGenerator::OPDS_MIME_NAV);
 }
 
 /**
  * Return a page with author names for a initial
  */
 function opdsByTagNamesForInitial($initial) {
-	global $app, $appversion, $bbs, $globalSettings;
+	global $app;
 
-	$app->getLog()->debug('opdsByTagNamesForInitial started, showing initial '.$initial);			
-	$tags = $bbs->tagsNamesForInitial($initial);
-	$app->getLog()->debug('opdsByTagNamesForInitial: initials found');			
-	$gen = new OpdsGenerator($app->request()->getRootUri(), $appversion, 
-		$bbs->calibre_dir,
-		date(DATE_ATOM,$bbs->calibre_last_modified),
-		$globalSettings['l10n']);
-	$app->response()->status(200);
-	$app->response()->header('Content-type',OpdsGenerator::OPDS_MIME_NAV);
-	$gen->tagsNamesForInitialCatalog('php://output', $tags, $initial);
-	$app->getLog()->debug('opdsByTagNamesForInitial ended');			
+	$tags = $app->bbs->tagsNamesForInitial($initial);
+	$gen = mkOpdsGenerator($app);	
+	$cat = $gen->tagsNamesForInitialCatalog(NULL, $tags, $initial);
+	mkOpdsResponse($app, $cat, OpdsGenerator::OPDS_MIME_NAV);
 }
 
 /**
@@ -1129,59 +1070,38 @@ function opdsByTagNamesForInitial($initial) {
  * @param  int 		$id      tag id
  */
 function opdsByTag($initial,$id) {
-	global $app, $appversion, $bbs, $globalSettings;
+	global $app;
 
-	$app->getLog()->debug('opdsByTag started, showing initial '.$initial.', id '.$id);			
-	$adetails = $bbs->tagDetails($id);
-	$books = $bbs->titleDetailsFilteredOpds($adetails['books']);
-	$app->getLog()->debug('opdsByTag: details found');			
-	$gen = new OpdsGenerator($app->request()->getRootUri(), $appversion, 
-		$bbs->calibre_dir,
-		date(DATE_ATOM,$bbs->calibre_last_modified),
-		$globalSettings['l10n']);
-	$app->response()->status(200);
-	$app->response()->header('Content-type',OpdsGenerator::OPDS_MIME_ACQ);
-	$gen->booksForTagCatalog('php://output', $books, $initial, 
+	$adetails = $app->bbs->tagDetails($id);
+	$books = $app->bbs->titleDetailsFilteredOpds($adetails['books']);
+	$gen = mkOpdsGenerator($app);	
+	$cat = $gen->booksForTagCatalog(NULL, $books, $initial, 
 		$adetails['tag'],false);
-	$app->getLog()->debug('opdsByTag ended');				
+	mkOpdsResponse($app, $cat, OpdsGenerator::OPDS_MIME_ACQ);
 }
 
 /**
  * Return a page with series initials
  */
 function opdsBySeriesInitial() {
-	global $app, $appversion, $bbs, $globalSettings;
+	global $app;
 
-	$app->getLog()->debug('opdsBySeriesInitial started');			
-	$initials = $bbs->seriesInitials();
-	$app->getLog()->debug('opdsBySeriesInitial: initials found');			
-	$gen = new OpdsGenerator($app->request()->getRootUri(), $appversion, 
-		$bbs->calibre_dir,
-		date(DATE_ATOM,$bbs->calibre_last_modified),
-		$globalSettings['l10n']);
-	$app->response()->status(200);
-	$app->response()->header('Content-type',OpdsGenerator::OPDS_MIME_NAV);
-	$gen->seriesRootCatalog('php://output', $initials);
-	$app->getLog()->debug('opdsBySeriesInitial ended');			
+	$initials = $app->bbs->seriesInitials();
+	$gen = mkOpdsGenerator($app);	
+	$cat = $gen->seriesRootCatalog(NULL, $initials);
+	mkOpdsResponse($app, $cat, OpdsGenerator::OPDS_MIME_NAV);
 }
 
 /**
  * Return a page with author names for a initial
  */
 function opdsBySeriesNamesForInitial($initial) {
-	global $app, $appversion, $bbs, $globalSettings;
+	global $app;
 
-	$app->getLog()->debug('opdsBySeriesNamesForInitial started, showing initial '.$initial);			
-	$tags = $bbs->seriesNamesForInitial($initial);
-	$app->getLog()->debug('opdsBySeriesNamesForInitial: initials found');			
-	$gen = new OpdsGenerator($app->request()->getRootUri(), $appversion, 
-		$bbs->calibre_dir,
-		date(DATE_ATOM,$bbs->calibre_last_modified),
-		$globalSettings['l10n']);
-	$app->response()->status(200);
-	$app->response()->header('Content-type',OpdsGenerator::OPDS_MIME_NAV);
-	$gen->seriesNamesForInitialCatalog('php://output', $tags, $initial);
-	$app->getLog()->debug('opdsBySeriesNamesForInitial ended');			
+	$tags = $app->bbs->seriesNamesForInitial($initial);
+	$gen = mkOpdsGenerator($app);	
+	$cat = $gen->seriesNamesForInitialCatalog(NULL, $tags, $initial);
+	mkOpdsResponse($app, $cat, OpdsGenerator::OPDS_MIME_NAV);
 }
 
 /**
@@ -1190,38 +1110,25 @@ function opdsBySeriesNamesForInitial($initial) {
  * @param  int 		$id      tag id
  */
 function opdsBySeries($initial,$id) {
-	global $app, $appversion, $bbs, $globalSettings;
+	global $app;
 
-	$app->getLog()->debug('opdsBySeries started, showing initial '.$initial.', id '.$id);			
-	$adetails = $bbs->seriesDetails($id);
-	$books = $bbs->titleDetailsFilteredOpds($adetails['books']);
-	$app->getLog()->debug('opdsBySeries: details found');			
-	$gen = new OpdsGenerator($app->request()->getRootUri(), $appversion, 
-		$bbs->calibre_dir,
-		date(DATE_ATOM,$bbs->calibre_last_modified),
-		$globalSettings['l10n']);
-	$app->response()->status(200);
-	$app->response()->header('Content-type',OpdsGenerator::OPDS_MIME_ACQ);
-	$gen->booksForSeriesCatalog('php://output', $books, $initial, 
-		$adetails['series'],false);
-	$app->getLog()->debug('opdsBySeries ended');				
+	$adetails = $app->bbs->seriesDetails($id);
+	$books = $app->bbs->titleDetailsFilteredOpds($adetails['books']);
+	$gen = mkOpdsGenerator($app);	
+	$cat = $gen->booksForSeriesCatalog(NULL, $books, $initial, 
+		$adetails['series'], false);
+	mkOpdsResponse($app, $cat, OpdsGenerator::OPDS_MIME_ACQ);
 }
 
 /**
  * Format and send the OpenSearch descriptor document
  */
 function opdsSearchDescriptor() {
-	global $app, $appversion, $bbs, $globalSettings;	
+	global $app;	
 
-	$app->getLog()->debug('opdsSearchDescriptor started');		
-	$gen = new OpdsGenerator($app->request()->getRootUri(), $appversion, 
-		$bbs->calibre_dir,
-		date(DATE_ATOM,$bbs->calibre_last_modified),
-		$globalSettings['l10n']);
-	$app->response()->status(200);
-	$app->response()->header('Content-type',OpdsGenerator::OPENSEARCH_MIME);
-	$gen->searchDescriptor('php://output', '/opds/searchlist/0/');
-	$app->getLog()->debug('opdsSearchDescriptor ended');				
+	$gen = mkOpdsGenerator($app);
+	$cat = $gen->searchDescriptor(NULL, '/opds/searchlist/0/');
+	mkOpdsResponse($app, $cat, OpdsGenerator::OPENSEARCH_MIME);	
 }
 
 /**
@@ -1231,9 +1138,8 @@ function opdsSearchDescriptor() {
  * @param  integer $index index of page in search
  */
 function opdsBySearch($index=0) {
-	global $app, $appversion, $bbs, $globalSettings;
+	global $app, $globalSettings;
 
-	$app->getLog()->debug('opdsBySearch started, showing page '.$index);			
 	$search = $app->request()->get('search');
 	if (!isset($search)) {
 		$app->getLog()->error('opdsBySearch called without search criteria, page '.$index);			
@@ -1241,21 +1147,13 @@ function opdsBySearch($index=0) {
 		$app->response()->status(400);
 		return;
 	}	
-	$app->getLog()->debug('opdsBySearch search '.$search);			
-	$tl = $bbs->titlesSlice($index,$globalSettings[PAGE_SIZE],$search);	
-	$app->getLog()->debug('opdsBySearch: books found');			
-	$books = $bbs->titleDetailsFilteredOpds($tl['entries']);
-	$app->getLog()->debug('opdsBySearch: details found');	
-	$gen = new OpdsGenerator($app->request()->getRootUri(), $appversion, 
-		$bbs->calibre_dir,
-		date(DATE_ATOM,$bbs->calibre_last_modified),
-		$globalSettings['l10n']);
-	$app->response()->status(200);
-	$app->response()->header('Content-type',OpdsGenerator::OPDS_MIME_ACQ);
-	$gen->searchCatalog('php://output', $books, false, 
+	$tl = $app->bbs->titlesSlice($index,$globalSettings[PAGE_SIZE], $search);	
+	$books = $app->bbs->titleDetailsFilteredOpds($tl['entries']);
+	$gen = mkOpdsGenerator($app);
+	$cat = $gen->searchCatalog(NULL, $books, false, 
 		$tl['page'], getNextSearchPage($tl), getLastSearchPage($tl), $search, 
 		$tl['total'], $globalSettings[PAGE_SIZE]);
-	$app->getLog()->debug('opdsBySearch ended');			
+	mkOpdsResponse($app, $cat, OpdsGenerator::OPDS_MIME_ACQ);	
 }
 
 /*********************************************************************
@@ -1263,6 +1161,23 @@ function opdsBySearch($index=0) {
  ********************************************************************/
 
 
+function mkOpdsGenerator($app) {
+	global $appversion, $globalSettings;
+	$gen = new OpdsGenerator($app->request()->getRootUri(), $appversion, 
+		$app->bbs->calibre_dir,
+		date(DATE_ATOM, $app->bbs->calibre_last_modified),
+		$globalSettings['l10n']);
+	return $gen;
+}
+
+# Create and send the typical OPDS response
+function mkOpdsResponse($app, $content, $type) {
+	$resp = $app->response();
+	$resp->status(200);
+	$resp->header('Content-type', $type);
+	$resp->header('Content-Length',strlen($content));	
+	$resp->body($content);	
+}
 
 # Utility function to fill the page array
 function mkPage($subtitle='', $menu=0, $dialog=false) {
