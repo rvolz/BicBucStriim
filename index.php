@@ -23,7 +23,7 @@ $fallbackLang = 'en';
 # Application Name
 $appname = 'BicBucStriim';
 # App version
-$appversion = '1.2.0-alpha';
+$appversion = '1.2.0-𝛂';
 # Current DB schema version
 define('DB_SCHEMA_VERSION', '3');
 
@@ -281,7 +281,7 @@ function admin() {
 
 
 /**
- * Generate the admin page -> /admin/
+ * Generate the configuration page -> GET /admin/configuration/
  */
 function admin_configuration() {
 	global $app;
@@ -291,6 +291,9 @@ function admin_configuration() {
 		'isadmin' => is_admin()));
 }
 
+/**
+ * Generate the users overview page -> GET /admin/users/
+ */
 function admin_get_users() {
 	global $app;
 
@@ -301,6 +304,9 @@ function admin_get_users() {
 		'isadmin' => is_admin()));
 }
 
+/**
+ * Generate the single user page -> GET /admin/users/:id/
+ */
 function admin_get_user($id) {
 	global $app;
 
@@ -312,6 +318,9 @@ function admin_get_user($id) {
 		'isadmin' => is_admin()));
 }
 
+/**
+ * Add a user -> POST /admin/users/ (JSON)
+ */
 function admin_add_user() {
 	global $app;
 
@@ -332,6 +341,9 @@ function admin_add_user() {
 	$resp->body($answer);
 }
 
+/**
+ * Delete a user -> DELETE /admin/users/:id/ (JSON)
+ */
 function admin_delete_user($id) {
 	global $app;
 
@@ -351,6 +363,9 @@ function admin_delete_user($id) {
 	$resp->body($answer);
 }
 
+/**
+ * Modify a user -> PUT /admin/users/:id/ (JSON)
+ */
 function admin_modify_user($id) {
 	global $app;
 
@@ -373,41 +388,8 @@ function admin_modify_user($id) {
 }
 
 
-
 /**
- * Is the key in globalSettings?
- * @param  string  	$key 	key for config value
- * @return boolean      	true = key available
- */
-function has_global_setting($key) {
-	return (isset($globalSettings[$key]) && !empty($globalSettings[$key]));
-}
-
-/**
- * Is there a valid - existing - Calibre directory?
- * @return boolean 	true if available
- */
-function has_valid_calibre_dir() {
-	return (has_global_setting(CALIBRE_DIR) && 
-		BicBucStriim::checkForCalibre($globalSettings[CALIBRE_DIR]));
-}
-
-/**
- * Check for admin permissions. Currently this is only the user 
- * <em>admin</em>, ID 1.
- */
-function is_admin() {
-	global $app;
-	if ($app->strong->loggedIn()) {
-		$user = $app->strong->getUser();
-		return ($user['id'] === '1');
-	} else {
-		return false;
-	}
-}
-
-/**
- * Processes changes in the admin page -> POST /admin/
+ * Processes changes in the admin page -> POST /admin/configuration/
  */
 function admin_change_json() {
 	global $app, $globalSettings, $bbs;
@@ -501,38 +483,41 @@ function admin_change_json() {
 	}
 }
 
-
+/**
+ * Get the new version info and compare it to our version -> GET /admin/version/
+ */
 function admin_check_version() {
 	global $app, $globalSettings;	
-	$app->getLog()->debug("admin version-check started");
 	$versionAnswer = array();
-	$contents = file_get_contents(VERSION_URL);	
+	$contents = file_get_contents(VERSION_URL);		
 	if ($contents == false) {
-		$versionAnswer['newVersion'] = 'false';
-		$msg1 = sprintf(getMessageString('admin_new_version_error'),$globalSettings['version']);
-		$versionAnswer['msg'] = '<p class="success">'.$msg1.'</p>'; 
+		$versionClass = 'error';
+		$versionAnswer = sprintf(getMessageString('admin_new_version_error'),$globalSettings['version']);
 	} else {
 		$versionInfo = json_decode($contents);	
-		
-		if ($versionInfo->{'version'} > $globalSettings['version']) {
-			$versionAnswer['newVersion'] = 'true';
+		$version = $globalSettings['version'];
+		if (strpos($globalSettings['version'], '-') === false) {
+			$v = preg_split('/-/', $globalSettings['version']);
+			$version = $v[0];
+		} 
+		$result = version_compare($version, $versionInfo->{'version'});
+		if ($result === -1) {
+			$versionClass = 'success';
 			$msg1 = sprintf(getMessageString('admin_new_version'),$versionInfo->{'version'},$globalSettings['version']);
 			$msg2 = sprintf("<a href=\"%s\">%s</a>",$versionInfo->{'url'},$versionInfo->{'url'});
 			$msg3 = sprintf(getMessageString('admin_check_url'),$msg2);
-			$versionAnswer['msg'] = '<p class="success">'.$msg1.'. '.$msg3.'</p>'; 
-			$app->getLog()->debug("admin version-check new version ".$versionInfo->{'version'});
+			$versionAnswer = $msg1.'. '.$msg3; 
 		} else {
-			$versionAnswer['newVersion'] = 'false';
-			$msg1 = sprintf(getMessageString('admin_no_new_version'),$globalSettings['version']);
-			$versionAnswer['msg'] = '<p class="success">'.$msg1.'</p>'; 
+			$versionClass = '';
+			$versionAnswer = sprintf(getMessageString('admin_no_new_version'),$globalSettings['version']);
 		}		
 	}
-	$answer = json_encode($versionAnswer);
-	$app->getLog()->debug("admin version-check ended");
-	$app->response()->status(200);
-	$app->response()->header('Content-type','application/json');
-	$app->response()->header('Content-Length',strlen($answer));
-	$app->response()->body($answer);
+	$app->render('admin_version.html',array(
+			'page' => mkPage(getMessageString('admin_check_version')), 
+			'versionClass' => $versionClass,
+			'versionAnswer' => $versionAnswer,
+			'isadmin' => true,
+			));	
 }
 
 
@@ -1279,6 +1264,41 @@ function getUserLang($allowedLangs, $fallbackLang) {
   }
   return $fallbackLang;
 }
+
+
+
+/**
+ * Is the key in globalSettings?
+ * @param  string  	$key 	key for config value
+ * @return boolean      	true = key available
+ */
+function has_global_setting($key) {
+	return (isset($globalSettings[$key]) && !empty($globalSettings[$key]));
+}
+
+/**
+ * Is there a valid - existing - Calibre directory?
+ * @return boolean 	true if available
+ */
+function has_valid_calibre_dir() {
+	return (has_global_setting(CALIBRE_DIR) && 
+		BicBucStriim::checkForCalibre($globalSettings[CALIBRE_DIR]));
+}
+
+/**
+ * Check for admin permissions. Currently this is only the user 
+ * <em>admin</em>, ID 1.
+ */
+function is_admin() {
+	global $app;
+	if ($app->strong->loggedIn()) {
+		$user = $app->strong->getUser();
+		return ($user['id'] === '1');
+	} else {
+		return false;
+	}
+}
+
 
 # Utility function to serve files
 function readfile_chunked($filename) {

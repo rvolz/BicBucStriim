@@ -1,14 +1,13 @@
 {% extends 'main.html' %}
 
-{% block pid %}id="padmin" data-ajax="false"{%endblock%}
+{% block pid %}id="padmin_version"{%endblock%}
 {% block content %}
 
-<h1>{{ page.glob.langa.admin_users }}</h1>
+<h1>{{ page.glob.langa.admin_check_version }}</h1>
 {% include "flash_messages.html" %}
 
-<p>{{page.glob.langa.admin_check_version_legend}}</p>
-<button id="admin_check_version" name="admin_check_version">
-	{{page.glob.langa.admin_check_version}}
-</button>			
+<p {% if versionClass != '' %}class="{{versionClass}}"{% endif %}>
+	{{versionAnswer|raw}}.
+</p>
 
 {% endblock %}
