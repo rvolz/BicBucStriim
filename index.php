@@ -854,11 +854,11 @@ function seriesDetailsSlice ($id, $index=0) {
 		$book->formats = $bbs->titleGetFormats($book->id);
 	$app->render('series_detail.html',array(
 		'page' => mkPage(getMessageString('series_details')),
-    'url' => 'series/'.$id, 
+		'url' => 'series/'.$id, 
 		'series' => $tl['series'], 
 		'books' => $tl['entries'],
-    'curpage' => $tl['page'],
-    'pages' => $tl['pages']));   
+		'curpage' => $tl['page'],
+		'pages' => $tl['pages']));   
 }
 
 
@@ -917,11 +917,11 @@ function tagDetailsSlice ($id, $index=0) {
 		$book->formats = $bbs->titleGetFormats($book->id);
 	$app->render('tag_detail.html',array(
 		'page' => mkPage(getMessageString('tag_details')),
-    	'url' => 'tags/'.$id, 
+		'url' => 'tags/'.$id, 
 		'tag' => $tl['tag'], 
 		'books' => $tl['entries'],
-    	'curpage' => $tl['page'],
-    	'pages' => $tl['pages']));   
+		'curpage' => $tl['page'],
+		'pages' => $tl['pages']));   
 }
 
 /*********************************************************************
@@ -1244,23 +1244,23 @@ function getUserLang($allowedLangs, $fallbackLang) {
   $userLangs = array();
   // 2nd highest priority: GET parameter 'lang'
   if(isset($_GET['lang']) && is_string($_GET['lang'])) {
-      $userLangs[] =  $_GET['lang'];
+	  $userLangs[] =  $_GET['lang'];
   }
 	// 3rd highest priority: SESSION parameter 'lang'
   if(isset($_SESSION['lang']) && is_string($_SESSION['lang'])) {
-      $userLangs[] = $_SESSION['lang'];
+	  $userLangs[] = $_SESSION['lang'];
   }
   // 4th highest priority: HTTP_ACCEPT_LANGUAGE
   if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
-    foreach (explode(',',$_SERVER['HTTP_ACCEPT_LANGUAGE']) as $part) {
-      $userLangs[] = strtolower(substr($part,0,2));
-    }
+	foreach (explode(',',$_SERVER['HTTP_ACCEPT_LANGUAGE']) as $part) {
+	  $userLangs[] = strtolower(substr($part,0,2));
+	}
   }
   // Lowest priority: fallback
   $userLangs[] = $fallbackLang;    
   foreach($allowedLangs as $al) {
-  	if ($userLangs[0] == $al)
-  		return $al;
+	if ($userLangs[0] == $al)
+		return $al;
   }
   return $fallbackLang;
 }

@@ -1,12 +1,12 @@
-		<li>
-			<a href="{{page.rot}}/titles/{{book.id}}">
-				<img src="{{page.rot}}/titles/{{ book.id }}/thumbnail" />
-				<h3>{{ book.sort }} ({{ book.pubdate|date("Y") }})</h3>
-				<p>{{book.author_sort}}</p>
-				<p>
+<li>
+	<a href="{{page.rot}}/titles/{{book.id}}">
+		<img src="{{page.rot}}/titles/{{ book.id }}/thumbnail" />
+		<h3>{{ book.sort }} ({{ book.pubdate|date("Y") }})</h3>
+		<p>{{book.author_sort}}</p>
+		<p>
           ({% for format in book.formats %}
           {{format.format }}
           {% endfor %})
         </p>
-			</a>
-		</li>
+	</a>
+</li>
