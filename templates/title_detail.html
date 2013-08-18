@@ -6,10 +6,7 @@
 	<header>
 			<h1>{{ book.title }}</h1> 												
 			<p>					
-				{% for author in authors %}
-				{{ author.name }}, 
-				{% endfor %} 
-				{{ book.pubdate | date("Y") }}
+				{{ book.pubdate | date("Y") }}	{{ language }}
 			</p>
 			<p class="ui-state-error">{{ flash.error }}</p>	
 	</header>		

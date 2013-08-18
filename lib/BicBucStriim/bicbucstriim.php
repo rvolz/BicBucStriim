@@ -265,7 +265,7 @@ class BicBucStriim {
 	 * @return [type]        [description]
 	 */
 	function find($class, $sql) {
-		$stmt = $this->calibre->query($sql,PDO::FETCH_CLASS, $class);		
+		$stmt = $this->calibre->query($sql, PDO::FETCH_CLASS, $class);
 		$this->last_error = $stmt->errorCode();
 		$items = $stmt->fetchAll();
 		$stmt->closeCursor();	
@@ -395,13 +395,56 @@ class BicBucStriim {
 
 	/**
 	 * Return the most recent books, sorted by modification date.
+	 * @param  lang			target language code
 	 * @param  nrOfTitles	number of titles, page size. Default is 30.
 	 * @return array of books
 	 */
-	function last30Books($nrOfTitles=30) {
-		$books = $this->find('Book','select * from books order by timestamp desc limit '.$nrOfTitles);		
+	function last30Books($lang, $nrOfTitles=30) {
+		$books = $this->find('Book','select * from books order by timestamp desc limit '.$nrOfTitles);				
+		$this->addBookDetails($lang, $books);
 		return $books;
 	}
+
+	/**
+	 * Add formatted book language and formats info to a collection of books.
+	 * book->formats contains the list of available formats as a comma-separated string
+	 * book->language contains the book's language, only available if the PHP extension 'intl' is installed 
+	 * book->addInfo contains a formatted string with language and formats, e.g. "(English; MOBI,PDF,EPUB)"
+	 * @param $lang the target language code for the display
+	 * @param $books array of books
+	 */
+	function addBookDetails($lang, $books) {
+		foreach ($books as $book) {
+			$fmts = $this->titleGetFormats($book->id);
+			$fmtnames = array();
+			foreach ($fmts as $format) {
+				array_push($fmtnames, $format->format);
+			}
+			$book->formats = join(',', $fmtnames);
+		}
+		if (extension_loaded('intl')) {
+			foreach ($books as $book) {
+				$langcodes = $this->getLanguages($book->id);
+				$langtexts = array();
+				foreach ($langcodes as $langcode) {
+					$bol = Locale::getDisplayLanguage($langcode, $lang);
+					array_push($langtexts, $bol);
+				}
+				$book->language = join(',', $langtexts);
+			}		
+		} 
+		foreach ($books as $book) {
+			if (empty($book->formats) && !isset($book->language))
+				$book->addInfo = '';
+			elseif (empty($book->formats) && isset($book->language))
+				$book->addInfo = '('.$book->language.')';
+			elseif (!empty($book->formats) && !isset($book->language))
+				$book->addInfo = '('.$book->formats.')';
+			else
+				$book->addInfo = '('.$book->language.'; '.$book->formats.')';
+		}
+	}
+
 
 	/**
 	 * Find a single author and return the details plus all books.
@@ -423,16 +466,19 @@ class BicBucStriim {
 	/**
 	 * Find a single author and return the details plus some books.
 	 * 
+	 * @param  string  $lang   target language code
 	 * @param  integer $id     author id
 	 * @param  integer $index  page index
 	 * @param  integer $length page length
 	 * @return array           array with elements: author data, current page, 
 	 *                               no. of pages, $length entries
 	 */
-	function authorDetailsSlice($id, $index=0, $length=100) {
+	function authorDetailsSlice($lang, $id, $index=0, $length=100) {
 		$author = $this->findOne('Author', 'select * from authors where id='.$id);
-		if (is_null($author)) return NULL;
+		if (is_null($author)) 
+			return NULL;
 		$slice = $this->findSlice('AuthorBook', $index, $length, NULL, $id);
+		$this->addBookDetails($lang, $slice['entries']);
 		return array('author' => $author)+$slice;
 	}
 
@@ -489,17 +535,20 @@ class BicBucStriim {
 
 	/**
 	 * Find a single tag and return the details plus some books.
-	 * 
+	 *
+	 * @param  string  $lang   target language code
 	 * @param  integer $id     tagid
 	 * @param  integer $index  page index
 	 * @param  integer $length page length
 	 * @return array           array with elements: tag data, current page, 
 	 *                               no. of pages, $length entries
 	 */
-	function tagDetailsSlice($id, $index=0, $length=100) {
+	function tagDetailsSlice($lang, $id, $index=0, $length=100) {
 		$tag = $this->findOne('Tag', 'select * from tags where id='.$id);
-		if (is_null($tag)) return NULL;
+		if (is_null($tag)) 
+			return NULL;
 		$slice = $this->findSlice('TagBook', $index, $length, NULL, $id);
+		$this->addBookDetails($lang, $slice['entries']);
 		return array('tag' => $tag)+$slice;
 	}
 
@@ -528,11 +577,19 @@ class BicBucStriim {
 	}
 
 
-	# Search a list of books defined by the parameters $index and $length.
-	# If $search is defined it is used to filter the book title, ignoring case.
-	# Return an array with elements: current page, no. of pages, $length entries
-	function titlesSlice($index=0, $length=100, $search=NULL) {
-		return $this->findSlice('Book', $index, $length, $search);
+	/**
+	 * Search a list of books defined by the parameters $index and $length.
+	 * If $search is defined it is used to filter the book title, ignoring case.
+	 * @param lang 		target language code
+	 * @param index 	page index, default 0
+	 * @param length 	page length, default 100
+	 * @param search 	search phrase, default null
+	 * @return 			an array with elements: current page, no. of pages, $length entries
+	 */
+	function titlesSlice($lang, $index=0, $length=100, $search=NULL) {
+		$books = $this->findSlice('Book', $index, $length, $search);
+		$this->addBookDetails($lang, $books['entries']);
+		return $books;
 	}
 
 	
@@ -674,11 +731,27 @@ class BicBucStriim {
 	}
 
 	/**
+	* Try to find the languages of a book. Returns an empty array, if there is none.
+	* @param  int 		$book_id 	the Calibre book ID
+	* @return array 				the language strings 
+	**/
+	function getLanguages($book_id) {
+		$lang_codes = array();
+		$lang_ids = $this->find('BookLanguageLink', 'select * from books_languages_link where book='.$book_id);
+		foreach ($lang_ids as $lang_id) {
+			$lang_code = $this->findOne('Language', 'select * from languages where id='.$lang_id->lang_code);
+			if (!is_null($lang_code))
+				array_push($lang_codes, $lang_code->lang_code);
+		}
+		return $lang_codes;		
+	}
+
+	/**
 	 * Find a single book, its authors, series, tags, formats and comment.
 	 * @param  int 		$id 	the Calibre book ID
 	 * @return array     		the book and its authors, series, tags, formats, and comment/description
 	 */
-	function titleDetails($id) {
+	function titleDetails($lang, $id) {
 		$book = $this->title($id);
 		if (is_null($book)) return NULL;
 		$author_ids = $this->find('BookAuthorLink', 'select * from books_authors_link where book='.$id);
@@ -699,7 +772,17 @@ class BicBucStriim {
 			$tag = $this->findOne('Tag', 'select * from tags where id='.$tid->tag);
 			array_push($tags, $tag);
 		}
-		$lang_text = $this->getLanguage($id);
+		if (extension_loaded('intl')) {
+			$langcodes = $this->getLanguages($id);
+			$langtexts = array();
+			foreach ($langcodes as $langcode) {
+				$bol = Locale::getDisplayLanguage($langcode, $lang);
+				array_push($langtexts, $bol);
+			}
+			$language = join(', ', $langtexts);
+		} else {
+			$language = null;
+		}
 		$formats = $this->find('Data', 'select * from data where book='.$id);
 		$comment = $this->findOne('Comment', 'select * from comments where book='.$id);
 		if (is_null($comment))
@@ -713,7 +796,7 @@ class BicBucStriim {
 			'tags' => $tags, 
 			'formats' => $formats, 
 			'comment' => $comment_text, 
-			'language' => $lang_text,
+			'language' => $language,
 			'custom' => $customColumns);
 	}
 
@@ -891,16 +974,19 @@ class BicBucStriim {
 	/**
 	 * Find a single series and return the details plus some books.
 	 * 
+	 * @param  string  $lang   target language code
 	 * @param  integer $id     series id
 	 * @param  integer $index  page index
 	 * @param  integer $length page length
 	 * @return array           array with elements: series data, current page, 
 	 *                               no. of pages, $length entries
 	 */
-	function seriesDetailsSlice($id, $index=0, $length=100) {
+	function seriesDetailsSlice($lang, $id, $index=0, $length=100) {
 		$series = $this->findOne('Series', 'select * from series where id='.$id);
-		if (is_null($series)) return NULL;
+		if (is_null($series)) 
+			return NULL;
 		$slice = $this->findSlice('SeriesBook', $index, $length, NULL, $id);
+		$this->addBookDetails($lang, $slice['entries']);
 		return array('series' => $series)+$slice;
 	}
 
