@@ -246,28 +246,6 @@ function logout() {
 		'page' => mkPage(getMessageString('logout')))); 
 }
 
-
-/**
- * Generate the main page with the 30 mos recent titles
- */
-function main() {
-	global $app, $globalSettings, $bbs;
-
-	$ts1 = time();
-	$books = $bbs->last30Books($globalSettings[PAGE_SIZE]);
-	$ts2 = time();
-	$formats = array();
-	foreach ($books as $book) {
-		$book->formats = $bbs->titleGetFormats($book->id);
-	}
-	$ts3 = time();
-
-	$app->render('index_last30.html',array(
-		'page' => mkPage(getMessageString('dl30'),1), 
-		'books' => $books));	
-	$app->getLog()->debug(sprintf("main: time getting books %u, time getting formats %u", $ts2-$ts1, $ts3-$ts2));	
-}
-
 /**
  * Generate the admin page -> /admin/
  */
@@ -520,20 +498,29 @@ function admin_check_version() {
 			));	
 }
 
+/**
+ * Generate the main page with the 30 mos recent titles
+ */
+function main() {
+	global $app, $globalSettings;
+
+	$books = $app->bbs->last30Books($globalSettings['lang'], $globalSettings[PAGE_SIZE]);
+	$app->render('index_last30.html',array(
+		'page' => mkPage(getMessageString('dl30'),1), 
+		'books' => $books));	
+}
+
 
 # Make a search over all categories. Returns only the first PAGES_SIZE items per category.
 # If there are more entries per category, there will be a link to the full results.
 function globalSearch() {
-	global $app, $globalSettings, $bbs;
+	global $app, $globalSettings;
 
 	$search = $app->request()->get('search');
-	$app->getLog()->debug("globalSearch started for search ".$search);
-	$tlb = $bbs->titlesSlice(0,$globalSettings[PAGE_SIZE],trim($search));
-	$tla = $bbs->authorsSlice(0,$globalSettings[PAGE_SIZE],trim($search));
-	$tlt = $bbs->tagsSlice(0,$globalSettings[PAGE_SIZE],trim($search));
-	$tls = $bbs->seriesSlice(0,$globalSettings[PAGE_SIZE],trim($search));
-	foreach ($tlb['entries'] as $book)
-		$book->formats = $bbs->titleGetFormats($book->id);
+	$tlb = $app->bbs->titlesSlice($globalSettings['lang'], 0, $globalSettings[PAGE_SIZE], trim($search));
+	$tla = $app->bbs->authorsSlice(0, $globalSettings[PAGE_SIZE], trim($search));
+	$tlt = $app->bbs->tagsSlice(0, $globalSettings[PAGE_SIZE], trim($search));
+	$tls = $app->bbs->seriesSlice(0, $globalSettings[PAGE_SIZE], trim($search));
 	$app->render('global_search.html',array(
 		'page' => mkPage(getMessageString('pagination_search'),0), 
 		'books' => $tlb['entries'],
@@ -553,17 +540,13 @@ function globalSearch() {
 
 # A list of titles at $index -> /titlesList/:index
 function titlesSlice($index=0) {
-	global $app, $globalSettings, $bbs;
+	global $app, $globalSettings;
 
-	$app->getLog()->debug("titlesSlice started for index ".$index);
 	$search = $app->request()->get('search');
 	if (isset($search)) {
-		$app->getLog()->debug("search ".$search);
-		$tl = $bbs->titlesSlice($index,$globalSettings[PAGE_SIZE],trim($search));
+		$tl = $app->bbs->titlesSlice($globalSettings['lang'], $index,$globalSettings[PAGE_SIZE],trim($search));
 	} else
-		$tl = $bbs->titlesSlice($index,$globalSettings[PAGE_SIZE]);
-	foreach ($tl['entries'] as $book)
-		$book->formats = $bbs->titleGetFormats($book->id);
+		$tl = $app->bbs->titlesSlice($globalSettings['lang'], $index,$globalSettings[PAGE_SIZE]);
 	$app->render('titles.html',array(
 		'page' => mkPage(getMessageString('titles'),2), 
 		'url' => 'titleslist',
@@ -575,15 +558,15 @@ function titlesSlice($index=0) {
 
 # Show a single title > /titles/:id. The ID ist the Calibre ID
 function title($id) {
-	global $app, $calibre_dir, $globalSettings, $bbs;
+	global $app, $calibre_dir, $globalSettings;
 	
-	$details = $bbs->titleDetails($id);	
+	$details = $app->bbs->titleDetails($globalSettings['lang'], $id);	
 	if (is_null($details)) {
 		$app->getLog()->debug("title: book not found: ".$id);
 		$app->notFound();
 		return;
 	}	
-	$ccs = $bbs->customColumns($id);
+	$ccs = $app->bbs->customColumns($id);
 	sort($ccs);
 	$kindle_format = ($globalSettings[KINDLE] == 1) ? $bbs->titleGetKindleFormat($id): NULL;
 	$app->render('title_detail.html',
@@ -608,11 +591,11 @@ function title($id) {
 # If there is no cover, return 404.
 # Route: /titles/:id/cover
 function cover($id) {
-	global $app, $calibre_dir, $bbs;
+	global $app, $calibre_dir;
 
 	$has_cover = false;
 	$rot = $app->request()->getRootUri();
-	$book = $bbs->title($id);
+	$book = $app->bbs->title($id);
 	if (is_null($book)) {
 		$app->getLog()->debug("cover: book not found: "+$id);
 		$app->response()->status(404);
@@ -620,7 +603,7 @@ function cover($id) {
 	}
 	
 	if ($book->has_cover) {		
-		$cover = $bbs->titleCover($id);
+		$cover = $app->bbs->titleCover($id);
 		$has_cover = true;
 	}
 	if ($has_cover) {
@@ -637,11 +620,11 @@ function cover($id) {
 # If there is no cover, return 404.
 # Route: /titles/:id/thumbnail
 function thumbnail($id) {
-	global $app, $calibre_dir, $bbs, $globalSettings;
+	global $app, $calibre_dir, $globalSettings;
 
 	$has_cover = false;
 	$rot = $app->request()->getRootUri();
-	$book = $bbs->title($id);
+	$book = $app->bbs->title($id);
 	if (is_null($book)) {
 		$app->getLog()->error("thumbnail: book not found: "+$id);
 		$app->response()->status(404);
@@ -649,7 +632,7 @@ function thumbnail($id) {
 	}
 	
 	if ($book->has_cover) {		
-		$thumb = $bbs->titleThumbnail($id, $globalSettings[THUMB_GEN_CLIPPED]);
+		$thumb = $app->bbs->titleThumbnail($id, $globalSettings[THUMB_GEN_CLIPPED]);
 		$has_cover = true;
 	}
 	if ($has_cover) {
@@ -666,17 +649,15 @@ function thumbnail($id) {
 # Return the selected file for the book with ID. 
 # Route: /titles/:id/file/:file
 function book($id, $file) {
-	global $app, $bbs;
+	global $app;
 
-	$book = $bbs->title($id);
+	$book = $app->bbs->title($id);
 	if (is_null($book)) {
 		$app->getLog()->debug("no book file");
 		$app->notFound();
 	}	
 
-	$app->getLog()->debug("book: file ".$file);
-	$bookpath = $bbs->titleFile($id, $file);
-	$app->getLog()->debug("book: path ".$bookpath);
+	$bookpath = $app->bbs->titleFile($id, $file);
 
 	/** readfile has problems with large files (e.g. PDF) caused by php memory limit
 	 * to avoid this the function readfile_chunked() is used. app->response() is not
@@ -692,8 +673,8 @@ function book($id, $file) {
 # Send the selected file to a Kindle e-mail address
 # Route: /titles/:id/kindle/:file
 function kindle($id, $file) {
-	global $app, $bbs, $globalSettings;
-	$book = $bbs->title($id);
+	global $app, $globalSettings;
+	$book = $app->bbs->title($id);
 	if (is_null($book)) {
 		$app->getLog()->debug("kindle: book not found: ".$id);
 		$app->response()->status(404);
@@ -707,7 +688,7 @@ function kindle($id, $file) {
 		return;
 	} else {
 		$app->deleteCookie(KINDLE_COOKIE);
-		$bookpath = $bbs->titleFile($id, $file);
+		$bookpath = $app->bbs->titleFile($id, $file);
 		$app->getLog()->debug("kindle: requested file ".$bookpath);
 		$subject = $globalSettings[DISPLAY_APP_NAME];
 		# try to send with email.class
@@ -728,13 +709,13 @@ function kindle($id, $file) {
 
 # A list of authors at $index -> /authorslist/:index
 function authorsSlice($index=0) {
-	global $app, $globalSettings, $bbs;
+	global $app, $globalSettings;
 
 	$search = $app->request()->get('search');
 	if (isset($search))
-		$tl = $bbs->authorsSlice($index,$globalSettings[PAGE_SIZE],trim($search));	
+		$tl = $app->bbs->authorsSlice($index,$globalSettings[PAGE_SIZE],trim($search));	
 	else
-		$tl = $bbs->authorsSlice($index,$globalSettings[PAGE_SIZE]);
+		$tl = $app->bbs->authorsSlice($index,$globalSettings[PAGE_SIZE]);
 	$app->render('authors.html',array(
 		'page' => mkPage(getMessageString('authors'),3), 
 		'url' => 'authorslist',
@@ -749,9 +730,9 @@ function authorsSlice($index=0) {
  * @deprecated since 0.9.3
  */
 function author($id) {
-	global $app, $globalSettings, $bbs;
+	global $app, $globalSettings;
 
-	$details = $bbs->authorDetails($id);
+	$details = $app->bbs->authorDetails($id);
 	if (is_null($details)) {
 		$app->getLog()->debug("no author");
 		$app->notFound();		
@@ -771,16 +752,13 @@ function author($id) {
  * @return HTML page 
  */
 function authorDetailsSlice($id, $index=0) {
-  global $app, $globalSettings, $bbs;
+  	global $app, $globalSettings;
   
-  $app->getLog()->debug('seriesDetailsSlice started with index '.$index);
-	$tl = $bbs->authorDetailsSlice($id, $index, $globalSettings[PAGE_SIZE]);
+	$tl = $app->bbs->authorDetailsSlice($globalSettings['lang'], $id, $index, $globalSettings[PAGE_SIZE]);
 	if (is_null($tl)) {
 		$app->getLog()->debug('no author '.$id);
 		$app->notFound();
 	}
-	foreach ($tl['entries'] as $book)
-		$book->formats = $bbs->titleGetFormats($book->id);
 	$app->render('author_detail.html',array(
 		'page' => mkPage(getMessageString('author_details')),
 		'url' => 'authors/'.$id,	
@@ -788,22 +766,21 @@ function authorDetailsSlice($id, $index=0) {
 		'books' => $tl['entries'],
 		'curpage' => $tl['page'],
 		'pages' =>  $tl['pages']));
-	}
+}
 
 /**
  * Return a HTML page of series at page $index. 
  * @param  integer $index=0 page index into series list
  */
 function seriesSlice($index=0) {
-	global $app, $globalSettings, $bbs;
+	global $app, $globalSettings;
 
-	$app->getLog()->debug('seriesSlice started with index '.$index);			
 	$search = $app->request()->get('search');
 	if (isset($search)) {
 		$app->getLog()->debug('seriesSlice: search '.$search);			
-		$tl = $bbs->seriesSlice($index,$globalSettings[PAGE_SIZE],trim($search));	
+		$tl = $app->bbs->seriesSlice($index, $globalSettings[PAGE_SIZE], trim($search));	
 	} else
-		$tl = $bbs->seriesSlice($index,$globalSettings[PAGE_SIZE]);
+		$tl = $app->bbs->seriesSlice($index, $globalSettings[PAGE_SIZE]);
 	$app->render('series.html',array(
 		'page' => mkPage(getMessageString('series'),5), 
 		'url' => 'serieslist',
@@ -820,9 +797,9 @@ function seriesSlice($index=0) {
  * @deprecated since 0.9.3
  */
 function series($id) {
-	global $app, $globalSettings, $bbs;
+	global $app, $globalSettings;
 
-	$details = $bbs->seriesDetails($id);
+	$details = $app->bbs->seriesDetails($id);
 	if (is_null($details)) {
 		$app->getLog()->debug('no series '.$id);
 		$app->notFound();		
@@ -842,16 +819,13 @@ function series($id) {
  * @return HTML page
  */
 function seriesDetailsSlice ($id, $index=0) {
-  global $app, $globalSettings, $bbs;
+  global $app, $globalSettings;
 
-	$app->getLog()->debug('seriesDetailsSlice started with index '.$index);
-	$tl = $bbs->seriesDetailsSlice($id, $index, $globalSettings[PAGE_SIZE]);
+	$tl = $app->bbs->seriesDetailsSlice($globalSettings['lang'], $id, $index, $globalSettings[PAGE_SIZE]);
 	if (is_null($tl)) {
 		$app->getLog()->debug('no series '.$id);
 		$app->notFound();		
 	}
-	foreach ($tl['entries'] as $book)
-		$book->formats = $bbs->titleGetFormats($book->id);
 	$app->render('series_detail.html',array(
 		'page' => mkPage(getMessageString('series_details')),
 		'url' => 'series/'.$id, 
@@ -864,13 +838,13 @@ function seriesDetailsSlice ($id, $index=0) {
 
 # A list of tags at $index -> /tagslist/:index
 function tagsSlice($index=0) {
-	global $app, $globalSettings, $bbs;
+	global $app, $globalSettings;
 
 	$search = $app->request()->get('search');
 	if (isset($search))
-		$tl = $bbs->tagsSlice($index,$globalSettings[PAGE_SIZE],trim($search));
+		$tl = $app->bbs->tagsSlice($index,$globalSettings[PAGE_SIZE],trim($search));
 	else
-		$tl = $bbs->tagsSlice($index,$globalSettings[PAGE_SIZE]);
+		$tl = $app->bbs->tagsSlice($index,$globalSettings[PAGE_SIZE]);
 	$app->render('tags.html',array(
 		'page' => mkPage(getMessageString('tags'),4), 
 		'url' => 'tagslist',
@@ -883,9 +857,9 @@ function tagsSlice($index=0) {
 # Details for a single tag -> /tags/:id/:page
 # @deprecated since 0.9.3
 function tag($id) {
-	global $app, $globalSettings, $bbs;
+	global $app, $globalSettings;
 
-	$details = $bbs->tagDetails($id);
+	$details = $app->bbs->tagDetails($id);
 	if (is_null($details)) {
 		$app->getLog()->debug("no tag");
 		$app->notFound();		
@@ -905,16 +879,13 @@ function tag($id) {
  * @return HTML page
  */
 function tagDetailsSlice ($id, $index=0) {
-  global $app, $globalSettings, $bbs;
+  global $app, $globalSettings;
 
-	$app->getLog()->debug('tagDetailsSlice started with index '.$index);
-	$tl = $bbs->tagDetailsSlice($id, $index, $globalSettings[PAGE_SIZE]);
+	$tl = $app->bbs->tagDetailsSlice($globalSettings['lang'], $id, $index, $globalSettings[PAGE_SIZE]);
 	if (is_null($tl)) {
 		$app->getLog()->debug('no tag '.$id);
 		$app->notFound();		
 	}
-	foreach ($tl['entries'] as $book)
-		$book->formats = $bbs->titleGetFormats($book->id);
 	$app->render('tag_detail.html',array(
 		'page' => mkPage(getMessageString('tag_details')),
 		'url' => 'tags/'.$id, 
@@ -948,9 +919,9 @@ function opdsRoot() {
  * so books without formats are removed from the output.
  */
 function opdsNewest() {
-	global $app;
+	global $app, $globalSettings;
 
-	$just_books = $app->bbs->last30Books();
+	$just_books = $app->bbs->last30Books($globalSettings['lang']);
 	$books = array();
 	foreach ($just_books as $book) {
 		$record = $app->bbs->titleDetailsOpds($book);
@@ -975,9 +946,9 @@ function opdsByTitle($index=0) {
 
 	$search = $app->request()->get('search');
 	if (isset($search))
-		$tl = $app->bbs->titlesSlice($index,$globalSettings[PAGE_SIZE], $search);
+		$tl = $app->bbs->titlesSlice($globalSettings['lang'], $index,$globalSettings[PAGE_SIZE], $search);
 	else
-		$tl = $app->bbs->titlesSlice($index,$globalSettings[PAGE_SIZE]);
+		$tl = $app->bbs->titlesSlice($globalSettings['lang'], $index,$globalSettings[PAGE_SIZE]);
 	$books = $app->bbs->titleDetailsFilteredOpds($tl['entries']);
 	$gen = mkOpdsGenerator($app);	
 	$cat = $gen->titlesCatalog(NULL, $books, false, 

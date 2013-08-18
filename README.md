@@ -64,6 +64,7 @@ If you encounter problems, use the installation test to check your environment. 
 Requirements
 ------------
 * Apache web server with PHP 5.3+, including support for mcrypt and sqlite3
+* Optional: if PHP module *intl* (php5-intl) is installed, book languages will be displayed
 * Optional: a working PHP mail (sendmail) installation to send books via e-mail
 
 License

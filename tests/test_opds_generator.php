@@ -134,7 +134,7 @@ function testPartialAcquisitionEntryWithProtection() {
 
 	function testNewestCatalogValidation() {
 		$feed = self::DATA.'/feed.xml';
-		$just_books = $this->bbs->last30Books();
+		$just_books = $this->bbs->last30Books('en');
 		$books = $this->bbs->titleDetailsFilteredOpds($just_books);		
 		$xml = $this->gen->newestCatalog($feed,$books,false);
 		$this->assertTrue(file_exists($feed));		
@@ -145,7 +145,7 @@ function testPartialAcquisitionEntryWithProtection() {
 
 	function testTitlesCatalogValidation() {
 		$feed = self::DATA.'/feed.xml';
-		$tl = $this->bbs->titlesSlice(0,2);
+		$tl = $this->bbs->titlesSlice('en', 0,2);
 		$books = $this->bbs->titleDetailsFilteredOpds($tl['entries']);		
 		$xml = $this->gen->titlesCatalog($feed,$books,false, 
 			$tl['page'],$tl['page']+1,$tl['pages']-1);
@@ -156,7 +156,7 @@ function testPartialAcquisitionEntryWithProtection() {
 	}
 
 	function testTitlesCatalogOpenSearch() {
-		$tl = $this->bbs->titlesSlice(0,2);
+		$tl = $this->bbs->titlesSlice('en', 0,2);
 		$books = $this->bbs->titleDetailsFilteredOpds($tl['entries']);		
 		$xml = $this->gen->titlesCatalog(NULL,$books,false, 
 			$tl['page'],$tl['page']+1,$tl['pages']-1);

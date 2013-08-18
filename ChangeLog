@@ -1,6 +1,8 @@
-2013-08-XX Version 1.2.0-alpha
+2013-08-XX Version 1.2.0-𝛂
 
-* dropped download protection and added login system
+* Add book languages to the listviews and title details page, issue #56
+* The series index number is now displayed in the series details screen, issue #58
+* Dropped download protection and added login system, issue #47
 * Upgraded dependency jQuery Mobile to 1.3.2
 * Upgraded dependency Slim to version 2.3.1
 * Added dependeny slim/views, removed slim/extras
