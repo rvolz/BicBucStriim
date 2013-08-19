@@ -914,8 +914,8 @@ class BicBucStriim {
 			$tag = $this->findOne('Tag', 'select * from tags where id='.$tid->tag);
 			array_push($tags, $tag);
 		}
+		$langcodes = $this->getLanguages($id);
 		if (extension_loaded('intl')) {
-			$langcodes = $this->getLanguages($id);
 			$langtexts = array();
 			foreach ($langcodes as $langcode) {
 				$bol = Locale::getDisplayLanguage($langcode, $lang);
@@ -939,6 +939,7 @@ class BicBucStriim {
 			'formats' => $formats, 
 			'comment' => $comment_text, 
 			'language' => $language,
+			'langcodes' => $langcodes,
 			'custom' => $customColumns);
 	}
 

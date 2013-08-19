@@ -583,7 +583,13 @@ function title($id) {
 	
 	$details = $app->bbs->titleDetails($globalSettings['lang'], $id);	
 	if (is_null($details)) {
-		$app->getLog()->debug("title: book not found: ".$id);
+		$app->getLog()->warn("title: book not found: ".$id);
+		$app->notFound();
+		return;
+	}	
+	// for people trying to circumvent filtering by direct access
+	if (title_forbidden($details)) {
+		$app->getLog()->warn("title: requested book not allowed for user: ".$id);
 		$app->notFound();
 		return;
 	}	
@@ -670,14 +676,19 @@ function thumbnail($id) {
 # Return the selected file for the book with ID. 
 # Route: /titles/:id/file/:file
 function book($id, $file) {
-	global $app;
+	global $app, $globalSettings;
 
-	$book = $app->bbs->title($id);
-	if (is_null($book)) {
-		$app->getLog()->debug("no book file");
+	$details = $app->bbs->titleDetails($globalSettings['lang'], $id);
+	if (is_null($details)) {
+		$app->getLog()->warn("book: no book found for ".$id);
 		$app->notFound();
 	}	
-
+	// for people trying to circumvent filtering by direct access
+	if (title_forbidden($details)) {
+		$app->getLog()->warn("book: requested book not allowed for user: ".$id);
+		$app->notFound();
+		return;
+	}	
 	$bookpath = $app->bbs->titleFile($id, $file);
 
 	/** readfile has problems with large files (e.g. PDF) caused by php memory limit
@@ -1206,6 +1217,46 @@ function mkPage($subtitle='', $menu=0, $dialog=false) {
 	return $page;
 }
 
+/**
+ * Checks if a title is available to the current users
+ * @param details 	output of BicBucStriim::title_details()
+ * @return  		true if the title is not availble for the user, else false
+ */
+function title_forbidden($book_details) {
+	global $app;
+
+	$user = $app->strong->getUser();
+	if (empty($user['languages']) && empty($user['tags'])) {
+		return false;
+	}
+	else {
+		if (!empty($user['languages'])) {
+			$lang_found = false;
+			foreach ($book_details['langcodes'] as $langcode) {
+				if ($langcode->lang_code === $$user['languages']) {
+					$lang_found = true;					
+					break;
+				}
+			}			
+			if (!$lang_found) {
+				return true;
+			}
+		}
+		if (!empty($user['tags'])) {
+			$tag_found = false;
+			foreach ($book_details['tags'] as $tag) {
+				if ($tag->name === $user['tags']) {
+					$tag_found = true;
+					break;
+				}
+			}			
+			if ($tag_found) {
+				return true;
+			}
+		}
+		return false;
+	}
+}
 
 /**
  * Return a localized message string for $id. 

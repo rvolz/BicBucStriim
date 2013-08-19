@@ -91,13 +91,13 @@ class LoginMiddleware extends \Slim\Middleware {
             $auth = $this->checkPhpAuth($req);
             if (is_null($auth))
                 $auth = $this->checkHttpAuth($req);
-            $app->getLog()->debug('login auth: '.var_export($auth,true));
+            //$app->getLog()->debug('login auth: '.var_export($auth,true));
             // if auth info found check the database
             if (is_null($auth))
                 return false; 
             else {
                 $li = $app->strong->login($auth[0], $auth[1]); 
-                $app->getLog()->debug('login answer: '.var_export($li,true));
+                //$app->getLog()->debug('login answer: '.var_export($li,true));
                 return $li;
             }
         }
