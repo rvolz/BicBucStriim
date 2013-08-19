@@ -641,8 +641,20 @@ class BicBucStriim {
 		return $this->find('Author', 'select a.id, a.name, a.sort, count(bal.id) as anzahl from authors as a left join books_authors_link as bal on a.id = bal.author where substr(upper(a.sort),1,1) = \''.$initial.'\' group by a.id order by a.sort');	
 	}
 
-	# Returns a tag and the related books
-	#
+	/**
+	 * Return a list of all languages
+	 */
+	function languages() {
+		return $this->find('Language', 'select * from languages');
+	}
+	
+
+	/**
+	 * Return a list of all tags
+	 */
+	function tags() {
+		return $this->find('Tag', 'select * from tags');
+	}
 	
 	/**
 	 * Returns a tag and the related books

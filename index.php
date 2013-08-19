@@ -289,10 +289,28 @@ function admin_get_user($id) {
 	global $app;
 
 	$user = $app->bbs->user($id);
+	$languages = $app->bbs->languages();
+	foreach ($languages as $language) {
+	 	$language->key = $language->lang_code;
+	} 
+	$nl = new Language();
+	$nl->lang_code = getMessageString('admin_no_selection');
+	$nl->key = '';
+	array_unshift($languages, $nl);
+	$tags = $app->bbs->tags();
+	foreach ($tags as $tag) {
+	 	$tag->key = $tag->name;
+	}
+	$nt = new Tag();
+	$nt->name = getMessageString('admin_no_selection');
+	$nt->key = '';
+	array_unshift($tags, $nt);
 	$app->getLog()->debug('admin_get_user: '.var_export($user, true));	
 	$app->render('admin_user.html',array(
 		'page' => mkPage(getMessageString('admin_users')),
 		'user' => $user,
+		'languages' => $languages,
+		'tags' => $tags,
 		'isadmin' => is_admin()));
 }
 

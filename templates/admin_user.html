@@ -22,14 +22,20 @@
 	</fieldset>	
 	<fieldset data-role="fieldcontain">
 		<label for="languages">{{page.glob.langa.language}}</label>
-		<input name="languages" id="languages" type="text" 
-			value="{{user.languages}}" placeholder="{{page.glob.langa.language}}"/>
+		<select name="languages" id="languages" value="{{user.languages}}">
+		{% for language in languages %}
+			<option value="{{language.key}}" {%if user.languages == language.key %}selected="true"{% endif %}>{{language.lang_code}}</option>
+		{% endfor %}
+		</select>
 		<p>{{page.glob.langa.admin_userlangs_expl}}</p>					
-	</fieldset>	
-	<fieldset data-role="fieldcontain">
+	</fieldset>
+	<fieldset data-role="fieldcontain"> 
 		<label for="tags">{{page.glob.langa.tag}}</label>
-		<input name="tags" id="tags" type="text" 
-			value="{{user.tags}}" placeholder="{{page.glob.langa.tag}}"/>
+		<select name="tags" id="tags" value="{{user.tags}}">
+		{% for tag in tags %}
+			<option value="{{tag.key}}" {%if user.tags == tag.key %}selected="true"{% endif %}>{{tag.name}}</option>
+		{% endfor %}
+		</select>
 		<p>{{page.glob.langa.admin_usertags_expl}}</p>					
 	</fieldset>	
 	<button  data-ajax="true" data-icon="check" type="submit">
