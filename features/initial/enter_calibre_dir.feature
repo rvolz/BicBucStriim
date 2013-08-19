@@ -1,7 +1,7 @@
 @initial
-Feature: User configures after installation
+Feature: Admin configures after installation
 	In order to configure the application just after installation
-	As a user
+	As an admin user
 	I get the admin page immediately and can enter the Calibre library directory
 
 	Scenario: Invalid directory

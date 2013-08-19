@@ -97,7 +97,7 @@ class OpdsGenerator {
    * @param  array    $entries   an array of Book
    * @param  boolean  $protected true = we need password authentication before a download
    * @param  int      $page      number of page to show, minimum 0
-   * @param  int      $next      number of the nextPage to show, or NULL
+   * @param  int      $next      number of the next page to show, or NULL
    * @param  int      $last      number of the last page
    */
   function titlesCatalog($of=NULL, $entries, $protected, $page, $next, $last) {
@@ -165,7 +165,7 @@ class OpdsGenerator {
 
     # Content
     foreach($entries as $entry) {
-      $url2 = $url.$entry->id.'/';
+      $url2 = $url.$entry->id.'/0/';
       $this->navigationEntry($entry->name, $url2, $this->l10n->message('opds_books').$entry->anzahl, $url2, 
         self::OPDS_MIME_NAV);
     }
@@ -180,8 +180,11 @@ class OpdsGenerator {
    * @param  string   $initial    the initial character
    * @param  string   $author     the author
    * @param  bool     $protected  download protection y/n?
+   * @param  int      $page      number of page to show, minimum 0
+   * @param  int      $next      number of the next page to show, or NULL
+   * @param  int      $last      number of the last page
    */
-  function booksForAuthorCatalog($of=NULL, $entries, $initial, $author, $protected) {
+  function booksForAuthorCatalog($of=NULL, $entries, $initial, $author, $protected, $page, $next, $last) {
     $this->openStream($of);
     $url= '/authorslist/'.$initial.'/'.$author->id.'/';
     $this->header('opds_by_author6', 
@@ -191,6 +194,12 @@ class OpdsGenerator {
     $this->acquisitionCatalogLink($this->bbs_root.'/opds'.$url,'self');
     $this->navigationCatalogLink($this->bbs_root.'/opds/', 'start');
     $this->navigationCatalogLink($this->bbs_root.'/opds/authorslist/'.$initial.'/', 'up');
+    $this->acquisitionCatalogLink($this->bbs_root.'/opds/authorslist/'.$initial.'/'.$author->id.'/0/','first');
+    if ($page > 0)
+      $this->acquisitionCatalogLink($this->bbs_root.'/opds/authorslist/'.$initial.'/'.$author->id.'/'.($page-1).'/','previous');
+    if (!is_null($next))
+      $this->acquisitionCatalogLink($this->bbs_root.'/opds/authorslist/'.$initial.'/'.$author->id.'/'.$next.'/','next');
+    $this->acquisitionCatalogLink($this->bbs_root.'/opds/authorslist/'.$initial.'/'.$author->id.'/'.$last.'/', 'last');
     # Content
     foreach($entries as $entry) {
       $url2 = $url.$entry['book']->id.'/';
@@ -243,7 +252,7 @@ class OpdsGenerator {
 
     # Content
     foreach($entries as $entry) {
-      $url2 = $url.$entry->id.'/';
+      $url2 = $url.$entry->id.'/0/';
       $this->navigationEntry($entry->name, $url2, $this->l10n->message('opds_books').$entry->anzahl, $url2, 
         self::OPDS_MIME_NAV);
     }
@@ -258,8 +267,11 @@ class OpdsGenerator {
    * @param  string   $initial    the initial character
    * @param  string   $tag        the tag
    * @param  bool     $protected  download protection y/n?
+   * @param  int      $page      number of page to show, minimum 0
+   * @param  int      $next      number of the next page to show, or NULL
+   * @param  int      $last      number of the last page
    */
-  function booksForTagCatalog($of=NULL, $entries, $initial, $tag, $protected) {
+  function booksForTagCatalog($of=NULL, $entries, $initial, $tag, $protected, $page, $next, $last) {
     $this->openStream($of);
     $url= '/tagslist/'.$initial.'/'.$tag->id.'/';
     $this->header('opds_by_tag6', 
@@ -269,6 +281,12 @@ class OpdsGenerator {
     $this->acquisitionCatalogLink($this->bbs_root.'/opds'.$url,'self');
     $this->navigationCatalogLink($this->bbs_root.'/opds/', 'start');
     $this->navigationCatalogLink($this->bbs_root.'/opds/tagslist/'.$initial.'/', 'up');
+    $this->acquisitionCatalogLink($this->bbs_root.'/opds/tagslist/'.$initial.'/'.$tag->id.'/0/','first');
+    if ($page > 0)
+      $this->acquisitionCatalogLink($this->bbs_root.'/opds/tagslist/'.$initial.'/'.$tag->id.'/'.($page-1).'/','previous');
+    if (!is_null($next))
+      $this->acquisitionCatalogLink($this->bbs_root.'/opds/tagslist/'.$initial.'/'.$tag->id.'/'.$next.'/','next');
+    $this->acquisitionCatalogLink($this->bbs_root.'/opds/tagslist/'.$initial.'/'.$tag->id.'/'.$last.'/', 'last');
     # Content
     foreach($entries as $entry) {
       $url2 = $url.$entry['book']->id.'/';
@@ -321,7 +339,7 @@ class OpdsGenerator {
 
     # Content
     foreach($entries as $entry) {
-      $url2 = $url.$entry->id.'/';
+      $url2 = $url.$entry->id.'/0/';
       $this->navigationEntry($entry->name, $url2, $this->l10n->message('opds_books').$entry->anzahl, $url2, 
         self::OPDS_MIME_NAV);
     }
@@ -336,8 +354,11 @@ class OpdsGenerator {
    * @param  string   $initial    the initial character
    * @param  string   $tag        the series
    * @param  bool     $protected  download protection y/n?
+   * @param  int      $page      number of page to show, minimum 0
+   * @param  int      $next      number of the next page to show, or NULL
+   * @param  int      $last      number of the last page
    */
-  function booksForSeriesCatalog($of=NULL, $entries, $initial, $series, $protected) {
+  function booksForSeriesCatalog($of=NULL, $entries, $initial, $series, $protected, $page, $next, $last) {
     $this->openStream($of);
     $url= '/serieslist/'.$initial.'/'.$series->id.'/';
     $this->header('opds_by_series6',
@@ -347,6 +368,12 @@ class OpdsGenerator {
     $this->acquisitionCatalogLink($this->bbs_root.'/opds'.$url,'self');
     $this->navigationCatalogLink($this->bbs_root.'/opds/', 'start');
     $this->navigationCatalogLink($this->bbs_root.'/opds/serieslist/'.$initial.'/', 'up');
+    $this->acquisitionCatalogLink($this->bbs_root.'/opds/authorslist/'.$initial.'/'.$series->id.'/0/','first');
+    if ($page > 0)
+      $this->acquisitionCatalogLink($this->bbs_root.'/opds/authorslist/'.$initial.'/'.$series->id.'/'.($page-1).'/','previous');
+    if (!is_null($next))
+      $this->acquisitionCatalogLink($this->bbs_root.'/opds/authorslist/'.$initial.'/'.$series->id.'/'.$next.'/','next');
+    $this->acquisitionCatalogLink($this->bbs_root.'/opds/authorslist/'.$initial.'/'.$series->id.'/'.$last.'/', 'last');
     # Content
     foreach($entries as $entry) {
       $url2 = $url.$entry['book']->id.'/';

@@ -1,4 +1,11 @@
 <?php
+/**
+ * BicBucStriim
+ *
+ * Copyright 2012-2013 Rainer Volz
+ * Licensed under MIT License, see LICENSE
+ * 
+ */ 
 
 require 'vendor/autoload.php';
 require_once 'lib/BicBucStriim/bicbucstriim.php';
@@ -84,11 +91,15 @@ class LoginMiddleware extends \Slim\Middleware {
             $auth = $this->checkPhpAuth($req);
             if (is_null($auth))
                 $auth = $this->checkHttpAuth($req);
+            $app->getLog()->debug('login auth: '.var_export($auth,true));
             // if auth info found check the database
             if (is_null($auth))
                 return false; 
-            else
-                return $app->strong->login($auth[0], $auth[1]); 
+            else {
+                $li = $app->strong->login($auth[0], $auth[1]); 
+                $app->getLog()->debug('login answer: '.var_export($li,true));
+                return $li;
+            }
         }
     }
 

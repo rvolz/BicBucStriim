@@ -168,13 +168,13 @@ $app->get('/opds/newest/', 'opdsNewest');
 $app->get('/opds/titleslist/:id/', 'opdsByTitle');
 $app->get('/opds/authorslist/', 'opdsByAuthorInitial');
 $app->get('/opds/authorslist/:initial/', 'opdsByAuthorNamesForInitial');
-$app->get('/opds/authorslist/:initial/:id/', 'opdsByAuthor');
+$app->get('/opds/authorslist/:initial/:id/:page/', 'opdsByAuthor');
 $app->get('/opds/tagslist/',  'opdsByTagInitial');
 $app->get('/opds/tagslist/:initial/', 'opdsByTagNamesForInitial');
-$app->get('/opds/tagslist/:initial/:id/', 'opdsByTag');
+$app->get('/opds/tagslist/:initial/:id/:page/', 'opdsByTag');
 $app->get('/opds/serieslist/', 'opdsBySeriesInitial');
 $app->get('/opds/serieslist/:initial/', 'opdsBySeriesNamesForInitial');
-$app->get('/opds/serieslist/:initial/:id/', 'opdsBySeries');
+$app->get('/opds/serieslist/:initial/:id/:page/', 'opdsBySeries');
 $app->get('/opds/opensearch.xml', 'opdsSearchDescriptor');
 $app->get('/opds/searchlist/:id/', 'opdsBySearch');
 $app->run();
@@ -504,7 +504,8 @@ function admin_check_version() {
 function main() {
 	global $app, $globalSettings;
 
-	$books = $app->bbs->last30Books($globalSettings['lang'], $globalSettings[PAGE_SIZE]);
+	$filter = getFilter();
+	$books = $app->bbs->last30Books($globalSettings['lang'], $globalSettings[PAGE_SIZE], $filter);
 	$app->render('index_last30.html',array(
 		'page' => mkPage(getMessageString('dl30'),1), 
 		'books' => $books));	
@@ -516,10 +517,11 @@ function main() {
 function globalSearch() {
 	global $app, $globalSettings;
 
+	$filter = getFilter();
 	$search = $app->request()->get('search');
-	$tlb = $app->bbs->titlesSlice($globalSettings['lang'], 0, $globalSettings[PAGE_SIZE], trim($search));
+	$tlb = $app->bbs->titlesSlice($globalSettings['lang'], 0, $globalSettings[PAGE_SIZE], $filter, trim($search));
 	$tla = $app->bbs->authorsSlice(0, $globalSettings[PAGE_SIZE], trim($search));
-	$tlt = $app->bbs->tagsSlice(0, $globalSettings[PAGE_SIZE], trim($search));
+	$tlt = $app->bbs->tagsSlice(0, $globalSettings[PAGE_SIZE],  trim($search));
 	$tls = $app->bbs->seriesSlice(0, $globalSettings[PAGE_SIZE], trim($search));
 	$app->render('global_search.html',array(
 		'page' => mkPage(getMessageString('pagination_search'),0), 
@@ -542,11 +544,12 @@ function globalSearch() {
 function titlesSlice($index=0) {
 	global $app, $globalSettings;
 
+	$filter = getFilter();
 	$search = $app->request()->get('search');
 	if (isset($search)) {
-		$tl = $app->bbs->titlesSlice($globalSettings['lang'], $index,$globalSettings[PAGE_SIZE],trim($search));
+		$tl = $app->bbs->titlesSlice($globalSettings['lang'], $index,$globalSettings[PAGE_SIZE], $filter, trim($search));
 	} else
-		$tl = $app->bbs->titlesSlice($globalSettings['lang'], $index,$globalSettings[PAGE_SIZE]);
+		$tl = $app->bbs->titlesSlice($globalSettings['lang'], $index,$globalSettings[PAGE_SIZE], $filter);
 	$app->render('titles.html',array(
 		'page' => mkPage(getMessageString('titles'),2), 
 		'url' => 'titleslist',
@@ -754,7 +757,8 @@ function author($id) {
 function authorDetailsSlice($id, $index=0) {
   	global $app, $globalSettings;
   
-	$tl = $app->bbs->authorDetailsSlice($globalSettings['lang'], $id, $index, $globalSettings[PAGE_SIZE]);
+  	$filter = getFilter();
+	$tl = $app->bbs->authorDetailsSlice($globalSettings['lang'], $id, $index, $globalSettings[PAGE_SIZE], $filter);
 	if (is_null($tl)) {
 		$app->getLog()->debug('no author '.$id);
 		$app->notFound();
@@ -819,9 +823,10 @@ function series($id) {
  * @return HTML page
  */
 function seriesDetailsSlice ($id, $index=0) {
-  global $app, $globalSettings;
+  	global $app, $globalSettings;
 
-	$tl = $app->bbs->seriesDetailsSlice($globalSettings['lang'], $id, $index, $globalSettings[PAGE_SIZE]);
+  	$filter = getFilter();
+	$tl = $app->bbs->seriesDetailsSlice($globalSettings['lang'], $id, $index, $globalSettings[PAGE_SIZE], $filter);
 	if (is_null($tl)) {
 		$app->getLog()->debug('no series '.$id);
 		$app->notFound();		
@@ -879,9 +884,10 @@ function tag($id) {
  * @return HTML page
  */
 function tagDetailsSlice ($id, $index=0) {
-  global $app, $globalSettings;
+  	global $app, $globalSettings;
 
-	$tl = $app->bbs->tagDetailsSlice($globalSettings['lang'], $id, $index, $globalSettings[PAGE_SIZE]);
+  	$filter = getFilter();
+	$tl = $app->bbs->tagDetailsSlice($globalSettings['lang'], $id, $index, $globalSettings[PAGE_SIZE], $filter);
 	if (is_null($tl)) {
 		$app->getLog()->debug('no tag '.$id);
 		$app->notFound();		
@@ -921,7 +927,8 @@ function opdsRoot() {
 function opdsNewest() {
 	global $app, $globalSettings;
 
-	$just_books = $app->bbs->last30Books($globalSettings['lang']);
+	$filter = getFilter();
+	$just_books = $app->bbs->last30Books($globalSettings['lang'], $globalSettings[PAGE_SIZE], $filter);
 	$books = array();
 	foreach ($just_books as $book) {
 		$record = $app->bbs->titleDetailsOpds($book);
@@ -944,11 +951,12 @@ function opdsNewest() {
 function opdsByTitle($index=0) {
 	global $app, $globalSettings;
 
+	$filter = getFilter();
 	$search = $app->request()->get('search');
 	if (isset($search))
-		$tl = $app->bbs->titlesSlice($globalSettings['lang'], $index,$globalSettings[PAGE_SIZE], $search);
+		$tl = $app->bbs->titlesSlice($globalSettings['lang'], $index,$globalSettings[PAGE_SIZE], $filter, $search);
 	else
-		$tl = $app->bbs->titlesSlice($globalSettings['lang'], $index,$globalSettings[PAGE_SIZE]);
+		$tl = $app->bbs->titlesSlice($globalSettings['lang'], $index,$globalSettings[PAGE_SIZE], $filter);
 	$books = $app->bbs->titleDetailsFilteredOpds($tl['entries']);
 	$gen = mkOpdsGenerator($app);	
 	$cat = $gen->titlesCatalog(NULL, $books, false, 
@@ -982,17 +990,21 @@ function opdsByAuthorNamesForInitial($initial) {
 
 /**
  * Return a feed with partial acquisition entries for the author's books
- * @param  string $initial initial character
- * @param  int 		$id      author id
+ * @param  string 	initial initial character
+ * @param  int 		id      author id
+ * @param  int 		page    page number
  */
-function opdsByAuthor($initial,$id) {
-	global $app;
+function opdsByAuthor($initial, $id, $page) {
+	global $app, $globalSettings;
 
-	$adetails = $app->bbs->authorDetails($id);
-	$books = $app->bbs->titleDetailsFilteredOpds($adetails['books']);
+	$filter = getFilter();
+	$tl = $app->bbs->authorDetailsSlice($globalSettings['lang'], $id, $page, $globalSettings[PAGE_SIZE], $filter);
+	$app->getLog()->debug('opdsByAuthor 1 '.var_export($tl, true));
+	$books = $app->bbs->titleDetailsFilteredOpds($tl['entries']);
+	$app->getLog()->debug('opdsByAuthor 2 '.var_export($books, true));
 	$gen = mkOpdsGenerator($app);	
-	$cat = $gen->booksForAuthorCatalog(NULL, $books, $initial, 
-		$adetails['author'], false);
+	$cat = $gen->booksForAuthorCatalog(NULL, $books, $initial, $tl['author'], false, 
+		$tl['page'], getNextSearchPage($tl), getLastSearchPage($tl));
 	mkOpdsResponse($app, $cat, OpdsGenerator::OPDS_MIME_ACQ);
 }
 
@@ -1022,17 +1034,19 @@ function opdsByTagNamesForInitial($initial) {
 
 /**
  * Return a feed with partial acquisition entries for the tags's books
- * @param  string $initial initial character
- * @param  int 		$id      tag id
+ * @param  string 	initial initial character
+ * @param  int 		id      tag id
+ * @param  int 		page 	page index
  */
-function opdsByTag($initial,$id) {
-	global $app;
+function opdsByTag($initial, $id, $page) {
+	global $app, $globalSettings;
 
-	$adetails = $app->bbs->tagDetails($id);
-	$books = $app->bbs->titleDetailsFilteredOpds($adetails['books']);
+	$filter = getFilter();
+	$tl = $app->bbs->tagDetailsSlice($globalSettings['lang'], $id, $page, $globalSettings[PAGE_SIZE], $filter);
+	$books = $app->bbs->titleDetailsFilteredOpds($tl['entries']);
 	$gen = mkOpdsGenerator($app);	
-	$cat = $gen->booksForTagCatalog(NULL, $books, $initial, 
-		$adetails['tag'],false);
+	$cat = $gen->booksForTagCatalog(NULL, $books, $initial, $tl['tag'], false,
+		$tl['page'], getNextSearchPage($tl), getLastSearchPage($tl));
 	mkOpdsResponse($app, $cat, OpdsGenerator::OPDS_MIME_ACQ);
 }
 
@@ -1062,17 +1076,19 @@ function opdsBySeriesNamesForInitial($initial) {
 
 /**
  * Return a feed with partial acquisition entries for the series' books
- * @param  string $initial initial character
- * @param  int 		$id      tag id
+ * @param  string 	initial initial character
+ * @param  int 		id     	tag id
+ * @param  int 		page 	page index
  */
-function opdsBySeries($initial,$id) {
-	global $app;
+function opdsBySeries($initial, $id, $page) {
+	global $app, $globalSettings;
 
-	$adetails = $app->bbs->seriesDetails($id);
-	$books = $app->bbs->titleDetailsFilteredOpds($adetails['books']);
+	$filter = getFilter();
+	$tl = $app->bbs->seriesDetailsSlice($globalSettings['lang'], $id, $page, $globalSettings[PAGE_SIZE], $filter);
+	$books = $app->bbs->titleDetailsFilteredOpds($tl['entries']);
 	$gen = mkOpdsGenerator($app);	
-	$cat = $gen->booksForSeriesCatalog(NULL, $books, $initial, 
-		$adetails['series'], false);
+	$cat = $gen->booksForSeriesCatalog(NULL, $books, $initial, $tl['series'], false,
+		$tl['page'], getNextSearchPage($tl), getLastSearchPage($tl));
 	mkOpdsResponse($app, $cat, OpdsGenerator::OPDS_MIME_ACQ);
 }
 
@@ -1103,7 +1119,8 @@ function opdsBySearch($index=0) {
 		$app->response()->status(400);
 		return;
 	}	
-	$tl = $app->bbs->titlesSlice($index,$globalSettings[PAGE_SIZE], $search);	
+	$filter = getFilter();
+	$tl = $app->bbs->titlesSliceFilterd($index, $globalSettings[PAGE_SIZE], $filter, $search);	
 	$books = $app->bbs->titleDetailsFilteredOpds($tl['entries']);
 	$gen = mkOpdsGenerator($app);
 	$cat = $gen->searchCatalog(NULL, $books, false, 
@@ -1116,6 +1133,20 @@ function opdsBySearch($index=0) {
  * Utility and helper functions, private
  ********************************************************************/
 
+function getFilter() {
+	global $app;
+
+	$user = $app->strong->getUser();
+	$app->getLog()->debug('getFilter: '.var_export($user,true));	
+	$lang = null;
+	$tag = null;
+	if (!empty($user['languages']))
+		$lang = $app->bbs->getLanguageId($user['languages']);
+	if (!empty($user['tags']))
+		$tag = $app->bbs->getTagId($user['tags']);
+	$app->getLog()->debug('getFilter: Using language '.$lang.', tag '.$tag);
+	return new CalibreFilter($lang, $tag);
+}
 
 function mkOpdsGenerator($app) {
 	global $appversion, $globalSettings;

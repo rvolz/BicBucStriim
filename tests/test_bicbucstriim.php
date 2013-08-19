@@ -2,6 +2,7 @@
 set_include_path("tests");
 require_once('lib/simpletest/autorun.php');
 require_once('lib/BicBucStriim/bicbucstriim.php');
+require_once('lib/BicBucStriim/calibre_filter.php');
 
 class TestOfBicBucStriim extends UnitTestCase {
 
@@ -46,14 +47,24 @@ class TestOfBicBucStriim extends UnitTestCase {
 	}
 
 	function testLast30() {		
-		$result = $this->bbs->last30Books('en', 30);
+		$result = $this->bbs->last30Books('en', 30, new CalibreFilter());
 		$this->assertEqual(0, $this->bbs->last_error);
 		$this->assertFalse($result === FALSE);
 		$this->assertEqual(7, count($result));
-		$result2 = $this->bbs->last30Books('en', 2);
+		$result2 = $this->bbs->last30Books('en', 2, new CalibreFilter());
 		$this->assertEqual(0, $this->bbs->last_error);
 		$this->assertFalse($result2 === FALSE);
 		$this->assertEqual(2, count($result2));
+		$result3 = $this->bbs->last30Books('en', 30, new CalibreFilter($lang=3));
+		$this->assertEqual(1, count($result3));
+		$result4 = $this->bbs->last30Books('en', 30, new CalibreFilter($lang=null, $tag=21));
+		$this->assertEqual(6, count($result4));
+		$result5 = $this->bbs->last30Books('en', 30, new CalibreFilter($lang=3, $tag=21));
+		$this->assertEqual(0, count($result5));
+		$result3 = $this->bbs->last30Books('en', 30, new CalibreFilter($lang=2));
+		$this->assertEqual(2, count($result3));
+		$result4 = $this->bbs->last30Books('en', 30, new CalibreFilter($lang=2, $tag=3));
+		$this->assertEqual(1, count($result4));		
 	}
 
 	function testAuthorsSlice() {
@@ -89,15 +100,31 @@ class TestOfBicBucStriim extends UnitTestCase {
 	}
 
 	function testAuthorDetailsSlice() {
-		$result0 = $this->bbs->authorDetailsSlice('en', 6,0,1);
+		$result0 = $this->bbs->authorDetailsSlice('en', 6, 0, 1, new CalibreFilter());
 		$this->assertEqual(0, $this->bbs->last_error);
 		$this->assertEqual(1, count($result0['entries']));
 		$this->assertEqual(0, $result0['page']);
 		$this->assertEqual(2, $result0['pages']);
-		$result1 = $this->bbs->authorDetailsSlice('en', 6,1,1);
+		$result1 = $this->bbs->authorDetailsSlice('en', 6, 1, 1, new CalibreFilter());
 		$this->assertEqual(1, count($result1['entries']));
 		$this->assertEqual(1, $result1['page']);
 		$this->assertEqual(2, $result1['pages']);		
+	}
+
+	function testAuthorDetailsSliceWithFilter() {
+		$result0 = $this->bbs->authorDetailsSlice('en', 7, 0, 1, new CalibreFilter());
+		$this->assertEqual(0, $this->bbs->last_error);
+		$this->assertEqual(1, count($result0['entries']));
+		$this->assertEqual(0, $result0['page']);
+		$this->assertEqual(1, $result0['pages']);
+		$result1 = $this->bbs->authorDetailsSlice('en', 7, 0, 1, new CalibreFilter(1));
+		$this->assertEqual(1, count($result1['entries']));
+		$this->assertEqual(0, $result1['page']);
+		$this->assertEqual(1, $result1['pages']);		
+		$result2 = $this->bbs->authorDetailsSlice('en', 7, 0, 1, new CalibreFilter(2));
+		$this->assertEqual(0, count($result2['entries']));
+		$this->assertEqual(0, $result2['page']);
+		$this->assertEqual(-1, $result2['pages']);		
 	}
 
 	function testAuthorsInitials() {
@@ -151,12 +178,12 @@ class TestOfBicBucStriim extends UnitTestCase {
 	}
 
 	function testTagDetailsSlice() {
-		$result0 = $this->bbs->tagDetailsSlice('en', 3,0,1);
+		$result0 = $this->bbs->tagDetailsSlice('en', 3, 0, 1, new CalibreFilter());
 		$this->assertEqual(0, $this->bbs->last_error);
 		$this->assertEqual(1, count($result0['entries']));
 		$this->assertEqual(0, $result0['page']);
 		$this->assertEqual(2, $result0['pages']);
-		$result1 = $this->bbs->tagDetailsSlice('en', 3,1,1);
+		$result1 = $this->bbs->tagDetailsSlice('en', 3, 1, 1, new CalibreFilter());
 		$this->assertEqual(1, count($result1['entries']));
 		$this->assertEqual(1, $result1['page']);
 		$this->assertEqual(2, $result1['pages']);		
@@ -181,23 +208,37 @@ class TestOfBicBucStriim extends UnitTestCase {
 	}
 
 	function testTitlesSlice() {
-		$result0 = $this->bbs->titlesSlice('en', 0,2);
+		$result0 = $this->bbs->titlesSlice('en', 0, 2, new CalibreFilter());
 		$this->assertEqual(0, $this->bbs->last_error);
 		$this->assertEqual(2, count($result0['entries']));
 		$this->assertEqual(0, $result0['page']);
 		$this->assertEqual(4, $result0['pages']);
-		$result1 = $this->bbs->titlesSlice('en', 1,2);
+		$result1 = $this->bbs->titlesSlice('en', 1, 2, new CalibreFilter());
 		$this->assertEqual(2, count($result1['entries']));
 		$this->assertEqual(1, $result1['page']);
 		$this->assertEqual(4, $result1['pages']);		
-		$result3 = $this->bbs->titlesSlice('en', 3,2);
+		$result3 = $this->bbs->titlesSlice('en', 3, 2, new CalibreFilter());
 		$this->assertEqual(1, count($result3['entries']));
 		$this->assertEqual(3, $result3['page']);
 		$this->assertEqual(4, $result3['pages']);		
-		$no_result = $this->bbs->titlesSlice('en', 100,2);		
+		$no_result = $this->bbs->titlesSlice('en', 100, 2, new CalibreFilter());		
 		$this->assertEqual(0, count($no_result['entries']));
 		$this->assertEqual(100, $no_result['page']);
 		$this->assertEqual(4, $no_result['pages']);				
+
+		$result0 = $this->bbs->titlesSlice('en', 0, 2, new CalibreFilter($lang=3));
+		$this->assertEqual(1, count($result0['entries']));
+		$this->assertEqual(1, $result0['pages']);
+		$result0 = $this->bbs->titlesSlice('en', 1, 2, new CalibreFilter($lang=null, $tag=21));
+		$this->assertEqual(2, count($result0['entries']));
+		$this->assertEqual(1, $result0['page']);
+		$this->assertEqual(3, $result0['pages']);
+		$result0 = $this->bbs->titlesSlice('en', 0, 2, new CalibreFilter($lang=3, $tag=21));
+		$this->assertEqual(0, count($result0['entries']));
+		$this->assertEqual(0, $result0['pages']);
+		$result0 = $this->bbs->titlesSlice('en', 0, 2, new CalibreFilter($lang=2, $tag=3));
+		$this->assertEqual(1, count($result0['entries']));
+		$this->assertEqual(1, $result0['pages']);
 	}
 
 	function testCount($value='') {
@@ -207,14 +248,14 @@ class TestOfBicBucStriim extends UnitTestCase {
 	}
 
 	function testTitlesSliceSearch() {
-		$result0 = $this->bbs->titlesSlice('en', 0,2,'I');
+		$result0 = $this->bbs->titlesSlice('en', 0, 2, new CalibreFilter(), 'I');
 		$this->assertEqual(0, $this->bbs->last_error);
 		$this->assertEqual(2, count($result0['entries']));
 		$this->assertEqual(0, $result0['page']);
 		$this->assertEqual(3, $result0['pages']);		
-		$result1 = $this->bbs->titlesSlice('en', 1,2,'I');
+		$result1 = $this->bbs->titlesSlice('en', 1, 2, new CalibreFilter(), 'I');
 		$this->assertEqual(2, count($result1['entries']));
-		$result3 = $this->bbs->titlesSlice('en', 2,2,'I');
+		$result3 = $this->bbs->titlesSlice('en', 2,2, new CalibreFilter(), 'I');
 		$this->assertEqual(2, count($result3['entries']));
 	}
 
@@ -269,7 +310,7 @@ class TestOfBicBucStriim extends UnitTestCase {
 	}
 
 	function testTitleDetails() {
-		$result = $this->bbs->titleDetails(3);
+		$result = $this->bbs->titleDetails('en', 3);
 		$this->assertEqual(0, $this->bbs->last_error);
 		$this->assertFalse($result === FALSE);
 		$this->assertEqual('Der seltzame Springinsfeld',$result['book']->title);
@@ -287,7 +328,7 @@ class TestOfBicBucStriim extends UnitTestCase {
 	}
 
 	function testTitleDetailsFilteredOpds() {
-		$books = $this->bbs->titlesSlice('en', 1,2);
+		$books = $this->bbs->titlesSlice('en', 1, 2, new CalibreFilter());
 		$this->assertEqual(2, count($books['entries']));
 		$result = $this->bbs->titleDetailsFilteredOpds($books['entries']);
 		$this->assertEqual(0, $this->bbs->last_error);
@@ -318,12 +359,12 @@ class TestOfBicBucStriim extends UnitTestCase {
 	}
 
 	function testSeriesDetailsSlice() {
-		$result0 = $this->bbs->seriesDetailsSlice('en', 1,0,1);
+		$result0 = $this->bbs->seriesDetailsSlice('en', 1, 0, 1, new CalibreFilter());
 		$this->assertEqual(0, $this->bbs->last_error);
 		$this->assertEqual(1, count($result0['entries']));
 		$this->assertEqual(0, $result0['page']);
 		$this->assertEqual(2, $result0['pages']);
-		$result1 = $this->bbs->seriesDetailsSlice('en', 1,1,1);
+		$result1 = $this->bbs->seriesDetailsSlice('en', 1, 1, 1, new CalibreFilter());
 		$this->assertEqual(1, count($result1['entries']));
 		$this->assertEqual(1, $result1['page']);
 		$this->assertEqual(2, $result1['pages']);		
