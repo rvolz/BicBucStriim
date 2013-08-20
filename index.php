@@ -676,9 +676,9 @@ function thumbnail($id) {
 # Return the selected file for the book with ID. 
 # Route: /titles/:id/file/:file
 function book($id, $file) {
-	global $app, $globalSettings;
+	global $app;
 
-	$details = $app->bbs->titleDetails($globalSettings['lang'], $id);
+	$details = $app->bbs->titleDetailsMini($id);
 	if (is_null($details)) {
 		$app->getLog()->warn("book: no book found for ".$id);
 		$app->notFound();
@@ -1233,7 +1233,7 @@ function title_forbidden($book_details) {
 		if (!empty($user['languages'])) {
 			$lang_found = false;
 			foreach ($book_details['langcodes'] as $langcode) {
-				if ($langcode->lang_code === $$user['languages']) {
+				if ($langcode === $user['languages']) {
 					$lang_found = true;					
 					break;
 				}

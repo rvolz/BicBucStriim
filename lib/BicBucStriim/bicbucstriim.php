@@ -890,7 +890,8 @@ class BicBucStriim {
 
 	/**
 	 * Find a single book, its authors, series, tags, formats and comment.
-	 * @param  int 		$id 	the Calibre book ID
+	 * @param  strings  lang 	the user's language code
+	 * @param  int 		id 		the Calibre book ID
 	 * @return array     		the book and its authors, series, tags, formats, and comment/description
 	 */
 	function titleDetails($lang, $id) {
@@ -942,6 +943,27 @@ class BicBucStriim {
 			'langcodes' => $langcodes,
 			'custom' => $customColumns);
 	}
+
+	/**
+	 * Find a single book, its tags and languages. Mainly used for restriction checks.
+	 * @param  int 		$id 	the Calibre book ID
+	 * @return array     		the book, its tags and languages
+	 */
+	function titleDetailsMini($id) {
+		$book = $this->title($id);
+		if (is_null($book)) return NULL;		
+		$tag_ids = $this->find('BookTagLink', 'select * from books_tags_link where book='.$id);
+		$tags = array();
+		foreach($tag_ids as $tid) {
+			$tag = $this->findOne('Tag', 'select * from tags where id='.$tid->tag);
+			array_push($tags, $tag);
+		}
+		$langcodes = $this->getLanguages($id);
+		return array('book' => $book, 
+			'tags' => $tags, 
+			'langcodes' => $langcodes);
+	}
+
 
 	# Add a new cc value. If the key already exists, combine the values with a string join.
 	function addCc($def, $value, $result) {
