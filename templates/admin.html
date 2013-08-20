@@ -1,6 +1,6 @@
 {% extends 'main.html' %}
 
-{% block pid %}id="padmin" data-ajax="false"{%endblock%}
+{% block pid %}id="padmin"{%endblock%}
 {% block content %}
 <h1>{{ page.glob.langa.admin_short }}</h1>
 
@@ -13,6 +13,11 @@
 	<li>
 		<a href="{{page.rot}}/admin/users/">
 			<h2>{{page.glob.langa.admin_users}}</h2>
+		</a>
+	</li>
+		<li>
+		<a href="{{page.rot}}/admin/idtemplates/">
+			<h2>{{page.glob.langa.admin_idtemplates}}</h2>
 		</a>
 	</li>
 	<li>

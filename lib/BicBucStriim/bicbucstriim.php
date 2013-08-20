@@ -78,6 +78,8 @@ class BicBucStriim {
 		$this->mydb->exec('create unique index users_names on users(username)');		
 		$mdp = password_hash('admin', PASSWORD_BCRYPT);
 		$this->mydb->exec('insert into users (username, password) values ("admin", "'.$mdp.'")');		
+		$this->mydb->exec('create table idtemplates (name varchar(256),val varchar(256))');   
+		$this->mydb->exec('create unique index idtemplates_names on idtemplates(name)');
 		$this->mydb = null;
 	}
 
@@ -149,7 +151,8 @@ class BicBucStriim {
 		$this->mydb->exec('create unique index users_names on users(username)');		
 		$mdp = password_hash('admin', PASSWORD_BCRYPT);
 		$this->mydb->exec('insert into users (username, password) values ("admin", "'.$mdp.'")');		
-		
+		$this->mydb->exec('create table idtemplates (name varchar(256), val varchar(256), label varchar(256))');   
+		$this->mydb->exec('create unique index idtemplates_names on idtemplates(name)');
 		$this->mydb->exec('update configs set val=\'3\' where name=\'db_version\'');
 	}
 
@@ -220,7 +223,7 @@ class BicBucStriim {
 	}
 
 	/**
-	 * Update an exisiting user account. The username cannot be changed.
+	 * Update an existing user account. The username cannot be changed.
 	 * @param $userid integer 
 	 * @param $password string new clear text password or old encrypted password
 	 * @param $languages string comma-delimited set of language identifiers
@@ -253,7 +256,82 @@ class BicBucStriim {
 		}
 	}
 	
+	/**
+	 * Find all ID templates in the settings DB
+	 * @return array id templates
+	 */
+	function idTemplates() {
+		return $this->sfind('IdTemplate','select * from idtemplates');	
+	}
 
+	/**
+	 * Find a specific ID template in the settings DB
+	 * @param string name 	template name
+	 * @return 				IdTemplate or null
+	 */
+	function idTemplate($name) {
+		$templates = $this->sfind('IdTemplate','select * from idtemplates where name = "'.$name.'"');
+		if (count($templates) > 0)
+			return $templates[0];
+		else
+			return null;
+	}
+
+	/**
+	 * Add a new ID template
+	 * @param string name 		unique template name
+	 * @param string template 	URL template
+	 * @param string label 		display label 
+	 * @return template record or null if there was an error
+	 */
+	function addIdTemplate($name, $template, $label) {
+		try {
+			$this->mydb->exec('insert into idtemplates (name, val, label) values ("'.$name.'", "'.$template.'", "'.$label.'")');   				
+			$templates = $this->sfind('IdTemplate','select * from idtemplates where name = "'.$name.'"');	
+			return $templates[0];
+		} catch (PDOException $e) {			
+			#print_r($e);
+			return null;
+		}		
+	}
+	
+	/**
+	 * Delete an ID template from the database
+	 * @param string name 	template namne
+	 * @return true if template was deleted else false
+	 */
+	function deleteIdTemplate($name) {
+		$nr = $this->mydb->exec('delete from idtemplates where name = "'.$name.'"');   	
+		return ($nr > 0);
+	}
+
+
+	/**
+	 * Update an existing ID template. The name cannot be changed.
+	 * @param string name 		template name
+	 * @param string template 	URL template
+	 * @param string label 		display label 
+	 * @return updated template or null if there was an error
+	 */
+	function changeIdTemplate($name, $template, $label) {
+		$templates = $this->sfind('IdTemplate','select * from idtemplates where name = "'.$name.'"');
+		if (count($templates) > 0) {
+			try {
+				$sql = 'UPDATE idtemplates SET val = :template, label = :label WHERE name = :name';
+				$stmt = $this->mydb->prepare($sql);
+				$stmt->bindParam(':template', $template);
+				$stmt->bindParam(':name', $name);
+				$stmt->bindParam(':label', $label);
+				$stmt->execute(); 
+				$templates = $this->sfind('IdTemplate','select * from idtemplates where name = "'.$name.'"');
+				return $templates[0];
+			} catch (PDOException $e) {
+				return null; 
+			}
+		} else {
+			return null;
+		}
+	}
 
 	############# Calibre Library functions ################
 
@@ -642,6 +720,19 @@ class BicBucStriim {
 	}
 
 	/**
+	 * Find all ID types in the Calibre identifiers table
+	 * @return array id type names
+	 */
+	function idTypes() {
+		$stmt = $this->calibre->query('select distinct type from identifiers');
+		$this->last_error = $stmt->errorCode();
+		$items = $stmt->fetchAll();
+		$stmt->closeCursor();	
+		return $items;
+	}
+
+
+	/**
 	 * Return a list of all languages
 	 */
 	function languages() {
@@ -889,10 +980,10 @@ class BicBucStriim {
 	}
 
 	/**
-	 * Find a single book, its authors, series, tags, formats and comment.
+	 * Find a single book plus all kinds of details. 
 	 * @param  strings  lang 	the user's language code
 	 * @param  int 		id 		the Calibre book ID
-	 * @return array     		the book and its authors, series, tags, formats, and comment/description
+	 * @return array     		the book, its authors, series, tags, formats, languages, ids and comment.
 	 */
 	function titleDetails($lang, $id) {
 		$book = $this->title($id);
@@ -914,7 +1005,7 @@ class BicBucStriim {
 		foreach($tag_ids as $tid) {
 			$tag = $this->findOne('Tag', 'select * from tags where id='.$tid->tag);
 			array_push($tags, $tag);
-		}
+		}		
 		$langcodes = $this->getLanguages($id);
 		if (extension_loaded('intl')) {
 			$langtexts = array();
@@ -928,6 +1019,7 @@ class BicBucStriim {
 		}
 		$formats = $this->find('Data', 'select * from data where book='.$id);
 		$comment = $this->findOne('Comment', 'select * from comments where book='.$id);
+		$ids = $this->find('Identifier', 'select * from identifiers where book='.$id);
 		if (is_null($comment))
 			$comment_text = '';
 		else
@@ -941,7 +1033,8 @@ class BicBucStriim {
 			'comment' => $comment_text, 
 			'language' => $language,
 			'langcodes' => $langcodes,
-			'custom' => $customColumns);
+			'custom' => $customColumns,
+			'ids' => $ids);
 	}
 
 	/**

@@ -24,11 +24,13 @@ class Series extends Item {}
 class SeriesBook extends Item {}
 class Tag extends Item {}
 class TagBook extends Item {}
+class Identifier extends Item {}
 
 
 # Confiuration items in the BBS DB
 class Config extends Item{}
 class User extends Item{}
+class IdTemplate extends Item{}
 
 class Utilities {
 	/**

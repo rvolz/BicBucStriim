@@ -141,6 +141,9 @@ $app->get('/', 'main');
 $app->get('/admin/', 'admin');
 $app->get('/admin/configuration/', 'admin_configuration');
 $app->post('/admin/configuration/', 'admin_change_json');
+$app->get('/admin/idtemplates/', 'admin_get_idtemplates');
+$app->put('/admin/idtemplates/:id/', 'admin_modify_idtemplate');
+$app->delete('/admin/idtemplates/:id/', 'admin_clear_idtemplate');
 $app->get('/admin/users/', 'admin_get_users');
 $app->post('/admin/users/', 'admin_add_user');
 $app->get('/admin/users/:id/', 'admin_get_user');
@@ -267,6 +270,88 @@ function admin_configuration() {
 	$app->render('admin_configuration.html',array(
 		'page' => mkPage(getMessageString('admin')),
 		'isadmin' => is_admin()));
+}
+
+/**
+ * Generate the ID templates page -> GET /admin/idtemplates/
+ */
+function admin_get_idtemplates() {
+	global $app;
+
+	$idtemplates = $app->bbs->idTemplates();
+	$idtypes = $app->bbs->idTypes();
+	$ids2add = array();
+	foreach ($idtypes as $idtype) {
+		if (empty($idtemplates)) {
+			array_push($ids2add, $idtype['type']);
+		} else {
+			foreach ($idtemplates as $idtemplate) {
+				$found = false;
+				if ($idtype['type'] === $idtemplate->name) {
+					$found = true;
+					break;
+				}
+				if (!$found)
+					array_push($ids2add, $idtype['type']);
+			}		
+		}
+	}
+	foreach ($ids2add as $id2add) {
+		$ni = new IdTemplate();
+		$ni->name = $id2add;
+		$ni->val = '';
+		$ni->label = $id2add;
+		array_push($idtemplates, $ni);
+	}
+	$app->getLog()->debug('admin_get_idtemplates '.var_export($idtemplates, true));
+	$app->render('admin_idtemplates.html',array(
+		'page' => mkPage(getMessageString('admin_idtemplates')),
+		'templates' => $idtemplates,
+		'isadmin' => is_admin()));
+}
+
+function admin_modify_idtemplate($id) {
+	global $app;
+
+	$template_data = $app->request()->put();
+	$app->getLog()->debug('admin_modify_idtemplate: '.var_export($template_data, true));	
+	$template = $app->bbs->idTemplate($id);
+	if (is_null($template))
+		$ntemplate = $app->bbs->addIdTemplate($id, $template_data['url'], $template_data['label']);
+	else
+		$ntemplate = $app->bbs->changeIdTemplate($id, $template_data['url'], $template_data['label']);
+	$resp = $app->response();
+	if (!is_null($ntemplate)) {
+		$resp->status(200);
+		$msg = getMessageString('admin_modified');
+	} else {
+		$resp->status(500);
+		$msg = getMessageString('admin_modify_error');
+	}
+	$app->getLog()->debug('admin_modify_idtemplate 2: '.var_export($ntemplate, true));	
+	$answer = json_encode(array('template' => $ntemplate, 'msg' => $msg));
+	$resp->header('Content-type','application/json');
+	$resp->header('Content-Length',strlen($answer));
+	$resp->body($answer);	
+}
+
+function admin_clear_idtemplate($id) {
+	global $app;
+
+	$app->getLog()->debug('admin_clear_idtemplate: '.var_export($id, true));	
+	$success = $app->bbs->deleteIdTemplate($id);
+	$resp = $app->response();
+	if ($success) {
+		$resp->status(200);
+		$msg = getMessageString('admin_modified');
+	} else {
+		$resp->status(500);
+		$msg = getMessageString('admin_modify_error');
+	}
+	$answer = json_encode(array('msg' => $msg));
+	$resp->header('Content-type','application/json');
+	$resp->header('Content-Length',strlen($answer));
+	$resp->body($answer);
 }
 
 /**
@@ -593,8 +678,16 @@ function title($id) {
 		$app->notFound();
 		return;
 	}	
-	$ccs = $app->bbs->customColumns($id);
-	sort($ccs);
+	// Show ID links only if there are templates and ID data
+	$idtemplates = $app->bbs->idTemplates();
+	$id_tmpls = array();
+	if (count($idtemplates) > 0 && count($details['ids']) > 0) {
+		$show_idlinks = true;
+		foreach ($idtemplates as $idtemplate) {
+			$id_tmpls[$idtemplate->name] = array($idtemplate->val, $idtemplate->label);
+		}
+	} else 
+		$show_idlinks = false;
 	$kindle_format = ($globalSettings[KINDLE] == 1) ? $bbs->titleGetKindleFormat($id): NULL;
 	$app->render('title_detail.html',
 		array('page' => mkPage(getMessageString('book_details')), 
@@ -606,7 +699,10 @@ function title($id) {
 			'formats'=>$details['formats'], 
 			'comment' => $details['comment'],
 			'language' => $details['language'],
-			'ccs' => $ccs,
+			'ccs' => (count($details['custom']) > 0 ? sort($details['custom']) : null),
+			'show_idlinks' => $show_idlinks,
+			'ids' => $details['ids'],
+			'id_templates' => $id_tmpls,
 			'kindle_format' => $kindle_format,
 			'kindle_from_email' => $globalSettings[KINDLE_FROM_EMAIL],
 			'protect_dl' => false)

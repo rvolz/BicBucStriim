@@ -1,0 +1,37 @@
+{% extends 'main.html' %}
+
+{% block pid %}id="padmin_idtemplates" data-ajax="false"{%endblock%}
+{% block content %}
+
+<header>
+	<h1>{{ page.glob.langa.admin_idtemplates }}</h1>
+</header>
+{% include "flash_messages.html" %}
+
+<p>{{page.glob.langa.admin_idtemplates_legend|raw}}</p>
+<ul id="idtemplates" data-role="listview" data-split-icon="delete" data-inset="true">
+{% for template in templates %}
+	<li>
+		<a class="template"  data-template="{{template.name}}">
+			<h2 class="template-name">{{template.name}}</h2>
+			<p><span class="template-label">{{template.label}}</span>: <span class="template-uri">{{template.val|raw}}</span></p>
+		</a>
+		<a class="idtemplate_clear" href="#" data-template="{{template.name}}" data-proot="{{page.rot}}">
+			{{page.glob.langa.admin_idtemplate_clear}}
+		</a>
+	</li>
+{% endfor %}
+</ul>
+<div id="edit" data-role="popup" data-theme="e">
+	<form id="templateform" data-proot="{{page.rot}}">
+		<h3>{{page.glob.langa.admin_idtemplate}}</h3>
+		<label for="name" class="ui-hidden-accessible">{{page.glob.langa.admin_idtemplate_name}}</label>
+		<input name="name" id="name" value="" data-theme="e" type="text" disabled="true" />
+		<label for="label" class="ui-hidden-accessible">{{page.glob.langa.admin_idtemplate_label}}</label>
+		<input name="label" id="label" value="" placeholder="{{page.glob.langa.admin_idtemplate_label}}" data-theme="e" type="text"/>
+		<label for="template" class="ui-hidden-accessible">{{page.glob.langa.admin_idtemplate_template}}</label>
+		<input name="template" id="template" value="" placeholder="{{page.glob.langa.admin_idtemplate_template}}" data-theme="e" type="url"/>
+		<button type="submit" data-theme="e" data-icon="check">{{page.glob.langa.save}}</button>
+	</form>
+</div>
+{% endblock %}

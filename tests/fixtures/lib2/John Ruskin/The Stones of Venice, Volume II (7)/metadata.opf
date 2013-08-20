@@ -5,8 +5,11 @@
         <dc:identifier opf:scheme="uuid" id="uuid_id">6e5dad73-240a-4228-bb4f-8955d9254fc4</dc:identifier>
         <dc:title>The Stones of Venice, Volume II</dc:title>
         <dc:creator opf:file-as="Ruskin, John" opf:role="aut">John Ruskin</dc:creator>
-        <dc:contributor opf:file-as="calibre" opf:role="bkp">calibre (0.9.29) [http://calibre-ebook.com]</dc:contributor>
+        <dc:contributor opf:file-as="calibre" opf:role="bkp">calibre (0.9.43) [http://calibre-ebook.com]</dc:contributor>
         <dc:date>2012-06-22T08:20:04+00:00</dc:date>
+        <dc:identifier opf:scheme="TEST1">venice1</dc:identifier>
+        <dc:identifier opf:scheme="TEST3">venice3</dc:identifier>
+        <dc:identifier opf:scheme="TEST2">venice2</dc:identifier>
         <dc:language>eng</dc:language>
         <dc:subject>Venice</dc:subject>
         <dc:subject>Italy</dc:subject>
@@ -29,6 +32,6 @@
         <meta name="calibre:user_metadata:#col11" content="{&quot;is_category&quot;: false, &quot;#extra#&quot;: null, &quot;kind&quot;: &quot;field&quot;, &quot;is_custom&quot;: true, &quot;is_csp&quot;: false, &quot;colnum&quot;: 16, &quot;column&quot;: &quot;value&quot;, &quot;rec_index&quot;: 34, &quot;search_terms&quot;: [&quot;#col11&quot;], &quot;link_column&quot;: &quot;value&quot;, &quot;is_multiple2&quot;: {}, &quot;is_multiple&quot;: null, &quot;datatype&quot;: &quot;composite&quot;, &quot;#value#&quot;: &quot;The Stones of Venice, Volume II:John Ruskin&quot;, &quot;category_sort&quot;: &quot;value&quot;, &quot;table&quot;: &quot;custom_column_16&quot;, &quot;is_editable&quot;: true, &quot;label&quot;: &quot;col11&quot;, &quot;display&quot;: {&quot;composite_template&quot;: &quot;{title}:{author}&quot;, &quot;contains_html&quot;: false, &quot;make_category&quot;: false, &quot;composite_sort&quot;: &quot;text&quot;, &quot;use_decorations&quot;: 0}, &quot;name&quot;: &quot;Col11&quot;}"/>
     </metadata>
     <guide>
-        <reference href="cover.jpg" type="cover" title="Coverbild"/>
+        <reference href="cover.jpg" title="Coverbild" type="cover"/>
     </guide>
 </package>

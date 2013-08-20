@@ -1,4 +1,80 @@
 
+// Admin ID templates management 
+$(document).on('pageinit', '#padmin_idtemplates', function() {
+
+	// Initiate the template handling via click
+	$('.template').on('click', function(){
+		var name = $(this).find('h2.template-name').text();
+		var label = $(this).find('span.template-label').text();
+		var url = $(this).find('span.template-uri').text();
+		$('#edit').popup();	
+		$('#edit #name').val(name);
+		$('#edit #label').val(label);
+		$('#edit #template').val(url);
+		$('#edit').popup('open');		
+		return false;
+	});
+
+
+	// Initiate the additon of a user handling via click
+	$('#templateform').on('submit', function(event) {
+		event.preventDefault();
+		var template = {
+			name: $('#name').val(),
+			label: $('#label').val(),
+			url: $('#template').val()
+		};
+		var root = $(this).data('proot');
+		var jh = $.ajax({
+			url: root+'/admin/idtemplates/'+template.name,
+			type: 'PUT',
+			async: false,
+			data: template,
+			success: function(data) {
+				$('#edit').popup('close');
+				var tmpl = $('ul#idtemplates li a.template[data-template|='+data.template.name+']');
+				$(tmpl).find('span.template-uri').text(data.template.val);
+				$(tmpl).find('span.template-label').text(data.template.label);
+				$('ul#idtemplates').listview('refresh');
+				$('div#flash').empty().append('<p class="success">'+data.msg+'</p>');
+				$('#padmin_idtemplates').trigger('change');
+			},
+			error: function(data) {
+				$('#edit').popup('close');
+				$('div#flash').empty().append('<p class="error">'+data.msg+'</p>');
+				$('#padmin_idtemplates').trigger('change');		
+			}
+		});		
+		return false;
+	});
+
+	// Initiate the delete user handling via click
+	$('.idtemplate_clear').on('click', function(){
+		var template = $(this).data('template');
+		var root = $(this).data('proot');
+		var jh = $.ajax({
+			url: root+'/admin/idtemplates/'+template,
+			type: 'DELETE',
+			async: false,
+			success: function(data) {
+				var tmpl = $('ul#idtemplates li a.template[data-template|='+template+']');
+				$(tmpl).find('span.template-uri').text('');
+				$(tmpl).find('span.template-label').text(template);
+				$('ul#idtemplates').listview('refresh');
+				$('div#flash').empty().append('<p class="success">'+data.msg+'</p>');
+				$('#padmin_idtemplates').trigger('change');
+			},
+			error: function(data) {
+				$('div#flash').empty().append('<p class="error">'+data.msg+'</p>');
+				$('#padmin_idtemplates').trigger('change');		
+			}
+		});
+		return false;
+	});
+
+});
+
+
 // Admin user management - user list
 $(document).on('pageinit', '#padmin_users', function() {
 
