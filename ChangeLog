@@ -1,5 +1,6 @@
 2013-08-XX Version 1.2.0-𝛂
 
+* Added ID links to title details and link management to admin section, issue #60
 * Add book languages to the listviews and title details page, issue #56
 * The series index number is now displayed in the series details screen, issue #58
 * Dropped download protection and added login system, issue #47
