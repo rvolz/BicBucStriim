@@ -54,7 +54,9 @@ class LoginMiddleware extends \Slim\Middleware {
                 $app->halt(401,'Please authenticate');
             } else {
                 $app->getLog()->debug('login: redirecting to login');
-                $app->redirect($request->getRootUri().'/login/');
+                // app->redirect not useable in middleware
+                $app->response->status(302);
+                $app->response->headers->set('Location', $app->request->getRootUri().'/login/');
             }
         }
     }

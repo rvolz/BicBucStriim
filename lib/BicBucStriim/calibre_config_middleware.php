@@ -30,18 +30,29 @@ class CalibreConfigMiddleware extends \Slim\Middleware {
 			# 'After installation' scenario: here is a config DB but no valid connection to Calibre
 			if (empty($globalSettings[$this->calibreDir])) {
 				$app->getLog()->warn('check_config: Calibre library path not configured.');					
-				if ($app->request->getResourceUri() != '/admin/configuration/')
-					$app->redirect($app->request->getRootUri().'/admin/configuration/');
+				if ($app->request->getResourceUri() != '/admin/configuration/') {
+					// app->redirect not useable in middleware
+					$app->response->status(302);
+					$app->response->header('Location', $app->request->getRootUri().'/admin/configuration/');
+				} else {
+					$this->next->call();		
+				}
 			} else {
 				# Setup the connection to the Calibre metadata db
 				$clp = $globalSettings[$this->calibreDir].'/metadata.db';
 				$app->bbs->openCalibreDB($clp);
 				if (!$app->bbs->libraryOk()) {
 					$app->getLog()->error('check_config: Exception while opening metadata db '.$clp.'. Showing admin page.');	
-				} 
+					// app->redirect not useable in middleware
+					$app->response->status(302);
+					$app->response->header('Location', $app->request->getRootUri().'/admin/configuration/');
+				} else {
+					$this->next->call();		
+				}
 			}				
+		}  else {
+			$this->next->call();
 		}
-		$this->next->call();
 	}
 }
 ?>

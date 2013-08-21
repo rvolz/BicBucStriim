@@ -50,6 +50,7 @@ define('DISPLAY_APP_NAME', 'display_app_name');
 $app = new \Slim\Slim(array(
 	'view' => new \Slim\Views\Twig(),
 	#'mode' => 'production',
+	#'mode' => 'debug',
 	'mode' => 'development',
 ));
 
