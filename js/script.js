@@ -156,7 +156,7 @@ $(document).on('pageinit', '#padmin_users', function() {
 				$('#padmin_user').trigger('change');
 			},
 			error: function(jqXHR, responseText, errorThrown) {
-				$('div#flash').empty().append('<p class="error">'+responseText+'</p>');
+				$('div#flash').empty().append('<p class="error">'+jqXHR.responseText+'</p>');
 				$('#padmin_user').trigger('change');		
 			}
 		});
