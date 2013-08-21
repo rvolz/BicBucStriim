@@ -256,7 +256,7 @@ function admin() {
 	global $app;
 
 	$app->render('admin.html',array(
-		'page' => mkPage(getMessageString('admin')),
+		'page' => mkPage(getMessageString('admin'), 0, 1),
 		'isadmin' => is_admin()));
 }
 
@@ -268,7 +268,7 @@ function admin_configuration() {
 	global $app;
 
 	$app->render('admin_configuration.html',array(
-		'page' => mkPage(getMessageString('admin')),
+		'page' => mkPage(getMessageString('admin'), 0, 2),
 		'isadmin' => is_admin()));
 }
 
@@ -305,7 +305,7 @@ function admin_get_idtemplates() {
 	}
 	$app->getLog()->debug('admin_get_idtemplates '.var_export($idtemplates, true));
 	$app->render('admin_idtemplates.html',array(
-		'page' => mkPage(getMessageString('admin_idtemplates')),
+		'page' => mkPage(getMessageString('admin_idtemplates'), 0, 2),
 		'templates' => $idtemplates,
 		'isadmin' => is_admin()));
 }
@@ -364,7 +364,7 @@ function admin_get_users() {
 
 	$users = $app->bbs->users();
 	$app->render('admin_users.html',array(
-		'page' => mkPage(getMessageString('admin_users')),
+		'page' => mkPage(getMessageString('admin_users'), 0, 2),
 		'users' => $users,
 		'isadmin' => is_admin()));
 }
@@ -394,7 +394,7 @@ function admin_get_user($id) {
 	array_unshift($tags, $nt);
 	$app->getLog()->debug('admin_get_user: '.var_export($user, true));	
 	$app->render('admin_user.html',array(
-		'page' => mkPage(getMessageString('admin_users')),
+		'page' => mkPage(getMessageString('admin_users'), 0, 3),
 		'user' => $user,
 		'languages' => $languages,
 		'tags' => $tags,
@@ -562,7 +562,7 @@ function admin_change_json() {
 		}
 		$app->getLog()->debug('admin_change: ended');	
 		$app->render('admin_configuration.html',array(
-			'page' => mkPage(getMessageString('admin')), 
+			'page' => mkPage(getMessageString('admin'), 0, 2), 
 			'messages' => array(getMessageString('changes_saved')),
 			'isadmin' => true,
 			));	
@@ -599,7 +599,7 @@ function admin_check_version() {
 		}		
 	}
 	$app->render('admin_version.html',array(
-			'page' => mkPage(getMessageString('admin_check_version')), 
+			'page' => mkPage(getMessageString('admin_check_version'), 0, 2), 
 			'versionClass' => $versionClass,
 			'versionAnswer' => $versionAnswer,
 			'isadmin' => true,
@@ -615,7 +615,7 @@ function main() {
 	$filter = getFilter();
 	$books = $app->bbs->last30Books($globalSettings['lang'], $globalSettings[PAGE_SIZE], $filter);
 	$app->render('index_last30.html',array(
-		'page' => mkPage(getMessageString('dl30'),1), 
+		'page' => mkPage(getMessageString('dl30'),1, 1), 
 		'books' => $books));	
 }
 
@@ -659,7 +659,7 @@ function titlesSlice($index=0) {
 	} else
 		$tl = $app->bbs->titlesSlice($globalSettings['lang'], $index,$globalSettings[PAGE_SIZE], $filter);
 	$app->render('titles.html',array(
-		'page' => mkPage(getMessageString('titles'),2), 
+		'page' => mkPage(getMessageString('titles'),2, 1), 
 		'url' => 'titleslist',
 		'books' => $tl['entries'],
 		'curpage' => $tl['page'],
@@ -695,7 +695,7 @@ function title($id) {
 		$show_idlinks = false;
 	$kindle_format = ($globalSettings[KINDLE] == 1) ? $bbs->titleGetKindleFormat($id): NULL;
 	$app->render('title_detail.html',
-		array('page' => mkPage(getMessageString('book_details')), 
+		array('page' => mkPage(getMessageString('book_details'), 2, 2), 
 			'calibre_dir' => $calibre_dir,
 			'book' => $details['book'], 
 			'authors' => $details['authors'],
@@ -850,7 +850,7 @@ function authorsSlice($index=0) {
 	else
 		$tl = $app->bbs->authorsSlice($index,$globalSettings[PAGE_SIZE]);
 	$app->render('authors.html',array(
-		'page' => mkPage(getMessageString('authors'),3), 
+		'page' => mkPage(getMessageString('authors'),3, 1), 
 		'url' => 'authorslist',
 		'authors' => $tl['entries'],
 		'curpage' => $tl['page'],
@@ -871,7 +871,7 @@ function author($id) {
 		$app->notFound();		
 	}
 	$app->render('author_detail.html',array(
-		'page' => mkPage(getMessageString('author_details')), 
+		'page' => mkPage(getMessageString('author_details'), 3, 2), 
 		'author' => $details['author'], 
 		'books' => $details['books']));
 }
@@ -894,7 +894,7 @@ function authorDetailsSlice($id, $index=0) {
 		$app->notFound();
 	}
 	$app->render('author_detail.html',array(
-		'page' => mkPage(getMessageString('author_details')),
+		'page' => mkPage(getMessageString('author_details'), 3, 2),
 		'url' => 'authors/'.$id,	
 		'author' => $tl['author'],
 		'books' => $tl['entries'],
@@ -916,7 +916,7 @@ function seriesSlice($index=0) {
 	} else
 		$tl = $app->bbs->seriesSlice($index, $globalSettings[PAGE_SIZE]);
 	$app->render('series.html',array(
-		'page' => mkPage(getMessageString('series'),5), 
+		'page' => mkPage(getMessageString('series'),5, 1), 
 		'url' => 'serieslist',
 		'series' => $tl['entries'],
 		'curpage' => $tl['page'],
@@ -939,7 +939,7 @@ function series($id) {
 		$app->notFound();		
 	}
 	$app->render('series_detail.html',array(
-		'page' => mkPage(getMessageString('series_details')), 
+		'page' => mkPage(getMessageString('series_details'), 5, 3), 
 		'series' => $details['series'], 
 		'books' => $details['books']));
 }
@@ -962,7 +962,7 @@ function seriesDetailsSlice ($id, $index=0) {
 		$app->notFound();		
 	}
 	$app->render('series_detail.html',array(
-		'page' => mkPage(getMessageString('series_details')),
+		'page' => mkPage(getMessageString('series_details'), 5, 2),
 		'url' => 'series/'.$id, 
 		'series' => $tl['series'], 
 		'books' => $tl['entries'],
@@ -981,7 +981,7 @@ function tagsSlice($index=0) {
 	else
 		$tl = $app->bbs->tagsSlice($index,$globalSettings[PAGE_SIZE]);
 	$app->render('tags.html',array(
-		'page' => mkPage(getMessageString('tags'),4), 
+		'page' => mkPage(getMessageString('tags'),4, 1), 
 		'url' => 'tagslist',
 		'tags' => $tl['entries'],
 		'curpage' => $tl['page'],
@@ -1000,7 +1000,7 @@ function tag($id) {
 		$app->notFound();		
 	}
 	$app->render('tag_detail.html',array(
-		'page' => mkPage(getMessageString('tag_details')), 
+		'page' => mkPage(getMessageString('tag_details'), 4, 3), 
 		'tag' => $details['tag'], 
 		'books' => $details['books']));
 }
@@ -1023,7 +1023,7 @@ function tagDetailsSlice ($id, $index=0) {
 		$app->notFound();		
 	}
 	$app->render('tag_detail.html',array(
-		'page' => mkPage(getMessageString('tag_details')),
+		'page' => mkPage(getMessageString('tag_details'), 4, 2),
 		'url' => 'tags/'.$id, 
 		'tag' => $tl['tag'], 
 		'books' => $tl['entries'],
@@ -1297,7 +1297,7 @@ function mkOpdsResponse($app, $content, $type) {
 }
 
 # Utility function to fill the page array
-function mkPage($subtitle='', $menu=0, $dialog=false) {
+function mkPage($subtitle='', $menu=0, $level=0) {
 	global $app, $globalSettings;
 
 	if ($subtitle == '') 
@@ -1312,7 +1312,7 @@ function mkPage($subtitle='', $menu=0, $dialog=false) {
 		'version' => $globalSettings['version'],
 		'glob' => $globalSettings,
 		'menu' => $menu,
-		'dialog' => $dialog,
+		'level' => $level,
 		'auth' => $auth,
 		'admin' => is_admin());
 	return $page;

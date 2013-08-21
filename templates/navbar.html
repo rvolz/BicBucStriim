@@ -27,10 +27,19 @@
 	</a>
 	{% endif %}
 	<h1>{{ page.title }}</h1>
-	{% if page.menu == 0 %}
-		<a  data-icon="back" data-rel="back" class="ui-btn-right">
-			{{ page.glob.langa.back }}
-		</a>
+	{% if page.auth %}
+		{% if page.menu == 1 %}
+			<a data-icon="gear" data-role="button" class="ui-btn-right" href="{{page.rot}}/logout/">
+				{{page.glob.langa.logout}}
+			</a>	
+		{% else %}
+			{% if page.level > 1 %}
+				<a  data-icon="back" data-rel="back" class="ui-btn-right">
+					{{ page.glob.langa.back }}
+				</a>
+			{% endif %}
+	{% endif %}
+
 	{% endif %}
 {% endif %}
 <div data-role="navbar">
@@ -62,7 +71,7 @@
 	  </li>       	  
 	</ul>
 </div>
-{% if page.menu >= 1 %}
+{% if page.level == 1 and page.menu >= 1 %}
 <form action="{{page.rot}}/search/" 
 			method="get" class="ui-bar-b">
 	<div data-role="fieldcontain" class="ui-hide-label">
