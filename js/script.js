@@ -4,8 +4,8 @@ $(document).on('pageinit', '#padmin_idtemplates', function() {
 
 	// Initiate the template handling via click
 	$('.template').on('click', function(){
-		var name = $(this).find('h2.template-name').text().trim();
-		var label = $(this).find('h2.template-name span.template-label').text();
+		var name = $(this).find('h2 span.template-name').text();
+		var label = $(this).find('h2 span.template-label').text();
 		var url = $(this).find('p.template-uri').text();
 		$('#edit').popup();	
 		$('#edit #name').val(name);
