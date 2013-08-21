@@ -285,22 +285,22 @@ function admin_get_idtemplates() {
 		if (empty($idtemplates)) {
 			array_push($ids2add, $idtype['type']);
 		} else {
+			$found = false;
 			foreach ($idtemplates as $idtemplate) {
-				$found = false;
 				if ($idtype['type'] === $idtemplate->name) {
 					$found = true;
 					break;
 				}
-				if (!$found)
-					array_push($ids2add, $idtype['type']);
 			}		
+			if (!$found)
+				array_push($ids2add, $idtype['type']);
 		}
 	}
 	foreach ($ids2add as $id2add) {
 		$ni = new IdTemplate();
 		$ni->name = $id2add;
 		$ni->val = '';
-		$ni->label = $id2add;
+		$ni->label = '';
 		array_push($idtemplates, $ni);
 	}
 	$app->getLog()->debug('admin_get_idtemplates '.var_export($idtemplates, true));
@@ -324,13 +324,14 @@ function admin_modify_idtemplate($id) {
 	if (!is_null($ntemplate)) {
 		$resp->status(200);
 		$msg = getMessageString('admin_modified');
+		$answer = json_encode(array('template' => $ntemplate, 'msg' => $msg));
+		$resp->header('Content-type','application/json');
 	} else {
 		$resp->status(500);
-		$msg = getMessageString('admin_modify_error');
+		$resp->header('Content-type','text/plain');
+		$answer = getMessageString('admin_modify_error');
 	}
-	$app->getLog()->debug('admin_modify_idtemplate 2: '.var_export($ntemplate, true));	
-	$answer = json_encode(array('template' => $ntemplate, 'msg' => $msg));
-	$resp->header('Content-type','application/json');
+	#$app->getLog()->debug('admin_modify_idtemplate 2: '.var_export($ntemplate, true));	
 	$resp->header('Content-Length',strlen($answer));
 	$resp->body($answer);	
 }
@@ -344,12 +345,13 @@ function admin_clear_idtemplate($id) {
 	if ($success) {
 		$resp->status(200);
 		$msg = getMessageString('admin_modified');
+		$answer = json_encode(array('msg' => $msg));
+		$resp->header('Content-type','application/json');
 	} else {
-		$resp->status(500);
-		$msg = getMessageString('admin_modify_error');
+		$resp->status(404);
+		$answer = getMessageString('admin_modify_error');
+		$resp->header('Content-type','text/plain');		
 	}
-	$answer = json_encode(array('msg' => $msg));
-	$resp->header('Content-type','application/json');
 	$resp->header('Content-Length',strlen($answer));
 	$resp->body($answer);
 }
@@ -412,12 +414,13 @@ function admin_add_user() {
 	if (isset($user) && !is_null($user)) {
 		$resp->status(200);
 		$msg = getMessageString('admin_modified');
+		$answer = json_encode(array('user' => $user, 'msg' => $msg));
+		$resp->header('Content-type','application/json');
 	} else {
 		$resp->status(500);
-		$msg = getMessageString('admin_modify_error');
+		$resp->header('Content-type','text/plain');
+		$answer = getMessageString('admin_modify_error');
 	}
-	$answer = json_encode(array('user' => $user, 'msg' => $msg));
-	$resp->header('Content-type','application/json');
 	$resp->header('Content-Length',strlen($answer));
 	$resp->body($answer);
 }
@@ -434,12 +437,13 @@ function admin_delete_user($id) {
 	if ($success) {
 		$resp->status(200);
 		$msg = getMessageString('admin_modified');
+		$answer = json_encode(array('msg' => $msg));
+		$resp->header('Content-type','application/json');
 	} else {
 		$resp->status(500);
-		$msg = getMessageString('admin_modify_error');
+		$resp->header('Content-type','text/plain');
+		$answer = getMessageString('admin_modify_error');
 	}
-	$answer = json_encode(array('msg' => $msg));
-	$resp->header('Content-type','application/json');
 	$resp->header('Content-Length',strlen($answer));
 	$resp->body($answer);
 }
@@ -458,12 +462,13 @@ function admin_modify_user($id) {
 	if (isset($user) && !is_null($user)) {
 		$resp->status(200);
 		$msg = getMessageString('admin_modified');
+		$answer = json_encode(array('user' => $user, 'msg' => $msg));
+		$resp->header('Content-type','application/json');
 	} else {
 		$resp->status(500);
-		$msg = getMessageString('admin_modify_error');
+		$resp->header('Content-type','text/plain');
+		$answer = getMessageString('admin_modify_error');
 	}
-	$answer = json_encode(array('user' => $user, 'msg' => $msg));
-	$resp->header('Content-type','application/json');
 	$resp->header('Content-Length',strlen($answer));
 	$resp->body($answer);
 }

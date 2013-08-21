@@ -4,9 +4,9 @@ $(document).on('pageinit', '#padmin_idtemplates', function() {
 
 	// Initiate the template handling via click
 	$('.template').on('click', function(){
-		var name = $(this).find('h2.template-name').text();
-		var label = $(this).find('span.template-label').text();
-		var url = $(this).find('span.template-uri').text();
+		var name = $(this).find('h2.template-name').text().trim();
+		var label = $(this).find('h2.template-name span.template-label').text();
+		var url = $(this).find('p.template-uri').text();
 		$('#edit').popup();	
 		$('#edit #name').val(name);
 		$('#edit #label').val(label);
@@ -16,7 +16,7 @@ $(document).on('pageinit', '#padmin_idtemplates', function() {
 	});
 
 
-	// Initiate the additon of a user handling via click
+	// Initiate the editing of a template via click
 	$('#templateform').on('submit', function(event) {
 		event.preventDefault();
 		var template = {
@@ -33,15 +33,15 @@ $(document).on('pageinit', '#padmin_idtemplates', function() {
 			success: function(data) {
 				$('#edit').popup('close');
 				var tmpl = $('ul#idtemplates li a.template[data-template|='+data.template.name+']');
-				$(tmpl).find('span.template-uri').text(data.template.val);
+				$(tmpl).find('p.template-uri').text(data.template.val);
 				$(tmpl).find('span.template-label').text(data.template.label);
 				$('ul#idtemplates').listview('refresh');
 				$('div#flash').empty().append('<p class="success">'+data.msg+'</p>');
 				$('#padmin_idtemplates').trigger('change');
 			},
-			error: function(data) {
+			error: function(jqXHR, responseText, errorThrown) {
 				$('#edit').popup('close');
-				$('div#flash').empty().append('<p class="error">'+data.msg+'</p>');
+				$('div#flash').empty().append('<p class="error">'+responseText+'</p>');
 				$('#padmin_idtemplates').trigger('change');		
 			}
 		});		
@@ -58,14 +58,14 @@ $(document).on('pageinit', '#padmin_idtemplates', function() {
 			async: false,
 			success: function(data) {
 				var tmpl = $('ul#idtemplates li a.template[data-template|='+template+']');
-				$(tmpl).find('span.template-uri').text('');
-				$(tmpl).find('span.template-label').text(template);
+				$(tmpl).find('p.template-uri').text('');
+				$(tmpl).find('span.template-label').text('');
 				$('ul#idtemplates').listview('refresh');
 				$('div#flash').empty().append('<p class="success">'+data.msg+'</p>');
 				$('#padmin_idtemplates').trigger('change');
 			},
-			error: function(data) {
-				$('div#flash').empty().append('<p class="error">'+data.msg+'</p>');
+			error: function(jqXHR, responseText, errorThrown) {
+				$('div#flash').empty().append('<p class="error">'+jqXHR.responseText+'</p>');
 				$('#padmin_idtemplates').trigger('change');		
 			}
 		});
@@ -155,8 +155,8 @@ $(document).on('pageinit', '#padmin_users', function() {
 				$('div#flash').empty().append('<p class="success">'+data.msg+'</p>');
 				$('#padmin_user').trigger('change');
 			},
-			error: function(data) {
-				$('div#flash').empty().append('<p class="error">'+data.msg+'</p>');
+			error: function(jqXHR, responseText, errorThrown) {
+				$('div#flash').empty().append('<p class="error">'+responseText+'</p>');
 				$('#padmin_user').trigger('change');		
 			}
 		});
