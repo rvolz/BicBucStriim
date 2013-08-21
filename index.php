@@ -138,18 +138,18 @@ $app->add(new \OwnConfigMiddleware($knownConfigs));
 ###### Init routes for production
 $app->notFound('myNotFound');
 $app->get('/', 'main');
-$app->get('/admin/', 'admin');
-$app->get('/admin/configuration/', 'admin_configuration');
-$app->post('/admin/configuration/', 'admin_change_json');
-$app->get('/admin/idtemplates/', 'admin_get_idtemplates');
-$app->put('/admin/idtemplates/:id/', 'admin_modify_idtemplate');
-$app->delete('/admin/idtemplates/:id/', 'admin_clear_idtemplate');
-$app->get('/admin/users/', 'admin_get_users');
-$app->post('/admin/users/', 'admin_add_user');
-$app->get('/admin/users/:id/', 'admin_get_user');
-$app->put('/admin/users/:id/', 'admin_modify_user');
-$app->delete('/admin/users/:id/', 'admin_delete_user');
-$app->get('/admin/version/', 'admin_check_version');
+$app->get('/admin/', 'check_admin', 'admin');
+$app->get('/admin/configuration/', 'check_admin', 'admin_configuration');
+$app->post('/admin/configuration/', 'check_admin', 'admin_change_json');
+$app->get('/admin/idtemplates/', 'check_admin', 'admin_get_idtemplates');
+$app->put('/admin/idtemplates/:id/', 'check_admin', 'admin_modify_idtemplate');
+$app->delete('/admin/idtemplates/:id/', 'check_admin', 'admin_clear_idtemplate');
+$app->get('/admin/users/', 'check_admin', 'admin_get_users');
+$app->post('/admin/users/', 'check_admin', 'admin_add_user');
+$app->get('/admin/users/:id/', 'check_admin', 'admin_get_user');
+$app->put('/admin/users/:id/', 'check_admin', 'admin_modify_user');
+$app->delete('/admin/users/:id/', 'check_admin', 'admin_delete_user');
+$app->get('/admin/version/', 'check_admin', 'admin_check_version');
 $app->get('/authors/:id/:page/', 'authorDetailsSlice');
 $app->get('/authorslist/:id/', 'authorsSlice');
 $app->get('/login/', 'show_login');
@@ -248,6 +248,20 @@ function logout() {
 	$app->render('logout.html', array(
 		'page' => mkPage(getMessageString('logout')))); 
 }
+
+/**
+ * Check admin rights and redirect if necessary
+ */
+function check_admin() {
+	global $app;
+
+	if (!is_admin()) {
+		$app->render('error.html',array(
+			'page' => mkPage(getMessageString('error'), 0, 0),
+			'error' => getMessageString('error_no_access')));		
+	}
+}
+
 
 /**
  * Generate the admin page -> /admin/
