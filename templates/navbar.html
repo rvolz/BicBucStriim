@@ -42,10 +42,10 @@
 
 	{% endif %}
 {% endif %}
-<div data-role="navbar">
+<div data-role="navbar" data-theme="a">
 	<ul>		
 	  <li>
-	  	<a href="{{page.rot}}/" {% if page.menu == 1 %}class="ui-btn-active"{%endif%}>
+	  	<a href="{{page.rot}}/" data-theme="c" {% if page.menu == 1 %}class="ui-btn-active"{%endif%}>
 	  		{{page.glob.langa.home}}
 	  	</a>
 	  </li>
@@ -73,7 +73,7 @@
 </div>
 {% if page.level == 1 and page.menu >= 1 %}
 <form action="{{page.rot}}/search/" 
-			method="get" class="ui-bar-b">
+			method="get" class="ui-bar-a">
 	<div data-role="fieldcontain" class="ui-hide-label">
 		<label for="search">{{page.glob.langa.pagination_search_lbl}}</label>
 		<input type="search" name="search" id="search" value="{{search}}" 

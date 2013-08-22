@@ -46,7 +46,7 @@
 	      <div data-role="header" data-theme="a" class="ui-corner-top">
 	        <h1>{{page.glob.langa.send_to_kindle}}</h1>
 	      </div>
-	      <div data-role="content" data-theme="d" class="ui-corner-bottom ui-content">
+	      <div data-role="content" data-theme="a" class="ui-corner-bottom ui-content">
 	        <h4 class="ui-title">{{ page.glob.langa.presskey2 }}</h4>
 	        <p><em>{{kindle_from_email}}</em> {{ page.glob.langa.presskey3 }}</p>
 			<form action="{{page.rot}}/titles/{{book.id}}/kindle/{{kindle_format.name|url_encode()}}.{{kindle_format.format|lower}}" method="POST" id="ajax-form" data-ajax="false">
