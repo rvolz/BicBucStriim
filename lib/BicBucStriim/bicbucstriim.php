@@ -741,10 +741,10 @@ class BicBucStriim {
 	
 
 	/**
-	 * Return a list of all tags
+	 * Return a list of all tags, ordered by name
 	 */
 	function tags() {
-		return $this->find('Tag', 'select * from tags');
+		return $this->find('Tag', 'select * from tags order by name');
 	}
 	
 	/**
