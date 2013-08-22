@@ -709,7 +709,8 @@ function title($id) {
 		}
 	} else 
 		$show_idlinks = false;
-	$kindle_format = ($globalSettings[KINDLE] == 1) ? $bbs->titleGetKindleFormat($id): NULL;
+	$kindle_format = ($globalSettings[KINDLE] == 1) ? $app->bbs->titleGetKindleFormat($id): NULL;
+	$app->getLog()->debug('titleDetails custom columns: '.count($details['custom']));
 	$app->render('title_detail.html',
 		array('page' => mkPage(getMessageString('book_details'), 2, 2), 
 			'calibre_dir' => $calibre_dir,
@@ -720,7 +721,7 @@ function title($id) {
 			'formats'=>$details['formats'], 
 			'comment' => $details['comment'],
 			'language' => $details['language'],
-			'ccs' => (count($details['custom']) > 0 ? sort($details['custom']) : null),
+			'ccs' => (count($details['custom']) > 0 ? $details['custom'] : null),
 			'show_idlinks' => $show_idlinks,
 			'ids' => $details['ids'],
 			'id_templates' => $id_tmpls,

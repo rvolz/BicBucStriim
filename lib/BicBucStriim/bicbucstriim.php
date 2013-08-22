@@ -1078,7 +1078,7 @@ class BicBucStriim {
 	*								with name, type and value
 	*/
 	function customColumns($book_id){
-		$columns = $this->find('CustomColumns', 'select * from custom_columns');
+		$columns = $this->find('CustomColumns', 'select * from custom_columns order by name');
 		$ccs = array();
 		foreach ($columns as $column) {
 			$column_id = $column->id;
