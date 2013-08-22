@@ -101,9 +101,10 @@ function confdebug() {
 		'cookies.lifetime' => '1 day',
 		'cookies.secret_key' => 'b4924c3579e2850a6fad8597da7ad24bf43ab78e',
 	));
+	require 'vendor/DateTimeFileWriter.php';
 	$app->getLog()->setEnabled(true);
 	$app->getLog()->setLevel(\Slim\Log::DEBUG);
-	$app->getLog()->setWriter(new \Slim\Extras\Log\DateTimeFileWriter(array('path' => './data', 'name_format' => 'Y-m-d\.\l\o\g')));
+	$app->getLog()->setWriter(new \Slim\Extras\Log\DateTimeFileWriter(array('path' => './data', 'name_format' => 'Y-m-d')));
 	$app->getLog()->info($appname.' '.$appversion.': Running in debug mode.');
 }
 
