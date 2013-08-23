@@ -7,7 +7,11 @@
  * Licensed under MIT License, see LICENSE
  * 
  */ 
-require 'vendor/autoload.php';
+
+# Use this instead of the Composer autoload for PHP 5.2 compatibility
+# At least the PHP version check should run with PHP 5.2
+require_once 'vendor/twig/twig/lib/Twig/Autoloader.php';
+Twig_Autoloader::register();
 
 $loader = new Twig_Loader_Filesystem('templates');
 $twig = new Twig_Environment($loader, array());
