@@ -32,6 +32,10 @@ class Config extends Item{}
 class User extends Item{}
 class IdTemplate extends Item{}
 
+
+class Encryption extends Item{}
+class ConfigMailer extends Item{}
+
 class Utilities {
 	/**
 	 * Return the true path of a book. 

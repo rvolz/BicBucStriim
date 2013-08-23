@@ -96,6 +96,7 @@ task :package2 do |t|
     p.package_files.include("vendor/twig/twig/*.*")
     p.package_files.include("vendor/twig/twig/ext/**/*.*")
     p.package_files.include("vendor/twig/twig/lib/**/*.*")
+    p.package_files.include("vendor/swiftmailer/swiftmailer/lib/**/*.*")
     p.package_files.include("vendor/ircmaxell/password-compat/lib/**/*.*")
     p.package_files.include("templates/**/*.*")
     p.package_files.include("data/**/*.*")

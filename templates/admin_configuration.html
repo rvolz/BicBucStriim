@@ -32,6 +32,15 @@
 		<p>{{page.glob.langa.kindle_expl2}}</p>
 	</fieldset>
 	<fieldset data-role="fieldcontain">
+		<label for="mailer">{{page.glob.langa.admin_mailer}}</label>
+		<select name="mailer" id="mailer" value="{{page.glob.mailer}}">
+		{% for mailer in mailers %}
+			<option value="{{mailer.key}}" {%if page.glob.mailer == mailer.key %}selected="true"{% endif %}>{{mailer.text}}</option>
+		{% endfor %}
+		</select>
+		<p>{{page.glob.langa.admin_mailer_expl}}</p>					
+	</fieldset>
+	<fieldset data-role="fieldcontain">
 		<label for="thumb_gen_clipped">{{page.glob.langa.thumb_gen_clipped}}</label>
 		<select name="thumb_gen_clipped" id="thumb_gen_clipped" data-role="slider">
 			<option value="0" {% if page.glob.thumb_gen_clipped == "0" %}selected {%endif%}>

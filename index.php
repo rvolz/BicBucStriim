@@ -14,7 +14,8 @@ require_once 'lib/BicBucStriim/opds_generator.php';
 require_once 'lib/BicBucStriim/own_config_middleware.php';
 require_once 'lib/BicBucStriim/calibre_config_middleware.php';
 require_once 'lib/BicBucStriim/login_middleware.php';
-require_once 'vendor/email.php';
+#require_once 'vendor/email.php';
+require_once 'lib/BicBucStriim/mailer.php';
 
 # Allowed languages, i.e. languages with translations
 $allowedLangs = array('de','en','fr','nl');
@@ -23,7 +24,7 @@ $fallbackLang = 'en';
 # Application Name
 $appname = 'BicBucStriim';
 # App version
-$appversion = '1.2.0-𝛂';
+$appversion = '1.2.0-α';
 # Current DB schema version
 define('DB_SCHEMA_VERSION', '3');
 
@@ -45,6 +46,18 @@ define('KINDLE_FROM_EMAIL', 'kindle_from_email');
 define('PAGE_SIZE', 'page_size');
 # Displayed app name for page title
 define('DISPLAY_APP_NAME', 'display_app_name');
+# Kind of mail support used
+define('MAILER', 'mailer');
+# Name of SMTP server, if SMTP mailer is used
+define('SMTP_SERVER', 'smtp_server');
+# Port of SMTP server, if SMTP mailer is used
+define('SMTP_PORT', 'smtp_port');
+# SMTP user name, if SMTP mailer is used
+define('SMTP_USER', 'smtp_user');
+# SMTP password, if SMTP mailer is used
+define('SMTP_PASSWORD', 'smtp_password');
+# SMTP encryption, if SMTP mailer is used
+define('SMTP_ENCRYPTION', 'smtp_encryption');
 
 # Init app and routes
 $app = new \Slim\Slim(array(
@@ -127,9 +140,16 @@ $globalSettings[KINDLE_FROM_EMAIL] = '';
 $globalSettings[THUMB_GEN_CLIPPED] = 1;
 $globalSettings[PAGE_SIZE] = 30;
 $globalSettings[DISPLAY_APP_NAME] = $appname;
+$globalSettings[MAILER] = Mailer::MAIL;
+$globalSettings[SMTP_USER] = '';
+$globalSettings[SMTP_PASSWORD] = '';
+$globalSettings[SMTP_SERVER] = '';
+$globalSettings[SMTP_PORT] = 25;
+$globalSettings[SMTP_ENCRYPTION] = 0;
 
 $knownConfigs = array(CALIBRE_DIR, DB_VERSION, KINDLE, KINDLE_FROM_EMAIL, 
-	THUMB_GEN_CLIPPED, PAGE_SIZE, DISPLAY_APP_NAME);
+	THUMB_GEN_CLIPPED, PAGE_SIZE, DISPLAY_APP_NAME, MAILER, SMTP_SERVER,
+	SMTP_PORT, SMTP_USER, SMTP_PASSWORD, SMTP_ENCRYPTION);
 
 $bbs = new BicBucStriim();
 $app->bbs = $bbs;
@@ -146,6 +166,8 @@ $app->post('/admin/configuration/', 'check_admin', 'admin_change_json');
 $app->get('/admin/idtemplates/', 'check_admin', 'admin_get_idtemplates');
 $app->put('/admin/idtemplates/:id/', 'check_admin', 'admin_modify_idtemplate');
 $app->delete('/admin/idtemplates/:id/', 'check_admin', 'admin_clear_idtemplate');
+$app->get('/admin/mail/', 'check_admin', 'admin_get_smtp_config');
+$app->put('/admin/mail/', 'check_admin', 'admin_change_smtp_config');
 $app->get('/admin/users/', 'check_admin', 'admin_get_users');
 $app->post('/admin/users/', 'check_admin', 'admin_add_user');
 $app->get('/admin/users/:id/', 'check_admin', 'admin_get_user');
@@ -277,14 +299,30 @@ function admin() {
 }
 
 
+function mkMailers() {
+	$e0 = new ConfigMailer();
+	$e0->key = Mailer::SMTP;
+	$e0->text = getMessageString('admin_mailer_smtp');
+	$e1 = new ConfigMailer();
+	$e1->key = Mailer::SENDMAIL;
+	$e1->text = getMessageString('admin_mailer_sendmail');
+	$e2 = new ConfigMailer();
+	$e2->key = Mailer::MAIL;
+	$e2->text = getMessageString('admin_mailer_mail');
+	return array($e0, $e1, $e2);
+}
+
+
 /**
  * Generate the configuration page -> GET /admin/configuration/
  */
 function admin_configuration() {
 	global $app;
 
+	$mailers = 
 	$app->render('admin_configuration.html',array(
 		'page' => mkPage(getMessageString('admin'), 0, 2),
+		'mailers' => mkMailers(),
 		'isadmin' => is_admin()));
 }
 
@@ -372,6 +410,67 @@ function admin_clear_idtemplate($id) {
 	$resp->body($answer);
 }
 
+
+/**
+ * Generate the SMTP configuration page -> GET /admin/mail/
+ */
+function admin_get_smtp_config() {
+	global $app, $globalSettings;
+
+	$mail = array('username' => $globalSettings[SMTP_USER],
+		'password' => $globalSettings[SMTP_PASSWORD],
+		'smtpserver' => $globalSettings[SMTP_SERVER],
+		'smtpport' => $globalSettings[SMTP_PORT],
+		'smtpenc' => $globalSettings[SMTP_ENCRYPTION]);
+	$app->render('admin_mail.html',array(
+		'page' => mkPage(getMessageString('admin_smtp'), 0, 2),
+		'mail' => $mail,
+		'encryptions' => mkEncryptions(),
+		'isadmin' => is_admin()));
+}
+
+function mkEncryptions() {
+	$e0 = new Encryption();
+	$e0->key = 0;
+	$e0->text = getMessageString('admin_smtpenc_none');
+	$e1 = new Encryption();
+	$e1->key = 1;
+	$e1->text = getMessageString('admin_smtpenc_ssl');
+	$e2 = new Encryption();
+	$e2->key = 2;
+	$e2->text = getMessageString('admin_smtpenc_tls');
+	return array($e0, $e1, $e2);
+}
+
+function mkConfig($name, $val) {
+	$config = new Config();
+	$config->name = $name;
+	$config->val = $val;
+	return $config;
+}
+/**
+ * Change the SMTP configuration -> PUT /admin/mail/
+ */
+function admin_change_smtp_config() {
+	global $app;
+
+	$mail_data = $app->request()->put();
+	$app->getLog()->debug('admin_change_smtp_configuration: '.var_export($mail_data, true));	
+	$mail_config = array(mkConfig(SMTP_USER, $mail_data['username']),
+		mkConfig(SMTP_PASSWORD, $mail_data['password']),
+		mkConfig(SMTP_SERVER , $mail_data['smtpserver']),
+		mkConfig(SMTP_PORT, $mail_data['smtpport']),
+		mkConfig(SMTP_ENCRYPTION, $mail_data['smtpenc']));
+	$app->bbs->saveConfigs($mail_config);
+	$resp = $app->response();
+	$app->render('admin_mail.html',array(
+		'page' => mkPage(getMessageString('admin_smtp'), 0, 2),
+		'mail' => $mail_data,
+		'encryptions' => mkEncryptions(),
+		'isadmin' => is_admin()));	
+}
+
+
 /**
  * Generate the users overview page -> GET /admin/users/
  */
@@ -384,6 +483,7 @@ function admin_get_users() {
 		'users' => $users,
 		'isadmin' => is_admin()));
 }
+
 
 /**
  * Generate the single user page -> GET /admin/users/:id/
@@ -580,6 +680,7 @@ function admin_change_json() {
 		$app->render('admin_configuration.html',array(
 			'page' => mkPage(getMessageString('admin'), 0, 2), 
 			'messages' => array(getMessageString('changes_saved')),
+			'mailers' => mkMailers(),
 			'isadmin' => true,
 			));	
 	}
@@ -840,20 +941,42 @@ function kindle($id, $file) {
 		$app->deleteCookie(KINDLE_COOKIE);
 		$bookpath = $app->bbs->titleFile($id, $file);
 		$app->getLog()->debug("kindle: requested file ".$bookpath);
-		$subject = $globalSettings[DISPLAY_APP_NAME];
-		# try to send with email.class
+		if ($globalSettings[MAILER] == Mailer::SMTP)  {
+			$mail = array('username' => $globalSettings[SMTP_USER],
+				'password' => $globalSettings[SMTP_PASSWORD],
+				'smtp-server' => $globalSettings[SMTP_SERVER],
+				'smtp-port' => $globalSettings[SMTP_PORT]);
+			if ($globalSettings[SMTP_ENCRYPTION] == 1)
+				$mail['smtp-encryption'] = Mailer::SSL;
+			elseif ($globalSettings[SMTP_ENCRYPTION] == 2) {
+				$mail['smtp-encryption'] = Mailer::TLS;
+			}
+			$app->getLog()->debug('kindle mail config: '.var_export($mail, true));
+			$mailer = new Mailer(Mailer::SMTP, $mail);
+		} elseif ($globalSettings[MAILER] == Mailer::SENDMAIL) {
+			$mailer = new Mailer(Mailer::SENDMAIL);
+		} else {
+			$mailer = new Mailer(Mailer::MAIL);
+		}
+		$send_success = 0;
 		try {
-			$email = new Email($bookpath, $subject, $to_email, $globalSettings[KINDLE_FROM_EMAIL]);
+			$message = $mailer->createBookMessage($bookpath, $globalSettings[DISPLAY_APP_NAME], $to_email, $globalSettings[KINDLE_FROM_EMAIL]);
+			$send_success = $mailer->sendMessage($message);
+			if ($send_success == 0)
+				$app->getLog()->warn('kindle: book delivery to '.$to_email.' failed, dump: '.$mailer->getDump());
+			else
+				$app->getLog()->debug('kindle: book delivered to '.$to_email.', result '.$send_success);
 		# if there was an exception, log it and return gracefully
 		} catch(Exception $e) {
-			$app->getLog()->error('kindle: Email exception '.$e->getMessage());
-			$app->response()->status(503);
-			return;
+			$app->getLog()->warn('kindle: Email exception '.$e->getMessage());
+			$app->getLog()->warn('kindle: Mail dump '.$mailer->getDump());
 		}
-		$app->getLog()->debug('kindle: book delivered to '.$to_email);
 		# Store e-mail address in cookie so user needs to enter it only once
 		$app->setCookie(KINDLE_COOKIE, $to_email);
-		echo getMessageString('send_success');
+		if ($send_success > 0)
+			echo getMessageString('send_success');
+		else
+			$app->response()->status(503);
 	}
 }
 

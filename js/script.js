@@ -204,17 +204,18 @@ $(document).on('pageinit', '#padmin_user', function() {
 });
 
 
+
 /* Send-to-Kindle Ajax function 
 Target-Url: /titles/:id/kindle/:file via POST
 request-data: email
 */
 
-$(document).on('pageinit', function() {
+$(document).on('pageinit', '#ptitle_detail' ,function() {
 
 	var buttontext = "";
-	$("#ajax-form").submit(function(e) {
-	//$('#ajax-form').on('submit',function(e){
-	  //e.preventDefault();	 
+	//$("#ajax-form").submit(function(e) {
+	$('#ajax-form').on('submit',function(e){
+	  e.preventDefault();	 
 	  buttontext = $("#ajax-form-button").attr("value");
 	  var kindleEmail = $.trim($("#kindleEmail").val());
 	  $("#ajax-form-button").button('disable');
@@ -226,22 +227,22 @@ $(document).on('pageinit', function() {
 	    cache: false,
 	    dataType: "text",
 	    success: onSuccess,
+	    error: onErr
 	  });
 	  return false;
 	});
 
-	$("#ajax-message").ajaxError(function(event, request, settings, exception) {
-	$.mobile.hidePageLoadingMsg();
-	//$("#ajax-message").text("Error! HTTP Code: " + request.status);
-	$("#ajax-message").find('span#msg').fadeIn();
-	setTimeout(function() { 
-	  $("#ajax-form-button").button('enable');
-	  $("#ajax-message").find('span#msg').fadeOut(); 
-	}, 2000);
-	});
+	function onErr(jqXHR, responseText, errorThrown) {
+		$.mobile.hidePageLoadingMsg();
+		//$("#ajax-message").text("Error! HTTP Code: " + jqXHR.status);
+		$("#ajax-message").find('span#msg').fadeIn();
+		setTimeout(function() { 
+		  $("#ajax-form-button").button('enable');
+		  $("#ajax-message").find('span#msg').fadeOut(); 
+		}, 2000);
+	};
 
-	function onSuccess(data)
-	{
+	function onSuccess(data) {
 	  data = $.trim(data);
 	  $.mobile.hidePageLoadingMsg();
 	  $( "#kindlePopup" ).popup( "close" )
