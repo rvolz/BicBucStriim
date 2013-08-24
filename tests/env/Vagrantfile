@@ -15,6 +15,8 @@ Vagrant::Config.run do |config|
   # computers to access the VM, whereas host only networking does not.
   config.vm.forward_port 80, 8080
 
+  # Provisioning via shell, update to avoid "IP address not found" etc.
+  config.vm.provision :shell, :inline => "sudo apt-get update"
   # Provisioning via shell, only the basics fo BicBucStriim
   config.vm.provision :shell, :inline => "sudo apt-get -y install apache2 php5 sqlite3 php5-sqlite php5-gd tmux"
   # Enable mod_rewrite
@@ -27,6 +29,8 @@ Vagrant::Config.run do |config|
   config.vm.provision :shell, :inline => "sudo mkdir /tmp/calibre; sudo chown vagrant:vagrant /tmp/calibre"
   # Make the dir for the app
   config.vm.provision :shell, :inline => "sudo mkdir /var/www/bbs; sudo chown vagrant:vagrant /var/www/bbs"
+  # Copy the tmux config
+  config.vm.provision :shell, :inline => "cp /vagrant/tmux.conf /home/vagrant/.tmux.conf"
 
   # Create the environment for BicBucStrim on the server.
   # The web server path "/bbs" is mapped to the local directory "tests/work/src". 
