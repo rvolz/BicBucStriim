@@ -38,7 +38,7 @@
 			<option value="{{mailer.key}}" {%if page.glob.mailer == mailer.key %}selected="true"{% endif %}>{{mailer.text}}</option>
 		{% endfor %}
 		</select>
-		<p>{{page.glob.langa.admin_mailer_expl}}</p>					
+		<p>{{page.glob.langa.admin_mailer_expl}} <a href="../mail/">SMTP</a></p>					
 	</fieldset>
 	<fieldset data-role="fieldcontain">
 		<label for="thumb_gen_clipped">{{page.glob.langa.thumb_gen_clipped}}</label>

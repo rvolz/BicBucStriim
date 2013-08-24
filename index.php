@@ -423,7 +423,7 @@ function admin_get_smtp_config() {
 		'smtpport' => $globalSettings[SMTP_PORT],
 		'smtpenc' => $globalSettings[SMTP_ENCRYPTION]);
 	$app->render('admin_mail.html',array(
-		'page' => mkPage(getMessageString('admin_smtp'), 0, 2),
+		'page' => mkPage(getMessageString('admin_mail'), 0, 2),
 		'mail' => $mail,
 		'encryptions' => mkEncryptions(),
 		'isadmin' => is_admin()));
