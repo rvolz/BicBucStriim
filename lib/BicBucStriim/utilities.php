@@ -32,7 +32,6 @@ class Config extends Item{}
 class User extends Item{}
 class IdTemplate extends Item{}
 
-
 class Encryption extends Item{}
 class ConfigMailer extends Item{}
 

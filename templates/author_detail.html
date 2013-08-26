@@ -1,16 +1,62 @@
 {% extends 'main.html' %}
 
+{% block pid %}id="pauthor_detail"{%endblock%}
 
 {% block content %}
-<section class="author_detail row">
+<section class="author_detail_row">
 	<header>
-		<h1>{{page.glob.langa.booksby}} {{ author.name }}:</h1>
+		<h3>
+			{{page.glob.langa.booksby}} <em>{{ author.name }}</em>
+			{% if curpage == 0%}<a data-role="button" id="author_edit" href="#author-edit-panel" data-icon="edit" data-inline="true" data-mini="true">{{page.glob.langa.edit}}</a>{% endif%}
+		</h3> 
 	</header>
-	<ul data-role="listview">
+
+	{% if curpage == 0%}
+		{% if author.thumbnail %}
+		<img id="author-thumbnail" src="{{page.rot}}/{{author.thumbnail.url}}"/>
+		{% endif %}
+	{% endif %}
+
+	<ul data-role="listview" >
 		{% for book in books %}
 			{% include "title_entry.html" %}		
 		{% endfor %}	
 	</ul>
 </section>
-
 {% endblock %}
+
+{% block rightpanel %}
+<section data-role="panel" data-display="overlay" data-position="right" id="author-edit-panel">
+	<h2>Autoreninfos</h2>
+	<div data-role="collapsible-set">
+		<div data-role="collapsible">
+			<h3>Image</h3>
+			<form action="{{page.rot}}/metadata/authors/{{ author.id }}/thumbnail/" method="post" enctype="multipart/form-data" data-ajax="false">
+	  			<input type="file" name="file" accept="image/*" capture/>
+	  			<input type="submit" value="Upload" data-mini="true" />
+			</form>
+	  		<a data-role="button" id="delete-image" href="#" value="delete" data-mini="true" data-proot="{{page.rot}}" data-author="{{ author.id }}">Delete</a>
+	  	</div>
+  		<div data-role="collapsible">
+			<h3>Notes</h3>
+			<form id="author_notes" action="{{page.rot}}/admin/metadata/author/{{ author.id }}/notes/" >
+				<h3>Description</h3>
+		  		<textarea name="notes" id="notes" placeholder="Notes about the author" rows="4" cols="30"></textarea>
+		  		<input type="submit" value="Save" data-mini="true" />
+			</form>
+			<a data-role="button" id="delete-notes" href="#" value="delete" data-mini="true">Delete</a>
+		</div>
+		<div data-role="collapsible">
+			<h3>Links</h3>
+			<ul data-role="listview" >
+				<li>link</li>
+			</ul>
+			<form id="author_link_new" action="{{page.rot}}/admin/metadata/author/{{ author.id }}/links/" method="post" enctype="multipart/form-data" data-ajax="false">
+		  		<input type="text" name="description" placeholder="link text" />
+		  		<input type="url" name="link" placeholder="link url" />
+		  		<input type="submit" value="Add link" data-mini="true" />
+			</form>
+		</div>
+	</div>
+</section>
+{% endblock%}

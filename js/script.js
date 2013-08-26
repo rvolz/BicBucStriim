@@ -1,3 +1,41 @@
+/**
+ * BicBucStriim
+ *
+ * Copyright 2012-2013 Rainer Volz
+ * Licensed under MIT License, see LICENSE
+ * 
+ */ 
+
+// Author metadata
+$(document).on('pageinit', '#pauthor_detail', function() {
+	$('#delete-image').on('vclick', function() {
+		var root = $(this).data('proot');
+		var author = $(this).data('author');
+		var jh = $.ajax({
+			url: root+'/metadata/authors/'+author+'/thumbnail/',
+			type: 'DELETE',
+			success: function(data) {
+				$('img#author-thumbnail').remove();
+				$('div#flash').empty();
+				$('#pauthor_detail').trigger('change');
+			},
+			error: function(jqXHR, responseText, errorThrown) {
+				$('div#flash').empty().append('<p class="error">'+jqXHR.responseText+'</p>');
+				$('#pauthor_detail').trigger('change');		
+			}
+		});
+		return false;
+	});
+
+	// Initiate the template handling via click
+	$('form#author_notes').on('submit', function(event){
+		event.preventDefault();		
+		var url = $(this).attr('action');
+		var desc = $(this).find('#notes').val();
+		return false;
+	});
+
+});
 
 // Admin ID templates management 
 $(document).on('pageinit', '#padmin_idtemplates', function() {
@@ -71,9 +109,7 @@ $(document).on('pageinit', '#padmin_idtemplates', function() {
 		});
 		return false;
 	});
-
 });
-
 
 // Admin user management - user list
 $(document).on('pageinit', '#padmin_users', function() {

@@ -7,15 +7,19 @@
  * 
  */ 
 require 'vendor/autoload.php';
-require_once 'lib/BicBucStriim/langs.php';
-require_once 'lib/BicBucStriim/l10n.php';
-require_once 'lib/BicBucStriim/bicbucstriim.php';
-require_once 'lib/BicBucStriim/opds_generator.php';
-require_once 'lib/BicBucStriim/own_config_middleware.php';
-require_once 'lib/BicBucStriim/calibre_config_middleware.php';
-require_once 'lib/BicBucStriim/login_middleware.php';
-#require_once 'vendor/email.php';
-require_once 'lib/BicBucStriim/mailer.php';
+set_include_path(get_include_path() . PATH_SEPARATOR . './lib/BicBucStriim');
+set_include_path(get_include_path() . PATH_SEPARATOR . './vendor');
+require 'rb.php';
+require_once 'langs.php';
+require_once 'l10n.php';
+require_once 'bicbucstriim.php';
+require_once 'opds_generator.php';
+require_once 'own_config_middleware.php';
+require_once 'calibre_config_middleware.php';
+require_once 'login_middleware.php';
+require_once 'mailer.php';
+require 'data.php';
+#require 'bbs_db.php';
 
 # Allowed languages, i.e. languages with translations
 $allowedLangs = array('de','en','fr','nl');
@@ -153,6 +157,7 @@ $knownConfigs = array(CALIBRE_DIR, DB_VERSION, KINDLE, KINDLE_FROM_EMAIL,
 
 $bbs = new BicBucStriim();
 $app->bbs = $bbs;
+$app->bbsdb = new BbsData('data/data.db', './data');
 $app->add(new \CalibreConfigMiddleware(CALIBRE_DIR));
 $app->add(new \LoginMiddleware($appname, array('js', 'img', 'style')));
 $app->add(new \OwnConfigMiddleware($knownConfigs));
@@ -179,6 +184,18 @@ $app->get('/authorslist/:id/', 'authorsSlice');
 $app->get('/login/', 'show_login');
 $app->post('/login/', 'perform_login');
 $app->get('/logout/', 'logout');
+
+$app->get('/metadata/authors/:id/thumbnail/', 'get_author_thm');
+$app->post('/metadata/authors/:id/thumbnail/', 'check_admin', 'edit_author_thm');
+$app->delete('/metadata/authors/:id/thumbnail/', 'check_admin', 'del_author_thm');
+$app->get('/metadata/authors/:id/notes/', 'get_author_notes');
+$app->post('/metadata/authors/:id/notes/', 'check_admin', 'edit_author_notes');
+$app->delete('/metadata/authors/:id/notes/', 'check_admin', 'del_author_notes');
+$app->get('/metadata/authors/:id/links/', 'get_author_links');
+$app->post('/metadata/authors/:id/links/', 'check_admin', 'new_author_link');
+$app->delete('/metadata/authors/:id/links/:link_id/', 'check_admin', 'del_author_link');
+
+
 $app->get('/search/', 'globalSearch');
 $app->get('/series/:id/:page/', 'seriesDetailsSlice');
 $app->get('/serieslist/:id/', 'seriesSlice');
@@ -319,7 +336,7 @@ function mkMailers() {
 function admin_configuration() {
 	global $app;
 
-	$mailers = 
+	$mailers = mkMailers();
 	$app->render('admin_configuration.html',array(
 		'page' => mkPage(getMessageString('admin'), 0, 2),
 		'mailers' => mkMailers(),
@@ -410,7 +427,6 @@ function admin_clear_idtemplate($id) {
 	$resp->body($answer);
 }
 
-
 /**
  * Generate the SMTP configuration page -> GET /admin/mail/
  */
@@ -494,7 +510,7 @@ function admin_get_user($id) {
 	$user = $app->bbs->user($id);
 	$languages = $app->bbs->languages();
 	foreach ($languages as $language) {
-	 	$language->key = $language->lang_code;
+		$language->key = $language->lang_code;
 	} 
 	$nl = new Language();
 	$nl->lang_code = getMessageString('admin_no_selection');
@@ -502,7 +518,7 @@ function admin_get_user($id) {
 	array_unshift($languages, $nl);
 	$tags = $app->bbs->tags();
 	foreach ($tags as $tag) {
-	 	$tag->key = $tag->name;
+		$tag->key = $tag->name;
 	}
 	$nt = new Tag();
 	$nt->name = getMessageString('admin_no_selection');
@@ -723,6 +739,84 @@ function admin_check_version() {
 			));	
 }
 
+
+/*********************************************************************
+ * Metadata functions
+ ********************************************************************/
+
+function edit_author_thm($id) {
+	global $app, $globalSettings;
+
+	$allowedExts = array("gif", "jpeg", "jpg", "png");
+	$temp = explode(".", $_FILES["file"]["name"]);
+	$extension = end($temp);
+	$app->getLog()->debug('edit_author_thm: '.$temp);
+	if ((($_FILES["file"]["type"] == "image/gif")
+	|| ($_FILES["file"]["type"] == "image/jpeg")
+	|| ($_FILES["file"]["type"] == "image/jpg")
+	|| ($_FILES["file"]["type"] == "image/pjpeg")
+	|| ($_FILES["file"]["type"] == "image/x-png")
+	|| ($_FILES["file"]["type"] == "image/png"))
+	&& ($_FILES["file"]["size"] < 200000)
+	&& in_array($extension, $allowedExts)) {
+		$app->getLog()->debug('edit_author_thm: filetype ok');
+		if ($_FILES["file"]["error"] > 0) {
+			$app->getLog()->debug('edit_author_thm: upload error '.$_FILES["file"]["error"]);
+			echo "Return Code: " . $_FILES["file"]["error"] . "<br>";
+		} else {
+			$app->getLog()->debug('edit_author_thm: upload ok, converting');
+			echo "Upload: " . $_FILES["file"]["name"] . "<br>";
+			echo "Type: " . $_FILES["file"]["type"] . "<br>";
+			echo "Size: " . ($_FILES["file"]["size"] / 1024) . " kB<br>";
+			echo "Temp file: " . $_FILES["file"]["tmp_name"] . "<br>";
+
+			$author = $app->bbs->findOne('Author', 'select * from authors where id='.$id);
+			$app->bbsdb->editAuthorThumbnail($id, $author->name, $globalSettings[THUMB_GEN_CLIPPED], $_FILES["file"]["tmp_name"]);
+			$app->getLog()->debug('edit_author_thm: converted, redirecting');
+			$rot = $app->request()->getRootUri();
+			$app->redirect($rot.'/authors/'.$id.'/0/');			
+		}
+	} else {
+		echo "Invalid file";
+	}	
+}
+
+function del_author_thm($id) {
+	global $app;
+
+	$app->getLog()->debug('del_author_thm: '.$id);
+	$del = $app->bbsdb->deleteAuthorThumbnail($id);
+	$resp = $app->response();
+	if ($del) {
+		$resp->status(200);
+		$msg = getMessageString('admin_modified');
+		$answer = json_encode(array('msg' => $msg));
+		$resp->header('Content-type','application/json');
+	} else {
+		$resp->status(500);
+		$resp->header('Content-type','text/plain');
+		$answer = getMessageString('admin_modify_error');
+	}
+	$resp->header('Content-Length',strlen($answer));
+	$resp->body($answer);	
+}
+
+function get_author_thm($id) {
+	# code...
+}
+
+
+function get_author_notes($id) {}
+function edit_author_notes($id) {}
+function del_author_notes($id) {}
+function get_author_links($id) {}
+function new_author_link($id) {}
+function del_author_link($id) {}
+
+/*********************************************************************
+ * HTML presentation functions
+ ********************************************************************/
+
 /**
  * Generate the main page with the 30 mos recent titles
  */
@@ -868,6 +962,7 @@ function cover($id) {
 function thumbnail($id) {
 	global $app, $calibre_dir, $globalSettings;
 
+	$app->getLog()->debug('thumbnail: '.$id);
 	$has_cover = false;
 	$rot = $app->request()->getRootUri();
 	$book = $app->bbs->title($id);
@@ -879,6 +974,7 @@ function thumbnail($id) {
 	
 	if ($book->has_cover) {		
 		$thumb = $app->bbs->titleThumbnail($id, $globalSettings[THUMB_GEN_CLIPPED]);
+		$app->getLog()->debug('thumbnail: thumb found '.$thumb);
 		$has_cover = true;
 	}
 	if ($has_cover) {
@@ -989,6 +1085,12 @@ function authorsSlice($index=0) {
 		$tl = $app->bbs->authorsSlice($index,$globalSettings[PAGE_SIZE],trim($search));	
 	else
 		$tl = $app->bbs->authorsSlice($index,$globalSettings[PAGE_SIZE]);
+
+	foreach ($tl['entries'] as $author) {
+		$author->thumbnail = $app->bbsdb->getAuthorThumbnail($author->id);
+		if ($author->thumbnail)
+			$app->getLog()->debug('authorsSlice thumbnail '.var_export($author->thumbnail->url,true));
+	}
 	$app->render('authors.html',array(
 		'page' => mkPage(getMessageString('authors'),3, 1), 
 		'url' => 'authorslist',
@@ -1025,14 +1127,16 @@ function author($id) {
  * @return HTML page 
  */
 function authorDetailsSlice($id, $index=0) {
-  	global $app, $globalSettings;
+	global $app, $globalSettings;
   
-  	$filter = getFilter();
+	$filter = getFilter();
 	$tl = $app->bbs->authorDetailsSlice($globalSettings['lang'], $id, $index, $globalSettings[PAGE_SIZE], $filter);
 	if (is_null($tl)) {
 		$app->getLog()->debug('no author '.$id);
 		$app->notFound();
 	}
+	$author = $tl['author'];
+	$author->thumbnail = $app->bbsdb->getAuthorThumbnail($id);
 	$app->render('author_detail.html',array(
 		'page' => mkPage(getMessageString('author_details'), 3, 2),
 		'url' => 'authors/'.$id,	
@@ -1093,9 +1197,9 @@ function series($id) {
  * @return HTML page
  */
 function seriesDetailsSlice ($id, $index=0) {
-  	global $app, $globalSettings;
+	global $app, $globalSettings;
 
-  	$filter = getFilter();
+	$filter = getFilter();
 	$tl = $app->bbs->seriesDetailsSlice($globalSettings['lang'], $id, $index, $globalSettings[PAGE_SIZE], $filter);
 	if (is_null($tl)) {
 		$app->getLog()->debug('no series '.$id);
@@ -1154,9 +1258,9 @@ function tag($id) {
  * @return HTML page
  */
 function tagDetailsSlice ($id, $index=0) {
-  	global $app, $globalSettings;
+	global $app, $globalSettings;
 
-  	$filter = getFilter();
+	$filter = getFilter();
 	$tl = $app->bbs->tagDetailsSlice($globalSettings['lang'], $id, $index, $globalSettings[PAGE_SIZE], $filter);
 	if (is_null($tl)) {
 		$app->getLog()->debug('no tag '.$id);

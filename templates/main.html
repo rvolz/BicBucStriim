@@ -18,6 +18,7 @@
   <!--[if lt IE 7]><p class=chromeframe>Your browser is <em>ancient!</em> <a href="http://browsehappy.com/">Upgrade to a different browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to experience this site.</p><![endif]-->
 
   <div data-role="page" data-title="{{ page.title }}" {% block pid %}{% endblock %}>
+    {% block leftpanel %}{% endblock %}
     <div data-role="header" data-position="inline">                  
       {% if page.dialog==false %}
       {% include "navbar.html" %}
@@ -29,6 +30,7 @@
     <div data-role="footer" class="footer">
       {% include "footer.html" %}
     </div>      
+    {% block rightpanel %}{% endblock %}
   </div> <!-- page -->
 
   <script src="{{page.rot}}/js/libs/jquery-1.10.2.min.js"></script>

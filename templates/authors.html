@@ -14,7 +14,13 @@
 			<li data-role="list-divider"> {{ author.initial }}</li>
 		{% else %}
 			<li>
-				<a href="{{page.rot}}/authors/{{ author.id }}/0/">{{ author.sort }}
+				<a href="{{page.rot}}/authors/{{ author.id }}/0/">
+					{% if author.thumbnail %}
+					<img src="{{page.rot}}/{{author.thumbnail.url}}"/>
+					{% else %}
+					<img src="{{page.rot}}/img/writer.png"/>
+					{% endif %}
+					<h3>{{ author.sort }}</h3>
 					<span class="ui-li-count">{{author.anzahl}}</span>
 				</a>
 			</li>

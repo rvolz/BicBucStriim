@@ -17,6 +17,7 @@ class BicBucStriim {
 	# Thumbnail dimension (they are square)
 	const THUMB_RES = 160;
 
+
 	# bbs sqlite db
 	var $mydb = NULL;
 	# calibre sqlite db
@@ -74,7 +75,7 @@ class BicBucStriim {
 		$this->mydb->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 		$this->mydb->exec('create table configs (name varchar(30),val varchar(256))');   
 		$this->mydb->exec('create unique index configs_names on configs(name)');
-		$this->mydb->exec('create table users (id integer primary key autoincrement, username varchar(30), password char(32), email varchar(256), languages varchar(256), tags (varchar(256)))');   
+		$this->mydb->exec('create table users (id integer primary key autoincrement, username varchar(30), password char(32), email varchar(256), languages varchar(256), tags varchar(256))');   
 		$this->mydb->exec('create unique index users_names on users(username)');		
 		$mdp = password_hash('admin', PASSWORD_BCRYPT);
 		$this->mydb->exec('insert into users (username, password) values ("admin", "'.$mdp.'")');		
@@ -126,6 +127,24 @@ class BicBucStriim {
 	}
 
 	/**
+	 * Execute a query $sql on the settings DB and return the result 
+	 * as an array of objects of class $class
+	 * @param  string $class Classname of result objects
+	 * @param  string $sql   SQL query
+	 * @return array         object sof class $class
+	 */
+	function sfindOne($class, $sql) {
+		$stmt = $this->mydb->query($sql,PDO::FETCH_CLASS, $class);		
+		$this->last_error = $stmt->errorCode();
+		$items = $stmt->fetchAll();
+		$stmt->closeCursor();	
+		if (!is_null($items))
+			return $items[0];
+		else
+			return null;
+	}
+
+	/**
 	 * Find all configuration values in the settings DB
 	 * @return array configuration values
 	 */
@@ -153,6 +172,15 @@ class BicBucStriim {
 		$this->mydb->exec('insert into users (username, password) values ("admin", "'.$mdp.'")');		
 		$this->mydb->exec('create table idtemplates (name varchar(256), val varchar(256), label varchar(256))');   
 		$this->mydb->exec('create unique index idtemplates_names on idtemplates(name)');
+		#$this->mydb->exec('create table calibrethings (id integer primary key autoincrement, calibre_type small, calibre_id int, calibre_id2 varchar(256))');
+		#$this->mydb->exec('create index calibrethings_calibreid on calibrethings(calibre_id)');
+		#$this->mydb->exec('create index calibrethings_calibreid2 on calibrethings(calibre_id2)');
+		#$this->mydb->exec('create table artefacts (id integer, artefact_type int, artefact_url varchar(256))');
+		#$this->mydb->exec('create index artefacts_id on artefacts(id)');
+		#$this->mydb->exec('create table links (id integer, link_type int, link_name varchar(256), link_url varchar(256))');
+		#$this->mydb->exec('create index links_id on links(id)');
+		#$this->mydb->exec('create table notes (id integer, note_type int, note_text text)');
+		#$this->mydb->exec('create index notes_id on notes(id)');
 		$this->mydb->exec('update configs set val=\'3\' where name=\'db_version\'');
 	}
 
@@ -878,7 +906,7 @@ class BicBucStriim {
 	 * @param  string $thumb_path path for thumbnail storage
 	 * @return bool             	true = thumbnail created
 	 */
-	function titleThumbnailClipped($cover, $newwidth, $newheight, $thumb_path) {
+	protected function titleThumbnailClipped($cover, $newwidth, $newheight, $thumb_path) {
 		list($width, $height) = getimagesize($cover);
 		$thumb = imagecreatetruecolor($newwidth, $newheight);
 		$source = imagecreatefromjpeg($cover);
@@ -900,7 +928,7 @@ class BicBucStriim {
 	 * @param  string $thumb_path path for thumbnail storage
 	 * @return bool             	true = thumbnail created
 	 */
-	function titleThumbnailStuffed($cover, $newwidth, $newheight, $thumb_path) {
+	protected function titleThumbnailStuffed($cover, $newwidth, $newheight, $thumb_path) {
 		list($width, $height) = getimagesize($cover);
 		$thumb = Utilities::transparentImage($newwidth, $newheight);
 		$source = imagecreatefromjpeg($cover);
