@@ -88,7 +88,7 @@ end
 desc "Start the VM for integration testing"
 task :itest_up do |t|  
   puts "About to run vagrant-up..." 
-  
+  system "bash -c 'pushd tests/env;vagrant up;popd'"
   puts "Finished running vagrant-up"
 end
 
@@ -96,6 +96,7 @@ end
 desc "Halt the VM for integration testing"
 task :itest_down do |t|
   puts "About to run vagrant-halt..."  
+  system "bash -c 'pushd tests/env;vagrant halt;popd'"
   puts "Finished running vagrant-halt"
 end
 
@@ -118,7 +119,7 @@ end
 
 desc "Starts a ssh shell in the VM"
 task :itest_shell do |t|
-  
+  system "bash -c 'pushd tests/env;vagrant ssh;popd'"
 end
 
 
