@@ -157,6 +157,7 @@ if env
     code_target = "./tests/work/src"
     lib_target = "./tests/work/calibre"
 
+    env.cli("ssh", '-c "sudo rm -rf /var/www/bbs/data"')
     env.cli("sync","-f#{code_target}/", "-t/var/www/bbs")    
     env.cli("sync","-f#{lib_target}/","-t/tmp/calibre")    
     # a backup db for reset during testing
