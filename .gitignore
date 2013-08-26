@@ -6,6 +6,6 @@ pkg
 *.sublime-workspace
 tests/work
 tests/data
-.vagrant
+.vagrant*
 screenshot*
 composer.phar

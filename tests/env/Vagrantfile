@@ -2,7 +2,7 @@
 # vi: set ft=ruby :
 
 
-Vagrant::Config.run do |config|
+Vagrant.configure("2") do |config|
   # All Vagrant configuration is done here. The most common configuration
   # options are documented and commented below. For a complete reference,
   # please see the online documentation at vagrantup.com.
@@ -13,7 +13,7 @@ Vagrant::Config.run do |config|
 
   # Forward a port from the guest to the host, which allows for outside
   # computers to access the VM, whereas host only networking does not.
-  config.vm.forward_port 80, 8080
+  config.vm.network :forwarded_port, guest: 80, host:8080
 
   # Provisioning via shell, update to avoid "IP address not found" etc.
   config.vm.provision :shell, :inline => "sudo apt-get update"
@@ -35,6 +35,6 @@ Vagrant::Config.run do |config|
   # Create the environment for BicBucStrim on the server.
   # The web server path "/bbs" is mapped to the local directory "tests/work/src". 
   # The Calibre library for the tests is in "tests/work/calibre" and will be mapped to "/tmp/calibre"
-  #config.vm.share_folder "code", "/var/www/bbs", "../work/src", {:create => true, :transient => true}
-  #config.vm.share_folder "calibre", "/tmp/calibre", "../work/calibre", {:create => true, :transient => true}
+  config.vm.synced_folder "../work/src", "/var/www/bbs"
+  config.vm.synced_folder "../work/calibre", "/tmp/calibre"
 end

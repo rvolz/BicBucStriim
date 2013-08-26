@@ -15,15 +15,8 @@ require 'json'
 APPNAME = 'BicBucStriim'
 VERSION = '1.2.0-alpha'
 
-begin
-  require 'vagrant'
-  # Needs also 'vagrant-sync' !
-  # tests/env contains the integration testing environment with the Vagrantfile
-  env = Vagrant::Environment.new(:cwd => "tests/env")
-rescue LoadError
-  env = nil
-  puts STDERR, "*** Vagrant not installed. Integration testing tasks disabled. ***"
-end
+
+# Needs vagrant 1.2+
 
 SOURCE = "."
 LESS = File.join( SOURCE, "style")
@@ -53,30 +46,6 @@ end # task :lessc
 
 desc "Make a release package"
 task :package2 do |t|
-  # mkdir "data"
-  # chmod 0777, "data"
-  # touch "data/data.db"
-  # chmod 0777, "data/data.db"
-  # db = SQLite3::Database.new "data/data.db"
-  # rows = db.execute <<-SQL
-  #   create table configs (
-  #     name varchar(30),
-  #     val varchar(256)
-  #   );    
-  # SQL
-  # db.execute('create unique index configs_names on configs(name);')
-  # {
-  #   "admin_pw" => "",
-  #   "calibre_dir" => "",
-  #   "db_version" => "2",
-  #   "glob_dl_choice" => "0",
-  #   "glob_dl_password" => "7094e7dc2feb759758884333c2f4a6bdc9a16bb2",
-  #   "thumb_gen_clipped" => "1",
-  #   "page_size" => "30",
-  #   "display_app_name" => "BicBucStriim",
-  # }.each do |pair|
-  #   db.execute "insert into configs values ( ?, ? )", pair
-  # end
   Rake::PackageTask.new(APPNAME, VERSION) do |p|
     p.need_tar = true
     p.need_zip = true
@@ -115,59 +84,41 @@ task :package2 do |t|
 end
 
 # Integration testing tasks only make sense when vagrant is installed.
-if env
-  # Starts the VM. It will be created and provisioned if necessary.
-  desc "Start the VM for integration testing"
-  task :itest_up do |t|  
-    puts "About to run vagrant-up..." 
-    env.cli("up")
-    puts "Finished running vagrant-up"
-  end
+# Starts the VM. It will be created and provisioned if necessary.
+desc "Start the VM for integration testing"
+task :itest_up do |t|  
+  puts "About to run vagrant-up..." 
+  
+  puts "Finished running vagrant-up"
+end
 
-  # Just halts the VM so that it can be resumed later.
-  desc "Halt the VM for integration testing"
-  task :itest_down do |t|
-    puts "About to run vagrant-halt..."  
-    raise "Must run `vagrant up`" if !env.primary_vm.created?
-    raise "Must be running!" if env.primary_vm.state != :running
-    #env.primary_vm.channel.sudo("halt")
-    env.cli("halt")
-    puts "Finished running vagrant-halt"
-  end
+# Just halts the VM so that it can be resumed later.
+desc "Halt the VM for integration testing"
+task :itest_down do |t|
+  puts "About to run vagrant-halt..."  
+  puts "Finished running vagrant-halt"
+end
 
-  desc "Deploy the current code for testing to the VM dirs"
-  task :itest_deploy2 => [:lessc, :package2] do |t|    
-    code_target = "./tests/work/src"
-    lib_target = "./tests/work/calibre"
+desc "Deploy the current code for testing to the VM dirs"
+task :itest_deploy => [:lessc, :package2] do |t|    
+  code_target = "./tests/work/src"
+  lib_target = "./tests/work/calibre"
 
-    puts "Deploying code"
-    rm_rf code_target+"/."
-    cp_r "./pkg/#{APPNAME}-#{VERSION}/.", code_target
-    cp code_target+"/data/data.db", code_target+"/data/data.backup"
-    chmod_R 0777,"#{code_target}/data"
-    puts "Deploying test fixtures"    
-    rm_rf lib_target+"/."
-    cp_r "tests/fixtures/lib2/.", lib_target
-    cp "tests/fixtures/config.php", code_target
-  end
+  puts "Deploying code"
+  rm_rf code_target+"/."
+  cp_r "./pkg/#{APPNAME}-#{VERSION}/.", code_target
+  cp code_target+"/data/data.db", code_target+"/data/data.backup"
+  mkdir "#{code_target}/data/titles"
+  mkdir "#{code_target}/data/authors"
+  chmod_R 0777,"#{code_target}/data"
+  puts "Deploying test fixtures"    
+  rm_rf lib_target+"/."
+  cp_r "tests/fixtures/lib2/.", lib_target
+end
 
-  desc "Deploy the current code for testing, via rsync"
-  task :itest_deploy => [:itest_deploy2] do |t|    
-
-    code_target = "./tests/work/src"
-    lib_target = "./tests/work/calibre"
-
-    env.cli("ssh", '-c "sudo rm -rf /var/www/bbs/data"')
-    env.cli("sync","-f#{code_target}/", "-t/var/www/bbs")    
-    env.cli("sync","-f#{lib_target}/","-t/tmp/calibre")    
-    # a backup db for reset during testing
-    #env.cli("ssh", '-c "sudo cp /var/www/bbs/data/data.db /var/www/bbs/data/data.backup"')
-  end
-
-  desc "Starts a ssh shell in the VM"
-  task :itest_shell do |t|
-    env.cli("ssh")
-  end
+desc "Starts a ssh shell in the VM"
+task :itest_shell do |t|
+  
 end
 
 
