@@ -27,13 +27,10 @@ class TagBook extends Item {}
 class Identifier extends Item {}
 
 
-# Confiuration items in the BBS DB
-class Config extends Item{}
-class User extends Item{}
-class IdTemplate extends Item{}
-
+# Confiuration utilities for BBS
 class Encryption extends Item{}
 class ConfigMailer extends Item{}
+class IdUrlTemplate extends Item{}
 
 class Utilities {
 	/**

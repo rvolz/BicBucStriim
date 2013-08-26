@@ -17,3 +17,8 @@
     Deny from all
 </FilesMatch>
 
+# protect schema
+<FilesMatch schema.sql>
+    Order allow,deny
+    Deny from all
+</FilesMatch>

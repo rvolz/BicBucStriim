@@ -1,15 +1,15 @@
 <?php
 set_include_path("tests");
-require_once('lib/simpletest/autorun.php');
-require_once('lib/BicBucStriim/bicbucstriim.php');
-require_once('lib/BicBucStriim/calibre_filter.php');
-
+require_once 'lib/simpletest/autorun.php';
+require_once 'vendor/rb.php';
+require_once 'lib/BicBucStriim/data_constants.php';
+require_once 'lib/BicBucStriim/calibre_thing.php';
+require_once 'lib/BicBucStriim/bicbucstriim.php';
+require_once 'vendor/ircmaxell/password-compat/lib/password.php';
 class TestOfBicBucStriim extends UnitTestCase {
 
-	const CDB1 = './tests/fixtures/metadata_empty.db';
-	const CDB2 = './tests/fixtures/lib2/metadata.db';
-	const CDB3 = './tests/fixtures/lib3/metadata.db';
-
+	const SCHEMA = './data/schema.sql';
+	const TESTSCHEMA = './tests/data/schema.sql';
 	const DB2 = './tests/fixtures/data2.db';
 
 	const DATA = './tests/data';
@@ -20,379 +20,197 @@ class TestOfBicBucStriim extends UnitTestCase {
 	function setUp() {
 		if (file_exists(self::DATA))
 			system("rm -rf ".self::DATA);	
-    mkdir(self::DATA);
-    chmod(self::DATA,0777);
-    copy(self::DB2, self::DATADB);
-    $this->bbs = new BicBucStriim(self::DATADB);
-    $this->bbs->openCalibreDb(self::CDB2);
+	    mkdir(self::DATA);
+	    chmod(self::DATA,0777);
+	    copy(self::DB2, self::DATADB);
+	    copy(self::SCHEMA, self::TESTSCHEMA);
+	    $this->bbs = new BicBucStriim(self::DATADB);
 	}
 
 	function tearDown() {
+		// Must use nuke() to clear caches etc.
+		R::nuke();
 		$this->bbs = NULL;
 		system("rm -rf ".self::DATA);
 	}
 
-	function testOpenCalibreEmptyDb() {				
-		$this->assertEqual(0, $this->bbs->last_error);
+	function testDbOk() {
 		$this->assertTrue($this->bbs->dbOk());
-		$this->bbs->openCalibreDb(self::CDB1);
-		$this->assertTrue($this->bbs->libraryOk());		
+		$this->bbs = new BicBucStriim(self::DATA.'/nodata.db');	
+		$this->assertFalse($this->bbs->dbOk());
 	}
 
-	function testOpenCalibreNotExistingDb() {				
+	function testCreateDb() {
+		$this->bbs = new BicBucStriim(self::DATA.'/nodata.db');	
+		$this->assertFalse($this->bbs->dbOk());
+		$this->bbs->createDataDB(self::DATA.'/newdata.db');
+		$this->assertTrue(file_exists(self::DATA.'/newdata.db'));
+		$this->bbs = new BicBucStriim(self::DATA.'/newdata.db');	
 		$this->assertTrue($this->bbs->dbOk());
-		$this->bbs->openCalibreDb(self::CDB3);
-		$this->assertFalse($this->bbs->libraryOk());
-		$this->assertEqual(0, $this->bbs->last_error);
 	}
 
-	function testLast30() {		
-		$result = $this->bbs->last30Books('en', 30, new CalibreFilter());
-		$this->assertEqual(0, $this->bbs->last_error);
-		$this->assertFalse($result === FALSE);
-		$this->assertEqual(7, count($result));
-		$result2 = $this->bbs->last30Books('en', 2, new CalibreFilter());
-		$this->assertEqual(0, $this->bbs->last_error);
-		$this->assertFalse($result2 === FALSE);
-		$this->assertEqual(2, count($result2));
-		$result3 = $this->bbs->last30Books('en', 30, new CalibreFilter($lang=3));
-		$this->assertEqual(1, count($result3));
-		$result4 = $this->bbs->last30Books('en', 30, new CalibreFilter($lang=null, $tag=21));
-		$this->assertEqual(6, count($result4));
-		$result5 = $this->bbs->last30Books('en', 30, new CalibreFilter($lang=3, $tag=21));
-		$this->assertEqual(0, count($result5));
-		$result3 = $this->bbs->last30Books('en', 30, new CalibreFilter($lang=2));
-		$this->assertEqual(2, count($result3));
-		$result4 = $this->bbs->last30Books('en', 30, new CalibreFilter($lang=2, $tag=3));
-		$this->assertEqual(1, count($result4));		
+	function testConfigs() {
+		$configs = $this->bbs->configs();
+		$this->assertEqual(0, count($configs));
+
+		$configA = array('propa' => 'vala', 'propb' => 1);
+		$this->bbs->saveConfigs($configA);
+		$configs = $this->bbs->configs();
+		$this->assertEqual(2, count($configs));
+		$this->assertEqual('propa', $configs[1]->name);
+		$this->assertEqual('vala', $configs[1]->val);
+		$this->assertEqual('propb', $configs[2]->name);
+		$this->assertEqual(1, $configs[2]->val);
+
+		$configB = array('propa' => 'vala', 'propb' => 2);
+		$this->bbs->saveConfigs($configB);
+		$configs = $this->bbs->configs();
+		$this->assertEqual(2, count($configs));
+		$this->assertEqual('propa', $configs[1]->name);
+		$this->assertEqual('vala', $configs[1]->val);
+		$this->assertEqual('propb', $configs[2]->name);
+		$this->assertEqual(2, $configs[2]->val);
 	}
 
-	function testAuthorsSlice() {
-		$result0 = $this->bbs->authorsSlice(0,2);
-		$this->assertEqual(0, $this->bbs->last_error);
-		$this->assertEqual(2, count($result0['entries']));
-		$this->assertEqual(0, $result0['page']);
-		$this->assertEqual(3, $result0['pages']);
-		$result1 = $this->bbs->authorsSlice(1,2);
-		$this->assertEqual(2, count($result1['entries']));
-		$this->assertEqual(1, $result1['page']);
-		$this->assertEqual(3, $result1['pages']);		
-		$result2 = $this->bbs->authorsSlice(2,2);
-		$this->assertEqual(2, count($result2['entries']));
-		$this->assertEqual(2, $result2['page']);
-		$this->assertEqual(3, $result2['pages']);		
-		$no_result = $this->bbs->authorsSlice(100,2);		
-		$this->assertEqual(0, count($no_result['entries']));
-		$this->assertEqual(100, $no_result['page']);
-		$this->assertEqual(3, $no_result['pages']);				
+	function testAddUser() {
+		$this->assertEqual(0, count($this->bbs->users()));
+		$user = $this->bbs->addUser('testuser', 'testuser');
+		$this->assertNotNull($user);
+		$this->assertEqual('testuser', $user->username);
+		$this->assertNotEqual('testuser', $user->password);
+		$this->assertNull($user->tags);
+		$this->assertNull($user->languages);
+		$this->assertEqual(0, $user->role);
+		echo var_export($user->to_json(),true);
+		echo var_export($user->getProperties(),true);
 	}
 
-	function testAuthorsSliceSearch() {
-		$result0 = $this->bbs->authorsSlice(0,2,'I');
-		$this->assertEqual(0, $this->bbs->last_error);
-		$this->assertEqual(2, count($result0['entries']));
-		$this->assertEqual(0, $result0['page']);
-		$this->assertEqual(3, $result0['pages']);		
-		$result1 = $this->bbs->authorsSlice(1,2,'I');
-		$this->assertEqual(2, count($result1['entries']));
-		$result3 = $this->bbs->authorsSlice(2,2,'I');
-		$this->assertEqual(1, count($result3['entries']));
+	function testGetUser() {
+		$this->bbs->addUser('testuser', 'testuser');
+		$this->bbs->addUser('testuser2', 'testuser2');
+		$this->assertEqual(2, count($this->bbs->users()));
+		$user = $this->bbs->user(2);
+		$this->assertNotNull($user);
+		$this->assertEqual('testuser2', $user->username);
+		$this->assertNotEqual('testuser2', $user->password);
+		$this->assertNull($user->tags);
+		$this->assertNull($user->languages);
+		$this->assertEqual(0, $user->role);
 	}
 
-	function testAuthorDetailsSlice() {
-		$result0 = $this->bbs->authorDetailsSlice('en', 6, 0, 1, new CalibreFilter());
-		$this->assertEqual(0, $this->bbs->last_error);
-		$this->assertEqual(1, count($result0['entries']));
-		$this->assertEqual(0, $result0['page']);
-		$this->assertEqual(2, $result0['pages']);
-		$result1 = $this->bbs->authorDetailsSlice('en', 6, 1, 1, new CalibreFilter());
-		$this->assertEqual(1, count($result1['entries']));
-		$this->assertEqual(1, $result1['page']);
-		$this->assertEqual(2, $result1['pages']);		
+	function testDeleteUser() {
+		$this->bbs->addUser('testuser', 'testuser');
+		$this->bbs->addUser('testuser2', 'testuser2');
+		$this->assertEqual(2, count($this->bbs->users()));
+
+		$deleted = $this->bbs->deleteUser(1);
+		$this->assertFalse($deleted);
+
+		$deleted = $this->bbs->deleteUser(100);
+		$this->assertFalse($deleted);
+
+		$deleted = $this->bbs->deleteUser(2);
+		$this->assertTrue($deleted);
+		$this->assertEqual(1, count($this->bbs->users()));
+		$user = $this->bbs->user(1);
+		$this->assertNotNull($user);
+		$this->assertEqual('testuser', $user->username);
 	}
 
-	function testAuthorDetailsSliceWithFilter() {
-		$result0 = $this->bbs->authorDetailsSlice('en', 7, 0, 1, new CalibreFilter());
-		$this->assertEqual(0, $this->bbs->last_error);
-		$this->assertEqual(1, count($result0['entries']));
-		$this->assertEqual(0, $result0['page']);
-		$this->assertEqual(1, $result0['pages']);
-		$result1 = $this->bbs->authorDetailsSlice('en', 7, 0, 1, new CalibreFilter(1));
-		$this->assertEqual(1, count($result1['entries']));
-		$this->assertEqual(0, $result1['page']);
-		$this->assertEqual(1, $result1['pages']);		
-		$result2 = $this->bbs->authorDetailsSlice('en', 7, 0, 1, new CalibreFilter(2));
-		$this->assertEqual(0, count($result2['entries']));
-		$this->assertEqual(0, $result2['page']);
-		$this->assertEqual(-1, $result2['pages']);		
+	function testChangeUser() {
+		$this->bbs->addUser('testuser', 'testuser');
+		$this->bbs->addUser('testuser2', 'testuser2');
+		$users = $this->bbs->users();
+		$password2 = $users[2]->password;
+
+		$changed = $this->bbs->changeUser(2, $password2, 'deu', 'poetry');
+		$this->assertEqual($password2, $changed->password);
+		$this->assertEqual('deu', $changed->languages);
+		$this->assertEqual('poetry', $changed->tags);
+
+		$changed = $this->bbs->changeUser(2, 'new password', 'deu', 'poetry');
+		$this->assertNotEqual($password2, $changed->password);
+		$this->assertEqual('deu', $changed->languages);
+		$this->assertEqual('poetry', $changed->tags);
 	}
 
-	function testAuthorsInitials() {
-		$result = $this->bbs->authorsInitials();
-		$this->assertEqual(0, $this->bbs->last_error);
-		$this->assertEqual(5, count($result));
-		$this->assertEqual('E', $result[0]->initial);
-		$this->assertEqual(1, $result[0]->ctr);
-		$this->assertEqual('R', $result[4]->initial);
-		$this->assertEqual(2, $result[4]->ctr);		
+	function testIdTemplates() {
+		$this->assertEqual(0, count($this->bbs->idTemplates()));
+		$this->bbs->addIdTemplate('google', 'http://google.com/%id%', 'Google search');
+		$this->bbs->addIdTemplate('amazon', 'http://amazon.com/%id%', 'Amazon search');
+		$this->assertEqual(2, count($this->bbs->idTemplates()));
+		$template = $this->bbs->idTemplate('amazon');
+		$this->assertEqual('amazon', $template->name);
+		$this->assertEqual('http://amazon.com/%id%', $template->val);
+		$this->assertEqual('Amazon search', $template->label);
 	}
 
-	function testAuthorsNamesForInitial() {
-		$result = $this->bbs->authorsNamesForInitial('R');
-		$this->assertEqual(0, $this->bbs->last_error);
-		$this->assertEqual(2, count($result));
-		$this->assertEqual(1, $result[0]->anzahl);
-		$this->assertEqual('Rilke, Rainer Maria', $result[0]->sort);
+	function testDeleteIdTemplates() {
+		$this->assertEqual(0, count($this->bbs->idTemplates()));
+		$this->bbs->addIdTemplate('google', 'http://google.com/%id%', 'Google search');
+		$this->bbs->addIdTemplate('amazon', 'http://amazon.com/%id%', 'Amazon search');
+		$this->assertEqual(2, count($this->bbs->idTemplates()));
+		$this->bbs->deleteIdTemplate('amazon123');
+		$this->assertEqual(2, count($this->bbs->idTemplates()));
+		$this->bbs->deleteIdTemplate('amazon');
+		$this->assertEqual(1, count($this->bbs->idTemplates()));
 	}
 
-	function testTagsSlice() {
-		$result0 = $this->bbs->tagsSlice(0,2);
-		$this->assertEqual(0, $this->bbs->last_error);
-		$this->assertEqual(2, count($result0['entries']));
-		$this->assertEqual(0, $result0['page']);
-		$this->assertEqual(3, $result0['pages']);
-		$result1 = $this->bbs->tagsSlice(1,2);
-		$this->assertEqual(2, count($result1['entries']));
-		$this->assertEqual(1, $result1['page']);
-		$this->assertEqual(3, $result1['pages']);		
-		$result2 = $this->bbs->tagsSlice(2,2);
-		$this->assertEqual(2, count($result2['entries']));
-		$this->assertEqual(2, $result2['page']);
-		$this->assertEqual(3, $result2['pages']);		
-		$no_result = $this->bbs->tagsSlice(100,2);		
-		$this->assertEqual(0, count($no_result['entries']));
-		$this->assertEqual(100, $no_result['page']);
-		$this->assertEqual(3, $no_result['pages']);				
+	function testChangeIdTemplate() {
+		$this->assertEqual(0, count($this->bbs->idTemplates()));
+		$this->bbs->addIdTemplate('google', 'http://google.com/%id%', 'Google search');
+		$this->bbs->addIdTemplate('amazon', 'http://amazon.com/%id%', 'Amazon search');
+		$this->assertEqual(2, count($this->bbs->idTemplates()));
+		$template = $this->bbs->idTemplate('amazon');
+		$this->assertEqual('amazon', $template->name);
+		$this->assertEqual('http://amazon.com/%id%', $template->val);
+		$this->assertEqual('Amazon search', $template->label);
+		$template = $this->bbs->changeIdTemplate('amazon', 'http://amazon.de/%id%', 'Amazon DE search');
+		$this->assertEqual('amazon', $template->name);
+		$this->assertEqual('http://amazon.de/%id%', $template->val);
+		$this->assertEqual('Amazon DE search', $template->label);
 	}
 
-	function testTagsSliceSearch() {
-		$result0 = $this->bbs->tagsSlice(0,2,'I');
-		$this->assertEqual(0, $this->bbs->last_error);
-		$this->assertEqual(2, count($result0['entries']));
-		$this->assertEqual(0, $result0['page']);
-		$this->assertEqual(3, $result0['pages']);		
-		$result1 = $this->bbs->tagsSlice(1,2,'I');
-		$this->assertEqual(2, count($result1['entries']));
-		$result3 = $this->bbs->tagsSlice(2,2,'I');
-		$this->assertEqual(1, count($result3['entries']));
-	}
-
-	function testTagDetailsSlice() {
-		$result0 = $this->bbs->tagDetailsSlice('en', 3, 0, 1, new CalibreFilter());
-		$this->assertEqual(0, $this->bbs->last_error);
-		$this->assertEqual(1, count($result0['entries']));
-		$this->assertEqual(0, $result0['page']);
-		$this->assertEqual(2, $result0['pages']);
-		$result1 = $this->bbs->tagDetailsSlice('en', 3, 1, 1, new CalibreFilter());
-		$this->assertEqual(1, count($result1['entries']));
-		$this->assertEqual(1, $result1['page']);
-		$this->assertEqual(2, $result1['pages']);		
-	}
-
-	function testTagsInitials() {
-		$result = $this->bbs->tagsInitials();
-		$this->assertEqual(0, $this->bbs->last_error);
-		$this->assertEqual(5, count($result));
-		$this->assertEqual('A', $result[0]->initial);
-		$this->assertEqual(1, $result[0]->ctr);
-		$this->assertEqual('V', $result[4]->initial);
-		$this->assertEqual(1, $result[4]->ctr);		
-	}
-
-	function testTagsNamesForInitial() {
-		$result = $this->bbs->tagsNamesForInitial('B');
-		$this->assertEqual(0, $this->bbs->last_error);
-		$this->assertEqual(2, count($result));
-		$this->assertEqual(1, $result[0]->anzahl);
-		$this->assertEqual('Belletristik & Literatur', $result[0]->name);
-	}
-
-	function testTitlesSlice() {
-		$result0 = $this->bbs->titlesSlice('en', 0, 2, new CalibreFilter());
-		$this->assertEqual(0, $this->bbs->last_error);
-		$this->assertEqual(2, count($result0['entries']));
-		$this->assertEqual(0, $result0['page']);
-		$this->assertEqual(4, $result0['pages']);
-		$result1 = $this->bbs->titlesSlice('en', 1, 2, new CalibreFilter());
-		$this->assertEqual(2, count($result1['entries']));
-		$this->assertEqual(1, $result1['page']);
-		$this->assertEqual(4, $result1['pages']);		
-		$result3 = $this->bbs->titlesSlice('en', 3, 2, new CalibreFilter());
-		$this->assertEqual(1, count($result3['entries']));
-		$this->assertEqual(3, $result3['page']);
-		$this->assertEqual(4, $result3['pages']);		
-		$no_result = $this->bbs->titlesSlice('en', 100, 2, new CalibreFilter());		
-		$this->assertEqual(0, count($no_result['entries']));
-		$this->assertEqual(100, $no_result['page']);
-		$this->assertEqual(4, $no_result['pages']);				
-
-		$result0 = $this->bbs->titlesSlice('en', 0, 2, new CalibreFilter($lang=3));
-		$this->assertEqual(1, count($result0['entries']));
-		$this->assertEqual(1, $result0['pages']);
-		$result0 = $this->bbs->titlesSlice('en', 1, 2, new CalibreFilter($lang=null, $tag=21));
-		$this->assertEqual(2, count($result0['entries']));
-		$this->assertEqual(1, $result0['page']);
-		$this->assertEqual(3, $result0['pages']);
-		$result0 = $this->bbs->titlesSlice('en', 0, 2, new CalibreFilter($lang=3, $tag=21));
-		$this->assertEqual(0, count($result0['entries']));
-		$this->assertEqual(0, $result0['pages']);
-		$result0 = $this->bbs->titlesSlice('en', 0, 2, new CalibreFilter($lang=2, $tag=3));
-		$this->assertEqual(1, count($result0['entries']));
-		$this->assertEqual(1, $result0['pages']);
-	}
-
-	function testCount($value='') {
-		$count = 'select count(*) from books where lower(title) like \'%i%\'';
-		$result = $this->bbs->count($count);
-		$this->assertEqual(6,$result);
-	}
-
-	function testTitlesSliceSearch() {
-		$result0 = $this->bbs->titlesSlice('en', 0, 2, new CalibreFilter(), 'I');
-		$this->assertEqual(0, $this->bbs->last_error);
-		$this->assertEqual(2, count($result0['entries']));
-		$this->assertEqual(0, $result0['page']);
-		$this->assertEqual(3, $result0['pages']);		
-		$result1 = $this->bbs->titlesSlice('en', 1, 2, new CalibreFilter(), 'I');
-		$this->assertEqual(2, count($result1['entries']));
-		$result3 = $this->bbs->titlesSlice('en', 2,2, new CalibreFilter(), 'I');
-		$this->assertEqual(2, count($result3['entries']));
-	}
-
-	function testAuthorDetails() {
-		$result = $this->bbs->authorDetails(7);
-		$this->assertEqual(0, $this->bbs->last_error);
+	function testCalibreThing() {				
+		$this->assertNull($this->bbs->getCalibreThing(DataConstants::CALIBRE_AUTHOR_TYPE, 1));
+		$result = $this->bbs->addCalibreThing(DataConstants::CALIBRE_AUTHOR_TYPE, 1, 'Author 1');
 		$this->assertNotNull($result);
-		$this->assertEqual('Lessing, Gotthold Ephraim',$result['author']->sort);
+		$this->assertEqual('Author 1', $result->cname);
+		$result2 = $this->bbs->getCalibreThing(DataConstants::CALIBRE_AUTHOR_TYPE, 1);
+		$this->assertEqual('Author 1', $result2->cname);
 	}
 
-	function testTagDetails() {
-		$result = $this->bbs->tagDetails(3);
-		$this->assertEqual(0, $this->bbs->last_error);
+	function testEditAuthorThumbnail() {				
+		$this->assertTrue($this->bbs->editAuthorThumbnail(1, 'Author Name', true, 'tests/fixtures/author1.jpg'));
+		$this->assertTrue(file_exists(self::DATA.'/authors/author_1_thm.png'));
+		$result2 = $this->bbs->getCalibreThing(DataConstants::CALIBRE_AUTHOR_TYPE, 1);
+		$this->assertEqual('Author Name', $result2->cname);
+		$artefacts = $result2->ownArtefact;
+		$this->assertEqual(1, count($artefacts));
+		$result = $artefacts[1];
 		$this->assertNotNull($result);
-		$this->assertEqual('Fachbücher',$result['tag']->name);
-		$this->assertEqual(2,count($result['books']));		
+		$this->assertEqual(DataConstants::AUTHOR_THUMBNAIL_ARTEFACT, $result->atype);
+		$this->assertEqual(self::DATA.'/authors/author_1_thm.png', $result->url);
 	}
 
-	function testTitle() {
-		$result = $this->bbs->title(3);
-		$this->assertEqual(0, $this->bbs->last_error);
-		$this->assertFalse($result === FALSE);
-		$this->assertEqual('Der seltzame Springinsfeld',$result->title);
-	}
-
-	function testTitleCover() {
-		$result = $this->bbs->titleCover(3);
-		$this->assertEqual(0, $this->bbs->last_error);
+	function testGetAuthorThumbnail() {				
+		$this->assertTrue($this->bbs->editAuthorThumbnail(1, 'Author Name', true, 'tests/fixtures/author1.jpg'));
+		$result = $this->bbs->getAuthorThumbnail(1);
 		$this->assertNotNull($result);
-		$this->assertEqual('cover.jpg',basename($result));
+		$this->assertEqual(DataConstants::AUTHOR_THUMBNAIL_ARTEFACT, $result->atype);
+		$this->assertEqual(self::DATA.'/authors/author_1_thm.png', $result->url);
 	}
 
-	function testTitleThumbnail() {
-		$result = $this->bbs->titleThumbnail(3, true);
-		$this->assertEqual(0, $this->bbs->last_error);
-		$this->assertNotNull($result);
-		$this->assertEqual('thumb_3.png',basename($result));
+	function testDeleteAuthorThumbnail() {				
+		$this->assertTrue($this->bbs->editAuthorThumbnail(1, 'Author Name', true, 'tests/fixtures/author1.jpg'));
+		$this->assertNotNull($this->bbs->getAuthorThumbnail(1));
+		$this->assertTrue($this->bbs->deleteAuthorThumbnail(1));
+		$this->assertFalse(file_exists(self::DATA.'/authors/author_1_thm.png'));
+		$this->assertNull($this->bbs->getAuthorThumbnail(1));
+		$result2 = $this->bbs->getCalibreThing(DataConstants::CALIBRE_AUTHOR_TYPE, 1);
+		$artefacts = $result2->ownArtefact;
+		$this->assertEqual(0, count($artefacts));
 	}
-
-	function testClearThumbnail() {
-		$result = $this->bbs->titleThumbnail(3, true);
-		$this->assertEqual('thumb_3.png',basename($result));
-		$this->assertTrue($this->bbs->clearThumbnails());
-		$this->assertFalse(file_exists($result));
-	}
-
-	function testTitleFile() {
-		$result = $this->bbs->titleFile(3, 'Der seltzame Springinsfeld - Hans Jakob Christoffel von Grimmelshausen.epub');
-		$this->assertEqual(0, $this->bbs->last_error);
-		$this->assertNotNull($result);
-		$this->assertEqual('Der seltzame Springinsfeld - Hans Jakob Christoffel von Grimmelshausen.epub',basename($result));
-	}
-
-	function testTitleDetails() {
-		$result = $this->bbs->titleDetails('en', 3);
-		$this->assertEqual(0, $this->bbs->last_error);
-		$this->assertFalse($result === FALSE);
-		$this->assertEqual('Der seltzame Springinsfeld',$result['book']->title);
-		$this->assertEqual('Fachbücher',$result['tags'][0]->name);
-		$this->assertEqual('Serie Grimmelshausen',$result['series'][0]->name);
-	}
-
-	function testTitleDetailsOpds() {
-		$book = $this->bbs->title(3);
-		$result = $this->bbs->titleDetailsOpds($book);
-		$this->assertEqual(0, $this->bbs->last_error);
-		$this->assertFalse($result === FALSE);
-		$this->assertEqual('Der seltzame Springinsfeld',$result['book']->title);
-		$this->assertEqual('Fachbücher',$result['tags'][0]->name);		
-	}
-
-	function testTitleDetailsFilteredOpds() {
-		$books = $this->bbs->titlesSlice('en', 1, 2, new CalibreFilter());
-		$this->assertEqual(2, count($books['entries']));
-		$result = $this->bbs->titleDetailsFilteredOpds($books['entries']);
-		$this->assertEqual(0, $this->bbs->last_error);
-		$this->assertFalse($result === FALSE);
-		$this->assertEqual(1, count($result));
-	}
-
-	function testSeriesSlice() {
-		$result0 = $this->bbs->seriesSlice(0,2);
-		$this->assertEqual(0, $this->bbs->last_error);
-		$this->assertEqual(2, count($result0['entries']));
-		$this->assertEqual(0, $result0['page']);
-		$this->assertEqual(2, $result0['pages']);
-		$result1 = $this->bbs->seriesSlice(1,2);
-		$this->assertEqual(1, count($result1['entries']));
-		$this->assertEqual(1, $result1['page']);
-		$this->assertEqual(2, $result1['pages']);		
-	}
-
-	function testSeriesSliceSearch() {
-		$result0 = $this->bbs->seriesSlice(0,2,'I');
-		$this->assertEqual(0, $this->bbs->last_error);
-		$this->assertEqual(2, count($result0['entries']));
-		$this->assertEqual(0, $result0['page']);
-		$this->assertEqual(2, $result0['pages']);		
-		$result1 = $this->bbs->seriesSlice(1,2,'I');
-		$this->assertEqual(1, count($result1['entries']));
-	}
-
-	function testSeriesDetailsSlice() {
-		$result0 = $this->bbs->seriesDetailsSlice('en', 1, 0, 1, new CalibreFilter());
-		$this->assertEqual(0, $this->bbs->last_error);
-		$this->assertEqual(1, count($result0['entries']));
-		$this->assertEqual(0, $result0['page']);
-		$this->assertEqual(2, $result0['pages']);
-		$result1 = $this->bbs->seriesDetailsSlice('en', 1, 1, 1, new CalibreFilter());
-		$this->assertEqual(1, count($result1['entries']));
-		$this->assertEqual(1, $result1['page']);
-		$this->assertEqual(2, $result1['pages']);		
-	}
-
-	function testSeriesDetails() {
-		$result = $this->bbs->seriesDetails(5);
-		$this->assertEqual(0, $this->bbs->last_error);
-		$this->assertNotNull($result);
-		$this->assertEqual('Serie Rilke',$result['series']->name);
-		$this->assertEqual(1,count($result['books']));		
-	}
-
-	function testSeriesInitials() {
-		$result = $this->bbs->seriesInitials();
-		$this->assertEqual(0, $this->bbs->last_error);
-		$this->assertEqual(1, count($result));
-		$this->assertEqual('S', $result[0]->initial);
-		$this->assertEqual(3, $result[0]->ctr);
-	}
-
-	function testSeriesNamesForInitial() {
-		$result = $this->bbs->seriesNamesForInitial('S');
-		$this->assertEqual(0, $this->bbs->last_error);
-		$this->assertEqual(3, count($result));
-		$this->assertEqual(2, $result[0]->anzahl);
-		$this->assertEqual('Serie Grimmelshausen', $result[0]->name);
-	}
-
 }
 ?>
+

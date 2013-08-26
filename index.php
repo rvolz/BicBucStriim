@@ -5,21 +5,22 @@
  * Copyright 2012-2013 Rainer Volz
  * Licensed under MIT License, see LICENSE
  * 
- */ 
+ */
+
 require 'vendor/autoload.php';
 set_include_path(get_include_path() . PATH_SEPARATOR . './lib/BicBucStriim');
 set_include_path(get_include_path() . PATH_SEPARATOR . './vendor');
 require 'rb.php';
 require_once 'langs.php';
 require_once 'l10n.php';
+require_once 'app_constants.php';
 require_once 'bicbucstriim.php';
+require_once 'calibre.php';
 require_once 'opds_generator.php';
 require_once 'own_config_middleware.php';
 require_once 'calibre_config_middleware.php';
 require_once 'login_middleware.php';
 require_once 'mailer.php';
-require 'data.php';
-#require 'bbs_db.php';
 
 # Allowed languages, i.e. languages with translations
 $allowedLangs = array('de','en','fr','nl');
@@ -29,39 +30,6 @@ $fallbackLang = 'en';
 $appname = 'BicBucStriim';
 # App version
 $appversion = '1.2.0-α';
-# Current DB schema version
-define('DB_SCHEMA_VERSION', '3');
-
-# URL for version information
-define('VERSION_URL', 'http://projekte.textmulch.de/bicbucstriim/version.json');
-# Cookie name to store Kindle email address
-define('KINDLE_COOKIE', 'kindle_email');
-# Calibre library path
-define('CALIBRE_DIR', 'calibre_dir');
-# BicBucStriim DB version
-define('DB_VERSION', 'db_version');
-# Thumbnail generation method
-define('THUMB_GEN_CLIPPED', 'thumb_gen_clipped');
-# Send-To-Kindle enabled/disabled
-define('KINDLE', 'kindle');
-# Send-To-Kindle from-address
-define('KINDLE_FROM_EMAIL', 'kindle_from_email');
-# Page size for list views, no. of elemens
-define('PAGE_SIZE', 'page_size');
-# Displayed app name for page title
-define('DISPLAY_APP_NAME', 'display_app_name');
-# Kind of mail support used
-define('MAILER', 'mailer');
-# Name of SMTP server, if SMTP mailer is used
-define('SMTP_SERVER', 'smtp_server');
-# Port of SMTP server, if SMTP mailer is used
-define('SMTP_PORT', 'smtp_port');
-# SMTP user name, if SMTP mailer is used
-define('SMTP_USER', 'smtp_user');
-# SMTP password, if SMTP mailer is used
-define('SMTP_PASSWORD', 'smtp_password');
-# SMTP encryption, if SMTP mailer is used
-define('SMTP_ENCRYPTION', 'smtp_encryption');
 
 # Init app and routes
 $app = new \Slim\Slim(array(
@@ -155,9 +123,7 @@ $knownConfigs = array(CALIBRE_DIR, DB_VERSION, KINDLE, KINDLE_FROM_EMAIL,
 	THUMB_GEN_CLIPPED, PAGE_SIZE, DISPLAY_APP_NAME, MAILER, SMTP_SERVER,
 	SMTP_PORT, SMTP_USER, SMTP_PASSWORD, SMTP_ENCRYPTION);
 
-$bbs = new BicBucStriim();
-$app->bbs = $bbs;
-$app->bbsdb = new BbsData('data/data.db', './data');
+$app->bbs = new BicBucStriim('data/data.db');
 $app->add(new \CalibreConfigMiddleware(CALIBRE_DIR));
 $app->add(new \LoginMiddleware($appname, array('js', 'img', 'style')));
 $app->add(new \OwnConfigMiddleware($knownConfigs));
@@ -350,7 +316,7 @@ function admin_get_idtemplates() {
 	global $app;
 
 	$idtemplates = $app->bbs->idTemplates();
-	$idtypes = $app->bbs->idTypes();
+	$idtypes = $app->calibre->idTypes();
 	$ids2add = array();
 	foreach ($idtypes as $idtype) {
 		if (empty($idtemplates)) {
@@ -368,7 +334,7 @@ function admin_get_idtemplates() {
 		}
 	}
 	foreach ($ids2add as $id2add) {
-		$ni = new IdTemplate();
+		$ni = new IdUrlTemplate();
 		$ni->name = $id2add;
 		$ni->val = '';
 		$ni->label = '';
@@ -395,7 +361,7 @@ function admin_modify_idtemplate($id) {
 	if (!is_null($ntemplate)) {
 		$resp->status(200);
 		$msg = getMessageString('admin_modified');
-		$answer = json_encode(array('template' => $ntemplate, 'msg' => $msg));
+		$answer = json_encode(array('template' => $ntemplate->getProperties(), 'msg' => $msg));
 		$resp->header('Content-type','application/json');
 	} else {
 		$resp->status(500);
@@ -458,12 +424,6 @@ function mkEncryptions() {
 	return array($e0, $e1, $e2);
 }
 
-function mkConfig($name, $val) {
-	$config = new Config();
-	$config->name = $name;
-	$config->val = $val;
-	return $config;
-}
 /**
  * Change the SMTP configuration -> PUT /admin/mail/
  */
@@ -472,11 +432,11 @@ function admin_change_smtp_config() {
 
 	$mail_data = $app->request()->put();
 	$app->getLog()->debug('admin_change_smtp_configuration: '.var_export($mail_data, true));	
-	$mail_config = array(mkConfig(SMTP_USER, $mail_data['username']),
-		mkConfig(SMTP_PASSWORD, $mail_data['password']),
-		mkConfig(SMTP_SERVER , $mail_data['smtpserver']),
-		mkConfig(SMTP_PORT, $mail_data['smtpport']),
-		mkConfig(SMTP_ENCRYPTION, $mail_data['smtpenc']));
+	$mail_config = array(SMTP_USER => $mail_data['username'],
+		SMTP_PASSWORD => $mail_data['password'],
+		SMTP_SERVER => $mail_data['smtpserver'],
+		SMTP_PORT => $mail_data['smtpport'],
+		SMTP_ENCRYPTION => $mail_data['smtpenc']);
 	$app->bbs->saveConfigs($mail_config);
 	$resp = $app->response();
 	$app->render('admin_mail.html',array(
@@ -508,7 +468,7 @@ function admin_get_user($id) {
 	global $app;
 
 	$user = $app->bbs->user($id);
-	$languages = $app->bbs->languages();
+	$languages = $app->calibre->languages();
 	foreach ($languages as $language) {
 		$language->key = $language->lang_code;
 	} 
@@ -516,7 +476,7 @@ function admin_get_user($id) {
 	$nl->lang_code = getMessageString('admin_no_selection');
 	$nl->key = '';
 	array_unshift($languages, $nl);
-	$tags = $app->bbs->tags();
+	$tags = $app->calibre->tags();
 	foreach ($tags as $tag) {
 		$tag->key = $tag->name;
 	}
@@ -546,7 +506,7 @@ function admin_add_user() {
 	if (isset($user) && !is_null($user)) {
 		$resp->status(200);
 		$msg = getMessageString('admin_modified');
-		$answer = json_encode(array('user' => $user, 'msg' => $msg));
+		$answer = json_encode(array('user' => $user->getProperties(), 'msg' => $msg));
 		$resp->header('Content-type','application/json');
 	} else {
 		$resp->status(500);
@@ -594,7 +554,7 @@ function admin_modify_user($id) {
 	if (isset($user) && !is_null($user)) {
 		$resp->status(200);
 		$msg = getMessageString('admin_modified');
-		$answer = json_encode(array('user' => $user, 'msg' => $msg));
+		$answer = json_encode(array('user' => $user->getProperties(), 'msg' => $msg));
 		$resp->header('Content-type','application/json');
 	} else {
 		$resp->status(500);
@@ -635,7 +595,7 @@ function admin_change_json() {
 	elseif (array_key_exists(CALIBRE_DIR, $req_configs)) {		
 		$req_calibre_dir = $req_configs[CALIBRE_DIR];
 		if ($req_calibre_dir != $globalSettings[CALIBRE_DIR]) {
-			if (!BicBucStriim::checkForCalibre($req_calibre_dir))
+			if (!Calibre::checkForCalibre($req_calibre_dir))
 				array_push($errors, 1);
 		}
 	} 
@@ -678,18 +638,15 @@ function admin_change_json() {
 	} else {
 		## Apply changes 
 		foreach ($req_configs as $key => $value) {
-			if (!isset($globalSettings[$key]) || $value != $globalSettings[$key]) {
-				$c1 = new Config();
-				$c1->name = $key;
-				$c1->val = $value;
-				array_push($nconfigs,$c1);
+			if (!isset($globalSettings[$key]) || $value != $globalSettings[$key]) {				
+				$nconfigs[$key] = $value;
 				$globalSettings[$key] = $value;
 				$app->getLog()->debug('admin_change: '.$key.' changed: '.$value);	
 			}
 		}
 		# Save changes
 		if (count($nconfigs) > 0) {
-			$bbs->saveConfigs($nconfigs);
+			$app->bbs->saveConfigs($nconfigs);
 			$app->getLog()->debug('admin_change: changes saved');					
 		}
 		$app->getLog()->debug('admin_change: ended');	
@@ -770,8 +727,8 @@ function edit_author_thm($id) {
 			echo "Size: " . ($_FILES["file"]["size"] / 1024) . " kB<br>";
 			echo "Temp file: " . $_FILES["file"]["tmp_name"] . "<br>";
 
-			$author = $app->bbs->findOne('Author', 'select * from authors where id='.$id);
-			$app->bbsdb->editAuthorThumbnail($id, $author->name, $globalSettings[THUMB_GEN_CLIPPED], $_FILES["file"]["tmp_name"]);
+			$author = $app->calibre->findOne('Author', 'select * from authors where id='.$id);
+			$app->bbs->editAuthorThumbnail($id, $author->name, $globalSettings[THUMB_GEN_CLIPPED], $_FILES["file"]["tmp_name"]);
 			$app->getLog()->debug('edit_author_thm: converted, redirecting');
 			$rot = $app->request()->getRootUri();
 			$app->redirect($rot.'/authors/'.$id.'/0/');			
@@ -785,7 +742,7 @@ function del_author_thm($id) {
 	global $app;
 
 	$app->getLog()->debug('del_author_thm: '.$id);
-	$del = $app->bbsdb->deleteAuthorThumbnail($id);
+	$del = $app->bbs->deleteAuthorThumbnail($id);
 	$resp = $app->response();
 	if ($del) {
 		$resp->status(200);
@@ -824,7 +781,7 @@ function main() {
 	global $app, $globalSettings;
 
 	$filter = getFilter();
-	$books = $app->bbs->last30Books($globalSettings['lang'], $globalSettings[PAGE_SIZE], $filter);
+	$books = $app->calibre->last30Books($globalSettings['lang'], $globalSettings[PAGE_SIZE], $filter);
 	$app->render('index_last30.html',array(
 		'page' => mkPage(getMessageString('dl30'),1, 1), 
 		'books' => $books));	
@@ -838,10 +795,10 @@ function globalSearch() {
 
 	$filter = getFilter();
 	$search = $app->request()->get('search');
-	$tlb = $app->bbs->titlesSlice($globalSettings['lang'], 0, $globalSettings[PAGE_SIZE], $filter, trim($search));
-	$tla = $app->bbs->authorsSlice(0, $globalSettings[PAGE_SIZE], trim($search));
-	$tlt = $app->bbs->tagsSlice(0, $globalSettings[PAGE_SIZE],  trim($search));
-	$tls = $app->bbs->seriesSlice(0, $globalSettings[PAGE_SIZE], trim($search));
+	$tlb = $app->calibre->titlesSlice($globalSettings['lang'], 0, $globalSettings[PAGE_SIZE], $filter, trim($search));
+	$tla = $app->calibre->authorsSlice(0, $globalSettings[PAGE_SIZE], trim($search));
+	$tlt = $app->calibre->tagsSlice(0, $globalSettings[PAGE_SIZE],  trim($search));
+	$tls = $app->calibre->seriesSlice(0, $globalSettings[PAGE_SIZE], trim($search));
 	$app->render('global_search.html',array(
 		'page' => mkPage(getMessageString('pagination_search'),0), 
 		'books' => $tlb['entries'],
@@ -866,9 +823,9 @@ function titlesSlice($index=0) {
 	$filter = getFilter();
 	$search = $app->request()->get('search');
 	if (isset($search)) {
-		$tl = $app->bbs->titlesSlice($globalSettings['lang'], $index,$globalSettings[PAGE_SIZE], $filter, trim($search));
+		$tl = $app->calibre->titlesSlice($globalSettings['lang'], $index,$globalSettings[PAGE_SIZE], $filter, trim($search));
 	} else
-		$tl = $app->bbs->titlesSlice($globalSettings['lang'], $index,$globalSettings[PAGE_SIZE], $filter);
+		$tl = $app->calibre->titlesSlice($globalSettings['lang'], $index,$globalSettings[PAGE_SIZE], $filter);
 	$app->render('titles.html',array(
 		'page' => mkPage(getMessageString('titles'),2, 1), 
 		'url' => 'titleslist',
@@ -882,7 +839,7 @@ function titlesSlice($index=0) {
 function title($id) {
 	global $app, $calibre_dir, $globalSettings;
 	
-	$details = $app->bbs->titleDetails($globalSettings['lang'], $id);	
+	$details = $app->calibre->titleDetails($globalSettings['lang'], $id);	
 	if (is_null($details)) {
 		$app->getLog()->warn("title: book not found: ".$id);
 		$app->notFound();
@@ -904,7 +861,7 @@ function title($id) {
 		}
 	} else 
 		$show_idlinks = false;
-	$kindle_format = ($globalSettings[KINDLE] == 1) ? $app->bbs->titleGetKindleFormat($id): NULL;
+	$kindle_format = ($globalSettings[KINDLE] == 1) ? $app->calibre->titleGetKindleFormat($id): NULL;
 	$app->getLog()->debug('titleDetails custom columns: '.count($details['custom']));
 	$app->render('title_detail.html',
 		array('page' => mkPage(getMessageString('book_details'), 2, 2), 
@@ -935,7 +892,7 @@ function cover($id) {
 
 	$has_cover = false;
 	$rot = $app->request()->getRootUri();
-	$book = $app->bbs->title($id);
+	$book = $app->calibre->title($id);
 	if (is_null($book)) {
 		$app->getLog()->debug("cover: book not found: "+$id);
 		$app->response()->status(404);
@@ -943,7 +900,7 @@ function cover($id) {
 	}
 	
 	if ($book->has_cover) {		
-		$cover = $app->bbs->titleCover($id);
+		$cover = $app->calibre->titleCover($id);
 		$has_cover = true;
 	}
 	if ($has_cover) {
@@ -965,7 +922,7 @@ function thumbnail($id) {
 	$app->getLog()->debug('thumbnail: '.$id);
 	$has_cover = false;
 	$rot = $app->request()->getRootUri();
-	$book = $app->bbs->title($id);
+	$book = $app->calibre->title($id);
 	if (is_null($book)) {
 		$app->getLog()->error("thumbnail: book not found: "+$id);
 		$app->response()->status(404);
@@ -973,7 +930,8 @@ function thumbnail($id) {
 	}
 	
 	if ($book->has_cover) {		
-		$thumb = $app->bbs->titleThumbnail($id, $globalSettings[THUMB_GEN_CLIPPED]);
+		$cover = $app->calibre->titleCover($id);
+		$thumb = $app->bbs->titleThumbnail($id, $cover, $globalSettings[THUMB_GEN_CLIPPED]);
 		$app->getLog()->debug('thumbnail: thumb found '.$thumb);
 		$has_cover = true;
 	}
@@ -993,7 +951,7 @@ function thumbnail($id) {
 function book($id, $file) {
 	global $app;
 
-	$details = $app->bbs->titleDetailsMini($id);
+	$details = $app->calibre->titleDetailsMini($id);
 	if (is_null($details)) {
 		$app->getLog()->warn("book: no book found for ".$id);
 		$app->notFound();
@@ -1021,7 +979,7 @@ function book($id, $file) {
 # Route: /titles/:id/kindle/:file
 function kindle($id, $file) {
 	global $app, $globalSettings;
-	$book = $app->bbs->title($id);
+	$book = $app->calibre->title($id);
 	if (is_null($book)) {
 		$app->getLog()->debug("kindle: book not found: ".$id);
 		$app->response()->status(404);
@@ -1035,7 +993,7 @@ function kindle($id, $file) {
 		return;
 	} else {
 		$app->deleteCookie(KINDLE_COOKIE);
-		$bookpath = $app->bbs->titleFile($id, $file);
+		$bookpath = $app->calibre->titleFile($id, $file);
 		$app->getLog()->debug("kindle: requested file ".$bookpath);
 		if ($globalSettings[MAILER] == Mailer::SMTP)  {
 			$mail = array('username' => $globalSettings[SMTP_USER],
@@ -1082,12 +1040,12 @@ function authorsSlice($index=0) {
 
 	$search = $app->request()->get('search');
 	if (isset($search))
-		$tl = $app->bbs->authorsSlice($index,$globalSettings[PAGE_SIZE],trim($search));	
+		$tl = $app->calibre->authorsSlice($index,$globalSettings[PAGE_SIZE], trim($search));	
 	else
-		$tl = $app->bbs->authorsSlice($index,$globalSettings[PAGE_SIZE]);
+		$tl = $app->calibre->authorsSlice($index,$globalSettings[PAGE_SIZE]);
 
 	foreach ($tl['entries'] as $author) {
-		$author->thumbnail = $app->bbsdb->getAuthorThumbnail($author->id);
+		$author->thumbnail = $app->bbs->getAuthorThumbnail($author->id);
 		if ($author->thumbnail)
 			$app->getLog()->debug('authorsSlice thumbnail '.var_export($author->thumbnail->url,true));
 	}
@@ -1107,7 +1065,7 @@ function authorsSlice($index=0) {
 function author($id) {
 	global $app, $globalSettings;
 
-	$details = $app->bbs->authorDetails($id);
+	$details = $app->calibre->authorDetails($id);
 	if (is_null($details)) {
 		$app->getLog()->debug("no author");
 		$app->notFound();		
@@ -1130,13 +1088,13 @@ function authorDetailsSlice($id, $index=0) {
 	global $app, $globalSettings;
   
 	$filter = getFilter();
-	$tl = $app->bbs->authorDetailsSlice($globalSettings['lang'], $id, $index, $globalSettings[PAGE_SIZE], $filter);
+	$tl = $app->calibre->authorDetailsSlice($globalSettings['lang'], $id, $index, $globalSettings[PAGE_SIZE], $filter);
 	if (is_null($tl)) {
 		$app->getLog()->debug('no author '.$id);
 		$app->notFound();
 	}
 	$author = $tl['author'];
-	$author->thumbnail = $app->bbsdb->getAuthorThumbnail($id);
+	$author->thumbnail = $app->bbs->getAuthorThumbnail($id);
 	$app->render('author_detail.html',array(
 		'page' => mkPage(getMessageString('author_details'), 3, 2),
 		'url' => 'authors/'.$id,	
@@ -1156,9 +1114,9 @@ function seriesSlice($index=0) {
 	$search = $app->request()->get('search');
 	if (isset($search)) {
 		$app->getLog()->debug('seriesSlice: search '.$search);			
-		$tl = $app->bbs->seriesSlice($index, $globalSettings[PAGE_SIZE], trim($search));	
+		$tl = $app->calibre->seriesSlice($index, $globalSettings[PAGE_SIZE], trim($search));	
 	} else
-		$tl = $app->bbs->seriesSlice($index, $globalSettings[PAGE_SIZE]);
+		$tl = $app->calibre->seriesSlice($index, $globalSettings[PAGE_SIZE]);
 	$app->render('series.html',array(
 		'page' => mkPage(getMessageString('series'),5, 1), 
 		'url' => 'serieslist',
@@ -1177,7 +1135,7 @@ function seriesSlice($index=0) {
 function series($id) {
 	global $app, $globalSettings;
 
-	$details = $app->bbs->seriesDetails($id);
+	$details = $app->calibre->seriesDetails($id);
 	if (is_null($details)) {
 		$app->getLog()->debug('no series '.$id);
 		$app->notFound();		
@@ -1200,7 +1158,7 @@ function seriesDetailsSlice ($id, $index=0) {
 	global $app, $globalSettings;
 
 	$filter = getFilter();
-	$tl = $app->bbs->seriesDetailsSlice($globalSettings['lang'], $id, $index, $globalSettings[PAGE_SIZE], $filter);
+	$tl = $app->calibre->seriesDetailsSlice($globalSettings['lang'], $id, $index, $globalSettings[PAGE_SIZE], $filter);
 	if (is_null($tl)) {
 		$app->getLog()->debug('no series '.$id);
 		$app->notFound();		
@@ -1221,9 +1179,9 @@ function tagsSlice($index=0) {
 
 	$search = $app->request()->get('search');
 	if (isset($search))
-		$tl = $app->bbs->tagsSlice($index,$globalSettings[PAGE_SIZE],trim($search));
+		$tl = $app->calibre->tagsSlice($index,$globalSettings[PAGE_SIZE],trim($search));
 	else
-		$tl = $app->bbs->tagsSlice($index,$globalSettings[PAGE_SIZE]);
+		$tl = $app->calibre->tagsSlice($index,$globalSettings[PAGE_SIZE]);
 	$app->render('tags.html',array(
 		'page' => mkPage(getMessageString('tags'),4, 1), 
 		'url' => 'tagslist',
@@ -1238,7 +1196,7 @@ function tagsSlice($index=0) {
 function tag($id) {
 	global $app, $globalSettings;
 
-	$details = $app->bbs->tagDetails($id);
+	$details = $app->calibre->tagDetails($id);
 	if (is_null($details)) {
 		$app->getLog()->debug("no tag");
 		$app->notFound();		
@@ -1261,7 +1219,7 @@ function tagDetailsSlice ($id, $index=0) {
 	global $app, $globalSettings;
 
 	$filter = getFilter();
-	$tl = $app->bbs->tagDetailsSlice($globalSettings['lang'], $id, $index, $globalSettings[PAGE_SIZE], $filter);
+	$tl = $app->calibre->tagDetailsSlice($globalSettings['lang'], $id, $index, $globalSettings[PAGE_SIZE], $filter);
 	if (is_null($tl)) {
 		$app->getLog()->debug('no tag '.$id);
 		$app->notFound();		
@@ -1302,10 +1260,10 @@ function opdsNewest() {
 	global $app, $globalSettings;
 
 	$filter = getFilter();
-	$just_books = $app->bbs->last30Books($globalSettings['lang'], $globalSettings[PAGE_SIZE], $filter);
+	$just_books = $app->calibre->last30Books($globalSettings['lang'], $globalSettings[PAGE_SIZE], $filter);
 	$books = array();
 	foreach ($just_books as $book) {
-		$record = $app->bbs->titleDetailsOpds($book);
+		$record = $app->calibre->titleDetailsOpds($book);
 		if (!empty($record['formats']))
 			array_push($books,$record);
 	}
@@ -1328,10 +1286,10 @@ function opdsByTitle($index=0) {
 	$filter = getFilter();
 	$search = $app->request()->get('search');
 	if (isset($search))
-		$tl = $app->bbs->titlesSlice($globalSettings['lang'], $index,$globalSettings[PAGE_SIZE], $filter, $search);
+		$tl = $app->calibre->titlesSlice($globalSettings['lang'], $index,$globalSettings[PAGE_SIZE], $filter, $search);
 	else
-		$tl = $app->bbs->titlesSlice($globalSettings['lang'], $index,$globalSettings[PAGE_SIZE], $filter);
-	$books = $app->bbs->titleDetailsFilteredOpds($tl['entries']);
+		$tl = $app->calibre->titlesSlice($globalSettings['lang'], $index,$globalSettings[PAGE_SIZE], $filter);
+	$books = $app->calibre->titleDetailsFilteredOpds($tl['entries']);
 	$gen = mkOpdsGenerator($app);	
 	$cat = $gen->titlesCatalog(NULL, $books, false, 
 		$tl['page'], getNextSearchPage($tl), getLastSearchPage($tl));
@@ -1344,7 +1302,7 @@ function opdsByTitle($index=0) {
 function opdsByAuthorInitial() {
 	global $app;
 
-	$initials = $app->bbs->authorsInitials();
+	$initials = $app->calibre->authorsInitials();
 	$gen = mkOpdsGenerator($app);	
 	$cat = $gen->authorsRootCatalog(NULL, $initials);
 	mkOpdsResponse($app, $cat, OpdsGenerator::OPDS_MIME_NAV);
@@ -1356,7 +1314,7 @@ function opdsByAuthorInitial() {
 function opdsByAuthorNamesForInitial($initial) {
 	global $app;
 
-	$authors = $app->bbs->authorsNamesForInitial($initial);
+	$authors = $app->calibre->authorsNamesForInitial($initial);
 	$gen = mkOpdsGenerator($app);	
 	$cat = $gen->authorsNamesForInitialCatalog(NULL, $authors, $initial);
 	mkOpdsResponse($app, $cat, OpdsGenerator::OPDS_MIME_NAV);
@@ -1372,9 +1330,9 @@ function opdsByAuthor($initial, $id, $page) {
 	global $app, $globalSettings;
 
 	$filter = getFilter();
-	$tl = $app->bbs->authorDetailsSlice($globalSettings['lang'], $id, $page, $globalSettings[PAGE_SIZE], $filter);
+	$tl = $app->calibre->authorDetailsSlice($globalSettings['lang'], $id, $page, $globalSettings[PAGE_SIZE], $filter);
 	$app->getLog()->debug('opdsByAuthor 1 '.var_export($tl, true));
-	$books = $app->bbs->titleDetailsFilteredOpds($tl['entries']);
+	$books = $app->calibre->titleDetailsFilteredOpds($tl['entries']);
 	$app->getLog()->debug('opdsByAuthor 2 '.var_export($books, true));
 	$gen = mkOpdsGenerator($app);	
 	$cat = $gen->booksForAuthorCatalog(NULL, $books, $initial, $tl['author'], false, 
@@ -1388,7 +1346,7 @@ function opdsByAuthor($initial, $id, $page) {
 function opdsByTagInitial() {
 	global $app;
 
-	$initials = $app->bbs->tagsInitials();
+	$initials = $app->calibre->tagsInitials();
 	$gen = mkOpdsGenerator($app);	
 	$cat = $gen->tagsRootCatalog(NULL, $initials);
 	mkOpdsResponse($app, $cat, OpdsGenerator::OPDS_MIME_NAV);
@@ -1400,7 +1358,7 @@ function opdsByTagInitial() {
 function opdsByTagNamesForInitial($initial) {
 	global $app;
 
-	$tags = $app->bbs->tagsNamesForInitial($initial);
+	$tags = $app->calibre->tagsNamesForInitial($initial);
 	$gen = mkOpdsGenerator($app);	
 	$cat = $gen->tagsNamesForInitialCatalog(NULL, $tags, $initial);
 	mkOpdsResponse($app, $cat, OpdsGenerator::OPDS_MIME_NAV);
@@ -1416,8 +1374,8 @@ function opdsByTag($initial, $id, $page) {
 	global $app, $globalSettings;
 
 	$filter = getFilter();
-	$tl = $app->bbs->tagDetailsSlice($globalSettings['lang'], $id, $page, $globalSettings[PAGE_SIZE], $filter);
-	$books = $app->bbs->titleDetailsFilteredOpds($tl['entries']);
+	$tl = $app->calibre->tagDetailsSlice($globalSettings['lang'], $id, $page, $globalSettings[PAGE_SIZE], $filter);
+	$books = $app->calibre->titleDetailsFilteredOpds($tl['entries']);
 	$gen = mkOpdsGenerator($app);	
 	$cat = $gen->booksForTagCatalog(NULL, $books, $initial, $tl['tag'], false,
 		$tl['page'], getNextSearchPage($tl), getLastSearchPage($tl));
@@ -1430,7 +1388,7 @@ function opdsByTag($initial, $id, $page) {
 function opdsBySeriesInitial() {
 	global $app;
 
-	$initials = $app->bbs->seriesInitials();
+	$initials = $app->calibre->seriesInitials();
 	$gen = mkOpdsGenerator($app);	
 	$cat = $gen->seriesRootCatalog(NULL, $initials);
 	mkOpdsResponse($app, $cat, OpdsGenerator::OPDS_MIME_NAV);
@@ -1442,7 +1400,7 @@ function opdsBySeriesInitial() {
 function opdsBySeriesNamesForInitial($initial) {
 	global $app;
 
-	$tags = $app->bbs->seriesNamesForInitial($initial);
+	$tags = $app->calibre->seriesNamesForInitial($initial);
 	$gen = mkOpdsGenerator($app);	
 	$cat = $gen->seriesNamesForInitialCatalog(NULL, $tags, $initial);
 	mkOpdsResponse($app, $cat, OpdsGenerator::OPDS_MIME_NAV);
@@ -1458,8 +1416,8 @@ function opdsBySeries($initial, $id, $page) {
 	global $app, $globalSettings;
 
 	$filter = getFilter();
-	$tl = $app->bbs->seriesDetailsSlice($globalSettings['lang'], $id, $page, $globalSettings[PAGE_SIZE], $filter);
-	$books = $app->bbs->titleDetailsFilteredOpds($tl['entries']);
+	$tl = $app->calibre->seriesDetailsSlice($globalSettings['lang'], $id, $page, $globalSettings[PAGE_SIZE], $filter);
+	$books = $app->calibre->titleDetailsFilteredOpds($tl['entries']);
 	$gen = mkOpdsGenerator($app);	
 	$cat = $gen->booksForSeriesCatalog(NULL, $books, $initial, $tl['series'], false,
 		$tl['page'], getNextSearchPage($tl), getLastSearchPage($tl));
@@ -1494,8 +1452,8 @@ function opdsBySearch($index=0) {
 		return;
 	}	
 	$filter = getFilter();
-	$tl = $app->bbs->titlesSliceFilterd($index, $globalSettings[PAGE_SIZE], $filter, $search);	
-	$books = $app->bbs->titleDetailsFilteredOpds($tl['entries']);
+	$tl = $app->calibre->titlesSliceFilterd($index, $globalSettings[PAGE_SIZE], $filter, $search);	
+	$books = $app->calibre->titleDetailsFilteredOpds($tl['entries']);
 	$gen = mkOpdsGenerator($app);
 	$cat = $gen->searchCatalog(NULL, $books, false, 
 		$tl['page'], getNextSearchPage($tl), getLastSearchPage($tl), $search, 
@@ -1525,8 +1483,8 @@ function getFilter() {
 function mkOpdsGenerator($app) {
 	global $appversion, $globalSettings;
 	$gen = new OpdsGenerator($app->request()->getRootUri(), $appversion, 
-		$app->bbs->calibre_dir,
-		date(DATE_ATOM, $app->bbs->calibre_last_modified),
+		$app->calibre->calibre_dir,
+		date(DATE_ATOM, $app->calibre->calibre_last_modified),
 		$globalSettings['l10n']);
 	return $gen;
 }
@@ -1615,7 +1573,6 @@ function title_forbidden($book_details) {
  */
 function getMessageString($id) {
 	global $app, $globalSettings;
-	#$msg = $globalSettings['langa'][$id];
 	$msg = $globalSettings['l10n']->message($id);
 	return $msg;
 }

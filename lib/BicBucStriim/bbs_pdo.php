@@ -60,7 +60,7 @@ class BBSPDO extends \Strong\Provider
             return false;
         }
 
-        $sql = "SELECT * FROM users WHERE username = :username";
+        $sql = "SELECT * FROM user WHERE username = :username";
         $stmt = $this->pdo->prepare($sql);
         $stmt->bindParam(':username', $username);
         $stmt->execute();
