@@ -295,6 +295,12 @@ class BicBucStriim {
 		}
 	}
 
+	/**
+	 * Find a Calibre item.
+	 * @param int 	calibreType 	
+	 * @param int 	calibreId 
+	 * @return 		object, the Calibre item
+	 */
 	public function getCalibreThing($calibreType, $calibreId){
 		return R::findOne('calibrething', 
 			' ctype = :type and cid = :id',
@@ -305,16 +311,37 @@ class BicBucStriim {
 			);
 	}
 
+	/**
+	 * Add a new reference to a Calibre item.
+	 * 
+	 * Calibre items are identified by type, ID and name. ID and name
+	 * are used to find items that can be renamed, like authors.
+	 *
+	 * @param int 		calibreType 	
+	 * @param int 		calibreId 
+	 * @param string 	calibreName
+	 * @return 			object, the Calibre item
+	 */
 	public function addCalibreThing($calibreType, $calibreId, $calibreName) {
 		$calibreThing = R::dispense('calibrething');
 		$calibreThing->ctype = $calibreType;
 		$calibreThing->cid = $calibreId;
 		$calibreThing->cname = $calibreName;
 		$calibreThing->ownArtefact = array();
+		$calibreThing->refctr = 0;
 		$id = R::store($calibreThing);
 		return $calibreThing;
 	}
 
+	/**
+	 * Delete an author's thumbnail image.
+	 *
+	 * Deletes the thumbnail artefact, and then the CalibreThing if that
+	 * has no further references.
+	 *
+	 * @param int 	authorId 	Calibre ID of the author
+	 * @return 		true if deleted, else false
+	 */
 	public function deleteAuthorThumbnail($authorId) {
 		$ret = true;
 		$calibreThing = $this->getCalibreThing(DataConstants::CALIBRE_AUTHOR_TYPE, $authorId);
@@ -323,12 +350,26 @@ class BicBucStriim {
 			if (!is_null($artefact)) {
 				$ret = unlink($artefact->url);
 				unset($calibreThing->ownArtefact[$artefact->id]);
-				R::store($calibreThing);
+				$calibreThing->refctr -= 1;
+				R::trash($artefact);
+				if ($calibreThing->refctr == 0)
+					R::trash($calibreThing);
+				else
+					R::store($calibreThing);
 			}
 		}
 		return $ret;
 	}
 
+	/**
+	 * Change the thumbnail image for an author.
+	 *
+	 * @param int 		authorId 	Calibre ID of the author
+	 * @param string 	authorName 	Calibre name of the author
+	 * @param boolean 	clipped 	true = image should be clipped, else stuffed
+	 * @param string 	file 		File name of the input image
+	 * @return 			string, file name of the thumbnail image, or null
+	 */
 	public function editAuthorThumbnail($authorId, $authorName, $clipped, $file) {
 		$calibreThing = $this->getCalibreThing(DataConstants::CALIBRE_AUTHOR_TYPE, $authorId);
 		if (is_null($calibreThing))
@@ -345,12 +386,18 @@ class BicBucStriim {
 			$artefact = R::dispense('artefact');
 			$artefact->atype = DataConstants::AUTHOR_THUMBNAIL_ARTEFACT;
 			$artefact->url = $fname;
-			$calibreThing->ownArtefact[] = $artefact;			
+			$calibreThing->ownArtefact[] = $artefact;
+			$calibreThing->refctr += 1;
 			R::store($calibreThing);
 		}
 		return $created;
 	}
 
+	/**
+	 * Get the file name of an author's thumbnail image.
+	 * @param int 	authorId 	Calibre ID of the author
+	 * @return 		string, file name of the thumbnail image, or null
+	 */
 	public function getAuthorThumbnail($authorId) {
 		$calibreThing = $this->getCalibreThing(DataConstants::CALIBRE_AUTHOR_TYPE, $authorId);
 		if (is_null($calibreThing)) {

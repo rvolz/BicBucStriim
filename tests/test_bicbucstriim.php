@@ -81,8 +81,6 @@ class TestOfBicBucStriim extends UnitTestCase {
 		$this->assertNull($user->tags);
 		$this->assertNull($user->languages);
 		$this->assertEqual(0, $user->role);
-		echo var_export($user->to_json(),true);
-		echo var_export($user->getProperties(),true);
 	}
 
 	function testGetUser() {
@@ -176,8 +174,10 @@ class TestOfBicBucStriim extends UnitTestCase {
 		$result = $this->bbs->addCalibreThing(DataConstants::CALIBRE_AUTHOR_TYPE, 1, 'Author 1');
 		$this->assertNotNull($result);
 		$this->assertEqual('Author 1', $result->cname);
+		$this->assertEqual(0, $result->refctr);
 		$result2 = $this->bbs->getCalibreThing(DataConstants::CALIBRE_AUTHOR_TYPE, 1);
 		$this->assertEqual('Author 1', $result2->cname);
+		$this->assertEqual(0, $result2->refctr);
 	}
 
 	function testEditAuthorThumbnail() {				
@@ -185,6 +185,7 @@ class TestOfBicBucStriim extends UnitTestCase {
 		$this->assertTrue(file_exists(self::DATA.'/authors/author_1_thm.png'));
 		$result2 = $this->bbs->getCalibreThing(DataConstants::CALIBRE_AUTHOR_TYPE, 1);
 		$this->assertEqual('Author Name', $result2->cname);
+		$this->assertEqual(1, $result2->refctr);
 		$artefacts = $result2->ownArtefact;
 		$this->assertEqual(1, count($artefacts));
 		$result = $artefacts[1];
@@ -207,9 +208,8 @@ class TestOfBicBucStriim extends UnitTestCase {
 		$this->assertTrue($this->bbs->deleteAuthorThumbnail(1));
 		$this->assertFalse(file_exists(self::DATA.'/authors/author_1_thm.png'));
 		$this->assertNull($this->bbs->getAuthorThumbnail(1));
-		$result2 = $this->bbs->getCalibreThing(DataConstants::CALIBRE_AUTHOR_TYPE, 1);
-		$artefacts = $result2->ownArtefact;
-		$this->assertEqual(0, count($artefacts));
+		$this->assertEqual(0, R::count('artefact'));
+		$this->assertEqual(0, R::count('calibrething'));
 	}
 }
 ?>
