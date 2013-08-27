@@ -758,9 +758,7 @@ function del_author_thm($id) {
 	$resp->body($answer);	
 }
 
-function get_author_thm($id) {
-	# code...
-}
+function get_author_thm($id) {}
 
 
 function get_author_notes($id) {}
@@ -962,7 +960,7 @@ function book($id, $file) {
 		$app->notFound();
 		return;
 	}	
-	$bookpath = $app->bbs->titleFile($id, $file);
+	$bookpath = $app->calibre->titleFile($id, $file);
 
 	/** readfile has problems with large files (e.g. PDF) caused by php memory limit
 	 * to avoid this the function readfile_chunked() is used. app->response() is not
@@ -1095,6 +1093,8 @@ function authorDetailsSlice($id, $index=0) {
 	}
 	$author = $tl['author'];
 	$author->thumbnail = $app->bbs->getAuthorThumbnail($id);
+	$author->notes = $app->bbs->authorNote($id);
+	$author->links = $app->bbs->authorLinks($id);
 	$app->render('author_detail.html',array(
 		'page' => mkPage(getMessageString('author_details'), 3, 2),
 		'url' => 'authors/'.$id,	
