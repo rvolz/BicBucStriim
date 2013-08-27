@@ -1,0 +1,760 @@
+---
+# BicBucStriim
+#
+# Copyright 2012-2013 Rainer Volz
+# Licensed under MIT License, see LICENSE
+# 
+# This document is the source file for language specific text messages.
+# Please edit this file to add or change message texts, not source files.
+# 
+# This file is in YAML format, using 2 spaces as indentation.
+# Please make sure to use the same indentation, otherwise the file will 
+# become unusable.
+#
+# Allowed languages are: de, en, fr, nl
+# English is the fallback language, so each entry should have at least
+# an English localization.
+#
+admin:
+  de: Konfiguration
+  en: Configuration
+  fr: Configuration
+  nl: Configuratie
+admin_check_version:
+  de: Auf neue Version prüfen
+  en: Check version
+admin_check_version_legend:
+  de: Prüfen, ob mittlerweile eine neue Version von BicBucStriim vorliegt.
+  en: Check for a new BicBucStriim version
+admin_check_url:
+  de: Gehen Sie zu %s, um die neue Version herunter zu laden
+  en: Visit %s to download it
+admin_idtemplate:
+  de: ID-Vorlage
+  en: ID template
+admin_idtemplate_clear:
+  de: ID-Vorlage löschen
+  en: Clear the ID template
+admin_idtemplate_label:
+  de: Anzeigetext
+  en: Display text
+admin_idtemplate_name:
+  de: Name
+  en: Name
+admin_idtemplate_template:
+  de: URL
+  en: URL
+admin_idtemplates:
+  de: ID-Vorlagen
+  en: ID Templates
+admin_idtemplates_legend:
+  de: Tragen Sie URLs mit dem Ersetzungsparamter <strong>%id%</strong> ein, um automatisch
+    ID-Verweise zu generieren.
+  en: Enter URLs with the replecement parameter <strong>%id%</strong> to autamtically
+    generate ID links.
+admin_invalid_page_size:
+  de: Die eingestellte Seitengröße war ungültig. Sie muss zwischen 1 und 100 liegen.
+  en: The reqeuested page size is invalid. Please choose a value between 1 and 100.
+admin_modified:
+  de: Änderungen vorgenommen
+  en: Changes applied
+admin_modify_error:
+  de: Fehler beim Speichern der Änderungen
+  en: Error while applying changes
+admin_new_version:
+  de: Die neue Version %s ist verfügbar. Sie haben Version %s
+  en: New version %s is available, you have %s
+admin_new_version_error:
+  de: Versionsinformationen konnten nicht geladen werden. Bitte prüfen Sie die manuell.
+  en: Unable to load new version information. Please check manually.
+admin_no_new_version:
+  de: Die Version %s ist aktuell
+  en: Your version %s is current
+admin_no_selection:
+  de: -- keine Auswahl --
+  en: -- no selection --
+admin_pw1:
+  de: Admin Passwort
+  en: Admin Password
+  fr: Mot de passe Administrateur
+  nl: Admin Wachtwoord
+admin_pw2:
+  de: Admin Passwort
+  en: Admin Password
+  fr: Mot de passe Administrateur
+  nl: Admin Wachtwoord
+admin_pw_expl:
+  de: ! 'Optional: Tragen sie hier ein Passwort ein, um den Zugang zu den Admin-Einstellungen
+    einzuschränken.'
+  en: ! 'Optional: Enter a password to protect the admin page from changes by others.'
+  fr: ! 'Option: Introduisez une mot de passe administrateur pour contrôler l\''accès
+    à la configuration'
+  nl: ! 'Optioneel: Voer een wachtwoord in om de admin pagina te beschermen tegen
+    wijzigingen door anderen'
+admin_pw_required1:
+  de: Fehlendes Admin-Passwort
+  en: No Admin password set
+  fr: Pas de mot de passe admin défini
+  nl: Geen Admin Wachtwoord ingesteld
+admin_pw_required2:
+  de: Sie wollen das Admin-Passwort für den Downloadschutz verwenden, haben aber kein
+    gültiges Passwort eingetragen. Bitte tragen Sie eines ein.
+  en: You are trying to use the admin password for download protection without a valid
+    admin password. Please enter a valid admin password.
+  fr: Vous essayez d\'utilizer le mot de passe admin pour télécharger des livres protégés
+    par un mot de passe. Utilisez le bon mot de passe.
+  nl: U probeert gebruik te maken van het admin wachtwoord voor downloadbescherming,
+    zonder een geldige admin wachtwoord. Vul een geldig admin wachtwoord in.
+admin_short:
+  de: Admin
+  en: Admin
+  fr: Admin
+  nl: Admin
+admin_mailer:
+  de: Mailversand
+  en: Sending mail
+admin_mailer_expl:
+  de: ! 'Wählen sie die Versandart, falls sie Bücher per Mail versenden möchten. Für
+    SMTP sind weitere Einstellungen nötig:'
+  en: ! 'Select the mail transport mechanism, if you want to send books via mail.
+    SMTP needs further configuration: '
+admin_mailer_smtp:
+  de: SMTP
+  en: SMTP
+admin_mailer_sendmail:
+  de: Sendmail
+  en: Sendmail
+admin_mailer_mail:
+  de: PHP mail
+  en: PHP mail
+admin_mail:
+  de: E-Mail Konfiguration
+  en: Mail configuration
+admin_mail_legend:
+  de: Konfigurationsangaben für den Mailversand per SMTP
+  en: Configuration details for sending mails via SMTP
+admin_smtpenc:
+  de: Verschlüsselung
+  en: Encryption
+admin_smtpenc_expl:
+  de: Verschlüsselungsarten für den Mailversand
+  en: Encryption methods for communication with the SMTP server
+admin_smtpenc_none:
+  de: Keine
+  en: None
+admin_smtpenc_ssl:
+  de: SSL
+  en: SSL
+admin_smtpenc_tls:
+  de: TLS
+  en: TLS
+admin_smtpport:
+  de: Port
+  en: Port
+admin_smtpport_expl:
+  de: Der Port für den SMTP-Verkehr, normalerweise 25
+  en: Port number for SMTP traffic, default is 25
+admin_smtpserver:
+  de: Servername
+  en: Server name
+admin_smtpserver_expl:
+  de: Name oder Adresse des SMTP-Servers
+  en: Name or address of the SMTP server
+admin_smtpusername_expl:
+  de: Der Benutzername für den SMTP-Server
+  en: User name for the SMTP server
+admin_smtpuserpw_expl:
+  de: ! 'Das Passwort für den SMTP-Server '
+  en: ! 'Password for the SMTP server '
+admin_username:
+  de: Benutzername
+  en: User name
+admin_userpw:
+  de: Passwort
+  en: Password
+admin_userpw_expl:
+  de: Plichtfeld, darf nicht leer sein
+  en: Required, must not be empty
+admin_userlangs_expl:
+  de: Optional, schränkt die Anzeige auf Bücher mit dieser Sprache ein
+  en: Optional, show only books with this language
+admin_usertags_expl:
+  de: Optional, schließt Bücher mit diesem Schlagwort von der Anzeige aus
+  en: Optional, don\'t show books with this tag
+admin_users:
+  de: Benutzer
+  en: Users
+admin_users_legend1:
+  de: Neuen Benutzer hinzufügen
+  en: Add a user
+admin_users_legend2:
+  de: Benutzerkonten ändern oder löschen
+  en: Modify or delete an account
+admin_users_delete:
+  de: Benutzerkonto löschen
+  en: Delete user account
+authors:
+  de: Autoren
+  en: Authors
+  fr: Auteurs
+  nl: Auteurs
+author_details:
+  de: Details Autor
+  en: Author Details
+  fr: Détails auteurs
+  nl: Auteur Details
+author_links:
+  de: Verweise
+  en: Links
+author_links_expl:
+  de: Interessante Verweise zum Autor eingeben oder löschen.
+  en: Add or delete links regarding the author.
+author_links_text:
+  de: Name
+  en: Name
+author_links_url:
+  de: URL
+  en: URL
+author_metadata:
+  de: Metadaten
+  en: Meta data
+author_notes:
+  de: Notizen
+  en: Notes
+author_notes_expl:
+  de: Notizen zum Autor ändern oder löschen. Eingabe im Markdown-Format.
+  en: Edit or delete notes about the author in the Markdown format.
+author_thumbnail:
+  de: Bild
+  en: Thumbnail Image
+author_thumbnail_expl:
+  de: Ein Autorenbild hochladen oder löschen. Bitte kleine Bilder verwenden, sie werden
+    auf 160*160 Pixel reduziert.
+  en: Upload or delete an author image. Please use small files, the image will be
+    reduced to 160*160 pixels.
+back:
+  de: Zurück
+  en: Back
+  fr: Retour
+  nl: Terug
+booksby:
+  de: Bücher von
+  en: Books by
+  fr: Livres par
+  nl: Boeken door
+booksbytag:
+  de: Bücher mit Schlagwort
+  en: Books tagged with
+  fr: Livres par tag
+  nl: Boeken gelabeld met
+booksbyseries:
+  de: Bücher der Reihe
+  en: Books in series
+  fr: Livres par série
+  nl: Boeken in de serie
+book_details:
+  de: Buchdetails
+  en: Book Details
+  fr: Détails des livres
+  nl: Boek Details
+calibre_dir1:
+  de: Calibre Bibliotheksverzeichnis
+  en: Calibre library path
+  fr: Chemin vers le répertoire Calibre
+  nl: Calibre bibliotheekpad
+calibre_dir2:
+  de: ! 'Zum Beispiel: /volume1/books'
+  en: ! 'Example: /volume1/books'
+  fr: ! 'Exemple: /volume1/books'
+  nl: ! 'Voorbeeld: /volume1/books'
+calibre_dir_expl:
+  de: Der Pfad zu ihrer Calibre-Bibliothek. Tragen sie hier den vollen Verzeichnisnamen
+    ein.
+  en: The path to your Calibre library. Please enter the full path/directory name.
+  fr: Le chemin vers votre répertoire où se trouve votre bibliothèque Calibre. Introduisez
+    un nom complet chemin/nom_répertoire
+  nl: Het pad naar uw Calibre bibliotheek. Geef het volledige pad / directory naam.
+cancel:
+  de: Abbrechen
+  en: Cancel
+changes_saved:
+  de: Änderungen gespeichert
+  en: Changes saved
+  fr: Changements sauvegardés
+  nl: Wijzigingen opgeslagen
+check_access:
+  de: Freischalten
+  en: Submit Password
+  fr: Soumettre un mot de passe
+  nl: Verzend wachtwoord
+check_access_info:
+  de: Diese Buch ist passwortgeschützt. Bitte freischalten, um es herunter zu laden.
+  en: This book is protected. Please enter your password to enable the book download.
+  fr: Ce livre est protégé. Introduisez le mot de passe pour télécharger le livre.
+  nl: Dit boek is beschermd. Voer uw wachtwoord in om het mogelijk te maken dit boek
+    te downloaden.
+check_installation:
+  de: Installation überprüfen?
+  en: Check installation?
+comment:
+  de: Beschreibung
+  en: Description
+  fr: Description
+  nl: Beschrijving
+custom_columns:
+  de: Eigene Calibre-Daten
+  en: Custom Calibre Data
+delete:
+  de: Löschen
+  en: Delete
+display_app_name:
+  de: Alternativer Titel
+  en: Alternative page title
+display_app_name_expl:
+  de: Wenn die Anwendung einen aussagekräftigeren Namen anzeigen soll. Wird im Seitentitel
+    angezeigt.
+  en: In case you would like to give your Calibre library a more descriptive name.
+    Will be displayed in page titles.
+dl30:
+  de: Die neuesten
+  en: Most recent
+  fr: Les plus récents livres
+  nl: Meest recente
+download:
+  de: Herunterladen
+  en: Download
+  fr: Télécharger
+  nl: Download
+edit:
+  de: Bearbeiten
+  en: Edit
+error:
+  de: Fehler
+  en: Error
+  fr: Erreur
+  nl: Fout
+error_kindle_send:
+  de: Ein Fehler ist aufgetreten. Überprüfen Sie die E-Mail-Adresse.
+  en: Something went wrong. Please check the e-mail address.
+error_no_access:
+  de: Sie haben keine Zugangsberechtigung.
+  en: You don\'t have sufficient access rights.
+glob_dl_expl:
+  de: Wenn sie ihr Netz mit anderen Benutzern teilen, können sie hier den Passwort-Schutz
+    fürs Herunterladen der Bücher aktivieren. Falls sie schon ein Admin-Passwort vergeben
+    haben, kann das auch fürs Herunerladen genutzt werden. Oder sie erstellen einfach
+    ein neues, separates Passwort.
+  en: If you are sharing your network with others you could activate a password protection
+    for book downloads. If you already have an admin password you can reuse that,
+    or simply specify a new, separate one.
+  fr: Si vous votre réseau est ouvert au public, vous pouvez activer un mot de passe
+    pour protéger le téléchargement de vos livres. Si vous avez déjà un mot de passe
+    administrateur, vous pouvez le réutiliser ou en définir un nouveau, différent.
+  nl: Wanneer u het netwerk met anderen deelt kunt u wachtwoordbescherming voor het
+    downloaden van boeken activeren. Als u al een adminwachtwoord heeft u kunt u deze
+    hergebruiken, of maak een apart wachtwoord aan voor downloads
+glob_dl_legend:
+  de: Herunterladen per Passwort schützen
+  en: Protect downloads with a password
+  fr: Protéger les téléchargements avec un mot de passe
+  nl: Downloads beveiligen met een wachtwoord
+glob_dl_pw1:
+  de: Passwort fürs Herunterladen
+  en: Password for downloads
+  fr: Mot de passe pour les téléchargements
+  nl: Wachtwoord voor downloads
+glob_dl_pw2:
+  de: Passwort fürs Herunterladen
+  en: Download password
+  fr: Mot de passe téléchargement
+  nl: Download wachtwoord
+glob_dl_radio1:
+  de: Nein, nicht nötig
+  en: No, not necessary
+  fr: Non, pas nécessaire
+  nl: Nee, niet noodzakelijk
+glob_dl_radio2:
+  de: Ja, Admin-Passwort verwenden
+  en: Yes, use admin password
+  fr: Oui, utilisez le mot de passe admin
+  nl: Ja, gebruik admin wachtwoord
+glob_dl_radio3:
+  de: Ja, anderes Passwort angeben (unten eingeben)
+  en: Yes, use a separate password (enter below)
+  fr: Oui, utilisez un mot de passe différent (introduisez-le plus bas)
+  nl: Ja, gebruik een apart wachtwoord (vul hieronder in)
+home:
+  de: Start
+  en: Home
+  fr: Accueil
+  nl: Home
+idlinks:
+  de: ID-Verweise
+  en: ID links
+invalid_calibredir1:
+  de: Ungültiges Calibre-Verzeichnis
+  en: Invalid Calibre directory
+  fr: Répertoire vers la bibliothèque Calibre invalide
+  nl: Ongeldige Calibre map
+invalid_calibredir2:
+  de: Auf das angegebene Calibre-Verzeichnis kann nicht zugegriffen werden. Ist es
+    ein Calibre-Verzeichnis? Passen die Zugriffsrechte? Existiert das angegebene Verzeichnis?
+  en: The configured Calibre directory cannot be used. Is it really a Calibre directory?
+    Is it readable? Does it exist?
+  fr: ! 'La base de données Calibre configurée ne peut pas être utilisée. Est-ce le
+    bon répertoire ? LEs droits d\''accès sont-ils corrects ?  Existe-t-elle ? '
+  nl: De geconfigureerde Calibre directory kan niet worden gebruikt. Is het echt een
+    Calibre directory? Is het leesbaar? Bestaat het?
+invalid_password:
+  de: Ungültiges Passwort
+  en: Invalid Password
+  fr: Mot de passe invalide
+  nl: Ongeldig wachtwoord
+invalid_password2:
+  de: Das eingegebene Passwort scheint ungültig zu sein. Bitte versuchen Sie es mit
+    einem anderen.
+  en: This password is not valid. Please use a different one.
+  fr: Ce mot de passe n\'est pas valide. Veuillez réessayer.
+  nl: Dit wachtwoord is niet geldig. Gebruik een andere.
+invalid_email_address:
+  de: Bitte geben Sie eine gültige Email-Adresse ein.
+  en: Please enter a valid e-mail address.
+kindle_expl:
+  de: Aktiviert die Funktion zum Senden eines Buches an die Kindle E-Mail-Adresse
+    (@kindle.com).
+  en: Allows sending books to a Kindle e-mail address (@kindle.com).
+kindle_expl2:
+  de: Diese E-Mail-Adresse muss in Ihrem Amazon Konto als bestätigter Absender eingetragen
+    sein.
+  en: This e-mail address needs to be added as an approved sender to your Amazon account.
+kindle_enable:
+  de: Senden-an-Kindle aktivieren?
+  en: Allow Send-To-Kindle?
+kindle_from_email1:
+  de: E-Mail Absender
+  en: From-address for e-mails
+kindle_from_email2:
+  de: E-Mail Adresse
+  en: E-mail address
+kindle_to_email:
+  de: E-Mail-Adresse (@kindle.com)
+  en: Kindle e-mail address (@kindle.com)
+language:
+  de: Sprache
+  en: Language
+  fr: Langue
+  nl: Sprak
+login:
+  de: Anmelden
+  en: Login
+logout:
+  de: Abmelden
+  en: logout
+logout_expl:
+  de: Sie wurden abgemeldet
+  en: Your logged out
+mdb_error:
+  de: ! 'Calibre Datenbank existiert nicht oder konnte nicht gelesen werden: '
+  en: ! 'Calibre database not found or not readable: '
+  fr: ! 'Base de données Calibre database non trouvée ou illisible: '
+  nl: ! 'Calibre database niet gevonden of is niet leesbaar:'
+no_config:
+  de: Konfigurations-Datenbank data/data.db nicht gefunden oder fehlerhaft. Bitte
+    laden Sie eine Sicherungskopie oder installieren Sie neu.
+  en: Configuration database data/data.db not found or in bad shape. Please load a
+    backup or repeat the installation.
+not_found1:
+  de: Nicht gefunden!
+  en: Not found!
+  fr: Non trouvé !
+  nl: Niet gevonden!
+not_found2:
+  de: Die angeforderte Ressource konnte nicht gefunden werden. Dies sollte eigentlich
+    nicht passieren. Bitte prüfen Sie, ob ihre Calibre-Datenbank defekt ist.
+  en: The requested ressource is not available. This should not happen. Please check
+    your Calibre library for defects.
+  fr: La resource demandée n\'est pas disponible. Cela ne devrait pas se produire...
+    Vérifier votre base de donnée Calibre.
+  nl: De gevraagde ressource is niet beschikbaar. Dit mag niet gebeuren. Controleer
+    uw Calibre bibliotheek voor defecten.
+opds_authors:
+  de: ! 'Autoren: '
+  en: ! 'Authors: '
+  nl: ! 'Auteurs: '
+opds_books:
+  de: ! 'Bücher: '
+  en: ! 'Books: '
+  nl: ! 'Boeken: '
+opds_series:
+  de: ! 'Reihen: '
+  en: ! 'Series: '
+  nl: ! 'Series: '
+opds_tags:
+  de: ! 'Schlagwörter: '
+  en: ! 'Tags: '
+  nl: ! 'Labels: '
+opds_root_title:
+  de: BicBucStriim Hauptkatalog
+  en: BicBucStriim Root Catalog
+  nl: BicBucStriim Basis Catalogus
+opds_root_subtitle:
+  de: Der Führer zu ihrer Calibre-Bibliothek
+  en: The root catalog to the contents of your Calibre library
+  nl: De basis catalogus naar de inhoud van uw Calibre bibliotheek
+opds_by_author1:
+  de: Nach Autor
+  en: By Author
+  nl: Op Auteur
+opds_by_author2:
+  de: Alle Bücher nach Autoren geordnet
+  en: All books sorted by author
+  nl: Alle boeken gesorteerd op auteur
+opds_by_author3:
+  de: Autoren nach Initialen
+  en: Authors by their initials
+  nl: Auteurs op initiaal
+opds_by_author4:
+  de: ! 'Alle Autoren für '
+  en: ! 'All Authors for '
+  nl: ! 'Alle Autheurs voor '
+opds_by_author5:
+  de: Autorenliste
+  en: Authors list
+  nl: Autheurs lijst
+opds_by_author6:
+  de: ! 'Alle Bücher von '
+  en: ! 'All books by '
+  nl: ! 'Alle boeken door '
+opds_by_newest1:
+  de: Die neuesten
+  en: By Newest
+  nl: Op Nieuwste
+opds_by_newest2:
+  de: Die neuesten Titel
+  en: The 30 most recent titles
+  nl: De 30 meest recente titels
+opds_by_search1:
+  de: Nach Suche
+  en: By Search
+  nl: Op zoekopdracht
+opds_by_search2:
+  de: Ergebnisse der Suche
+  en: Search results
+  nl: Zoek resultaten
+opds_by_search3:
+  de: Büchersuche bei BicBucStriim
+  en: Search for books on BicBucStriim
+  nl: oek naar boeken op BicBucStriim
+opds_by_series1:
+  de: Nach Buchreihe
+  en: By Series
+  nl: Op Series
+opds_by_series2:
+  de: Reihen und ihre Titel
+  en: Series and their titles
+  nl: Series en hun titels
+opds_by_series3:
+  de: Reihen nach Initialen
+  en: Series by their initials
+  nl: Series op initialen
+opds_by_series4:
+  de: ! 'Alle Reihen für '
+  en: ! 'All series for '
+  nl: ! 'Alle series voor '
+opds_by_series5:
+  de: Reihenliste
+  en: Series list
+  nl: Series lijst
+opds_by_series6:
+  de: ! 'Alle Bücher für Buchreihe '
+  en: ! 'All books for series '
+  nl: ! 'Alle boeken voor series '
+opds_by_title1:
+  de: Nach Titel
+  en: By Title
+  nl: Op Titel
+opds_by_title2:
+  de: Alle Bücher nach Titel geordnet
+  en: All books sorted by title
+  nl: Alle boeken gesorteerd op titel
+opds_by_tag1:
+  de: Nach Schlagwort
+  en: By Tag
+  nl: Op Label
+opds_by_tag2:
+  de: Alle Bücher nach Schlagwort geordnet
+  en: All books sorted by tag
+  nl: Alle boeken gesorteerd op label
+opds_by_tag3:
+  de: Schlagwörter nach Initialen
+  en: Tags by their initials
+  nl: Labels op initialen
+opds_by_tag4:
+  de: ! 'Alle Schlagwörter für '
+  en: ! 'All tags for '
+  nl: ! 'Alle labels voor '
+opds_by_tag5:
+  de: Schlagwortliste
+  en: Tags list
+  nl: Label lijst
+opds_by_tag6:
+  de: ! 'Alle Bücher für Schlagwort '
+  en: ! 'All books for tag '
+  nl: ! 'Alle boeken voor label '
+page_size:
+  de: Seitengröße
+  en: Page size
+  nl: paginaformaat
+page_size_expl:
+  de: Anzahl der Elemente in einer Liste. Erhöhen Sie den Wert, um mehr Titel, Autoren,
+    ... pro Seite anzuzeigen. Standard ist 30, Maximum 100
+  en: Number of elements in a list. Increase to show more titles, authors ... per
+    page. Default is 30, max is 100
+  nl: Aantal elementen in een lijst. Te verhogen tot meer titels, auteurs... per pagina.
+    Standaard is 30, maximum is 100
+pagination_next:
+  de: vor
+  en: next
+  fr: suiv.
+  nl: volgende
+pagination_page:
+  de: Seite
+  en: Page
+  fr: Page
+  nl: Pagina
+pagination_prev:
+  de: zurück
+  en: previous
+  fr: préc.
+  nl: vorige
+pagination_search:
+  de: Suche
+  en: Search
+  fr: Recherche
+  nl: Zoeken
+pagination_search_lbl:
+  de: Suchen
+  en: Search
+  fr: Recherche
+  nl: Zoeken
+pagination_search_ph:
+  de: Suchen ...
+  en: Search ...
+  nl: Zoeken ...
+password_dialog_titel:
+  de: Passwort
+  en: Password
+  nl: Paswoord
+presskey:
+  de: Taste drücken, um das Buch im betreffenden Format herunter zu laden.
+  en: Press a button to download the book in the respective format.
+  fr: Cliquez sur le bouton pour télécharger le livre dans le format correspondant.
+  nl: Druk op een knop om het boek in het opgegeven formaat te downloaden.
+presskey2:
+  de: Geben Sie Ihre Kindle E-Mail-Adresse ein, um das Buch an ihr Gerät zu senden.
+  en: Enter your Kindle e-mail address to sync this book to your device.
+presskey3:
+  de: ! ' muss als erlaubter Absender in Ihrem Amazon Account eingetragen sein.'
+  en: ! ' needs to be added as an approved sender to your Amazon account.'
+published:
+  de: Veröffentlicht
+  en: Published
+  fr: Publié
+  nl: Gepubliceerd
+save:
+  de: Speichern
+  en: Save
+  fr: Sauver
+  nl: Opslaan
+send_now:
+  de: Jetzt senden
+  en: Send now
+send_success:
+  de: Das Buch wurde versendet!
+  en: The book has been sent!
+send_to_kindle:
+  de: Senden an Kindle
+  en: Send to Kindle
+series:
+  de: Reihen
+  en: Series
+  fr: Séries
+  nl: Series
+series_details:
+  de: Details Reihe
+  en: Series Details
+  fr: Details de la Série
+  nl: Serie Details
+switch_yes:
+  de: Ja
+  en: 'Yes'
+  fr: Oui
+  nl: Ja
+switch_no:
+  de: Nein
+  en: 'No'
+  fr: Non
+  nl: Nee
+tag:
+  de: Schlagwort
+  en: Tag
+tags:
+  de: Schlagwörter
+  en: Tags
+  fr: Tags
+  nl: Labels
+tag_details:
+  de: Details Schlagwort
+  en: Tag Details
+  fr: Détails du Tag
+  nl: Label Details
+tag_protect:
+  de: Selektiver Download-Schutz durch Schlagworte?
+  en: Selective download protection using tags?
+  nl: Bescherming via label?
+tag_protect_field:
+  de: Schlagwort eingeben
+  en: Enter tag for selective download protection
+  nl: Selectie op label
+tag_protect_field_exp1:
+  de: Geben Sie hier das Schlagwort ein, mit dem Titel vor dem Herunterladen geschützt
+    werden sollen.
+  en: Choose a tag that will be used for selective download protection.
+  nl: Plaats hier de label die moet worden beschermd
+tag_protect_expl:
+  de: Mit dieser Option kann der Dwonload-Schutz auf Bücher mit dem angegebenen Schlagwort
+    beschränkt werden. Alle anderen Titel können ohne Passwort heruntergeladen werden.
+  en: If this is activated, only books with the selected tag will be password-protected.
+    All other books can be downloaded without password.
+  nl: Indien ingeschakeld, zullen de boeken met onderstaand label worden beveiligd.
+    Let op! Andere boeken zijn dan te downloaden.
+thumb_gen_clipped:
+  de: Vorschaubilder beschneiden?
+  en: Clip thumbnails?
+  fr: Découper les miniatures?
+  nl: Clip thumbnails?
+thumb_gen_clipped_expl:
+  de: Wenn eingeschaltet, werden die Ränder von Vorschaubilder abgeschnitten, um mehr
+    Details zu liefern.
+  en: If switched on, the edges of thumbnails will be clipped to show more details.
+  fr: Si activé, les bords de vignettes sera ramenée à montrer plus de détails.
+  nl: Indien ingeschakeld, zullen de randen van de miniaturen worden geknipt om meer
+    details te zien
+titles:
+  de: Bücher
+  en: Books
+  fr: Livres
+  nl: Boeken
+unknown_error1:
+  de: Unbekannter Fehler
+  en: Unknown Error
+  fr: Erreur inconnue
+  nl: Onbekende Fout
+unknown_error2:
+  de: Ein bisher unbekannter Fehler wurde gemeldet.
+  en: An unknown error occured.
+  fr: Une erreur s\'est produite
+  nl: Er is een onbekende fout opgetreden.
+upload:
+  de: Hochladen
+  en: Upload

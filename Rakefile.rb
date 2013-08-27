@@ -11,6 +11,7 @@ require 'less'
 require 'fileutils'
 require 'sqlite3'
 require 'json'
+require 'yaml'
 
 APPNAME = 'BicBucStriim'
 VERSION = '1.2.0-alpha'
@@ -101,7 +102,7 @@ task :itest_down do |t|
 end
 
 desc "Deploy the current code for testing to the VM dirs"
-task :itest_deploy => [:lessc, :package2] do |t|    
+task :itest_deploy => [:lessc, :gen_l18n, :package2] do |t|    
   code_target = "./tests/work/src"
   lib_target = "./tests/work/calibre"
 
@@ -157,6 +158,61 @@ task :install_version_info do |t|
   sh "scp version.json projekte.textmulch.de:~/tm_projekte/bicbucstriim/version.json"
   rm 'version.json'
 end
+
+desc "Generate the message file langs.php"
+task :gen_l18n do |t|
+  msgs = YAML.load_file("messages.yml")
+  php = File.new('lib/BicBucStriim/langs.php', 'w')
+  php << "<?php\n"
+  php << "# Generated file. Please don\'t edit here,\n"
+  php << "# edit messages.yml instead. \n"
+  php << "#\n"
+  ['de', 'en', 'fr', 'nl'].each do |lang|
+    php << "$lang#{lang} = array(\n"
+    msgs.each do |msg, locs|      
+      php << "'#{msg}' => '#{locs[lang]}',\n" unless locs[lang].nil?
+    end
+    php << ");\n"
+    php << "\n"
+  end
+  php << "?>\n"
+  php.close
+end
+
+desc "import"
+task :importi18n do |t|
+  content = Hash.new
+  php = File.open('lib/BicBucStriim/langs.php', 'r')
+  state = 0
+  while line = php.gets
+    case state
+    when 0
+      match = /\$lang(de|en|fr|nl)/.match(line)
+      if (match)
+        state = 1
+        lang = match[1]
+      end
+      next
+    when 1
+      match = /'(.+)' => '(.+)',/.match(line)
+      if (match)
+        #puts "#{match[1]} #{match[2]}"
+        if content[match[1]].nil?
+          content[match[1]] = {lang => match[2]}
+        else
+          content[match[1]][lang] = match[2]
+        end
+      else
+        if (/\);/.match(line))
+          state = 0
+        end
+      end
+    end
+  end
+  php.close
+  File.open('langs.yml', 'w') {|f| YAML.dump(content, f)}
+end
+  
 
 task :default => [:clobber, :package2]
 
