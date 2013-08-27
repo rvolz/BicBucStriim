@@ -19,8 +19,6 @@ class BicBucStriim {
 
 	# bbs sqlite db
 	var $mydb = NULL;
-	# calibre sqlite db
-	var $calibre = NULL;
 	# calibre library dir
 	var $calibre_dir = '';
 	# calibre library file, last modified date
@@ -459,6 +457,136 @@ class BicBucStriim {
 		return $cleared;
 	}
 
+	/**
+	 * Return all links defined for an author.
+	 * @param int 	authorId 	Calibre ID for the author
+	 * @return array 	author links
+	 */
+	public function authorLinks($authorId) {
+		$links = array();
+		$calibreThing = $this->getCalibreThing(DataConstants::CALIBRE_AUTHOR_TYPE, $authorId);
+		if (!is_null($calibreThing)) {
+			$links = $calibreThing->getAuthorLinks();
+		}
+		return $links;
+	}	
+
+	/**
+	 * Add a link for an author.
+	 * @param int 		authorId 	Calibre ID for author
+	 * @param string 	authorName 	Calibre name for author
+	 * @param string 	label 		link label
+	 * @param string 	url 		link url
+	 * @return object 	created author link
+	 */
+	public function addAuthorLink($authorId, $authorName, $label, $url) {
+		$calibreThing = $this->getCalibreThing(DataConstants::CALIBRE_AUTHOR_TYPE, $authorId);
+		if (is_null($calibreThing))
+			$calibreThing = $this->addCalibreThing(DataConstants::CALIBRE_AUTHOR_TYPE, $authorId, $authorName);		
+		$link = R::dispense('link');
+		$link->ltype = DataConstants::AUTHOR_LINK;
+		$link->label = $label;
+		$link->url = $url;
+		$calibreThing->ownLink[] = $link;
+		$calibreThing->refctr += 1;
+		R::store($calibreThing);
+		return $link;
+	}
+
+	/**
+	 * Delete a link from the collection defined for an author.
+	 * @param int 	authorId 	Calibre ID for author
+	 * @param int 	linkId 		ID of the author link
+	 * @return boolean 			true if the link was deleted, else false
+	 */
+	public function deleteAuthorLink($authorId, $linkId) {
+		$ret = false;
+		$calibreThing = $this->getCalibreThing(DataConstants::CALIBRE_AUTHOR_TYPE, $authorId);
+		if (!is_null($calibreThing)) {
+			$link = $calibreThing->ownLink[$linkId];
+			if (!is_null($link)) {
+				unset($calibreThing->ownLink[$linkId]);
+				$calibreThing->refctr -= 1;
+				R::trash($link);
+				if ($calibreThing->refctr == 0)
+					R::trash($calibreThing);
+				else
+					R::store($calibreThing);
+			}
+			$ret = true;
+		}
+		return $ret;
+	}
+
+	/**
+	 * Get the note text fro an author.
+	 * @param int 	authorId 	Calibre ID of the author
+	 * @return 		string 		note text or null
+	 */
+	public function authorNote($authorId) {
+		$calibreThing = $this->getCalibreThing(DataConstants::CALIBRE_AUTHOR_TYPE, $authorId);
+		if (is_null($calibreThing)) {
+			return null;
+		} else {
+			return $calibreThing->getAuthorNote();
+		}	
+	}
+
+	/**
+	 * Set the note text for an author.
+	 * @param int 		authorId 	Calibre ID for author
+	 * @param string 	authorName 	Calibre name for author
+	 * @param string 	mime 		mime type for the note's content
+	 * @param string 	noteText	note content
+	 * @return object 	created/edited note
+	 */
+	public function editAuthorNote($authorId, $authorName, $mime, $noteText) {
+		$calibreThing = $this->getCalibreThing(DataConstants::CALIBRE_AUTHOR_TYPE, $authorId);
+		if (is_null($calibreThing))
+			$calibreThing = $this->addCalibreThing(DataConstants::CALIBRE_AUTHOR_TYPE, $authorId, $authorName);		
+		$note = $calibreThing->getAuthorNote();
+		if (is_null($note)) {
+			$note = R::dispense('note');
+			$note->ntype = DataConstants::AUTHOR_NOTE;
+			$note->mime = $mime;
+			$note->ntext = $noteText;
+			$calibreThing->ownNote[] = $note;
+			$calibreThing->refctr += 1;
+			R::store($calibreThing);			
+		} else {
+			$note->mime = $mime;
+			$note->ntext = $noteText;
+			R::store($note);						
+		}
+		return $note;
+	}
+
+	/**
+	 * Delete the note for an author
+	 * @param int 	authorId 	Calibre ID for author
+	 * @return boolean 			true if the note was deleted, else false
+	 */
+	public function deleteAuthorNote($authorId) {
+		$ret = false;
+		$calibreThing = $this->getCalibreThing(DataConstants::CALIBRE_AUTHOR_TYPE, $authorId);
+		if (!is_null($calibreThing)) {
+			$note = $calibreThing->getAuthorNote();
+			if (!is_null($note)) {
+				unset($calibreThing->ownNote[$note->id]);
+				$calibreThing->refctr -= 1;
+				R::trash($note);
+				if ($calibreThing->refctr == 0)
+					R::trash($calibreThing);
+				else
+					R::store($calibreThing);
+			}
+			$ret = true;
+		}
+		return $ret;
+	}
+
+
+	############################### internal stuff ##############################################
 
 	/**
 	 * Create a square thumbnail by clipping the largest possible square from the cover

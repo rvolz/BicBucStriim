@@ -196,10 +196,13 @@ class TestOfBicBucStriim extends UnitTestCase {
 
 	function testGetAuthorThumbnail() {				
 		$this->assertTrue($this->bbs->editAuthorThumbnail(1, 'Author Name', true, 'tests/fixtures/author1.jpg'));
+		$this->assertTrue($this->bbs->editAuthorThumbnail(2, 'Author Name', true, 'tests/fixtures/author1.jpg'));
 		$result = $this->bbs->getAuthorThumbnail(1);
 		$this->assertNotNull($result);
 		$this->assertEqual(DataConstants::AUTHOR_THUMBNAIL_ARTEFACT, $result->atype);
 		$this->assertEqual(self::DATA.'/authors/author_1_thm.png', $result->url);
+		$result = $this->bbs->getAuthorThumbnail(2);
+		$this->assertNotNull($result);
 	}
 
 	function testDeleteAuthorThumbnail() {				
@@ -211,6 +214,42 @@ class TestOfBicBucStriim extends UnitTestCase {
 		$this->assertEqual(0, R::count('artefact'));
 		$this->assertEqual(0, R::count('calibrething'));
 	}
+
+	function testAuthorLinks() {
+		$this->assertEqual(0, count($this->bbs->authorLinks(1)));
+		$this->bbs->addAuthorLink(2, 'Author 1', 'google', 'http://google.com/1');
+		$this->bbs->addAuthorLink(1, 'Author 2', 'amazon', 'http://amazon.com/2');
+		$links = $this->bbs->authorLinks(1);
+		$this->assertEqual(2, R::count('link'));
+		$this->assertEqual(1, count($links));
+		$this->assertEqual(DataConstants::AUTHOR_LINK, $links[0]->ltype);
+		$this->assertEqual('amazon', $links[0]->label);
+		$this->assertEqual('http://amazon.com/2', $links[0]->url);
+		$this->assertEqual(2, $links[0]->id);
+		$this->assertTrue($this->bbs->deleteAuthorLink(1, 2));
+		$this->assertEqual(0, count($this->bbs->authorLinks(1)));
+		$this->assertEqual(1, R::count('link'));
+	}
+
+	function testAuthorNote() {
+		$this->assertNull($this->bbs->authorNote(1));
+		$this->bbs->editAuthorNote(2, 'Author 1', 'text/plain', 'Goodbye, goodbye!');
+		$this->bbs->editAuthorNote(1, 'Author 2', 'text/plain', 'Hello again!');
+		$this->assertEqual(2, R::count('note'));
+		$note = $this->bbs->authorNote(1);
+		$this->assertNotNull($note);
+		$this->assertEqual(DataConstants::AUTHOR_NOTE, $note->ntype);
+		$this->assertEqual('text/plain', $note->mime);
+		$this->assertEqual('Hello again!', $note->ntext);
+		$this->assertEqual(2, $note->id);		
+		$note = $this->bbs->editAuthorNote(1, 'Author 2', 'text/markdown', '*Hello again!*');
+		$this->assertEqual('text/markdown', $note->mime);
+		$this->assertEqual('*Hello again!*', $note->ntext);
+		$this->assertTrue($this->bbs->deleteAuthorNote(1, 2));
+		$this->assertEqual(1, R::count('note'));
+	}
+
+
 }
 ?>
 

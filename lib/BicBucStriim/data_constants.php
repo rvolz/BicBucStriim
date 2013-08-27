@@ -14,6 +14,12 @@ class DataConstants {
 
 	// Artefact types
 	const AUTHOR_THUMBNAIL_ARTEFACT = 1;
+
+	// Link types
+	const AUTHOR_LINK = 1;
+
+	// Note types
+	const AUTHOR_NOTE = 1;	
 }
 
 ?>
