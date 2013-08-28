@@ -15,22 +15,26 @@ Features & Issues
 * shows detail pages (including download & custom columns) for authors and books
 * speaks Dutch, English, French, German
 * is ready for mobile clients (tested with Kindle, iPhone, iPad)
-* provides download protection for books (optional, think "parental control")
+* provides access restrictions for users (optional, think "parental control")
 * provides OPDS book catalogs for reading apps like Stanza
 * has an admin GUI for configuration
 * supports e-mailing of books
 
 * no support for Calibre's virtual libraries
 * only simple custom columns supported
-* e-mailing books needs PHP mail
 
 
 Install
 -------
 
+There are 3 options for installation:
+
+1. [Download](http://projekte.textmulch.de/bicbucstriim/downloads/) an installation archive. These are stable releases with a reduced footprint, unnecesary files are removed.
+2. Install directly from Github by cloning a [release tag](https://github.com/rvolz/BicBucStriim/releases). These are also stable releases, but contain all files in the repository.
+3. Live dangerously and clone/fork the Github master. Please be aware that this branch contains most often a version under development, which could be slow or partially broken.
+
 The easy way assumes that BicBucStriim lives right below the web root of your device and can be addressed like `http://<your ip>/bbs/`:
 
-* [Download](http://projekte.textmulch.de/bicbucstriim/downloads/BicBucStriim-1.1.0.zip) an installation archive.
 * Unarchive the downloaded archive below the web server root of your NAS (e.g. "/volume1/web" on a Synology device).
 * Rename the newly created directory (e.g. BicBucStriim-1.1.0.zip) to "bbs".
 * The "data" directory and its contents must be writeable for all. Depending on your method of unarchiving this might be already the case. However, in case you experience access error just use a terminal to correct this: `chmod -R ga+w data`. 
@@ -38,8 +42,6 @@ The easy way assumes that BicBucStriim lives right below the web root of your de
 * Login as the administrator with the default login *admin/admin* (don't forget to change the password afterwards).
 * A freshly installed BicBucStriim app will show you the admin section, where you will have tell the app where your Calibre library is located. Everything else is optional. Just have a look.
 * OPDS catalogs are availabe at http://.../bbs/opds/
-
-For experienced users: you could also just clone the GitHub repository (https://github.com/rvolz/BicBucStriim), preferrably a released version (see https://github.com/rvolz/BicBucStriim/tags). However, the repository contains a lot of files that are only useful for development. The installation archives are therefore smaller.
 
 
 Upgrading
@@ -65,7 +67,6 @@ Requirements
 ------------
 * Apache web server with PHP 5.3+, including support for mcrypt and sqlite3
 * Optional: if PHP module *intl* (php5-intl) is installed, book languages will be displayed
-* Optional: a working PHP mail (sendmail) installation to send books via e-mail
 
 License
 -------
