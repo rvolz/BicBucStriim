@@ -765,7 +765,35 @@ function get_author_notes($id) {}
 function edit_author_notes($id) {}
 function del_author_notes($id) {}
 function get_author_links($id) {}
-function new_author_link($id) {}
+
+/**
+ * Add a new author link -> POST /metadata/authors/:id/links JSON
+ */
+function new_author_link($id) {
+	global $app;
+
+	$link_data = $app->request()->post();
+	$app->getLog()->debug('new_author_link: '.var_export($link_data, true));	
+	$author = $app->calibre->author($id);
+	$link = null;
+	if (!is_null($author)) {
+		$link = $app->bbs->addAuthorLink($id, $author->name, $link_data['label'], $link_data['url']);
+	}
+	$resp = $app->response();
+	if (!is_null($link)) {
+		$resp->status(200);
+		$msg = getMessageString('admin_modified');
+		$answer = json_encode(array('link' => $link->getProperties(), 'msg' => $msg));
+		$resp->header('Content-type','application/json');
+	} else {
+		$resp->status(500);
+		$resp->header('Content-type','text/plain');
+		$answer = getMessageString('admin_modify_error');
+	}
+	$resp->header('Content-Length',strlen($answer));
+	$resp->body($answer);
+}
+
 function del_author_link($id) {}
 
 /*********************************************************************
@@ -835,7 +863,7 @@ function titlesSlice($index=0) {
 
 # Show a single title > /titles/:id. The ID ist the Calibre ID
 function title($id) {
-	global $app, $calibre_dir, $globalSettings;
+	global $app, $globalSettings;
 	
 	$details = $app->calibre->titleDetails($globalSettings['lang'], $id);	
 	if (is_null($details)) {
@@ -863,7 +891,6 @@ function title($id) {
 	$app->getLog()->debug('titleDetails custom columns: '.count($details['custom']));
 	$app->render('title_detail.html',
 		array('page' => mkPage(getMessageString('book_details'), 2, 2), 
-			'calibre_dir' => $calibre_dir,
 			'book' => $details['book'], 
 			'authors' => $details['authors'],
 			'series' => $details['series'],
@@ -886,7 +913,7 @@ function title($id) {
 # If there is no cover, return 404.
 # Route: /titles/:id/cover
 function cover($id) {
-	global $app, $calibre_dir;
+	global $app;
 
 	$has_cover = false;
 	$rot = $app->request()->getRootUri();
@@ -915,7 +942,7 @@ function cover($id) {
 # If there is no cover, return 404.
 # Route: /titles/:id/thumbnail
 function thumbnail($id) {
-	global $app, $calibre_dir, $globalSettings;
+	global $app, $globalSettings;
 
 	$app->getLog()->debug('thumbnail: '.$id);
 	$has_cover = false;

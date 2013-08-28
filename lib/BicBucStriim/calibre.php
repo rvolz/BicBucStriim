@@ -21,9 +21,9 @@ class Calibre {
 	# calibre sqlite db
 	protected $calibre = NULL;
 	# calibre library dir
-	protected $calibre_dir = '';
+	public $calibre_dir = '';
 	# calibre library file, last modified date
-	protected $calibre_last_modified;
+	public $calibre_last_modified;
 	# dir for generated thumbs
 	protected $thumb_dir = '';
 
@@ -374,6 +374,14 @@ class Calibre {
 		}
 	}
 
+	/**
+	 * Return just the pur author information.
+	 * @param int 	id 	Calibre ID for author
+	 * @return object 	Calibre author record
+	 */
+	public function author($id){
+		return $this->findOne('Author', 'select * from authors where id='.$id);
+	}
 
 	/**
 	 * Find a single author and return the details plus all books.
