@@ -1,19 +1,23 @@
 #-*- encoding:utf-8 ; mode:ruby -*-
 #
 # The Rakefile contains mainly packging tasks for the installation archives
-# and helpers for a Vagrant-based integration test environment. Works
-# with Vagrant 1.2+
 #
 
 require 'rake/clean'
 require 'rake/packagetask'
 require 'less'
+#require 'cucumber'
+#require 'cucumber/rake/task'
 require 'fileutils'
+require 'sqlite3'
 require 'json'
 require 'yaml'
 
 APPNAME = 'BicBucStriim'
 VERSION = '1.2.0-alpha'
+
+
+# Needs vagrant 1.2+
 
 SOURCE = "."
 LESS = File.join( SOURCE, "style")
@@ -24,7 +28,7 @@ CONFIG = {
   'output' => "style.css"
 }
  
-desc "Compile Less to CSS"
+desc "Compile Less"
 task :lessc do
   less = CONFIG['less']
  
@@ -41,28 +45,8 @@ task :lessc do
   end
 end # task :lessc
 
-desc "Generate the message file langs.php"
-task :genl10n do |t|
-  msgs = YAML.load_file("messages.yml")
-  php = File.new('lib/BicBucStriim/langs.php', 'w')
-  php << "<?php\n"
-  php << "# Generated file. Please don\'t edit here,\n"
-  php << "# edit messages.yml instead. \n"
-  php << "#\n"
-  ['de', 'en', 'fr', 'nl'].each do |lang|
-    php << "$lang#{lang} = array(\n"
-    msgs.each do |msg, locs|      
-      php << "'#{msg}' => '#{locs[lang]}',\n" unless locs[lang].nil?
-    end
-    php << ");\n"
-    php << "\n"
-  end
-  php << "?>\n"
-  php.close
-end  
-
 desc "Make a release package"
-task :package2 => [:lessc, :gen_l18n] do |t|
+task :package2 do |t|
   Rake::PackageTask.new(APPNAME, VERSION) do |p|
     p.need_tar = true
     p.need_zip = true
@@ -94,8 +78,10 @@ task :package2 => [:lessc, :gen_l18n] do |t|
     p.package_files.include("NOTICE")
     p.package_files.include("LICENSE")
     p.package_files.include("README.md")
+
   end
   Rake::Task['package'].invoke
+  # rm_rf "data"
 end
 
 # Integration testing tasks only make sense when vagrant is installed.
@@ -116,7 +102,7 @@ task :itest_down do |t|
 end
 
 desc "Deploy the current code for testing to the VM dirs"
-task :itest_deploy => [:package2] do |t|    
+task :itest_deploy => [:lessc, :gen_l18n, :package2] do |t|    
   code_target = "./tests/work/src"
   lib_target = "./tests/work/calibre"
 
@@ -137,21 +123,28 @@ task :itest_shell do |t|
   system "bash -c 'pushd tests/env;vagrant ssh;popd'"
 end
 
-desc "Integration testing (via integration test environment)"
-task :itest => [:itest_deploy] do |t|  
-  sh "cucumber features --format=pretty"  
-end
 
 desc "Unit testing"
 task :test do |t|
   sh "php tests/test_all.php"
 end
 
+desc "Integration testing (via integration test environment)"
+task :itest => [:itest_deploy] do |t|  
+  sh "cucumber features --format=pretty"  
+end
+
+
 # Cucumber::Rake::Task.new(:features) do |t|
 #   t.cucumber_opts = "features --format pretty"
 # end
 # desc "Real Integration testing (via integration test environment)"
 # task :features => [:itest_deploy]
+
+desc "Copy the current version to the NAS for testing"
+task :copy2nas => [:package2] do |t|
+	sh "rsync -rv pkg/#{APPNAME}-#{VERSION}/ /Volumes/web/bbs"
+end
 
 desc "Generate and copy version information file to server"
 task :install_version_info do |t|
@@ -165,6 +158,61 @@ task :install_version_info do |t|
   sh "scp version.json projekte.textmulch.de:~/tm_projekte/bicbucstriim/version.json"
   rm 'version.json'
 end
+
+desc "Generate the message file langs.php"
+task :gen_l18n do |t|
+  msgs = YAML.load_file("messages.yml")
+  php = File.new('lib/BicBucStriim/langs.php', 'w')
+  php << "<?php\n"
+  php << "# Generated file. Please don\'t edit here,\n"
+  php << "# edit messages.yml instead. \n"
+  php << "#\n"
+  ['de', 'en', 'fr', 'nl'].each do |lang|
+    php << "$lang#{lang} = array(\n"
+    msgs.each do |msg, locs|      
+      php << "'#{msg}' => '#{locs[lang]}',\n" unless locs[lang].nil?
+    end
+    php << ");\n"
+    php << "\n"
+  end
+  php << "?>\n"
+  php.close
+end
+
+desc "import"
+task :importi18n do |t|
+  content = Hash.new
+  php = File.open('lib/BicBucStriim/langs.php', 'r')
+  state = 0
+  while line = php.gets
+    case state
+    when 0
+      match = /\$lang(de|en|fr|nl)/.match(line)
+      if (match)
+        state = 1
+        lang = match[1]
+      end
+      next
+    when 1
+      match = /'(.+)' => '(.+)',/.match(line)
+      if (match)
+        #puts "#{match[1]} #{match[2]}"
+        if content[match[1]].nil?
+          content[match[1]] = {lang => match[2]}
+        else
+          content[match[1]][lang] = match[2]
+        end
+      else
+        if (/\);/.match(line))
+          state = 0
+        end
+      end
+    end
+  end
+  php.close
+  File.open('langs.yml', 'w') {|f| YAML.dump(content, f)}
+end
+  
 
 task :default => [:clobber, :package2]
 
