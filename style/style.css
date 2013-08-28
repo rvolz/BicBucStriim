@@ -4,8 +4,8 @@ body{padding-top:60px;padding-bottom:40px;}
 .title_detail header p{margin-top:2px;margin-bottom:2px;}
 .title_detail .title_detail_image{width:40%;float:left;}.title_detail .title_detail_image img{max-width:90%;}
 .title_detail .title_details{width:55%;float:right;padding-left:1%;}
-section.author_detail_row header{min-height:70px;}section.author_detail_row header h3 a#author_edit{float:right;}
-section.author_detail_row img#author_thumbnail{margin:0px 10px 20px 10px;}
+section.author-detail-row header{min-height:70px;}section.author-detail-row header h3 a#author_edit{float:right;}
+section.author-detail-row section#author-metadata{margin-top:10px;margin-bottom:10px;}section.author-detail-row section#author-metadata div#author-thumbnail img{margin:0px 10px 20px 10px;}
 table#custom_columns_table tbody th{border-bottom:1px dotted gray;border-right:1px dotted gray;text-align:right;vertical-align:top;padding:10px;}
 table#custom_columns_table td{border-bottom:1px dotted gray;padding:10px;}
 div.footer p{text-align:center;font-size:80%;}

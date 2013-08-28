@@ -3,60 +3,125 @@
 {% block pid %}id="pauthor_detail"{%endblock%}
 
 {% block content %}
-<section class="author_detail_row">
+<section class="author-detail-row">
 	<header>
 		<h3>
 			{{page.glob.langa.booksby}} <em>{{ author.name }}</em>
-			{% if curpage == 0%}<a data-role="button" id="author_edit" href="#author-edit-panel" data-icon="edit" data-inline="true" data-mini="true">{{page.glob.langa.edit}}</a>{% endif%}
+			{% if curpage == 0%}
+			<a data-role="button" id="author_edit" href="#author-edit-panel" data-icon="edit" data-inline="true" data-mini="true">
+				{{page.glob.langa.edit}}
+			</a>
+			{% endif%}
 		</h3> 
 	</header>
 
 	{% if curpage == 0%}
-		{% if author.thumbnail %}
-		<img id="author-thumbnail" src="{{page.rot}}/{{author.thumbnail.url}}"/>
+	<section id="author-metadata" class="ui-grid-b ui-responsive">
+		<div id="author-thumbnail" class="ui-block-a">
+			{% if author.thumbnail %}
+			<img id="author-thumbnail-pic" src="{{page.rot}}/{{author.thumbnail.url}}"/>
+			{% endif %}
+		</div>
+		<div id="author-links" class="ui-block-b">
+			<ul id="author-links-list">
+			{% if author.links %}
+				{% for link in author.links %}
+				<li class="author-link link-{{link.id}}">
+					<a href="{{link.url}}">{{link.label}}</a>
+				</li>
+				{% endfor %}	
+			{% endif %}
+			</ul>
+		</div>
+		<div id="author-notes" class="ui-grid-c">
+		{% if author.notes %}
+		{{author.notes}}
 		{% endif %}
+		</div>
+	</section>
 	{% endif %}
 
-	<ul data-role="listview" >
-		{% for book in books %}
-			{% include "title_entry.html" %}		
-		{% endfor %}	
-	</ul>
+	<section id="author-books">
+		<ul data-role="listview">
+			{% for book in books %}
+				{% include "title_entry.html" %}		
+			{% endfor %}	
+		</ul>
+	</section>
 </section>
 {% endblock %}
 
 {% block rightpanel %}
 <section data-role="panel" data-display="overlay" data-position="right" id="author-edit-panel">
-	<h2>Autoreninfos</h2>
+	<h2>{{page.glob.langa.author_metadata}}</h2>
+	<div id="flash"></div>
 	<div data-role="collapsible-set">
 		<div data-role="collapsible">
-			<h3>Image</h3>
+			<h3>{{page.glob.langa.author_thumbnail}}</h3>
+			<p>{{page.glob.langa.author_thumbnail_expl}}</p>
 			<form action="{{page.rot}}/metadata/authors/{{ author.id }}/thumbnail/" method="post" enctype="multipart/form-data" data-ajax="false">
-	  			<input type="file" name="file" accept="image/*" capture/>
-	  			<input type="submit" value="Upload" data-mini="true" />
+	  			<input type="file" name="file" accept="image/*" capture required/>
+	  			<input type="submit" value="{{page.glob.langa.upload}}" data-mini="true" />
 			</form>
-	  		<a data-role="button" id="delete-image" href="#" value="delete" data-mini="true" data-proot="{{page.rot}}" data-author="{{ author.id }}">Delete</a>
+	  		<a data-role="button" id="delete-image" href="#" value="delete" data-mini="true" data-proot="{{page.rot}}" data-author="{{ author.id }}">
+	  			{{page.glob.langa.delete}}
+	  		</a>
 	  	</div>
   		<div data-role="collapsible">
-			<h3>Notes</h3>
-			<form id="author_notes" action="{{page.rot}}/admin/metadata/author/{{ author.id }}/notes/" >
-				<h3>Description</h3>
-		  		<textarea name="notes" id="notes" placeholder="Notes about the author" rows="4" cols="30"></textarea>
-		  		<input type="submit" value="Save" data-mini="true" />
+			<h3>{{page.glob.langa.author_notes}}</h3>
+			<p>{{page.glob.langa.author_notes_expl}}</p>
+			<form id="author-notes" action="{{page.rot}}/metadata/authors/{{ author.id }}/notes/">
+		  		<textarea name="notes" id="notes" rows="4" cols="30">{{author.notes_source}}</textarea>
+		  		<input type="submit" value="{{page.glob.langa.save}}" data-mini="true" />
 			</form>
-			<a data-role="button" id="delete-notes" href="#" value="delete" data-mini="true">Delete</a>
+			<a data-role="button" id="delete-notes" data-proot="{{page.rot}}" data-author="{{ author.id }}" href="#" value="delete" data-mini="true">{{page.glob.langa.delete}}</a>
 		</div>
 		<div data-role="collapsible">
-			<h3>Links</h3>
-			<ul data-role="listview" >
-				<li>link</li>
+			<h3><p>{{page.glob.langa.author_links}}</p></h3>
+			<p>{{page.glob.langa.author_links_expl}}</p>
+			<ul id="author-links-edit" data-role="listview" data-split-icon="delete" data-inset="true">
+				{% for link in author.links %}
+				<li class="link-{{link.id}}">
+					<a href="{{link.url}}">
+						{{link.label}}
+					</a>
+					<a href="#" data-proot="{{page.rot}}" data-author="{{author.id}}" data-link="{{link.id}}" class="author-link-delete">
+						{{page.glob.langa.delete}}
+					</a>
+				</li>
+				{% endfor %}	
 			</ul>
-			<form id="author_link_new" action="{{page.rot}}/admin/metadata/author/{{ author.id }}/links/" method="post" enctype="multipart/form-data" data-ajax="false">
-		  		<input type="text" name="description" placeholder="link text" />
-		  		<input type="url" name="link" placeholder="link url" />
-		  		<input type="submit" value="Add link" data-mini="true" />
+			<form id="author-link-new" action="{{page.rot}}/metadata/authors/{{ author.id }}/links/">
+		  		<input type="text" name="link-description" id="link-description" placeholder="{{page.glob.langa.author_links_text}}" />
+		  		<input type="url" name="link-url" id="link-url" placeholder="{{page.glob.langa.author_links_url}}" />
+		  		<input type="submit" value="{{page.glob.langa.save}}" data-mini="true" />
 			</form>
 		</div>
 	</div>
 </section>
+
+<script id="linkTemplate1" type="text/html">
+	<li data-template-bind='[{"attribute": "class", "value": "class1"}]'>
+		<a data-template-bind='[
+			{"attribute": "href", "value": "url"},
+			{"attribute": "content", "value": "label"}
+			]'/>
+	</li>
+</script>
+<script id="linkTemplate2" type="text/html">
+	<li data-template-bind='[{"attribute": "class", "value": "class2"}]'>
+		<a data-template-bind='[
+			{"attribute": "href", "value": "url"},
+			{"attribute": "content", "value": "label"}
+			]'/>
+		<a 	href="#" 
+			class="author-link-delete" 
+			data-proot="{{page.rot}}" 
+			data-author="{{author.id}}" 
+			data-template-bind='[{"attribute": "data-link", "value": "id"}]' >
+			{{page.glob.langa.delete}}
+		</a>
+	</li>
+</script>
+
 {% endblock%}

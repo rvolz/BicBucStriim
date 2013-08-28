@@ -22,6 +22,8 @@ require_once 'calibre_config_middleware.php';
 require_once 'login_middleware.php';
 require_once 'mailer.php';
 
+use dflydev\markdown\MarkdownExtraParser;
+
 # Allowed languages, i.e. languages with translations
 $allowedLangs = array('de','en','fr','nl');
 # Fallback language if the browser prefers other than the allowed languages
@@ -150,18 +152,12 @@ $app->get('/authorslist/:id/', 'authorsSlice');
 $app->get('/login/', 'show_login');
 $app->post('/login/', 'perform_login');
 $app->get('/logout/', 'logout');
-
-$app->get('/metadata/authors/:id/thumbnail/', 'get_author_thm');
 $app->post('/metadata/authors/:id/thumbnail/', 'check_admin', 'edit_author_thm');
 $app->delete('/metadata/authors/:id/thumbnail/', 'check_admin', 'del_author_thm');
-$app->get('/metadata/authors/:id/notes/', 'get_author_notes');
 $app->post('/metadata/authors/:id/notes/', 'check_admin', 'edit_author_notes');
 $app->delete('/metadata/authors/:id/notes/', 'check_admin', 'del_author_notes');
-$app->get('/metadata/authors/:id/links/', 'get_author_links');
 $app->post('/metadata/authors/:id/links/', 'check_admin', 'new_author_link');
 $app->delete('/metadata/authors/:id/links/:link_id/', 'check_admin', 'del_author_link');
-
-
 $app->get('/search/', 'globalSearch');
 $app->get('/series/:id/:page/', 'seriesDetailsSlice');
 $app->get('/serieslist/:id/', 'seriesSlice');
@@ -738,6 +734,9 @@ function edit_author_thm($id) {
 	}	
 }
 
+/**
+ * Delete the author's thumbnail -> DELETE /metadata/authors/:id/thumbnail/ JSON
+ */
 function del_author_thm($id) {
 	global $app;
 
@@ -758,13 +757,62 @@ function del_author_thm($id) {
 	$resp->body($answer);	
 }
 
-function get_author_thm($id) {}
+/**
+ * Edit the notes about the author -> POST /metadata/authors/:id/notes/ JSON
+ */
+function edit_author_notes($id) {
+	global $app;
 
+	$app->getLog()->debug('edit_author_notes: '.$id);
+	$note_data = $app->request()->post();
+	$app->getLog()->debug('edit_author_notes: note '.var_export($note_data, true));	
+	try {
+		$markdownParser = new MarkdownExtraParser();
+		$html = $markdownParser->transformMarkdown($note_data['ntext']);
+		$author = $app->calibre->author($id);
+		$note = $app->bbs->editAuthorNote($id, $author->name, $note_data['mime'], $note_data['ntext']);		
+	} catch (Exception $e) {
+		$note = null;		
+	}
+	$resp = $app->response();
+	if (!is_null($note)) {
+		$resp->status(200);
+		$msg = getMessageString('admin_modified');
+		$note2 = $note->getProperties();
+		$note2['html'] = $html;
+		$answer = json_encode(array('note' => $note2, 'msg' => $msg));
+		$resp->header('Content-type','application/json');
+	} else {
+		$resp->status(500);
+		$resp->header('Content-type','text/plain');
+		$answer = getMessageString('admin_modify_error');
+	}
+	$resp->header('Content-Length',strlen($answer));
+	$resp->body($answer);
+}
 
-function get_author_notes($id) {}
-function edit_author_notes($id) {}
-function del_author_notes($id) {}
-function get_author_links($id) {}
+/**
+ * Delete notes about the author -> DELETE /metadata/authors/:id/notes/ JSON
+ */
+function del_author_notes($id) {
+	global $app;
+
+	$app->getLog()->debug('del_author_notes: '.$id);
+	$del = $app->bbs->deleteAuthorNote($id);
+	$resp = $app->response();
+	if ($del) {
+		$resp->status(200);
+		$msg = getMessageString('admin_modified');
+		$answer = json_encode(array('msg' => $msg));
+		$resp->header('Content-type','application/json');
+	} else {
+		$resp->status(500);
+		$resp->header('Content-type','text/plain');
+		$answer = getMessageString('admin_modify_error');
+	}
+	$resp->header('Content-Length',strlen($answer));
+	$resp->body($answer);		
+}
 
 /**
  * Add a new author link -> POST /metadata/authors/:id/links JSON
@@ -794,7 +842,28 @@ function new_author_link($id) {
 	$resp->body($answer);
 }
 
-function del_author_link($id) {}
+/**
+ * Delete an author link -> DELETE /metadata/authors/:id/links/:link/ JSON
+ */
+function del_author_link($id, $link) {
+	global $app;
+
+	$app->getLog()->debug('del_author_link: author '.$id.', link '.$link);	
+	$ret = $app->bbs->deleteAuthorLink($id, $link);
+	$resp = $app->response();
+	if ($ret) {
+		$resp->status(200);
+		$msg = getMessageString('admin_modified');
+		$answer = json_encode(array('msg' => $msg));
+		$resp->header('Content-type','application/json');
+	} else {
+		$resp->status(500);
+		$resp->header('Content-type','text/plain');
+		$answer = getMessageString('admin_modify_error');
+	}
+	$resp->header('Content-Length',strlen($answer));
+	$resp->body($answer);
+}
 
 /*********************************************************************
  * HTML presentation functions
@@ -1120,7 +1189,14 @@ function authorDetailsSlice($id, $index=0) {
 	}
 	$author = $tl['author'];
 	$author->thumbnail = $app->bbs->getAuthorThumbnail($id);
-	$author->notes = $app->bbs->authorNote($id);
+	$author->notes_source = $app->bbs->authorNote($id);
+	if (!empty($author->notes_source)) {
+		$markdownParser = new MarkdownExtraParser();
+		$author->notes = $markdownParser->transformMarkdown($author->notes_source);		
+	} else {
+		$author->notes = null;
+	}
+
 	$author->links = $app->bbs->authorLinks($id);
 	$app->render('author_detail.html',array(
 		'page' => mkPage(getMessageString('author_details'), 3, 2),

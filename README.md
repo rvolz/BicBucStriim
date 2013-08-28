@@ -20,6 +20,7 @@ Features & Issues
 * has an admin GUI for configuration
 * supports e-mailing of books
 
+
 * no support for Calibre's virtual libraries
 * only simple custom columns supported
 

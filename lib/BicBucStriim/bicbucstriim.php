@@ -503,17 +503,21 @@ class BicBucStriim {
 		$ret = false;
 		$calibreThing = $this->getCalibreThing(DataConstants::CALIBRE_AUTHOR_TYPE, $authorId);
 		if (!is_null($calibreThing)) {
-			$link = $calibreThing->ownLink[$linkId];
+			try {
+				$link = $calibreThing->ownLink[$linkId];				
+			} catch (Exception $e) {
+				$link = null;
+			}
 			if (!is_null($link)) {
-				unset($calibreThing->ownLink[$linkId]);
-				$calibreThing->refctr -= 1;
+				unset($calibreThing->ownLink[$link->id]);
 				R::trash($link);
+				$calibreThing->refctr -= 1;
 				if ($calibreThing->refctr == 0)
 					R::trash($calibreThing);
 				else
 					R::store($calibreThing);
-			}
-			$ret = true;
+				$ret = true;
+			} 
 		}
 		return $ret;
 	}

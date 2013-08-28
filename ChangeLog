@@ -1,5 +1,7 @@
-2013-08-XX Version 1.2.0-𝛂
+2013-YY-XX Version 1.2.0-𝛂
 
+* Added author metadata handling (thumbnail, links, notes)
+* Separated Calibre and BicBucStriim DB handling
 * Replaced PHP mail support with more flexible SwiftMailer
 * Added ID links to title details and link management to admin section, issue #60
 * Add book languages to the listviews and title details page, issue #56

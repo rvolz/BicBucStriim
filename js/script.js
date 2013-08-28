@@ -6,8 +6,10 @@
  * 
  */ 
 
-// Author metadata
+// Author metadata on author details page
 $(document).on('pageinit', '#pauthor_detail', function() {
+
+	// Delete author image
 	$('#delete-image').on('vclick', function() {
 		var root = $(this).data('proot');
 		var author = $(this).data('author');
@@ -15,7 +17,7 @@ $(document).on('pageinit', '#pauthor_detail', function() {
 			url: root+'/metadata/authors/'+author+'/thumbnail/',
 			type: 'DELETE',
 			success: function(data) {
-				$('img#author-thumbnail').remove();
+				$('img#author-thumbnail-pic').remove();
 				$('div#flash').empty();
 				$('#pauthor_detail').trigger('change');
 			},
@@ -27,13 +29,109 @@ $(document).on('pageinit', '#pauthor_detail', function() {
 		return false;
 	});
 
-	// Initiate the template handling via click
-	$('form#author_notes').on('submit', function(event){
+	// Add/edit author notes
+	$('form#author-notes').on('submit', function(event){
 		event.preventDefault();		
 		var url = $(this).attr('action');
-		var desc = $(this).find('#notes').val();
+		var note = {
+			ntext: $(this).find('#notes').val(),
+			mime: 'text/markdown'
+		};
+		$.post(url, note, function(data, textStatus, jqXHR) {
+			$('#author-notes').html(data.note.html);
+			$('#notes').html(data.note.ntext);
+			$('#padmin_detail').trigger('change');		
+		})
+		.fail(function (data) {
+			$('div#flash').empty().append('<p class="error">'+data.msg+'</p>');
+			$('#padmin_detail').trigger('change');		
+		});
 		return false;
 	});
+
+	// Delete author notes
+	$('#delete-notes').on('vclick', function() {
+		var root = $(this).data('proot');
+		var author = $(this).data('author');
+		var jh = $.ajax({
+			url: root+'/metadata/authors/'+author+'/notes/',
+			type: 'DELETE',
+			success: function(data) {
+				$('#author-notes').html('');
+				$('#notes').text('');
+				$('div#flash').empty();
+				$('#pauthor_detail').trigger('change');
+			},
+			error: function(jqXHR, responseText, errorThrown) {
+				$('div#flash').empty().append('<p class="error">'+jqXHR.responseText+'</p>');
+				$('#pauthor_detail').trigger('change');		
+			}
+		});
+		return false;
+	});
+
+
+	// Add a new author link
+	$('form#author-link-new').on('submit', function(event){
+		event.preventDefault();		
+		var url = $(this).attr('action');
+		var link = {
+			label: $(this).find('#link-description').val(),
+			url: $(this).find('#link-url').val()
+		};
+		$.post(url, link, function(data, textStatus, jqXHR) {
+			var litmp = {
+				class1: 'author-link link-'+data.link.id,
+				class2: 'link-'+data.link.id,
+				id: data.link.id,
+				url: data.link.url,
+				label: data.link.label	
+			}
+			// Add links via templates
+			$('#author-links-list').loadTemplate('#linkTemplate1', litmp, {prepend: true});
+			$('#author-links-edit').loadTemplate('#linkTemplate2', litmp, {prepend: true});			
+			// Bind the delete handler, it is not installed by the refresh?
+			$('a.author-link-delete').on('vclick', function(event) {
+				deleteLink(event, this);
+			});
+			$('ul#author-links-edit').listview('refresh');
+			$('#padmin_detail').trigger('change');		
+		})
+		.fail(function (data) {
+			$('div#flash').empty().append('<p class="error">'+data.msg+'</p>');
+			$('#padmin_detail').trigger('change');		
+		});
+		return false;
+	});
+
+
+	// Delete an author link
+	$('.author-link-delete').on('vclick', function(event) {
+		deleteLink(event, this);
+	});
+
+	// Delete an author link
+	function deleteLink (event, that) {
+		event.preventDefault();		
+		var root = $(that).data('proot');
+		var author = $(that).data('author');
+		var link = $(that).data('link');
+		var jh = $.ajax({
+			url: root+'/metadata/authors/'+author+'/links/'+link+'/',
+			type: 'DELETE',
+			success: function(data) {
+				$('li.link-'+link).remove();
+				$('ul#author-links-edit').listview('refresh');				
+				$('div#flash').empty();
+				$('#pauthor_detail').trigger('change');
+			},
+			error: function(jqXHR, responseText, errorThrown) {
+				$('div#flash').empty().append('<p class="error">'+jqXHR.responseText+'</p>');
+				$('#pauthor_detail').trigger('change');		
+			}
+		});
+		return false;	
+	}
 
 });
 
