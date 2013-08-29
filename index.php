@@ -1189,7 +1189,11 @@ function authorDetailsSlice($id, $index=0) {
 	}
 	$author = $tl['author'];
 	$author->thumbnail = $app->bbs->getAuthorThumbnail($id);
-	$author->notes_source = $app->bbs->authorNote($id);
+	$note = $app->bbs->authorNote($id);
+	if (!is_null($note))
+		$author->notes_source = $note->ntext;		
+	else
+		$author->notes_source = null;
 	if (!empty($author->notes_source)) {
 		$markdownParser = new MarkdownExtraParser();
 		$author->notes = $markdownParser->transformMarkdown($author->notes_source);		

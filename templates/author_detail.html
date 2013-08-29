@@ -35,7 +35,7 @@
 		</div>
 		<div id="author-notes" class="ui-block-c">
 		{% if author.notes %}
-		{{author.notes}}
+		{{author.notes|raw}}
 		{% endif %}
 		</div>
 	</section>
