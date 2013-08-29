@@ -11,9 +11,9 @@
 	<form action="{{page.rot}}/login/" method="post" id="loginform" data-proot="{{page.rot}}">
 	<fieldset data-role="fieldcontain">
 	  <label for="username">{{page.glob.langa.admin_username}}</label>
-	  <input type="text" name="username" id="username" value="{{username}}" />
+	  <input type="text" name="username" id="username" value="{{username}}" autofocus required/>
 	  <label for="password">{{page.glob.langa.admin_userpw}}</label>
-	  <input type="password" name="password" id="password" value="{{password}}" />
+	  <input type="password" name="password" id="password" value="{{password}}" required />
 	</fieldset >      
 	<button type="submit" name="login">{{page.glob.langa.login}}</button> 
 	</form>
