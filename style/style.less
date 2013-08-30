@@ -31,30 +31,19 @@ body {
 
 }
 
+.author-thmb-breakpoint.ui-grid-a .ui-block-a { width: 200px;}
+
 section.author-detail-row {  
   header {
     min-height: 70px;
-    h3 {
-      a#author_edit {
-        float: right;
-      }
+    a#author_edit {
+      float: right;
+    }
+    div#author-metadata {      
+      margin-top: 10px;
+      margin-bottom: 10px;
     }
   }
-  section#author-metadata {      
-    margin-top: 10px;
-    margin-bottom: 10px;
-    div#author-thumbnail {
-      img {
-        margin: 0px 10px 20px 10px;
-      }
-    }
-    div#author-links {
-      ul#author-links-list {
-
-      }
-    }
-  }
-
 }
 
 table#custom_columns_table {  
@@ -121,9 +110,12 @@ div#flash  {
     width: 100%;
     float: none;
   }
+
+  .author-thmb-breakpoint.ui-grid-a .ui-block-a { width: 100%;}
+  .author-thmb-breakpoint.ui-grid-a .ui-block-b { width: 100%;}
 }
 @media (min-width: 768px) and (max-width: 980px) {}
-@media (min-width: 1200px) {}
+@media (min-width: 981px) {}
 
 
 

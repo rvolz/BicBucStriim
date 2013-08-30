@@ -9,6 +9,15 @@
 // Author metadata on author details page
 $(document).on('pageinit', '#pauthor_detail', function() {
 
+	// Close the popup menu before the panel opens
+	// It wants to stay open.
+	$('#author-mdthumb-panel').on('panelbeforeopen', function( event, ui ) {
+		$('#popupMenu').popup('close');
+	});
+	$('#author-mdlinks-panel').on('panelbeforeopen', function( event, ui ) {
+		$('#popupMenu').popup('close');
+	});
+
 	// Delete author image
 	$('#delete-image').on('vclick', function() {
 		var root = $(this).data('proot');
@@ -28,48 +37,6 @@ $(document).on('pageinit', '#pauthor_detail', function() {
 		});
 		return false;
 	});
-
-	// Add/edit author notes
-	$('form#author-notes').on('submit', function(event){
-		event.preventDefault();		
-		var url = $(this).attr('action');
-		var note = {
-			ntext: $(this).find('#notes').val(),
-			mime: 'text/markdown'
-		};
-		$.post(url, note, function(data, textStatus, jqXHR) {
-			$('#author-notes').html(data.note.html);
-			$('#notes').html(data.note.ntext);
-			$('#padmin_detail').trigger('change');		
-		})
-		.fail(function (data) {
-			$('div#flash').empty().append('<p class="error">'+data.msg+'</p>');
-			$('#padmin_detail').trigger('change');		
-		});
-		return false;
-	});
-
-	// Delete author notes
-	$('#delete-notes').on('vclick', function() {
-		var root = $(this).data('proot');
-		var author = $(this).data('author');
-		var jh = $.ajax({
-			url: root+'/metadata/authors/'+author+'/notes/',
-			type: 'DELETE',
-			success: function(data) {
-				$('#author-notes').html('');
-				$('#notes').text('');
-				$('div#flash').empty();
-				$('#pauthor_detail').trigger('change');
-			},
-			error: function(jqXHR, responseText, errorThrown) {
-				$('div#flash').empty().append('<p class="error">'+jqXHR.responseText+'</p>');
-				$('#pauthor_detail').trigger('change');		
-			}
-		});
-		return false;
-	});
-
 
 	// Add a new author link
 	$('form#author-link-new').on('submit', function(event){
@@ -94,12 +61,15 @@ $(document).on('pageinit', '#pauthor_detail', function() {
 			$('a.author-link-delete').on('vclick', function(event) {
 				deleteLink(event, this);
 			});
+			$('ul#author-links-list').listview('refresh');
 			$('ul#author-links-edit').listview('refresh');
-			$('#padmin_detail').trigger('change');		
+			$('div#flash').empty().append('<p class="success">'+data.msg+'</p>');
+			$('#pauthor_detail').trigger('change');
+			$('#author-mdlinks-panel').trigger('updatelayout');
 		})
 		.fail(function (data) {
 			$('div#flash').empty().append('<p class="error">'+data.msg+'</p>');
-			$('#padmin_detail').trigger('change');		
+			$('#pauthor_detail').trigger('change');		
 		});
 		return false;
 	});
@@ -108,11 +78,11 @@ $(document).on('pageinit', '#pauthor_detail', function() {
 	// Delete an author link
 	$('.author-link-delete').on('vclick', function(event) {
 		deleteLink(event, this);
+		return false;	
 	});
 
 	// Delete an author link
 	function deleteLink (event, that) {
-		event.preventDefault();		
 		var root = $(that).data('proot');
 		var author = $(that).data('author');
 		var link = $(that).data('link');
@@ -121,8 +91,10 @@ $(document).on('pageinit', '#pauthor_detail', function() {
 			type: 'DELETE',
 			success: function(data) {
 				$('li.link-'+link).remove();
+				$('ul#author-links-list').listview('refresh');
 				$('ul#author-links-edit').listview('refresh');				
-				$('div#flash').empty();
+				$('div#flash').empty().append('<p class="success">'+data.msg+'</p>');
+				$('#author-mdlinks-panel').trigger('updatelayout');
 				$('#pauthor_detail').trigger('change');
 			},
 			error: function(jqXHR, responseText, errorThrown) {
@@ -130,7 +102,6 @@ $(document).on('pageinit', '#pauthor_detail', function() {
 				$('#pauthor_detail').trigger('change');		
 			}
 		});
-		return false;	
 	}
 
 });

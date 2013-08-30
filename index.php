@@ -1208,7 +1208,8 @@ function authorDetailsSlice($id, $index=0) {
 		'author' => $tl['author'],
 		'books' => $tl['entries'],
 		'curpage' => $tl['page'],
-		'pages' =>  $tl['pages']));
+		'pages' =>  $tl['pages'],
+		'isadmin' => is_admin()));
 }
 
 /**

@@ -5,41 +5,68 @@
 {% block content %}
 <section class="author-detail-row">
 	<header>
+
+		{# Display edit menu only on first page and if user is admin #}
+		{% if curpage == 0 and isadmin %}
+		<a id="author_edit" href="#popupMenu" data-rel="popup" data-role="button" data-inline="true" data-mini="true" data-icon="edit" data-theme="b" data-iconpos="notext">
+			{{page.glob.langa.edit}}
+		</a>
+		<div data-role="popup" id="popupMenu" data-theme="d">
+		        <ul data-role="listview" data-inset="true" style="min-width:210px;" data-theme="a">
+		            <li data-role="divider" data-theme="b">
+		            	{{page.glob.langa.author_metadata}}
+		            </li>
+		            <li>
+		            	<a href="#author-mdthumb-panel">
+		            		{{page.glob.langa.author_thumbnail}}
+		            	</a>
+		            </li>
+		            <li>
+		            	<a href="#author-mdlinks-panel">
+		            		{{page.glob.langa.author_links}}
+		            	</a>
+		            </li>
+		        </ul>
+		</div>
+		{% endif%}
+
+		{# Display available metadata only on first page #}
+		{% if curpage == 0 %}
+		<div id="author-metadata" 
+			{% if author.thumbnail %}
+			class="ui-grid-a author-thmb-breakpoint"
+			{% else %}
+			class="ui-grid-a ui-responsive"
+			{% endif %}
+			>
+			<div class="ui-block-a">
+				{% if author.thumbnail %}
+				<img id="author-thumbnail-pic" src="{{page.rot}}/{{author.thumbnail.url}}"/>
+				{% else %}
+				<h3>{{ author.name }}</h3>
+				{% endif %}
+			</div>			
+			<div id="author-links" class="ui-block-b">
+				{% if author.thumbnail != null %}
+				<h3>{{ author.name }}</h3>
+				{% endif %}
+				<ul id="author-links-list" data-role="listview" data-inset="true" >
+				{% if author.links %}
+					{% for link in author.links %}
+					<li class="author-link link-{{link.id}}">
+						<a href="{{link.url}}">{{link.label}}</a>
+					</li>
+					{% endfor %}	
+				{% endif %}
+				</ul>
+			</div>
+		</div>
+		{% else %}		
 		<h3>
 			{{page.glob.langa.booksby}} <em>{{ author.name }}</em>
-			{% if curpage == 0%}
-			<a data-role="button" id="author_edit" href="#author-edit-panel" data-icon="edit" data-inline="true" data-mini="true">
-				{{page.glob.langa.edit}}
-			</a>
-			{% endif%}
 		</h3> 
-	</header>
-
-	{% if curpage == 0%}
-	<section id="author-metadata" class="ui-grid-b ui-responsive">
-		<div id="author-thumbnail" class="ui-block-a">
-			{% if author.thumbnail %}
-			<img id="author-thumbnail-pic" src="{{page.rot}}/{{author.thumbnail.url}}"/>
-			{% endif %}
-		</div>
-		<div id="author-links" class="ui-block-b">
-			<ul id="author-links-list">
-			{% if author.links %}
-				{% for link in author.links %}
-				<li class="author-link link-{{link.id}}">
-					<a href="{{link.url}}">{{link.label}}</a>
-				</li>
-				{% endfor %}	
-			{% endif %}
-			</ul>
-		</div>
-		<div id="author-notes" class="ui-block-c">
-		{% if author.notes %}
-		{{author.notes|raw}}
 		{% endif %}
-		</div>
-	</section>
-	{% endif %}
+	</header>
 
 	<section id="author-books">
 		<ul data-role="listview">
@@ -52,52 +79,40 @@
 {% endblock %}
 
 {% block rightpanel %}
-<section data-role="panel" data-display="overlay" data-position="right" id="author-edit-panel">
-	<h2>{{page.glob.langa.author_metadata}}</h2>
+<section data-role="panel" data-display="overlay" data-position="right" id="author-mdthumb-panel" >
+	<h2>{{page.glob.langa.author_thumbnail}}</h2>
 	<div id="flash"></div>
-	<div data-role="collapsible-set">
-		<div data-role="collapsible">
-			<h3>{{page.glob.langa.author_thumbnail}}</h3>
-			<p>{{page.glob.langa.author_thumbnail_expl}}</p>
-			<form action="{{page.rot}}/metadata/authors/{{ author.id }}/thumbnail/" method="post" enctype="multipart/form-data" data-ajax="false">
-	  			<input type="file" name="file" accept="image/*" capture required/>
-	  			<input type="submit" value="{{page.glob.langa.upload}}" data-mini="true" />
-			</form>
-	  		<a data-role="button" id="delete-image" href="#" value="delete" data-mini="true" data-proot="{{page.rot}}" data-author="{{ author.id }}">
-	  			{{page.glob.langa.delete}}
-	  		</a>
-	  	</div>
-  		<div data-role="collapsible">
-			<h3>{{page.glob.langa.author_notes}}</h3>
-			<p>{{page.glob.langa.author_notes_expl}}</p>
-			<form id="author-notes" action="{{page.rot}}/metadata/authors/{{ author.id }}/notes/">
-		  		<textarea name="notes" id="notes" rows="4" cols="30">{{author.notes_source}}</textarea>
-		  		<input type="submit" value="{{page.glob.langa.save}}" data-mini="true" />
-			</form>
-			<a data-role="button" id="delete-notes" data-proot="{{page.rot}}" data-author="{{ author.id }}" href="#" value="delete" data-mini="true">{{page.glob.langa.delete}}</a>
-		</div>
-		<div data-role="collapsible">
-			<h3><p>{{page.glob.langa.author_links}}</p></h3>
-			<p>{{page.glob.langa.author_links_expl}}</p>
-			<ul id="author-links-edit" data-role="listview" data-split-icon="delete" data-inset="true">
-				{% for link in author.links %}
-				<li class="link-{{link.id}}">
-					<a href="{{link.url}}">
-						{{link.label}}
-					</a>
-					<a href="#" data-proot="{{page.rot}}" data-author="{{author.id}}" data-link="{{link.id}}" class="author-link-delete">
-						{{page.glob.langa.delete}}
-					</a>
-				</li>
-				{% endfor %}	
-			</ul>
-			<form id="author-link-new" action="{{page.rot}}/metadata/authors/{{ author.id }}/links/">
-		  		<input type="text" name="link-description" id="link-description" placeholder="{{page.glob.langa.author_links_text}}" />
-		  		<input type="url" name="link-url" id="link-url" placeholder="{{page.glob.langa.author_links_url}}" />
-		  		<input type="submit" value="{{page.glob.langa.save}}" data-mini="true" />
-			</form>
-		</div>
-	</div>
+	<p>{{page.glob.langa.author_thumbnail_expl}}</p>
+	<form action="{{page.rot}}/metadata/authors/{{ author.id }}/thumbnail/" method="post" enctype="multipart/form-data" data-ajax="false">
+			<input type="file" name="file" accept="image/*" capture required/>
+			<input type="submit" value="{{page.glob.langa.upload}}" data-mini="true" />
+	</form>
+	<a data-role="button" id="delete-image" href="#" value="delete" data-mini="true" data-proot="{{page.rot}}" data-author="{{ author.id }}">
+		{{page.glob.langa.delete}}
+	</a>
+</section>
+
+<section data-role="panel" data-display="overlay" data-position="right" id="author-mdlinks-panel" >
+	<h2>{{page.glob.langa.author_links}}</h2>
+	<div id="flash"></div>
+	<p>{{page.glob.langa.author_links_expl}}</p>
+	<form id="author-link-new" action="{{page.rot}}/metadata/authors/{{ author.id }}/links/">
+  		<input type="text" name="link-description" id="link-description" placeholder="{{page.glob.langa.author_links_text}}" maxlength="50" required />
+  		<input type="url" name="link-url" id="link-url" placeholder="{{page.glob.langa.author_links_url}}" maxlength="255" required />
+  		<input type="submit" value="{{page.glob.langa.save}}" data-mini="true" />
+	</form>
+	<ul id="author-links-edit" data-role="listview" data-split-icon="delete" data-inset="true">
+		{% for link in author.links %}
+		<li class="link-{{link.id}}">
+			<a href="{{link.url}}">
+				{{link.label}}
+			</a>
+			<a href="#" data-proot="{{page.rot}}" data-author="{{author.id}}" data-link="{{link.id}}" class="author-link-delete">
+				{{page.glob.langa.delete}}
+			</a>
+		</li>
+		{% endfor %}	
+	</ul>
 </section>
 
 <script id="linkTemplate1" type="text/html">
