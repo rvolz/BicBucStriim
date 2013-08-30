@@ -181,7 +181,7 @@ class TestOfBicBucStriim extends UnitTestCase {
 	}
 
 	function testEditAuthorThumbnail() {				
-		$this->assertTrue($this->bbs->editAuthorThumbnail(1, 'Author Name', true, 'tests/fixtures/author1.jpg'));
+		$this->assertTrue($this->bbs->editAuthorThumbnail(1, 'Author Name', true, 'tests/fixtures/author1.jpg', 'image/jpeg'));
 		$this->assertTrue(file_exists(self::DATA.'/authors/author_1_thm.png'));
 		$result2 = $this->bbs->getCalibreThing(DataConstants::CALIBRE_AUTHOR_TYPE, 1);
 		$this->assertEqual('Author Name', $result2->cname);
@@ -195,8 +195,8 @@ class TestOfBicBucStriim extends UnitTestCase {
 	}
 
 	function testGetAuthorThumbnail() {				
-		$this->assertTrue($this->bbs->editAuthorThumbnail(1, 'Author Name', true, 'tests/fixtures/author1.jpg'));
-		$this->assertTrue($this->bbs->editAuthorThumbnail(2, 'Author Name', true, 'tests/fixtures/author1.jpg'));
+		$this->assertTrue($this->bbs->editAuthorThumbnail(1, 'Author Name', true, 'tests/fixtures/author1.jpg', 'image/jpeg'));
+		$this->assertTrue($this->bbs->editAuthorThumbnail(2, 'Author Name', true, 'tests/fixtures/author1.jpg', 'image/jpeg'));
 		$result = $this->bbs->getAuthorThumbnail(1);
 		$this->assertNotNull($result);
 		$this->assertEqual(DataConstants::AUTHOR_THUMBNAIL_ARTEFACT, $result->atype);
@@ -206,7 +206,7 @@ class TestOfBicBucStriim extends UnitTestCase {
 	}
 
 	function testDeleteAuthorThumbnail() {				
-		$this->assertTrue($this->bbs->editAuthorThumbnail(1, 'Author Name', true, 'tests/fixtures/author1.jpg'));
+		$this->assertTrue($this->bbs->editAuthorThumbnail(1, 'Author Name', true, 'tests/fixtures/author1.jpg', 'image/jpeg'));
 		$this->assertNotNull($this->bbs->getAuthorThumbnail(1));
 		$this->assertTrue($this->bbs->deleteAuthorThumbnail(1));
 		$this->assertFalse(file_exists(self::DATA.'/authors/author_1_thm.png'));

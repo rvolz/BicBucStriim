@@ -3,6 +3,14 @@
 		<p class="success">{{message}}</p>
 	{% endfor %}
 
+	{% if flash.info %}
+		<p class="success">{{flash.info}}</p>
+	{% endif %}
+
+	{% if flash.error %}
+		<p class="error">{{flash.error}}</p>
+	{% endif %}
+	
 	{% for error in errors %}
 	{% if error == 1 %}
 		<p class="error">{{page.glob.langa.invalid_calibredir2}}</p>

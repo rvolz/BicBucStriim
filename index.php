@@ -697,40 +697,44 @@ function admin_check_version() {
  * Metadata functions
  ********************************************************************/
 
+/**
+ * Upload an author thumbnail picture -> POST /metadata/authors/:id/thumbnail/
+ * Works only with JPG/PNG, max. size 3MB
+ */
+
 function edit_author_thm($id) {
 	global $app, $globalSettings;
 
-	$allowedExts = array("gif", "jpeg", "jpg", "png");
-	$temp = explode(".", $_FILES["file"]["name"]);
-	$extension = end($temp);
-	$app->getLog()->debug('edit_author_thm: '.$temp);
-	if ((($_FILES["file"]["type"] == "image/gif")
-	|| ($_FILES["file"]["type"] == "image/jpeg")
+	$allowedExts = array("jpeg", "jpg", "png");
+	#$temp = explode(".", $_FILES["file"]["name"]);
+	#$extension = end($temp);
+	$extension = pathinfo($_FILES["file"]["name"], PATHINFO_EXTENSION);
+	$app->getLog()->debug('edit_author_thm: '.$_FILES["file"]["name"]);
+	if ((($_FILES["file"]["type"] == "image/jpeg")
 	|| ($_FILES["file"]["type"] == "image/jpg")
 	|| ($_FILES["file"]["type"] == "image/pjpeg")
 	|| ($_FILES["file"]["type"] == "image/x-png")
 	|| ($_FILES["file"]["type"] == "image/png"))
-	&& ($_FILES["file"]["size"] < 200000)
+	&& ($_FILES["file"]["size"] < 3145728)
 	&& in_array($extension, $allowedExts)) {
-		$app->getLog()->debug('edit_author_thm: filetype ok');
+		$app->getLog()->debug('edit_author_thm: filetype '.$_FILES["file"]["type"].', size '.$_FILES["file"]["size"]);
 		if ($_FILES["file"]["error"] > 0) {
 			$app->getLog()->debug('edit_author_thm: upload error '.$_FILES["file"]["error"]);
-			echo "Return Code: " . $_FILES["file"]["error"] . "<br>";
+			$app->flash('error', getMessageString('author_thumbnail_upload_error1').': '.$_FILES["file"]["error"]);
+			$rot = $app->request()->getRootUri();
+			$app->redirect($rot.'/authors/'.$id.'/0/');
 		} else {
 			$app->getLog()->debug('edit_author_thm: upload ok, converting');
-			echo "Upload: " . $_FILES["file"]["name"] . "<br>";
-			echo "Type: " . $_FILES["file"]["type"] . "<br>";
-			echo "Size: " . ($_FILES["file"]["size"] / 1024) . " kB<br>";
-			echo "Temp file: " . $_FILES["file"]["tmp_name"] . "<br>";
-
 			$author = $app->calibre->findOne('Author', 'select * from authors where id='.$id);
-			$app->bbs->editAuthorThumbnail($id, $author->name, $globalSettings[THUMB_GEN_CLIPPED], $_FILES["file"]["tmp_name"]);
+			$created = $app->bbs->editAuthorThumbnail($id, $author->name, $globalSettings[THUMB_GEN_CLIPPED], $_FILES["file"]["tmp_name"], $_FILES["file"]["type"]);
 			$app->getLog()->debug('edit_author_thm: converted, redirecting');
 			$rot = $app->request()->getRootUri();
 			$app->redirect($rot.'/authors/'.$id.'/0/');			
 		}
 	} else {
-		echo "Invalid file";
+		$app->flash('error', getMessageString('author_thumbnail_upload_error2'));
+		$rot = $app->request()->getRootUri();
+		$app->redirect($rot.'/authors/'.$id.'/0/');
 	}	
 }
 

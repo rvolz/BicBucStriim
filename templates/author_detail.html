@@ -2,7 +2,9 @@
 
 {% block pid %}id="pauthor_detail"{%endblock%}
 
+
 {% block content %}
+{% include "flash_messages.html" %}
 <section class="author-detail-row">
 	<header>
 
@@ -84,7 +86,9 @@
 	<div id="flash"></div>
 	<p>{{page.glob.langa.author_thumbnail_expl}}</p>
 	<form action="{{page.rot}}/metadata/authors/{{ author.id }}/thumbnail/" method="post" enctype="multipart/form-data" data-ajax="false">
-			<input type="file" name="file" accept="image/*" capture required/>
+			<input type="file" name="file" 
+				accept="image/jpg,image/jpeg,image/pjpeg,image/png,image/x-png,.jpg,.png,.jpeg" 
+				capture required/>
 			<input type="submit" value="{{page.glob.langa.upload}}" data-mini="true" />
 	</form>
 	<a data-role="button" id="delete-image" href="#" value="delete" data-mini="true" data-proot="{{page.rot}}" data-author="{{ author.id }}">

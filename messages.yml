@@ -228,10 +228,16 @@ author_thumbnail:
   de: Bild
   en: Thumbnail Image
 author_thumbnail_expl:
-  de: Ein Autorenbild hochladen oder löschen. Bitte kleine Bilder verwenden, sie werden
+  de: Ein Autorenbild hochladen oder löschen. Bitte kleine Bilder verwenden (<3MB), sie werden
     auf 160*160 Pixel reduziert.
-  en: Upload or delete an author image. Please use small files, the image will be
+  en: Upload or delete an author image. Please use small files (<3MB), the image will be
     reduced to 160*160 pixels.
+author_thumbnail_upload_error1:
+  de: Fehler beim Hochladen
+  en: Upload error
+author_thumbnail_upload_error2:
+  de: Falscher Dateityp oder zu groß
+  en: Wrong file type or too big
 back:
   de: Zurück
   en: Back

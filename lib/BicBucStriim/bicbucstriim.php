@@ -365,19 +365,30 @@ class BicBucStriim {
 	 * @param int 		authorId 	Calibre ID of the author
 	 * @param string 	authorName 	Calibre name of the author
 	 * @param boolean 	clipped 	true = image should be clipped, else stuffed
-	 * @param string 	file 		File name of the input image
+	 * @param string 	file 		File name of the input image	 
+	 * @param string 	mime 		Mime type of the image
 	 * @return 			string, file name of the thumbnail image, or null
 	 */
-	public function editAuthorThumbnail($authorId, $authorName, $clipped, $file) {
+	public function editAuthorThumbnail($authorId, $authorName, $clipped, $file, $mime) {
 		$calibreThing = $this->getCalibreThing(DataConstants::CALIBRE_AUTHOR_TYPE, $authorId);
 		if (is_null($calibreThing))
 			$calibreThing = $this->addCalibreThing(DataConstants::CALIBRE_AUTHOR_TYPE, $authorId, $authorName);		
 
+		if (($mime == 'image/jpeg')
+		|| ($mime == "image/jpg")
+		|| ($mime == "image/pjpeg"))
+			$png = false;
+		else
+			$png = true;
+
 		$fname = $this->authors_dir. '/author_'.$calibreThing->id.'_thm.png';
+		if (file_exists($fname))
+			unlink($fname);
+
 		if ($clipped) 
-			$created = $this->thumbnailClipped($file, self::THUMB_RES, self::THUMB_RES, $fname);
+			$created = $this->thumbnailClipped($file, $png, self::THUMB_RES, self::THUMB_RES, $fname);
 		else 
-			$created = $this->thumbnailStuffed($file, self::THUMB_RES, self::THUMB_RES, $fname);
+			$created = $this->thumbnailStuffed($file, $png,  self::THUMB_RES, self::THUMB_RES, $fname);
 
 		$artefact = $calibreThing->getAuthorThumbnail();
 		if (is_null($artefact)) {
@@ -412,6 +423,9 @@ class BicBucStriim {
 	 * The thumbnail dimension generated is 160*160, which is more than what 
 	 * jQuery Mobile requires (80*80). However, if we send the 80*80 resolution the 
 	 * thumbnails look very pixely.
+	 *
+	 * The function expects the input file to be a JPEG.
+	 *
 	 * @param  int 		id 		book id
 	 * @param  string 	cover 	path to cover image
 	 * @param  bool  	clipped	true = clip the thumbnail, else stuff it
@@ -425,9 +439,9 @@ class BicBucStriim {
 				$thumb_path = NULL;
 			else {
 				if ($clipped)
-					$created = $this->thumbnailClipped($cover, self::THUMB_RES, self::THUMB_RES, $thumb_path);
+					$created = $this->thumbnailClipped($cover, false, self::THUMB_RES, self::THUMB_RES, $thumb_path);
 				else
-					$created = $this->thumbnailStuffed($cover, self::THUMB_RES, self::THUMB_RES, $thumb_path);
+					$created = $this->thumbnailStuffed($cover, false, self::THUMB_RES, self::THUMB_RES, $thumb_path);
 				if (!$created)
 					$thumb_path = NULL;
 			}
@@ -595,15 +609,19 @@ class BicBucStriim {
 	/**
 	 * Create a square thumbnail by clipping the largest possible square from the cover
 	 * @param  string 	cover      	path to input image
+	 * @param  bool 	png      	true if the input is a PNG file, false = JPEG
 	 * @param  int 	 	newwidth   	required thumbnail width
 	 * @param  int 		newheight  	required thumbnail height
 	 * @param  string 	thumb_path 	path for thumbnail storage
 	 * @return bool             	true = thumbnail created, else false
 	 */
-	private function thumbnailClipped($cover, $newwidth, $newheight, $thumb_path) {
+	private function thumbnailClipped($cover, $png, $newwidth, $newheight, $thumb_path) {
 		list($width, $height) = getimagesize($cover);
 		$thumb = imagecreatetruecolor($newwidth, $newheight);
-		$source = imagecreatefromjpeg($cover);
+		if ($png)
+			$source = imagecreatefrompng($cover);
+		else
+			$source = imagecreatefromjpeg($cover);
 		$minwh = min(array($width, $height));
 		$newx = ($width / 2) - ($minwh / 2);
 		$newy = ($height / 2) - ($minwh / 2);
@@ -617,15 +635,19 @@ class BicBucStriim {
 	/**
 	 * Create a square thumbnail by stuffing the cover at the edges
 	 * @param  string 	cover      	path to input image
+	 * @param  bool 	png      	true if the input is a PNG file, false = JPEG
 	 * @param  int 	 	newwidth   	required thumbnail width
 	 * @param  int 		newheight  	required thumbnail height
 	 * @param  string 	thumb_path 	path for thumbnail storage
 	 * @return bool             	true = thumbnail created, else false
 	 */
-	private function thumbnailStuffed($cover, $newwidth, $newheight, $thumb_path) {
+	private function thumbnailStuffed($cover, $png, $newwidth, $newheight, $thumb_path) {
 		list($width, $height) = getimagesize($cover);
 		$thumb = Utilities::transparentImage($newwidth, $newheight);
-		$source = imagecreatefromjpeg($cover);
+		if ($png)
+			$source = imagecreatefrompng($cover);
+		else
+			$source = imagecreatefromjpeg($cover);
 		$dstx = 0;
 		$dsty = 0;
 		$maxwh = max(array($width, $height));
