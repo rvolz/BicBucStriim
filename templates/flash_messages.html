@@ -13,23 +13,23 @@
 	
 	{% for error in errors %}
 	{% if error == 1 %}
-		<p class="error">{{page.glob.langa.invalid_calibredir2}}</p>
+		<p class="error">{{page.glob.l10n.invalid_calibredir2}}</p>
 	{% elseif error == 2 %}
-		<p class="error">{{page.glob.langa.invalid_password2}}</p>
+		<p class="error">{{page.glob.l10n.invalid_password2}}</p>
 	{% elseif error == 3 %}
-		<p class="error">{{page.glob.langa.admin_pw_required2}}</p>
+		<p class="error">{{page.glob.l10n.admin_pw_required2}}</p>
 	{% elseif error == 4 %}
-		<p class="error">{{page.glob.langa.admin_invalid_page_size}}</p>	
+		<p class="error">{{page.glob.l10n.admin_invalid_page_size}}</p>	
 	{% elseif error == 5 %}
-		<p class="error">{{page.glob.langa.invalid_email_address}}</p>		
+		<p class="error">{{page.glob.l10n.invalid_email_address}}</p>		
 	{% else %}
-		<p class="error">{{page.glob.langa.unknown_error1}}</p>
+		<p class="error">{{page.glob.l10n.unknown_error1}}</p>
 	{% endif %}
 	{% endfor %}
 	{% if errors %}
 		<p>
 			<a href="{{page.rot}}/installcheck.php">
-				{{page.glob.langa.check_installation}}
+				{{page.glob.l10n.check_installation}}
 			</a>
 		</p>
 	{% endif %}

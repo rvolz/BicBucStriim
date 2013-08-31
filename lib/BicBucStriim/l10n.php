@@ -4,7 +4,7 @@
 */
 require_once 'langs.php';
 
-class L10n {
+class L10n extends ArrayObject {
 	/**
 	 * User language
 	 * @var string
@@ -40,6 +40,28 @@ class L10n {
 			$this->langa = $langen;
 		$this->langb = $langen;
 		$this->user_lang = $lang;
+	}
+
+
+	/**
+	 * Implement this part of the Array interface for easier 
+	 * access by the templates.
+	 *
+	 * Always return true, because then ::message will return an
+	 * error string for undefined IDs.
+	 */
+	public function offsetExists($id) {
+		return true;
+	}
+
+	/**
+	 * Implement this part of the Array interface for easier 
+	 * access by the templates.
+	 *
+	 * Just call ::message.
+	 */
+	public function offsetGet($id) {
+		return $this->message($id);
 	}
 
 	/**

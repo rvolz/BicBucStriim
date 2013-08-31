@@ -4,11 +4,11 @@
 {% block content %}
 
 <header>
-	<h1>{{ page.glob.langa.admin_idtemplates }}</h1>
+	<h1>{{ page.glob.l10n.admin_idtemplates }}</h1>
 </header>
 {% include "flash_messages.html" %}
 
-<p>{{page.glob.langa.admin_idtemplates_legend|raw}}</p>
+<p>{{page.glob.l10n.admin_idtemplates_legend|raw}}</p>
 <ul id="idtemplates" data-role="listview" data-split-icon="delete" data-inset="true">
 {% for template in templates %}
 	<li>
@@ -21,28 +21,28 @@
 			<p class="template-uri">{{template.val|raw}}</p>
 		</a>
 		<a class="idtemplate_clear" href="#" data-template="{{template.name}}" data-proot="{{page.rot}}">
-			{{page.glob.langa.admin_idtemplate_clear}}
+			{{page.glob.l10n.admin_idtemplate_clear}}
 		</a>
 	</li>
 {% endfor %}
 </ul>
 <div id="edit" data-role="popup" data-theme="a" class="ui-corner-all ui-content">
 	<form id="templateform" data-proot="{{page.rot}}">
-		<h3>{{page.glob.langa.admin_idtemplate}}</h3>
+		<h3>{{page.glob.l10n.admin_idtemplate}}</h3>
 		<label for="name" class="ui-hidden-accessible">
-			{{page.glob.langa.admin_idtemplate_name}}
+			{{page.glob.l10n.admin_idtemplate_name}}
 		</label>
 		<input name="name" id="name" value="" type="text" disabled="true" />
 		<label for="label" class="ui-hidden-accessible">
-			{{page.glob.langa.admin_idtemplate_label}}
+			{{page.glob.l10n.admin_idtemplate_label}}
 		</label>
-		<input name="label" id="label" value="" placeholder="{{page.glob.langa.admin_idtemplate_label}}" type="text"/>
+		<input name="label" id="label" value="" placeholder="{{page.glob.l10n.admin_idtemplate_label}}" type="text"/>
 		<label for="template" class="ui-hidden-accessible">
-			{{page.glob.langa.admin_idtemplate_template}}
+			{{page.glob.l10n.admin_idtemplate_template}}
 		</label>
-		<input name="template" id="template" value="" placeholder="{{page.glob.langa.admin_idtemplate_template}}" type="url"/>
+		<input name="template" id="template" value="" placeholder="{{page.glob.l10n.admin_idtemplate_template}}" type="url"/>
 		<button type="submit" data-ajax="true" data-icon="check" data-mini="true">
-			{{page.glob.langa.save}}
+			{{page.glob.l10n.save}}
 		</button>
 	</form>
 </div>

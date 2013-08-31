@@ -3,49 +3,49 @@
 {% block pid %}id="padmin_mail" data-ajax="false"{%endblock%}
 {% block content %}
 
-<h1>{{ page.glob.langa.admin_mail }}</h1>
+<h1>{{ page.glob.l10n.admin_mail }}</h1>
 {% include "flash_messages.html" %}
 
-<p>{{page.glob.langa.admin_mail_legend}}</p>
+<p>{{page.glob.l10n.admin_mail_legend}}</p>
 <form action="{{page.rot}}/admin/mail/" method="put" id="mailform" data-proot="{{page.rot}}">
 	<fieldset data-role="fieldcontain">
-		<label for="username">{{page.glob.langa.admin_username}}</label>
+		<label for="username">{{page.glob.l10n.admin_username}}</label>
 		<input name="username" id="username" type="text" 
-			value="{{mail.username}}" placeholder="{{page.glob.langa.admin_username}}" 
+			value="{{mail.username}}" placeholder="{{page.glob.l10n.admin_username}}" 
 			required="true" />
 	</fieldset>	
-	<p>{{page.glob.langa.admin_smtpusername_expl}}</p>					
+	<p>{{page.glob.l10n.admin_smtpusername_expl}}</p>					
 	<fieldset data-role="fieldcontain">
-		<label for="password">{{page.glob.langa.admin_userpw}}</label>
+		<label for="password">{{page.glob.l10n.admin_userpw}}</label>
 		<input name="password" id="password" type="password" 
-			value="{{mail.password}}" placeholder="{{page.glob.langa.admin_userpw}}" 
+			value="{{mail.password}}" placeholder="{{page.glob.l10n.admin_userpw}}" 
 			required="true" />
-		<p>{{page.glob.langa.admin_smtpuserpw_expl}}</p>					
+		<p>{{page.glob.l10n.admin_smtpuserpw_expl}}</p>					
 	</fieldset>	
 	<fieldset data-role="fieldcontain">
-		<label for="smtpserver">{{page.glob.langa.admin_smtpserver}}</label>
+		<label for="smtpserver">{{page.glob.l10n.admin_smtpserver}}</label>
 		<input name="smtpserver" id="smtpserver" type="text" 
-			value="{{mail.smtpserver}}" placeholder="{{page.glob.langa.admin_smtpserver}}" required="true" />		
-		<p>{{page.glob.langa.admin_smtpserver_expl}}</p>					
+			value="{{mail.smtpserver}}" placeholder="{{page.glob.l10n.admin_smtpserver}}" required="true" />		
+		<p>{{page.glob.l10n.admin_smtpserver_expl}}</p>					
 	</fieldset>
 	<fieldset data-role="fieldcontain"> 
-		<label for="smtpport">{{page.glob.langa.admin_smtpport}}</label>
+		<label for="smtpport">{{page.glob.l10n.admin_smtpport}}</label>
 		<input name="smtpport" id="smtpport" type="number" 
-			value="{{mail.smtpport}}" placeholder="{{page.glob.langa.admin_smtpport}}" 
+			value="{{mail.smtpport}}" placeholder="{{page.glob.l10n.admin_smtpport}}" 
 			required="true" />		
-		<p>{{page.glob.langa.admin_smtpport_expl}}</p>					
+		<p>{{page.glob.l10n.admin_smtpport_expl}}</p>					
 	</fieldset>	
 	<fieldset data-role="fieldcontain">
-		<label for="smtpenc">{{page.glob.langa.admin_smtpenc}}</label>
+		<label for="smtpenc">{{page.glob.l10n.admin_smtpenc}}</label>
 		<select name="smtpenc" id="smtpenc" value="{{mail.smtpenc}}">
 		{% for encryption in encryptions %}
 			<option value="{{encryption.key}}" {%if mail.smtpenc == encryption.key %}selected="true"{% endif %}>{{encryption.text}}</option>
 		{% endfor %}
 		</select>
-		<p>{{page.glob.langa.admin_smtpenc_expl}}</p>					
+		<p>{{page.glob.l10n.admin_smtpenc_expl}}</p>					
 	</fieldset>
 	<button  data-ajax="true" data-icon="check" type="submit">
-		{{page.glob.langa.save}}
+		{{page.glob.l10n.save}}
 	</button>	
 </form>
 {% endblock %}

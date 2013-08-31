@@ -2,20 +2,20 @@
 	{% if curpage > 0 %}
 		<a  data-icon="arrow-l" data-role="button" class="ui-btn-left" 
 				href="{{page.rot}}/{{url}}/{{curpage - 1}}/{% if search != NULL %}?search={{search}}{% endif %}">
-			{{page.glob.langa.pagination_prev}}
+			{{page.glob.l10n.pagination_prev}}
 		</a>	
 	{% endif %}
 	{% if curpage+1 < pages %}
 		<a data-icon="arrow-r" data-role="button" class="ui-btn-right" 
 				href="{{page.rot}}/{{url}}/{{curpage + 1}}/{% if search != NULL %}?search={{search}}{% endif %}">
-			{{page.glob.langa.pagination_next}}
+			{{page.glob.l10n.pagination_next}}
 		</a>	
 	{% endif %}
 		<h1>
 		{% if search != NULL %}
-			{{page.glob.langa.pagination_search}} 
+			{{page.glob.l10n.pagination_search}} 
 		{% else %}
-			{{page.glob.langa.pagination_page}} 
+			{{page.glob.l10n.pagination_page}} 
 		{% endif %}
 		{{ curpage+1 }}/{{ pages }}
 		</h1>

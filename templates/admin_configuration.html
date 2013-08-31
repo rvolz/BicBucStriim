@@ -3,57 +3,57 @@
 {% block pid %}id="padmin" data-ajax="false"{%endblock%}
 {% block content %}
 
-<h1>{{ page.glob.langa.admin }}</h1>
+<h1>{{ page.glob.l10n.admin }}</h1>
 {% include "flash_messages.html" %}
 
 <form action="{{page.rot}}/admin/configuration/" method="post" id="adminform">
 	<fieldset data-role="fieldcontain">
-		<label for="calibre_dir">{{page.glob.langa.calibre_dir1}}</label>
+		<label for="calibre_dir">{{page.glob.l10n.calibre_dir1}}</label>
 		<input name="calibre_dir" id="calibre_dir" type="text" 
-			value="{{page.glob.calibre_dir}}" placeholder="{{page.glob.langa.calibre_dir2}}" required autofocus />
-		<p>{{page.glob.langa.calibre_dir_expl}}</p>					
+			value="{{page.glob.calibre_dir}}" placeholder="{{page.glob.l10n.calibre_dir2}}" required autofocus />
+		<p>{{page.glob.l10n.calibre_dir_expl}}</p>					
 	</fieldset>	
 	<fieldset data-role="fieldcontain">
-		<label for="kindle">{{page.glob.langa.kindle_enable}}</label>
+		<label for="kindle">{{page.glob.l10n.kindle_enable}}</label>
 		<select name="kindle" id="kindle" data-role="slider">
 			<option value="0" {% if page.glob.kindle == "0" %}selected {%endif%}>
-				{{page.glob.langa.switch_no}}
+				{{page.glob.l10n.switch_no}}
 			</option>
 			<option value="1" {% if page.glob.kindle == "1" %}selected {%endif%}>
-				{{page.glob.langa.switch_yes}}
+				{{page.glob.l10n.switch_yes}}
 			</option>
 		</select>
-		<p>{{page.glob.langa.kindle_expl}}</p>
+		<p>{{page.glob.l10n.kindle_expl}}</p>
 	</fieldset>	
 	<fieldset data-role="fieldcontain">
-		<label for="kindle_from_email">{{page.glob.langa.kindle_from_email1}}</label>
+		<label for="kindle_from_email">{{page.glob.l10n.kindle_from_email1}}</label>
 		<input name="kindle_from_email" id="kindle_from_email" type="text" 
-			value="{{page.glob.kindle_from_email}}" placeholder="{{page.glob.langa.kindle_from_email2}}" />
-		<p>{{page.glob.langa.kindle_expl2}}</p>
+			value="{{page.glob.kindle_from_email}}" placeholder="{{page.glob.l10n.kindle_from_email2}}" />
+		<p>{{page.glob.l10n.kindle_expl2}}</p>
 	</fieldset>
 	<fieldset data-role="fieldcontain">
-		<label for="mailer">{{page.glob.langa.admin_mailer}}</label>
+		<label for="mailer">{{page.glob.l10n.admin_mailer}}</label>
 		<select name="mailer" id="mailer" value="{{page.glob.mailer}}">
 		{% for mailer in mailers %}
 			<option value="{{mailer.key}}" {%if page.glob.mailer == mailer.key %}selected="true"{% endif %}>{{mailer.text}}</option>
 		{% endfor %}
 		</select>
-		<p>{{page.glob.langa.admin_mailer_expl}} <a href="../mail/">SMTP</a></p>					
+		<p>{{page.glob.l10n.admin_mailer_expl}} <a href="../mail/">SMTP</a></p>					
 	</fieldset>
 	<fieldset data-role="fieldcontain">
-		<label for="thumb_gen_clipped">{{page.glob.langa.thumb_gen_clipped}}</label>
+		<label for="thumb_gen_clipped">{{page.glob.l10n.thumb_gen_clipped}}</label>
 		<select name="thumb_gen_clipped" id="thumb_gen_clipped" data-role="slider">
 			<option value="0" {% if page.glob.thumb_gen_clipped == "0" %}selected {%endif%}>
-				{{page.glob.langa.switch_no}}
+				{{page.glob.l10n.switch_no}}
 			</option>
 			<option value="1" {% if page.glob.thumb_gen_clipped == "1" %}selected {%endif%}>
-				{{page.glob.langa.switch_yes}}
+				{{page.glob.l10n.switch_yes}}
 			</option>
 		</select>
-		<p>{{page.glob.langa.thumb_gen_clipped_expl}}</p>
+		<p>{{page.glob.l10n.thumb_gen_clipped_expl}}</p>
 	</fieldset>	
 	<fieldset data-role="fieldcontain">
-		<label for="page_size">{{page.glob.langa.page_size}}</label>
+		<label for="page_size">{{page.glob.l10n.page_size}}</label>
 		<input name="page_size" id="page_size" 
 			type="range" 
 			value="{{page.glob.page_size}}"
@@ -61,17 +61,17 @@
 			max="100"
 			step="1"
 		/>
-		<p>{{page.glob.langa.page_size_expl}}</p>
+		<p>{{page.glob.l10n.page_size_expl}}</p>
 	</fieldset>	
 	<fieldset data-role="fieldcontain">
-		<label for="display_app_name">{{page.glob.langa.display_app_name}}</label>
+		<label for="display_app_name">{{page.glob.l10n.display_app_name}}</label>
 		<input name="display_app_name" id="display_app_name" 
 			type="text" 
 			value="{{page.glob.display_app_name}}"
 		/>
-		<p>{{page.glob.langa.display_app_name_expl}}</p>
+		<p>{{page.glob.l10n.display_app_name_expl}}</p>
 	</fieldset>		
-	<button type="submit">{{page.glob.langa.save}}</button>	
+	<button type="submit">{{page.glob.l10n.save}}</button>	
 </form>
 
 {% endblock %}

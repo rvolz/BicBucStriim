@@ -11,21 +11,21 @@
 		{# Display edit menu only on first page and if user is admin #}
 		{% if curpage == 0 and isadmin %}
 		<a id="author_edit" href="#popupMenu" data-rel="popup" data-role="button" data-inline="true" data-mini="true" data-icon="edit" data-theme="b" data-iconpos="notext">
-			{{page.glob.langa.edit}}
+			{{page.glob.l10n.edit}}
 		</a>
 		<div data-role="popup" id="popupMenu" data-theme="d">
 		        <ul data-role="listview" data-inset="true" style="min-width:210px;" data-theme="a">
 		            <li data-role="divider" data-theme="b">
-		            	{{page.glob.langa.author_metadata}}
+		            	{{page.glob.l10n.author_metadata}}
 		            </li>
 		            <li>
 		            	<a href="#author-mdthumb-panel">
-		            		{{page.glob.langa.author_thumbnail}}
+		            		{{page.glob.l10n.author_thumbnail}}
 		            	</a>
 		            </li>
 		            <li>
 		            	<a href="#author-mdlinks-panel">
-		            		{{page.glob.langa.author_links}}
+		            		{{page.glob.l10n.author_links}}
 		            	</a>
 		            </li>
 		        </ul>
@@ -65,7 +65,7 @@
 		</div>
 		{% else %}		
 		<h3>
-			{{page.glob.langa.booksby}} <em>{{ author.name }}</em>
+			{{page.glob.l10n.booksby}} <em>{{ author.name }}</em>
 		</h3> 
 		{% endif %}
 	</header>
@@ -82,28 +82,28 @@
 
 {% block rightpanel %}
 <section data-role="panel" data-display="overlay" data-position="right" id="author-mdthumb-panel" >
-	<h2>{{page.glob.langa.author_thumbnail}}</h2>
+	<h2>{{page.glob.l10n.author_thumbnail}}</h2>
 	<div id="flash"></div>
-	<p>{{page.glob.langa.author_thumbnail_expl}}</p>
+	<p>{{page.glob.l10n.author_thumbnail_expl}}</p>
 	<form action="{{page.rot}}/metadata/authors/{{ author.id }}/thumbnail/" method="post" enctype="multipart/form-data" data-ajax="false">
 			<input type="file" name="file" 
 				accept="image/jpg,image/jpeg,image/pjpeg,image/png,image/x-png,.jpg,.png,.jpeg" 
 				capture required/>
-			<input type="submit" value="{{page.glob.langa.upload}}" data-mini="true" />
+			<input type="submit" value="{{page.glob.l10n.upload}}" data-mini="true" />
 	</form>
 	<a data-role="button" id="delete-image" href="#" value="delete" data-mini="true" data-proot="{{page.rot}}" data-author="{{ author.id }}">
-		{{page.glob.langa.delete}}
+		{{page.glob.l10n.delete}}
 	</a>
 </section>
 
 <section data-role="panel" data-display="overlay" data-position="right" id="author-mdlinks-panel" >
-	<h2>{{page.glob.langa.author_links}}</h2>
+	<h2>{{page.glob.l10n.author_links}}</h2>
 	<div id="flash"></div>
-	<p>{{page.glob.langa.author_links_expl}}</p>
+	<p>{{page.glob.l10n.author_links_expl}}</p>
 	<form id="author-link-new" action="{{page.rot}}/metadata/authors/{{ author.id }}/links/">
-  		<input type="text" name="link-description" id="link-description" placeholder="{{page.glob.langa.author_links_text}}" maxlength="50" required />
-  		<input type="url" name="link-url" id="link-url" placeholder="{{page.glob.langa.author_links_url}}" maxlength="255" required />
-  		<input type="submit" value="{{page.glob.langa.save}}" data-mini="true" />
+  		<input type="text" name="link-description" id="link-description" placeholder="{{page.glob.l10n.author_links_text}}" maxlength="50" required />
+  		<input type="url" name="link-url" id="link-url" placeholder="{{page.glob.l10n.author_links_url}}" maxlength="255" required />
+  		<input type="submit" value="{{page.glob.l10n.save}}" data-mini="true" />
 	</form>
 	<ul id="author-links-edit" data-role="listview" data-split-icon="delete" data-inset="true">
 		{% for link in author.links %}
@@ -112,7 +112,7 @@
 				{{link.label}}
 			</a>
 			<a href="#" data-proot="{{page.rot}}" data-author="{{author.id}}" data-link="{{link.id}}" class="author-link-delete">
-				{{page.glob.langa.delete}}
+				{{page.glob.l10n.delete}}
 			</a>
 		</li>
 		{% endfor %}	
@@ -138,7 +138,7 @@
 			data-proot="{{page.rot}}" 
 			data-author="{{author.id}}" 
 			data-template-bind='[{"attribute": "data-link", "value": "id"}]' >
-			{{page.glob.langa.delete}}
+			{{page.glob.l10n.delete}}
 		</a>
 	</li>
 </script>

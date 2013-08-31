@@ -1,13 +1,13 @@
 {% if status_ok == true %}
-	<p class="success">{{page.glob.langa.changes_saved}}</p>
+	<p class="success">{{page.glob.l10n.changes_saved}}</p>
 {% else %}
 	{% for error in errors %}
 		{% if error == 1 %}
-			<p class="error">{{page.glob.langa.invalid_calibredir2}}</p>
+			<p class="error">{{page.glob.l10n.invalid_calibredir2}}</p>
 		{% elseif error == 2 %}
-			<p class="error">{{page.glob.langa.invalid_password2}}</p>
+			<p class="error">{{page.glob.l10n.invalid_password2}}</p>
 		{% else %}
-			<p class="error">{{page.glob.langa.admin_pw_required2}}</p>
+			<p class="error">{{page.glob.l10n.admin_pw_required2}}</p>
 		{% endif %}
 	{% endfor %}
 {% endif %}
