@@ -5,7 +5,11 @@
 		{% else %}
 		<img src="{{page.rot}}/titles/{{ book.id }}/thumbnail" />
 		{% endif %}
-		<h3>{{ book.sort }} ({{ book.pubdate|date("Y") }})</h3>
+		
+		<h3>
+			{% if series %}{{book.series_index}} - {% endif %}
+			{{ book.sort }} ({{ book.pubdate|date("Y") }})
+		</h3>
 		<p>{{book.author_sort}} {{book.addInfo}}</p>
 	</a>
 </li>

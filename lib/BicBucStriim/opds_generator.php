@@ -508,7 +508,11 @@ class OpdsGenerator {
     $this->xmlw->startElement("dc:language");
     $this->xmlw->text($entry['language']);
     $this->xmlw->endElement();
-    $this->thumbnailLink($titleLink.'/thumbnail/');
+    if ($entry['book']->thumbnail) 
+      $tlink = $this->bbs_root.'/data/titles/thumb_'.$entry['book']->id.'.png';
+    else
+      $tlink = $titleLink.'/thumbnail/';
+    $this->thumbnailLink($tlink);
     $this->imageLink($titleLink.'/cover/');
     #$this->detailsLink($titleLink.'/thumbnail/');
     foreach($entry['formats'] as $format) {

@@ -880,7 +880,8 @@ function main() {
 	global $app, $globalSettings;
 
 	$filter = getFilter();
-	$books = $app->calibre->last30Books($globalSettings['lang'], $globalSettings[PAGE_SIZE], $filter);
+	$books1 = $app->calibre->last30Books($globalSettings['lang'], $globalSettings[PAGE_SIZE], $filter);
+	$books = array_map('checkThumbnail', $books1);	
 	$app->render('index_last30.html',array(
 		'page' => mkPage(getMessageString('dl30'),1, 1), 
 		'books' => $books));	
@@ -895,25 +896,30 @@ function globalSearch() {
 	$filter = getFilter();
 	$search = $app->request()->get('search');
 	$tlb = $app->calibre->titlesSlice($globalSettings['lang'], 0, $globalSettings[PAGE_SIZE], $filter, trim($search));
+	$tlb_books = array_map('checkThumbnail', $tlb['entries']);	
 	$tla = $app->calibre->authorsSlice(0, $globalSettings[PAGE_SIZE], trim($search));
+	$tla_books = array_map('checkThumbnail', $tla['entries']);	
 	$tlt = $app->calibre->tagsSlice(0, $globalSettings[PAGE_SIZE],  trim($search));
+	$tlt_books = array_map('checkThumbnail', $tlt['entries']);	
 	$tls = $app->calibre->seriesSlice(0, $globalSettings[PAGE_SIZE], trim($search));
+	$tls_books = array_map('checkThumbnail', $tls['entries']);	
 	$app->render('global_search.html',array(
 		'page' => mkPage(getMessageString('pagination_search'),0), 
-		'books' => $tlb['entries'],
+		'books' => $tlb_books,
 		'books_total' => $tlb['total'] == -1 ? 0 : $tlb['total'],
 		'more_books' => ($tlb['total'] > $globalSettings[PAGE_SIZE]),
-		'authors' => $tla['entries'],
+		'authors' => $tla_books,
 		'authors_total' => $tla['total'] == -1 ? 0 : $tla['total'],
 		'more_authors' => ($tla['total'] > $globalSettings[PAGE_SIZE]),
-		'tags' => $tlt['entries'],
+		'tags' => $tlt_books,
 		'tags_total' => $tlt['total'] == -1 ? 0 : $tlt['total'],
 		'more_tags' => ($tlt['total'] > $globalSettings[PAGE_SIZE]),
-		'series' => $tls['entries'],
+		'series' => $tls_books,
 		'series_total' => $tls['total'] == -1 ? 0 : $tls['total'],
 		'more_series' => ($tls['total'] > $globalSettings[PAGE_SIZE]),
 		'search' => $search));
 }
+
 
 # A list of titles at $index -> /titlesList/:index
 function titlesSlice($index=0) {
@@ -923,12 +929,14 @@ function titlesSlice($index=0) {
 	$search = $app->request()->get('search');
 	if (isset($search)) {
 		$tl = $app->calibre->titlesSlice($globalSettings['lang'], $index,$globalSettings[PAGE_SIZE], $filter, trim($search));
-	} else
+	} else {
 		$tl = $app->calibre->titlesSlice($globalSettings['lang'], $index,$globalSettings[PAGE_SIZE], $filter);
+	}
+	$books = array_map('checkThumbnail', $tl['entries']);	
 	$app->render('titles.html',array(
 		'page' => mkPage(getMessageString('titles'),2, 1), 
 		'url' => 'titleslist',
-		'books' => $tl['entries'],
+		'books' => $books,
 		'curpage' => $tl['page'],
 		'pages' => $tl['pages'],
 		'search' => $search));
@@ -1191,6 +1199,7 @@ function authorDetailsSlice($id, $index=0) {
 		$app->getLog()->debug('no author '.$id);
 		$app->notFound();
 	}
+	$books = array_map('checkThumbnail', $tl['entries']);	
 	$author = $tl['author'];
 	$author->thumbnail = $app->bbs->getAuthorThumbnail($id);
 	$note = $app->bbs->authorNote($id);
@@ -1210,7 +1219,7 @@ function authorDetailsSlice($id, $index=0) {
 		'page' => mkPage(getMessageString('author_details'), 3, 2),
 		'url' => 'authors/'.$id,	
 		'author' => $tl['author'],
-		'books' => $tl['entries'],
+		'books' => $books,
 		'curpage' => $tl['page'],
 		'pages' =>  $tl['pages'],
 		'isadmin' => is_admin()));
@@ -1275,11 +1284,12 @@ function seriesDetailsSlice ($id, $index=0) {
 		$app->getLog()->debug('no series '.$id);
 		$app->notFound();		
 	}
+	$books = array_map('checkThumbnail', $tl['entries']);	
 	$app->render('series_detail.html',array(
 		'page' => mkPage(getMessageString('series_details'), 5, 2),
 		'url' => 'series/'.$id, 
 		'series' => $tl['series'], 
-		'books' => $tl['entries'],
+		'books' => $books,
 		'curpage' => $tl['page'],
 		'pages' => $tl['pages']));   
 }
@@ -1336,11 +1346,12 @@ function tagDetailsSlice ($id, $index=0) {
 		$app->getLog()->debug('no tag '.$id);
 		$app->notFound();		
 	}
+	$books = array_map('checkThumbnail', $tl['entries']);	
 	$app->render('tag_detail.html',array(
 		'page' => mkPage(getMessageString('tag_details'), 4, 2),
 		'url' => 'tags/'.$id, 
 		'tag' => $tl['tag'], 
-		'books' => $tl['entries'],
+		'books' => $books,
 		'curpage' => $tl['page'],
 		'pages' => $tl['pages']));   
 }
@@ -1373,12 +1384,13 @@ function opdsNewest() {
 
 	$filter = getFilter();
 	$just_books = $app->calibre->last30Books($globalSettings['lang'], $globalSettings[PAGE_SIZE], $filter);
-	$books = array();
+	$books1 = array();
 	foreach ($just_books as $book) {
 		$record = $app->calibre->titleDetailsOpds($book);
 		if (!empty($record['formats']))
-			array_push($books,$record);
+			array_push($books1, $record);
 	}
+	$books = array_map('checkThumbnailOpds', $books1);	
 	$gen = mkOpdsGenerator($app);	
 	$cat = $gen->newestCatalog(NULL, $books, false);
 	mkOpdsResponse($app, $cat, OpdsGenerator::OPDS_MIME_ACQ);
@@ -1401,7 +1413,8 @@ function opdsByTitle($index=0) {
 		$tl = $app->calibre->titlesSlice($globalSettings['lang'], $index,$globalSettings[PAGE_SIZE], $filter, $search);
 	else
 		$tl = $app->calibre->titlesSlice($globalSettings['lang'], $index,$globalSettings[PAGE_SIZE], $filter);
-	$books = $app->calibre->titleDetailsFilteredOpds($tl['entries']);
+	$books1 = $app->calibre->titleDetailsFilteredOpds($tl['entries']);
+	$books = array_map('checkThumbnailOpds', $books1);	
 	$gen = mkOpdsGenerator($app);	
 	$cat = $gen->titlesCatalog(NULL, $books, false, 
 		$tl['page'], getNextSearchPage($tl), getLastSearchPage($tl));
@@ -1444,7 +1457,8 @@ function opdsByAuthor($initial, $id, $page) {
 	$filter = getFilter();
 	$tl = $app->calibre->authorDetailsSlice($globalSettings['lang'], $id, $page, $globalSettings[PAGE_SIZE], $filter);
 	$app->getLog()->debug('opdsByAuthor 1 '.var_export($tl, true));
-	$books = $app->calibre->titleDetailsFilteredOpds($tl['entries']);
+	$books1 = $app->calibre->titleDetailsFilteredOpds($tl['entries']);
+	$books = array_map('checkThumbnailOpds', $books1);	
 	$app->getLog()->debug('opdsByAuthor 2 '.var_export($books, true));
 	$gen = mkOpdsGenerator($app);	
 	$cat = $gen->booksForAuthorCatalog(NULL, $books, $initial, $tl['author'], false, 
@@ -1487,7 +1501,8 @@ function opdsByTag($initial, $id, $page) {
 
 	$filter = getFilter();
 	$tl = $app->calibre->tagDetailsSlice($globalSettings['lang'], $id, $page, $globalSettings[PAGE_SIZE], $filter);
-	$books = $app->calibre->titleDetailsFilteredOpds($tl['entries']);
+	$books1 = $app->calibre->titleDetailsFilteredOpds($tl['entries']);
+	$books = array_map('checkThumbnailOpds', $books1);	
 	$gen = mkOpdsGenerator($app);	
 	$cat = $gen->booksForTagCatalog(NULL, $books, $initial, $tl['tag'], false,
 		$tl['page'], getNextSearchPage($tl), getLastSearchPage($tl));
@@ -1529,7 +1544,8 @@ function opdsBySeries($initial, $id, $page) {
 
 	$filter = getFilter();
 	$tl = $app->calibre->seriesDetailsSlice($globalSettings['lang'], $id, $page, $globalSettings[PAGE_SIZE], $filter);
-	$books = $app->calibre->titleDetailsFilteredOpds($tl['entries']);
+	$books1 = $app->calibre->titleDetailsFilteredOpds($tl['entries']);
+	$books = array_map('checkThumbnailOpds', $books1);	
 	$gen = mkOpdsGenerator($app);	
 	$cat = $gen->booksForSeriesCatalog(NULL, $books, $initial, $tl['series'], false,
 		$tl['page'], getNextSearchPage($tl), getLastSearchPage($tl));
@@ -1564,8 +1580,9 @@ function opdsBySearch($index=0) {
 		return;
 	}	
 	$filter = getFilter();
-	$tl = $app->calibre->titlesSliceFilterd($index, $globalSettings[PAGE_SIZE], $filter, $search);	
-	$books = $app->calibre->titleDetailsFilteredOpds($tl['entries']);
+	$tl = $app->calibre->titlesSlice($globalSettings['lang'], $index, $globalSettings[PAGE_SIZE], $filter, $search);	
+	$books1 = $app->calibre->titleDetailsFilteredOpds($tl['entries']);
+	$books = array_map('checkThumbnailOpds', $books1);	
 	$gen = mkOpdsGenerator($app);
 	$cat = $gen->searchCatalog(NULL, $books, false, 
 		$tl['page'], getNextSearchPage($tl), getLastSearchPage($tl), $search, 
@@ -1576,6 +1593,19 @@ function opdsBySearch($index=0) {
 /*********************************************************************
  * Utility and helper functions, private
  ********************************************************************/
+
+function checkThumbnail($book) {
+	global $app;
+	$book->thumbnail = $app->bbs->isTitleThumbnailAvailable($book->id); 
+	return $book;
+}
+
+function checkThumbnailOpds($record) {
+	global $app;
+	$record['book']->thumbnail = $app->bbs->isTitleThumbnailAvailable($record['book']->id); 
+	return $record;
+}
+
 
 function getFilter() {
 	global $app;
@@ -1591,6 +1621,7 @@ function getFilter() {
 	$app->getLog()->debug('getFilter: Using language '.$lang.', tag '.$tag);
 	return new CalibreFilter($lang, $tag);
 }
+
 
 function mkOpdsGenerator($app) {
 	global $appversion, $globalSettings;

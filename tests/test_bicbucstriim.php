@@ -249,6 +249,11 @@ class TestOfBicBucStriim extends UnitTestCase {
 		$this->assertEqual(1, R::count('note'));
 	}
 
+	function testIsTitleThumbnailAvailable() {
+		$this->assertNotNull($this->bbs->titleThumbnail(1, 'tests/fixtures/author1.jpg', true));
+		$this->assertTrue($this->bbs->isTitleThumbnailAvailable(1));
+		$this->assertFalse($this->bbs->isTitleThumbnailAvailable(2));
+	}
 
 }
 ?>

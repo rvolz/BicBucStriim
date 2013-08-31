@@ -417,6 +417,17 @@ class BicBucStriim {
 	}
 
 	/**
+	 * Checks if the thumbnail for a book was already generated.
+	 * @param int 	id 	Calibre book ID
+	 * @return 		true if the thumbnail fiel exists, else false
+	 */
+	public function isTitleThumbnailAvailable($id) {
+		$thumb_name = 'thumb_'.$id.'.png';
+		$thumb_path = $this->thumb_dir.'/'.$thumb_name;
+		return file_exists($thumb_path);
+	}
+
+	/**
 	 * Returns the path to a thumbnail of a book's cover image or NULL. 
 	 * 
 	 * If a thumbnail doesn't exist the function tries to make one from the cover.
