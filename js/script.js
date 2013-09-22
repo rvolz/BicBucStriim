@@ -67,8 +67,8 @@ $(document).on('pageinit', '#pauthor_detail', function() {
 			$('#pauthor_detail').trigger('change');
 			$('#author-mdlinks-panel').trigger('updatelayout');
 		})
-		.fail(function (data) {
-			$('div#flash').empty().append('<p class="error">'+data.msg+'</p>');
+		.fail(function (jqXHR) {
+			$('div#flash').empty().append('<p class="error">'+jqXHR.responseText+'</p>');
 			$('#pauthor_detail').trigger('change');		
 		});
 		return false;
@@ -216,8 +216,8 @@ $(document).on('pageinit', '#padmin_users', function() {
 			$('div#flash').empty().append('<p class="success">'+data.msg+'</p>');
 			$('#padmin_user').trigger('change');
 		})
-		.fail(function(data) {
-			$('div#flash').empty().append('<p class="error">'+data.msg+'</p>');
+		.fail(function(jqXHR) {
+			$('div#flash').empty().append('<p class="error">'+jqXHR.responseText+'</p>');
 			$('#padmin_user').trigger('change');		
 		});
 		$.ajaxSetup({async:true});
@@ -299,8 +299,8 @@ $(document).on('pageinit', '#padmin_user', function() {
 				$('div#flash').empty().append('<p class="success">'+data.msg+'</p>');
 				$('#padmin_user').trigger('change');
 			},
-			error: function() {
-				$('div#flash').empty().append('<p class="error">'+data.msg+'</p>');
+			error: function(jqXHR) {
+				$('div#flash').empty().append('<p class="error">'+jqXHR.responseText+'</p>');
 				$('#padmin_user').trigger('change');
 			}
 		});

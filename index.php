@@ -37,8 +37,8 @@ $appversion = '1.2.0-α';
 $app = new \Slim\Slim(array(
 	'view' => new \Slim\Views\Twig(),
 	#'mode' => 'production',
-	'mode' => 'debug',
-	#'mode' => 'development',
+	#'mode' => 'debug',
+	'mode' => 'development',
 ));
 
 $app->configureMode('production','confprod');
@@ -500,7 +500,13 @@ function admin_add_user() {
 
 	$user_data = $app->request()->post();
 	$app->getLog()->debug('admin_add_user: '.var_export($user_data, true));	
-	$user = $app->bbs->addUser($user_data['username'], $user_data['password']);
+	try {
+		$user = $app->bbs->addUser($user_data['username'], $user_data['password']);		
+	} catch (Exception $e) {
+		$app->getLog()->error('admin_add_user: error for adding user '.var_export($user_data, true));			
+		$app->getLog()->error('admin_add_user: exception '.$e->getMessage());			
+		$user = null;
+	}
 	$resp = $app->response();
 	if (isset($user) && !is_null($user)) {
 		$resp->status(200);
