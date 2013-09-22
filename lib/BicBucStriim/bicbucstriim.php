@@ -32,7 +32,6 @@ class BicBucStriim {
 	# dir for generated title thumbs
 	var $authors_dir = '';
 
-
 	/**
 	 * Try to open the BBS DB. If the DB file does not exist we do nothing.
 	 * Creates also the subdirectories for thumbnails etc. if they don't exist.
@@ -40,9 +39,12 @@ class BicBucStriim {
 	 * We open it first as PDO, because we need that for the 
 	 * authentication library, then we initialize RedBean.
 	 *
-	 * @param string $dataPath Path to BBS DB
+	 * @param string  	dataPath 	Path to BBS DB, default = data/data.db
+	 * @param boolean	freeze 		if true the DB schema is fixed, 
+	 * 								else RedBeanPHP adapt the schema
+	 * 								default = true
 	 */
-	function __construct($dataPath='data/data.db') {
+	function __construct($dataPath='data/data.db', $freeze=true) {
 		$rp = realpath($dataPath);
 		$this->data_dir = dirname($dataPath);
 		$this->thumb_dir = $this->data_dir.'/titles';
@@ -58,6 +60,7 @@ class BicBucStriim {
 			$this->mydb->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 			$this->last_error = $this->mydb->errorCode();
 			R::setup($this->mydb);
+			R::freeze($freeze);
 		} else {
 			$this->mydb = NULL;
 		}

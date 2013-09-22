@@ -37,8 +37,8 @@ $appversion = '1.2.0-α';
 $app = new \Slim\Slim(array(
 	'view' => new \Slim\Views\Twig(),
 	#'mode' => 'production',
-	#'mode' => 'debug',
-	'mode' => 'development',
+	'mode' => 'debug',
+	#'mode' => 'development',
 ));
 
 $app->configureMode('production','confprod');
@@ -125,7 +125,8 @@ $knownConfigs = array(CALIBRE_DIR, DB_VERSION, KINDLE, KINDLE_FROM_EMAIL,
 	THUMB_GEN_CLIPPED, PAGE_SIZE, DISPLAY_APP_NAME, MAILER, SMTP_SERVER,
 	SMTP_PORT, SMTP_USER, SMTP_PASSWORD, SMTP_ENCRYPTION);
 
-$app->bbs = new BicBucStriim('data/data.db');
+# Freeze (true) DB schema before release! Set to false for DB development.
+$app->bbs = new BicBucStriim('data/data.db', true);
 $app->add(new \CalibreConfigMiddleware(CALIBRE_DIR));
 $app->add(new \LoginMiddleware($appname, array('js', 'img', 'style')));
 $app->add(new \OwnConfigMiddleware($knownConfigs));
@@ -147,6 +148,8 @@ $app->get('/admin/users/:id/', 'check_admin', 'admin_get_user');
 $app->put('/admin/users/:id/', 'check_admin', 'admin_modify_user');
 $app->delete('/admin/users/:id/', 'check_admin', 'admin_delete_user');
 $app->get('/admin/version/', 'check_admin', 'admin_check_version');
+$app->get('/authors/:id/notes/', 'check_admin', 'authorNotes');
+#$app->post('/authors/:id/notes/', 'check_admin', 'authorNotesEdit');
 $app->get('/authors/:id/:page/', 'authorDetailsSlice');
 $app->get('/authorslist/:id/', 'authorsSlice');
 $app->get('/login/', 'show_login');
@@ -1224,6 +1227,40 @@ function authorDetailsSlice($id, $index=0) {
 		'pages' =>  $tl['pages'],
 		'isadmin' => is_admin()));
 }
+
+
+/**
+ * Notes for a single author -> /authors/:id/notes/
+ * 
+ * @param  integer $id    author id
+ * @return HTML page 
+ */
+function authorNotes($id) {
+	global $app, $globalSettings;
+  
+	$author = $app->calibre->author($id);
+	if (is_null($author)) {
+		$app->getLog()->debug('no author found: '.$id);
+		$app->notFound();
+	}
+	$note = $app->bbs->authorNote($id);
+	if (!is_null($note))
+		$author->notes_source = $note->ntext;		
+	else
+		$author->notes_source = null;
+	if (!empty($author->notes_source)) {
+		$markdownParser = new MarkdownExtraParser();
+		$author->notes = $markdownParser->transformMarkdown($author->notes_source);		
+	} else {
+		$author->notes = null;
+	}
+	$app->render('author_notes.html',array(
+		'page' => mkPage(getMessageString('author_notes'), 3, 2),
+		'url' => 'authors/'.$id,	
+		'author' => $author,
+		'isadmin' => is_admin()));
+}
+
 
 /**
  * Return a HTML page of series at page $index. 
