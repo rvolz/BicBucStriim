@@ -181,8 +181,18 @@ $(document).on('pageinit', '#padmin_idtemplates', function() {
 });
 
 // Admin user management - user list
-$(document).on('pageinit', '#padmin_users', function() {
+$(document).on('pagechange', '#padmin_users', function() {
+	console.log("change");
+});
 
+// Admin user management - user list
+$(document).on('pageshow', '#padmin_users', function() {
+	console.log("show");
+});
+
+// Admin user management - user list
+$(document).on('pageinit', '#padmin_users', function() {
+	console.log("init");
 	// Initiate the additon of a user handling via click
 	$('#newuserform').on('submit', function(event) {
 		event.preventDefault();

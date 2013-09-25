@@ -1,0 +1,30 @@
+{% extends 'main.html' %}
+
+{% block pid %}id="pauthor_notes"{%endblock%}
+
+
+{% block content %}
+{% include "flash_messages.html" %}
+<section  id="author-mdnotes-panel" >
+	<header>
+		<h2>{{page.glob.l10n.author_notes}}</h2>
+	</header>
+	<p>{{page.glob.l10n.author_notes_expl}}</p>
+	<div id="editor">
+	</div>
+	<form id="author-note-edit" action="{{page.rot}}/metadata/authors/{{ author.id }}/notes/">
+  		<textarea name="note-edit" id="note-edit">{{author.notes_source}}</textarea>
+  		<input type="submit" value="{{page.glob.l10n.save}}" data-mini="true" data-inline="true" />
+	</form>
+	<a data-role="button" id="delete-notes" href="#" value="delete" data-mini="true" data-inline="true" data-proot="{{page.rot}}" data-author="{{ author.id }}">
+		{{page.glob.l10n.delete}}
+	</a>	
+	<a data-role="button" id="edit-notes" href="#" value="edit" data-mini="true" data-inline="true" data-proot="{{page.rot}}" data-author="{{ author.id }}">
+		{{page.glob.l10n.edit}}
+	</a>	
+</section>
+<section id="author-notes">
+	{{author.notes|raw}}
+</section>
+
+{% endblock %}
