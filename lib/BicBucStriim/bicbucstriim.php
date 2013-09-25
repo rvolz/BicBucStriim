@@ -248,12 +248,8 @@ class BicBucStriim {
 		$template->name = $name;
 		$template->val = $value;
 		$template->label = $label;
-		try {
-			$id = R::store($template);
-			return $template;
-		} catch (Exception $e) {			
-			return null;
-		}		
+		$id = R::store($template);
+		return $template;
 	}
 	
 	/**

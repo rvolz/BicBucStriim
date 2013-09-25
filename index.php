@@ -350,12 +350,18 @@ function admin_modify_idtemplate($id) {
 	global $app;
 
 	$template_data = $app->request()->put();
-	$app->getLog()->debug('admin_modify_idtemplate: '.var_export($template_data, true));	
-	$template = $app->bbs->idTemplate($id);
-	if (is_null($template))
-		$ntemplate = $app->bbs->addIdTemplate($id, $template_data['url'], $template_data['label']);
-	else
-		$ntemplate = $app->bbs->changeIdTemplate($id, $template_data['url'], $template_data['label']);
+	$app->getLog()->debug('admin_modify_idtemplate: '.var_export($template_data, true));
+	try {
+		$template = $app->bbs->idTemplate($id);
+		if (is_null($template))
+			$ntemplate = $app->bbs->addIdTemplate($id, $template_data['url'], $template_data['label']);
+		else
+			$ntemplate = $app->bbs->changeIdTemplate($id, $template_data['url'], $template_data['label']);		
+	} catch (Exception $e) {
+		$app->getLog()->error('admin_modify_idtemplate: error while adding template'.var_export($template_data, true));
+		$app->getLog()->error('admin_modify_idtemplate: exception '.$e->getMessage());
+		$ntemplate = null;
+	}
 	$resp = $app->response();
 	if (!is_null($ntemplate)) {
 		$resp->status(200);

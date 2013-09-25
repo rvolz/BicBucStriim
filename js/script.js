@@ -148,7 +148,7 @@ $(document).on('pageinit', '#padmin_idtemplates', function() {
 			},
 			error: function(jqXHR, responseText, errorThrown) {
 				$('#edit').popup('close');
-				$('div#flash').empty().append('<p class="error">'+responseText+'</p>');
+				$('div#flash').empty().append('<p class="error">'+jqXHR.responseText+'</p>');
 				$('#padmin_idtemplates').trigger('change');		
 			}
 		});		

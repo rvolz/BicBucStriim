@@ -17,3 +17,5 @@ create table note (id integer primary key autoincrement, ntype integer, mime var
                                                  references calibrething(id) 
                                                  on delete set null on update set null);
 create index index_foreignkey_note_calibrething on note(calibrething_id);
+create table idtemplate (id integer primary key autoincrement, name varchar(255), val varchar(255), label varchar(255));
+	
