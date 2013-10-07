@@ -180,19 +180,13 @@ $(document).on('pageinit', '#padmin_idtemplates', function() {
 	});
 });
 
-// Admin user management - user list
-$(document).on('pagechange', '#padmin_users', function() {
-	console.log("change");
-});
-
-// Admin user management - user list
-$(document).on('pageshow', '#padmin_users', function() {
-	console.log("show");
-});
 
 // Admin user management - user list
 $(document).on('pageinit', '#padmin_users', function() {
-	console.log("init");
+	// Clear the input fields - otherwise the login data might be re-used
+	$('#username').val('');
+	$('#password').val('');
+
 	// Initiate the additon of a user handling via click
 	$('#newuserform').on('submit', function(event) {
 		event.preventDefault();
@@ -224,6 +218,11 @@ $(document).on('pageinit', '#padmin_users', function() {
 			$(userLi).prependTo('#users');
 			$('#users').listview('refresh');
 			$('div#flash').empty().append('<p class="success">'+data.msg+'</p>');
+
+			// Clear the input fields again for a new user
+			$('#username').val('');
+			$('#password').val('');
+			
 			$('#padmin_user').trigger('change');
 		})
 		.fail(function(jqXHR) {
