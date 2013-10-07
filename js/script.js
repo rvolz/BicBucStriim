@@ -333,7 +333,7 @@ $(document).on('pageinit', '#ptitle_detail' ,function() {
 	  buttontext = $("#ajax-form-button").attr("value");
 	  var kindleEmail = $.trim($("#kindleEmail").val());
 	  $("#ajax-form-button").button('disable');
-	  $.mobile.showPageLoadingMsg();
+	  $.mobile.loading('show');
 	  $.ajax({
 	    type: "POST",
 	    url: $("#ajax-form").attr("action"),
@@ -347,7 +347,7 @@ $(document).on('pageinit', '#ptitle_detail' ,function() {
 	});
 
 	function onErr(jqXHR, responseText, errorThrown) {
-		$.mobile.hidePageLoadingMsg();
+		$.mobile.loading('hide');
 		//$("#ajax-message").text("Error! HTTP Code: " + jqXHR.status);
 		$("#ajax-message").find('span#msg').fadeIn();
 		setTimeout(function() { 
@@ -358,7 +358,7 @@ $(document).on('pageinit', '#ptitle_detail' ,function() {
 
 	function onSuccess(data) {
 	  data = $.trim(data);
-	  $.mobile.hidePageLoadingMsg();
+	  $.mobile.loading('hide');
 	  $( "#kindlePopup" ).popup( "close" )
 	  $("#kindleButton").attr('value',data);
 	  $("#kindleButton").buttonMarkup({ icon: "check" });
