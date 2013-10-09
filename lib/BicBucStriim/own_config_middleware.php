@@ -22,12 +22,12 @@ class OwnConfigMiddleware extends \Slim\Middleware {
 		global $globalSettings;
 		$app = $this->app;
 		$config_status = $this->check_config_db();
-		if ($this->check_config_db() == 0) {
+		if ($config_status == 0) {
 			// TODO severe error message + redirect to installcheck.php
 			$app->halt(500, 'No or bad configuration database. Please use < href="'.
 				$app->request->getRootUri().
 				'/installcheck.php">installcheck.php</a> to check for errors.');
-		} elseif ($this->check_config_db() == 2) {
+		} elseif ($config_status == 2) {
 			// TODO severe error message + redirect to installcheck.php
 			$app->halt(500, 'Old configuration database detected. Please use < href="'.
 				$app->request->getRootUri().
@@ -49,22 +49,22 @@ class OwnConfigMiddleware extends \Slim\Middleware {
 				if (in_array($config->name, $this->knownConfigs)) 
 					$globalSettings[$config->name] = $config->val;
 				else 
-					$app->getLog()->warn(join('',
+					$app->getLog()->warn(join('own_config_middleware: ',
 						array('Unknown configuration, name: ', $config->name,', value: ',$config->val)));	
 			}
 
 			## For 1.0: run a silent db update
 			# TODO post 1.0: replace with an updater 
 			if ($globalSettings[DB_VERSION] != DB_SCHEMA_VERSION) {
-				$app->getLog()->warn('admin_change: old db schema detected. please run update');							
+				$app->getLog()->warn('own_config_middleware: old db schema detected. please run update');							
 				return 2;
 			}
 			
 			if (!isset($app->strong)) 
 				$app->strong = $this->getAuthProvider($app->bbs->mydb);
-			$app->getLog()->debug("config loaded");
+			$app->getLog()->debug("own_config_middleware: config loaded");
 		} else {
-			$app->getLog()->info("no config db found - creating a new one with default values");
+			$app->getLog()->info("own_config_middleware: no config db found - creating a new one with default values");
 			$app->bbs->createDataDb();
 			$app->bbs = new BicBucStriim('data/data.db', 'data');
 			$cnfs = array();
