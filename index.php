@@ -72,7 +72,6 @@ function confdev() {
 		'cookies.secret_key' => 'b4924c3579e2850a6fad8597da7ad24bf43ab78e',
 
 	));
-	$app->get('/dev/reset', 'devReset');
 	$app->getLog()->setEnabled(true);
 	$app->getLog()->setLevel(\Slim\Log::DEBUG);
 	$app->getLog()->info($appname.' '.$appversion.': Running in development mode.');
@@ -188,18 +187,6 @@ $app->get('/opds/opensearch.xml', 'opdsSearchDescriptor');
 $app->get('/opds/searchlist/:id/', 'opdsBySearch');
 $app->run();
 
-/*********************************************************************
- * Development only functions
- ********************************************************************/
-
-/**
- * Reset the database and delete all dynamic data (thumbnails etc.)
- * for testing.
- */
-function devReset() {
-	system("cp data/data.backup data/data.db");
-	system("rm data/thm*.png");
-}
 
 /*********************************************************************
  * Production functions
