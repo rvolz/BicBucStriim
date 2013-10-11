@@ -1077,8 +1077,9 @@ function book($id, $file) {
 	 * working with this solution.
 	**/
 	//TODO: Use new streaming functions in SLIM 1.7.0 when released
-	header("Content-length: ".filesize($bookpath));
-	header("Content-type: ".Utilities::titleMimeType($bookpath));
+	header("Content-Length: ".filesize($bookpath));
+	header("Content-Type: ".Utilities::titleMimeType($bookpath));
+	header("Content-Disposition: ".$file);
 	readfile_chunked($bookpath);
 }
 
