@@ -31,12 +31,16 @@ class TestOfOpdsGenerator extends UnitTestCase {
     chmod(self::DATA,0777);
     copy(self::DB2, self::DATADB);
     $this->bbs = new BicBucStriim(self::DATADB);
-    $this->bbs->openCalibreDb(self::CDB2);
+    $this->calibre = new Calibre(self::CDB2);
     $l10n = new L10n('en');
-		$this->gen = new OpdsGenerator('/bbs', '0.9.0', $this->bbs->calibre_dir, date(DATE_ATOM, strtotime('2012-01-01T11:59:59')), $l10n);    
+		$this->gen = new OpdsGenerator('/bbs', '0.9.0', 
+			$this->calibre->calibre_dir, 
+			date(DATE_ATOM, strtotime('2012-01-01T11:59:59')), 
+			$l10n);    
 	}
 
 	function tearDown() {
+		$this->calibre = NULL;
 		$this->bbs = NULL;
 		system("rm -rf ".self::DATA);
 	}
@@ -91,9 +95,9 @@ class TestOfOpdsGenerator extends UnitTestCase {
  <category term="Biografien &amp; Memoiren" label="Biografien &amp; Memoiren"/>
 </entry>
 ';
-		$just_book = $this->bbs->title(2);
+		$just_book = $this->calibre->title(2);
 		#print_r($just_book);
-		$book = $this->bbs->titleDetailsOpds($just_book);
+		$book = $this->calibre->titleDetailsOpds($just_book);
 		$this->gen->openStream(NULL);
 		$this->gen->partialAcquisitionEntry($book, false);
 		$result = $this->gen->closeStream();
@@ -123,8 +127,8 @@ function testPartialAcquisitionEntryWithProtection() {
  <category term="Biografien &amp; Memoiren" label="Biografien &amp; Memoiren"/>
 </entry>
 ';
-		$just_book = $this->bbs->title(2);
-		$book = $this->bbs->titleDetailsOpds($just_book);
+		$just_book = $this->calibre->title(2);
+		$book = $this->calibre->titleDetailsOpds($just_book);
 		$this->gen->openStream(NULL);
 		$this->gen->partialAcquisitionEntry($book, true);
 		$result = $this->gen->closeStream();
@@ -134,8 +138,8 @@ function testPartialAcquisitionEntryWithProtection() {
 
 	function testNewestCatalogValidation() {
 		$feed = self::DATA.'/feed.xml';
-		$just_books = $this->bbs->last30Books('en');
-		$books = $this->bbs->titleDetailsFilteredOpds($just_books);		
+		$just_books = $this->calibre->last30Books('en', 30, new CalibreFilter());
+		$books = $this->calibre->titleDetailsFilteredOpds($just_books);		
 		$xml = $this->gen->newestCatalog($feed,$books,false);
 		$this->assertTrue(file_exists($feed));		
 		$this->assertTrue($this->opdsValidateSchema($feed));
@@ -145,8 +149,8 @@ function testPartialAcquisitionEntryWithProtection() {
 
 	function testTitlesCatalogValidation() {
 		$feed = self::DATA.'/feed.xml';
-		$tl = $this->bbs->titlesSlice('en', 0,2);
-		$books = $this->bbs->titleDetailsFilteredOpds($tl['entries']);		
+		$tl = $this->calibre->titlesSlice('en', 0, 2, new CalibreFilter());
+		$books = $this->calibre->titleDetailsFilteredOpds($tl['entries']);		
 		$xml = $this->gen->titlesCatalog($feed,$books,false, 
 			$tl['page'],$tl['page']+1,$tl['pages']-1);
 		$this->assertTrue(file_exists($feed));		
@@ -156,8 +160,8 @@ function testPartialAcquisitionEntryWithProtection() {
 	}
 
 	function testTitlesCatalogOpenSearch() {
-		$tl = $this->bbs->titlesSlice('en', 0,2);
-		$books = $this->bbs->titleDetailsFilteredOpds($tl['entries']);		
+		$tl = $this->calibre->titlesSlice('en', 0, 2, new CalibreFilter());
+		$books = $this->calibre->titleDetailsFilteredOpds($tl['entries']);		
 		$xml = $this->gen->titlesCatalog(NULL,$books,false, 
 			$tl['page'],$tl['page']+1,$tl['pages']-1);
 		$feed = new SimpleXMLElement($xml);
@@ -170,7 +174,7 @@ function testPartialAcquisitionEntryWithProtection() {
 
 	function testAuthorsInitialCatalogValidation() {
 		$feed = self::DATA.'/feed.xml';
-		$tl = $this->bbs->authorsInitials();
+		$tl = $this->calibre->authorsInitials();
 		$xml = $this->gen->authorsRootCatalog($feed,$tl);
 		$this->assertTrue(file_exists($feed));		
 		$this->assertTrue($this->opdsValidateSchema($feed));
@@ -180,7 +184,7 @@ function testPartialAcquisitionEntryWithProtection() {
 
 	function testAuthorsNamesForInitialCatalogValidation() {
 		$feed = self::DATA.'/feed.xml';
-		$tl = $this->bbs->authorsNamesForInitial('R');
+		$tl = $this->calibre->authorsNamesForInitial('R');
 		$xml = $this->gen->authorsNamesForInitialCatalog($feed,$tl, 'R');
 		$this->assertTrue(file_exists($feed));		
 		$this->assertTrue($this->opdsValidateSchema($feed));
@@ -190,9 +194,9 @@ function testPartialAcquisitionEntryWithProtection() {
 
 	function testAuthorsBooksForAuthorCatalogValidation() {
 		$feed = self::DATA.'/feed.xml';
-		$adetails = $this->bbs->authorDetails(5);
-		$books = $this->bbs->titleDetailsFilteredOpds($adetails['books']);
-		$xml = $this->gen->booksForAuthorCatalog($feed,$books, 'E', $adetails['author'], false);
+		$adetails = $this->calibre->authorDetails(5);
+		$books = $this->calibre->titleDetailsFilteredOpds($adetails['books']);
+		$xml = $this->gen->booksForAuthorCatalog($feed, $books, 'E', $adetails['author'], false, 0, 1, 2);
 		$this->assertTrue(file_exists($feed));		
 		$this->assertTrue($this->opdsValidateSchema($feed));
 		$this->assertTrue($this->opdsValidate($feed,'1.0'));
@@ -201,7 +205,7 @@ function testPartialAcquisitionEntryWithProtection() {
 
 	function testTagsInitialCatalogValidation() {
 		$feed = self::DATA.'/feed.xml';
-		$tl = $this->bbs->tagsInitials();
+		$tl = $this->calibre->tagsInitials();
 		$xml = $this->gen->tagsRootCatalog($feed,$tl);
 		$this->assertTrue(file_exists($feed));		
 		$this->assertTrue($this->opdsValidateSchema($feed));
@@ -211,7 +215,7 @@ function testPartialAcquisitionEntryWithProtection() {
 
 	function testTagsNamesForInitialCatalogValidation() {
 		$feed = self::DATA.'/feed.xml';
-		$tl = $this->bbs->tagsNamesForInitial('B');
+		$tl = $this->calibre->tagsNamesForInitial('B');
 		$xml = $this->gen->tagsNamesForInitialCatalog($feed,$tl, 'B');
 		$this->assertTrue(file_exists($feed));		
 		$this->assertTrue($this->opdsValidateSchema($feed));
@@ -221,9 +225,9 @@ function testPartialAcquisitionEntryWithProtection() {
 
 	function testTagsBooksForTagCatalogValidation() {
 		$feed = self::DATA.'/feed.xml';
-		$adetails = $this->bbs->tagDetails(9);
-		$books = $this->bbs->titleDetailsFilteredOpds($adetails['books']);
-		$xml = $this->gen->booksForTagCatalog($feed,$books, 'B', $adetails['tag'], false);
+		$adetails = $this->calibre->tagDetails(9);
+		$books = $this->calibre->titleDetailsFilteredOpds($adetails['books']);
+		$xml = $this->gen->booksForTagCatalog($feed,$books, 'B', $adetails['tag'], false, 0, 1, 2);
 		$this->assertTrue(file_exists($feed));		
 		$this->assertTrue($this->opdsValidateSchema($feed));
 		$this->assertTrue($this->opdsValidate($feed,'1.0'));
@@ -232,7 +236,7 @@ function testPartialAcquisitionEntryWithProtection() {
 
 	function testSeriesInitialCatalogValidation() {
 		$feed = self::DATA.'/feed.xml';
-		$tl = $this->bbs->seriesInitials();
+		$tl = $this->calibre->seriesInitials();
 		$xml = $this->gen->seriesRootCatalog($feed,$tl);
 		$this->assertTrue(file_exists($feed));		
 		$this->assertTrue($this->opdsValidateSchema($feed));
@@ -242,7 +246,7 @@ function testPartialAcquisitionEntryWithProtection() {
 
 	function testSeriesNamesForInitialCatalogValidation() {
 		$feed = self::DATA.'/feed.xml';
-		$tl = $this->bbs->seriesNamesForInitial('S');
+		$tl = $this->calibre->seriesNamesForInitial('S');
 		$xml = $this->gen->seriesNamesForInitialCatalog($feed,$tl, 'S');
 		$this->assertTrue(file_exists($feed));		
 		$this->assertTrue($this->opdsValidateSchema($feed));
@@ -252,9 +256,9 @@ function testPartialAcquisitionEntryWithProtection() {
 
 	function testSeriesBooksForSeriesCatalogValidation() {
 		$feed = self::DATA.'/feed.xml';
-		$adetails = $this->bbs->seriesDetails(1);
-		$books = $this->bbs->titleDetailsFilteredOpds($adetails['books']);
-		$xml = $this->gen->booksForSeriesCatalog($feed,$books, 'S', $adetails['series'], false);
+		$adetails = $this->calibre->seriesDetails(1);
+		$books = $this->calibre->titleDetailsFilteredOpds($adetails['books']);
+		$xml = $this->gen->booksForSeriesCatalog($feed,$books, 'S', $adetails['series'], false, 0, 1, 2);
 		$this->assertTrue(file_exists($feed));		
 		$this->assertTrue($this->opdsValidateSchema($feed));
 		$this->assertTrue($this->opdsValidate($feed,'1.0'));

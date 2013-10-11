@@ -16,23 +16,16 @@ class TestOfCustomColumns extends UnitTestCase {
 	var $bbs;
 
 	function setUp() {
-		if (file_exists(self::DATA))
-			system("rm -rf ".self::DATA);	
-	    mkdir(self::DATA);
-	    chmod(self::DATA,0777);
-	    copy(self::DB2, self::DATADB);
-	    $this->bbs = new BicBucStriim(self::DATADB);
-	    $this->bbs->openCalibreDb(self::CDB2);
+	    $this->calibre = new Calibre(self::CDB2);
 	}
 
 	function tearDown() {
-		$this->bbs = NULL;
-		system("rm -rf ".self::DATA);
+		$this->calibre = NULL;
 	}
 
 	# Lots of ccs -- one with multiple values
 	function testCustomColumns() {				
-		$ccs = $this->bbs->customColumns(7);
+		$ccs = $this->calibre->customColumns(7);
 		#print_r($ccs);
 		$this->assertEqual(9, sizeof($ccs));
 		$this->assertEqual('col2a, col2b', $ccs['Col2']['value']);
@@ -40,14 +33,14 @@ class TestOfCustomColumns extends UnitTestCase {
 
 	# Ignore series ccs for now
 	function testCustomColumnsIgnoreSeries() {				
-		$ccs = $this->bbs->customColumns(5);
+		$ccs = $this->calibre->customColumns(5);
 		#print_r($ccs);
 		$this->assertEqual(0, sizeof($ccs));
 	}
 
 	# Only one cc
 	function testCustomColumnsJustOneCC() {				
-		$ccs = $this->bbs->customColumns(1);
+		$ccs = $this->calibre->customColumns(1);
 		$this->assertEqual(1, sizeof($ccs));
 	}
 }

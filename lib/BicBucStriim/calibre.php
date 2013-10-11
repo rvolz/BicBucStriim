@@ -326,6 +326,7 @@ class Calibre {
 	 * Return the most recent books, sorted by modification date.
 	 * @param  lang			target language code
 	 * @param  nrOfTitles	number of titles, page size. Default is 30.
+	 * @param  filter		CalibreFilter
 	 * @return array of books
 	 */
 	function last30Books($lang, $nrOfTitles=30, $filter) {

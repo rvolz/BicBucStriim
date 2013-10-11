@@ -24,7 +24,7 @@ class TestOfBicBucStriim extends UnitTestCase {
 	    chmod(self::DATA,0777);
 	    copy(self::DB2, self::DATADB);
 	    copy(self::SCHEMA, self::TESTSCHEMA);
-	    $this->bbs = new BicBucStriim(self::DATADB);
+	    $this->bbs = new BicBucStriim(self::DATADB,false);
 	}
 
 	function tearDown() {
@@ -253,6 +253,14 @@ class TestOfBicBucStriim extends UnitTestCase {
 		$this->assertNotNull($this->bbs->titleThumbnail(1, 'tests/fixtures/author1.jpg', true));
 		$this->assertTrue($this->bbs->isTitleThumbnailAvailable(1));
 		$this->assertFalse($this->bbs->isTitleThumbnailAvailable(2));
+	}
+
+
+	function testClearThumbnail() {
+		$result = $this->bbs->titleThumbnail(3, 'tests/fixtures/author1.jpg', true);
+		$this->assertTrue($this->bbs->isTitleThumbnailAvailable(3));
+		$this->assertTrue($this->bbs->clearThumbnails());
+		$this->assertFalse(file_exists($result));
 	}
 
 }

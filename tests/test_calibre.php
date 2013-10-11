@@ -273,20 +273,6 @@ class TestOfCalibre extends UnitTestCase {
 		$this->assertEqual('cover.jpg',basename($result));
 	}
 
-	function testTitleThumbnail() {
-		$result = $this->calibre->titleThumbnail(3, true);
-		$this->assertEqual(0, $this->calibre->last_error);
-		$this->assertNotNull($result);
-		$this->assertEqual('thumb_3.png',basename($result));
-	}
-
-	function testClearThumbnail() {
-		$result = $this->calibre->titleThumbnail(3, true);
-		$this->assertEqual('thumb_3.png',basename($result));
-		$this->assertTrue($this->calibre->clearThumbnails());
-		$this->assertFalse(file_exists($result));
-	}
-
 	function testTitleFile() {
 		$result = $this->calibre->titleFile(3, 'Der seltzame Springinsfeld - Hans Jakob Christoffel von Grimmelshausen.epub');
 		$this->assertEqual(0, $this->calibre->last_error);
