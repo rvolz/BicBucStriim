@@ -85,7 +85,7 @@
 	<h2>{{page.glob.l10n.author_thumbnail}}</h2>
 	<div id="flash"></div>
 	<p>{{page.glob.l10n.author_thumbnail_expl}}</p>
-	<form action="{{page.rot}}/metadata/authors/{{ author.id }}/thumbnail/" method="post" enctype="multipart/form-data" data-ajax="false">
+	<form id="author-pic" action="{{page.rot}}/metadata/authors/{{ author.id }}/thumbnail/" method="post" enctype="multipart/form-data" data-ajax="false">
 			<input type="file" name="file" 
 				accept="image/jpg,image/jpeg,image/pjpeg,image/png,image/x-png,.jpg,.png,.jpeg" 
 				capture required/>
