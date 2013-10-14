@@ -1,6 +1,5 @@
 Given /^the application is configured with a page size of (\d+)$/ do |arg1|
-  visit "/dev/reset"
-  visit "/admin/"
+  visit "/admin/configuration/"
   fill_in('calibre_dir', :with => '/tmp/calibre')
   fill_in('page_size', :with => arg1)
   click_on 'Save'

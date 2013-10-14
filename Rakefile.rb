@@ -7,16 +7,15 @@
 
 require 'rake/clean'
 require 'rake/packagetask'
+require 'cucumber/rake/task'
 require 'less'
 require 'fileutils'
 require 'json'
 require 'yaml'
+require 'logger'
 
 APPNAME = 'BicBucStriim'
 VERSION = '1.2.0-alpha'
-
-
-# Needs vagrant 1.2+
 
 SOURCE = "."
 LESS = File.join( SOURCE, "style")
@@ -66,7 +65,7 @@ task :genl10n do |t|
 end
 
 desc "Make a release package"
-task :package2 => [:lessc, :genl10n] do |t|
+task :pack => [:lessc, :genl10n] do |t|
   Rake::PackageTask.new(APPNAME, VERSION) do |p|
     p.need_tar = true
     p.need_zip = true
@@ -101,10 +100,8 @@ task :package2 => [:lessc, :genl10n] do |t|
     p.package_files.include("NOTICE")
     p.package_files.include("LICENSE")
     p.package_files.include("README.md")
-
   end
   Rake::Task['package'].invoke
-  # rm_rf "data"
 end
 
 # Integration testing tasks only make sense when vagrant is installed.
@@ -125,7 +122,7 @@ task :itest_down do |t|
 end
 
 desc "Deploy the current code for testing to the VM dirs"
-task :itest_deploy => [:package2] do |t|    
+task :itest_deploy => [:pack] do |t|    
   code_target = "./tests/work/src"
   lib_target = "./tests/work/calibre"
 
@@ -146,10 +143,12 @@ task :itest_shell do |t|
   system "bash -c 'pushd tests/env;vagrant ssh;popd'"
 end
 
-desc "Integration testing (via integration test environment)"
-task :itest => [:itest_deploy] do |t|  
-  sh "cucumber features --format=pretty"  
+Cucumber::Rake::Task.new do |t|
+  t.cucumber_opts = %w{--format progress}
 end
+
+desc "Integration testing (via integration test environment)"
+task :itest => [:itest_deploy, :cucumber] 
 
 desc "Unit testing"
 task :test do |t|

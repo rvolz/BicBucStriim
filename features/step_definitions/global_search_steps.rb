@@ -1,7 +1,6 @@
 
 When(/^search for "(.*?)"$/) do |arg1|
-	fill_in('search', :with => $search)
-	find_field('search').native.send_key(:enter)
+	fill_in('search', :with => "#{arg1}\n")
 end
 
 Then(/^I see (\d+) book as a result$/) do |arg1|
