@@ -548,6 +548,7 @@ function admin_modify_user($id) {
 	$app->getLog()->debug('admin_modify_user: '.var_export($user_data, true));	
 	$user = $app->bbs->changeUser($id, $user_data['password'], 
 		$user_data['languages'], $user_data['tags']);
+	$app->getLog()->debug('admin_modify_user: '.var_export($user, true));	
 	$resp = $app->response();
 	if (isset($user) && !is_null($user)) {
 		$resp->status(200);
@@ -1652,9 +1653,9 @@ function getFilter() {
 	$lang = null;
 	$tag = null;
 	if (!empty($user['languages']))
-		$lang = $app->bbs->getLanguageId($user['languages']);
+		$lang = $app->calibre->getLanguageId($user['languages']);
 	if (!empty($user['tags']))
-		$tag = $app->bbs->getTagId($user['tags']);
+		$tag = $app->calibre->getTagId($user['tags']);
 	$app->getLog()->debug('getFilter: Using language '.$lang.', tag '.$tag);
 	return new CalibreFilter($lang, $tag);
 }
