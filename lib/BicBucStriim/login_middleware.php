@@ -46,11 +46,11 @@ class LoginMiddleware extends \Slim\Middleware {
                 $this->next->call();        
             } elseif (stripos($resource, '/opds') === 0) {
                 $app->getLog()->debug('login: unauthorized OPDS request');
-                $app->response['WWW-Authenticate'] = 'Basic realm="'.$this->realm.'"';
+                $app->response->headers->set('WWW-Authenticate', sprintf('Basic realm="%s"', $this->realm));
                 $app->halt(401,'Please authenticate');
             } elseif ($accept === 'application/json') {
                 $app->getLog()->debug('login: unauthorized JSON request');
-                $app->response['WWW-Authenticate'] = 'Basic realm="'.$this->realm.'"';
+                $app->response->headers->set('WWW-Authenticate', sprintf('Basic realm="%s"', $this->realm));
                 $app->halt(401,'Please authenticate');
             } else {
                 $app->getLog()->debug('login: redirecting to login');
