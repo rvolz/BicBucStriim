@@ -169,3 +169,8 @@ Then(/^I click on "(.*)" to reveal the custom column info "(.*)"$/) do |arg1, ar
   click_on arg1
   page.find('div#custom_columns div.ui-collapsible-content', :visible => true).should have_content(arg2)
 end
+
+When(/^I close the author image panel$/) do
+  keypress_script = "$('#author-mdthumb-panel').panel('close');"
+  page.driver.browser.execute_script(keypress_script)
+end

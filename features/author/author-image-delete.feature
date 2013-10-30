@@ -42,6 +42,7 @@ Feature: Delete author images
 		And the author image panel appears
 		And press the "Delete" link
 		And I get the success message "Changes applied"
+		And I close the author image panel
 		And I click on menu item "Authors"
 		And the app switches to the "Authors" view
 		Then the entry for author "Grimmelshausen" shows the default thumbnail
