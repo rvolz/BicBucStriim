@@ -27,7 +27,7 @@ $(document).on('pageinit', '#pauthor_detail', function() {
 			type: 'DELETE',
 			success: function(data) {
 				$('img#author-thumbnail-pic').remove();
-				$('div#flash').empty();
+				$('div#flash').empty().append('<p class="success">'+data.msg+'</p>');
 				$('#pauthor_detail').trigger('change');
 			},
 			error: function(jqXHR, responseText, errorThrown) {
