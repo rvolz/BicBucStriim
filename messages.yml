@@ -449,7 +449,7 @@ language:
   de: Sprache
   en: Language
   fr: Langue
-  nl: Sprak
+  nl: Taal
 login:
   de: Anmelden
   en: Login
@@ -522,11 +522,11 @@ opds_by_author3:
 opds_by_author4:
   de: ! 'Alle Autoren für '
   en: ! 'All Authors for '
-  nl: ! 'Alle Autheurs voor '
+  nl: ! 'Alle Auteurs voor '
 opds_by_author5:
   de: Autorenliste
   en: Authors list
-  nl: Autheurs lijst
+  nl: Auteurs lijst
 opds_by_author6:
   de: ! 'Alle Bücher von '
   en: ! 'All books by '
@@ -550,7 +550,7 @@ opds_by_search2:
 opds_by_search3:
   de: Büchersuche bei BicBucStriim
   en: Search for books on BicBucStriim
-  nl: oek naar boeken op BicBucStriim
+  nl: Zoek naar boeken op BicBucStriim
 opds_by_series1:
   de: Nach Buchreihe
   en: By Series
@@ -650,7 +650,7 @@ pagination_search_ph:
 password_dialog_titel:
   de: Passwort
   en: Password
-  nl: Paswoord
+  nl: Wachtwoord
 presskey:
   de: Taste drücken, um das Buch im betreffenden Format herunter zu laden.
   en: Press a button to download the book in the respective format.
@@ -744,8 +744,7 @@ thumb_gen_clipped_expl:
     Details zu liefern.
   en: If switched on, the edges of thumbnails will be clipped to show more details.
   fr: Si activé, les bords de vignettes sera ramenée à montrer plus de détails.
-  nl: Indien ingeschakeld, zullen de randen van de miniaturen worden geknipt om meer
-    details te zien
+  nl: Indien ingeschakeld, zullen de randen van de miniaturen worden geknipt om meer details weer te geven
 titles:
   de: Bücher
   en: Books
