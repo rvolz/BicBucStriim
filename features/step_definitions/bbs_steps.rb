@@ -16,6 +16,10 @@ Then /^the app switches to the "(.+)" view$/ do |view|
     page.should have_title("Tags")
   when 'Series'
     page.should have_title("Series")
+  when 'Admin'
+    page.should have_title("Configuration")
+  when 'Users'
+    page.should have_title("Users")
   else
     raise RuntimeError.new("Invalid topic #{topic}")
   end

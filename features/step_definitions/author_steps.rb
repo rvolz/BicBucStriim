@@ -32,7 +32,7 @@ When(/^I click on the image menu button$/) do
   page.find(:link, 'Image').click  
 end
 
-Then(/^the author image panel will appear$/) do
+Then(/^the author image panel appears$/) do
   expect(page.find('section#author-mdthumb-panel', :visible => true)).to have_content('Image')
 end
 
@@ -44,6 +44,10 @@ end
 
 When(/^press the "(.*?)" button$/) do |arg1|
   page.find(:button, arg1).click  
+end
+
+When(/^press the "(.*?)" link$/) do |arg1|
+  page.find(:link, arg1).click  
 end
 
 Then(/^there is an author image$/) do
@@ -60,3 +64,8 @@ end
 Then(/^I get the error message "(.*)"$/) do |arg1|
   expect(page).to have_content(arg1)
 end
+
+Then(/^I get the success message "(.*?)"$/) do |arg1|
+  expect(page).to have_content(arg1)
+end
+
