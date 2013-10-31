@@ -1,6 +1,6 @@
 {% extends 'main.html' %}
 
-{% block pid %}id="padmin_users" data-ajax="false"{%endblock%}
+{% block pid %}id="padmin_users" data-ajax="true"{%endblock%}
 {% block content %}
 
 <header>
@@ -11,13 +11,13 @@
 <h2>{{page.glob.l10n.admin_users_legend1}}</h2>
 <form action="{{page.rot}}/admin/users/" method="post" id="newuserform" class="ui-form-a" data-proot="{{page.rot}}" >
 	<fieldset data-role="fieldcontain">
-		<label for="username">{{page.glob.l10n.admin_username}}</label>
-		<input name="username" id="username" type="text" 
+		<label for="newuser_name">{{page.glob.l10n.admin_username}}</label>
+		<input name="newuser_name" id="newuser_name" type="text" 
 			value="" placeholder="{{page.glob.l10n.admin_username}}"/>
 	</fieldset>	
 	<fieldset data-role="fieldcontain">
-		<label for="password">{{page.glob.l10n.admin_userpw}}</label>
-		<input name="password" id="password" type="password" 
+		<label for="newuser_password">{{page.glob.l10n.admin_userpw}}</label>
+		<input name="newuser_password" id="newuser_password" type="password" 
 			value="" placeholder="{{page.glob.l10n.admin_userpw}}"/>
 	</fieldset>	
 	<button data-ajax="true" data-icon="check">
