@@ -10,3 +10,17 @@ Then(/^the list contains user "(.*?)"$/) do |arg1|
 	end
 end
 
+When(/^I delete user "(.*?)"$/) do |arg1|
+  user = page.find('ul#users li', :text => arg1)
+  within(user) do
+  	find('a.user_delete').click
+  end
+end
+
+When(/^I confirm the deletion$/) do
+  find('a#delete_user').click
+end
+
+Then(/^the list doesn't contain user "(.*?)"$/) do |arg1|
+  expect(page).to have_no_content(arg1)
+end
