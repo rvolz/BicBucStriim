@@ -66,6 +66,25 @@ class TestOfOpdsGenerator extends UnitTestCase {
 			return true;
 	}
 
+	# Timestamp helper: generate proper timezone offsets
+	# see http://www.php.net/manual/en/datetimezone.getoffset.php
+	function genTimestampOffset($phpTime) {
+		if(date_default_timezone_get() == 'UTC') {
+    		$offsetString = '+00:00'; // No need to calculate offset, as default timezone is already UTC
+		} else {
+		    $millis = strtotime($phpTime); // Convert time to milliseconds since 1970, using default timezone
+		    $timezone = new DateTimeZone(date_default_timezone_get()); // Get default system timezone to create a new DateTimeZone object
+		    $offset = $timezone->getOffset(new DateTime($phpTime)); // Offset in seconds to UTC
+		    $offsetHours = round(abs($offset)/3600);
+		    $offsetMinutes = round((abs($offset) - $offsetHours * 3600) / 60);
+		    $offsetString = ($offset < 0 ? '-' : '+')
+		                . ($offsetHours < 10 ? '0' : '') . $offsetHours
+		                . ':'
+		                . ($offsetMinutes < 10 ? '0' : '') . $offsetMinutes;
+		} 
+		return $offsetString;
+	}
+
 	function testRootCatalogValidation() {
 		$feed = self::DATA.'/feed.xml';
 		$xml = $this->gen->rootCatalog($feed);
@@ -82,7 +101,7 @@ class TestOfOpdsGenerator extends UnitTestCase {
  <id>urn:bicbucstriim:/bbs/titles/2</id>
  <title>Trutz Simplex</title>
  <dc:issued>2012</dc:issued>
- <updated>2012-01-01T11:59:59+01:00</updated>
+ <updated>2012-01-01T11:59:59'.$this->genTimestampOffset('2012-01-01 11:59:59').'</updated>
  <author>
   <name>Grimmelshausen, Hans Jakob Christoffel von</name>
  </author>
@@ -110,7 +129,7 @@ function testPartialAcquisitionEntryWithProtection() {
  <id>urn:bicbucstriim:/bbs/titles/2</id>
  <title>Trutz Simplex</title>
  <dc:issued>2012</dc:issued>
- <updated>2012-01-01T11:59:59+01:00</updated>
+ <updated>2012-01-01T11:59:59'.$this->genTimestampOffset('2012-01-01T11:59:59').'</updated>
  <author>
   <name>Grimmelshausen, Hans Jakob Christoffel von</name>
  </author>
