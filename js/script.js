@@ -285,14 +285,17 @@ $(document).on('pageinit', '#padmin_users', function() {
 
 // Admin user management - single user
 $(document).on('pageinit', '#padmin_user', function() {
+	$('div#flash').empty();
+
 	// Initiate the modification of a user handling via click
 	$('#userform').on('submit', function(event) {
 		event.preventDefault();
+		$('div#flash').empty();
 		var user = {
-			username: $('#username').val(),
-			password: $('#password').val(),
-			languages: $('#languages').val(),
-			tags: $('#tags').val()
+			username: $('#edituser_name').val(),
+			password: $('#edituser_password').val(),
+			languages: $('#edituser_languages').val(),
+			tags: $('#edituser_tags').val()
 		};
 		var root = $(this).data('proot'),
 			id = $(this).data('user');
@@ -303,10 +306,10 @@ $(document).on('pageinit', '#padmin_user', function() {
 			data: user,
 			success: function(data) {
 				var user = data.user;
-				$('#username').val(user.username).trigger('change');
-				$('#password').val(user.password).trigger('change');
-				$('#languages').val(user.languages).trigger('change');
-				$('#tags').val(user.tags).trigger('change');
+				$('#edituser_name').val(user.username).trigger('change');
+				$('#edituser_password').val(user.password).trigger('change');
+				$('#edituserlanguages').val(user.languages).trigger('change');
+				$('#editusertags').val(user.tags).trigger('change');
 				$('[type=\'submit\']').removeClass('ui-btn-active').trigger('change');
 				$('div#flash').empty().append('<p class="success">'+data.msg+'</p>');
 				$('#padmin_user').trigger('change');

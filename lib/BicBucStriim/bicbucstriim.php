@@ -196,7 +196,8 @@ class BicBucStriim {
 	}
 
 	/**
-	 * Update an existing user account. The username cannot be changed.
+	 * Update an existing user account. 
+	 * The username cannot be changed and the password must not be empty.
 	 * @param integer 	userid 		integer 
 	 * @param string 	password 	new clear text password or old encrypted password
 	 * @param string 	languages 	comma-delimited set of language identifiers
@@ -206,6 +207,8 @@ class BicBucStriim {
 	public function changeUser($userid, $password, $languages, $tags) {
 		$user = $this->user($userid);
 		if (is_null($user))
+			return null;
+		if (empty($password))
 			return null;
 		else {
 			$mdp = password_hash($password, PASSWORD_BCRYPT);

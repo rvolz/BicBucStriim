@@ -10,19 +10,19 @@
 <form action="{{page.rot}}/admin/users/{{user.id}}" method="put" id="userform" 
 	data-user="{{user.id}}" data-proot="{{page.rot}}">
 	<fieldset data-role="fieldcontain">
-		<label for="username">{{page.glob.langa.admin_username}}</label>
-		<input name="username" id="username" type="text" 
+		<label for="edituser_name">{{page.glob.langa.admin_username}}</label>
+		<input name="edituser_name" id="edituser_name" type="text" 
 			value="{{user.username}}" placeholder="{{page.glob.langa.admin_username}}" disabled="true" required="true" />
 	</fieldset>	
 	<fieldset data-role="fieldcontain">
-		<label for="password">{{page.glob.langa.admin_userpw}}</label>
-		<input name="password" id="password" type="password" 
+		<label for="edituser_password">{{page.glob.langa.admin_userpw}}</label>
+		<input name="edituser_password" id="edituser_password" type="password" 
 			value="{{user.password}}" placeholder="{{page.glob.langa.admin_userpw}}" required="true" />
 		<p>{{page.glob.langa.admin_userpw_expl}}</p>					
 	</fieldset>	
 	<fieldset data-role="fieldcontain">
-		<label for="languages">{{page.glob.langa.language}}</label>
-		<select name="languages" id="languages" value="{{user.languages}}">
+		<label for="edituser_languages">{{page.glob.langa.language}}</label>
+		<select name="edituser_languages" id="edituser_languages" value="{{user.languages}}">
 		{% for language in languages %}
 			<option value="{{language.key}}" {%if user.languages == language.key %}selected="true"{% endif %}>{{language.lang_code}}</option>
 		{% endfor %}
@@ -30,8 +30,8 @@
 		<p>{{page.glob.langa.admin_userlangs_expl}}</p>					
 	</fieldset>
 	<fieldset data-role="fieldcontain"> 
-		<label for="tags">{{page.glob.langa.tag}}</label>
-		<select name="tags" id="tags" value="{{user.tags}}">
+		<label for="edituser_tags">{{page.glob.langa.tag}}</label>
+		<select name="edituser_tags" id="edituser_tags" value="{{user.tags}}">
 		{% for tag in tags %}
 			<option value="{{tag.key}}" {%if user.tags == tag.key %}selected="true"{% endif %}>{{tag.name}}</option>
 		{% endfor %}

@@ -145,6 +145,9 @@ class TestOfBicBucStriim extends UnitTestCase {
 		$this->assertNotEqual($password2, $changed->password);
 		$this->assertEqual('deu', $changed->languages);
 		$this->assertEqual('poetry', $changed->tags);
+
+		$changed = $this->bbs->changeUser(2, '', 'deu', 'poetry');
+		$this->assertNull($changed);
 	}
 
 	function testIdTemplates() {
