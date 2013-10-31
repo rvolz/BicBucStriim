@@ -17,6 +17,12 @@ Feature: Add user
 		And the list contains 2 items
 		And the list contains user "testuser"
 
+	Scenario: Add valid user with unicode in user name
+		When I enter the user credentials "testüser", "testuser_pw"
+		Then I get the success message "Changes applied"
+		And the list contains 2 items
+		And the list contains user "testüser"
+
 	Scenario: Add user with existing user name
 		When I enter the user credentials "testuser2", "testuser2_pw"
 		And I get the success message "Changes applied"
@@ -27,4 +33,11 @@ Feature: Add user
 		When I enter the user credentials "", "testuser2_pw"
 		Then I get the error message "Error while applying changes"
 
+	Scenario: Add user with empty password
+		When I enter the user credentials "testuser3", ""
+		Then I get the error message "Error while applying changes"
+
+	Scenario: Add user with empty user credentials
+		When I enter the user credentials "", ""
+		Then I get the error message "Error while applying changes"
 	

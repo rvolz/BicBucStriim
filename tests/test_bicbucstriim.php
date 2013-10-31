@@ -83,6 +83,21 @@ class TestOfBicBucStriim extends UnitTestCase {
 		$this->assertEqual(0, $user->role);
 	}
 
+	function testAddUserEmptyUser() {
+		$user = $this->bbs->addUser('', '');
+		$this->assertNull($user);
+	}
+
+	function testAddUserEmptyUsername() {
+		$user = $this->bbs->addUser('testuser2', '');
+		$this->assertNull($user);
+	}
+
+	function testAddUserEmptyPassword() {
+		$user = $this->bbs->addUser('', '');
+		$this->assertNull($user);
+	}
+
 	function testGetUser() {
 		$this->bbs->addUser('testuser', 'testuser');
 		$this->bbs->addUser('testuser2', 'testuser2');

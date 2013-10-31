@@ -151,13 +151,16 @@ class BicBucStriim {
 	}
 
 	/**
-	 * Add a new user account. The username must be unique.
+	 * Add a new user account. 
+	 * The username must be unique. Name and password must not be empty.
 	 * @param $username string login name for the account, must be unique
 	 * @param $password string clear text password 
-	 * @return user account
+	 * @return user account or null if the user exists or one of the parameters is empty
 	 * @throws Exception if the DB operation failed
 	 */
-	public function addUser($username, $password) {		
+	public function addUser($username, $password) {
+		if (empty($username) || empty($password))
+			return null;
 		$other = R::findOne('user', ' name = :name', array(':name' > $username));
 		if (!is_null($other))
 			return null;
