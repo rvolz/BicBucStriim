@@ -61,11 +61,3 @@ Then(/^the entry for author "(.*?)" shows the custom thumbnail "(.*?)"$/) do |ar
   end
 end
 
-Then(/^I get the error message "(.*)"$/) do |arg1|
-  expect(page).to have_content(arg1)
-end
-
-Then(/^I get the success message "(.*?)"$/) do |arg1|
-  expect(page).to have_content(arg1)
-end
-

@@ -174,3 +174,12 @@ When(/^I close the author image panel$/) do
   keypress_script = "$('#author-mdthumb-panel').panel('close');"
   page.driver.browser.execute_script(keypress_script)
 end
+
+
+Then(/^I get the error message "(.*)"$/) do |arg1|
+  expect(page).to have_content(arg1)
+end
+
+Then(/^I get the success message "(.*?)"$/) do |arg1|
+  expect(page).to have_content(arg1)
+end

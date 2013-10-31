@@ -183,19 +183,23 @@ $(document).on('pageinit', '#padmin_idtemplates', function() {
 
 // Admin user management - user list
 $(document).on('pageinit', '#padmin_users', function() {
+
 	// Clear the input fields - otherwise the login data might be re-used
-	$('#username').val('');
-	$('#password').val('');
+	$('#newuser_name').val('');
+	$('#newuser_password').val('');
+	
+	// Clear the flash area 
+	$('div#flash').empty();
 
 	// Initiate the additon of a user handling via click
 	$('#newuserform').on('submit', function(event) {
 		event.preventDefault();
+		$('div#flash').empty();
 		var user = {
-			username: $('#username').val(),
-			password: $('#password').val()
+			username: $('#newuser_name').val(),
+			password: $('#newuser_password').val()
 		};
 		var root = $(this).data('proot');
-		$.ajaxSetup({async:false});
 		$.post(root+'/admin/users/', user, function(data, textStatus, jqXHR) {
 			var user = data.user;
 			var userLi = document.createElement('li'),
@@ -220,8 +224,8 @@ $(document).on('pageinit', '#padmin_users', function() {
 			$('div#flash').empty().append('<p class="success">'+data.msg+'</p>');
 
 			// Clear the input fields again for a new user
-			$('#username').val('');
-			$('#password').val('');
+			$('#newuser_name').val('');
+			$('#newuser_password').val('');
 			
 			$('#padmin_user').trigger('change');
 		})
@@ -229,7 +233,6 @@ $(document).on('pageinit', '#padmin_users', function() {
 			$('div#flash').empty().append('<p class="error">'+jqXHR.responseText+'</p>');
 			$('#padmin_user').trigger('change');		
 		});
-		$.ajaxSetup({async:true});
 		return false;
 	});
 
