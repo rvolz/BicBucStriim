@@ -21,6 +21,7 @@ require_once 'own_config_middleware.php';
 require_once 'calibre_config_middleware.php';
 require_once 'login_middleware.php';
 require_once 'mailer.php';
+require_once 'metadata_epub.php';
 
 use dflydev\markdown\MarkdownExtraParser;
 
@@ -92,6 +93,7 @@ function confdebug() {
 	$app->getLog()->setLevel(\Slim\Log::DEBUG);
 	$app->getLog()->setWriter(new \Slim\Extras\Log\DateTimeFileWriter(array('path' => './data', 'name_format' => 'Y-m-d')));
 	$app->getLog()->info($appname.' '.$appversion.': Running in debug mode.');
+	error_reporting(E_ALL);
 }
 
 # Init app globals
@@ -1058,9 +1060,9 @@ function thumbnail($id) {
 # Return the selected file for the book with ID. 
 # Route: /titles/:id/file/:file
 function book($id, $file) {
-	global $app;
+	global $app, $globalSettings;
 
-	$details = $app->calibre->titleDetailsMini($id);
+	$details = $app->calibre->titleDetails($globalSettings['lang'], $id);
 	if (is_null($details)) {
 		$app->getLog()->warn("book: no book found for ".$id);
 		$app->notFound();
@@ -1071,17 +1073,35 @@ function book($id, $file) {
 		$app->notFound();
 		return;
 	}	
-	$bookpath = $app->calibre->titleFile($id, $file);
 
-	/** readfile has problems with large files (e.g. PDF) caused by php memory limit
-	 * to avoid this the function readfile_chunked() is used. app->response() is not
-	 * working with this solution.
-	**/
-	//TODO: Use new streaming functions in SLIM 1.7.0 when released
-	header("Content-Length: ".filesize($bookpath));
-	header("Content-Type: ".Utilities::titleMimeType($bookpath));
-	header("Content-Disposition: ".$file);
-	readfile_chunked($bookpath);
+	$real_bookpath = $app->calibre->titleFile($id, $file);
+	$contentType = Utilities::titleMimeType($real_bookpath);
+	if ($contentType == Utilities::MIME_EPUB) {
+		// If an EPUB update the metadata
+		$mdep = new MetadataEpub($real_bookpath);
+		$mdep->updateMetadata($details);		
+		$bookpath = $mdep->getUpdatedFile();
+		$app->getLog()->debug("book(e): file ".$bookpath);
+		$app->getLog()->debug("book(e): type ".$contentType);
+		$booksize = filesize($bookpath);
+		$app->getLog()->debug("book(e): size ".$booksize);
+		if ($booksize > 0)
+			header("Content-Length: ".$booksize);
+		header("Content-Type: ".$contentType);
+		header("Content-Disposition: ".$file);
+		readfile_chunked($bookpath);
+	} else {
+		// Else send the file as is
+		$bookpath = $real_bookpath;
+		$app->getLog()->debug("book: file ".$bookpath);
+		$app->getLog()->debug("book: type ".$contentType);
+		$booksize = filesize($bookpath);
+		$app->getLog()->debug("book: size ".$booksize);
+		header("Content-Length: ".$booksize);
+		header("Content-Type: ".$contentType);
+		header("Content-Disposition: ".$file);
+		readfile_chunked($bookpath);
+	}
 }
 
 
