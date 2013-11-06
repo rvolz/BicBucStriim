@@ -464,6 +464,12 @@ mdb_error:
   en: ! 'Calibre database not found or not readable: '
   fr: ! 'Base de données Calibre database non trouvée ou illisible: '
   nl: ! 'Calibre database niet gevonden of is niet leesbaar:'
+metadata_update:
+  de: Metadaten erneuern
+  en: Update metadata
+metadata_update_expl:
+  de: Die Metadaten von Büchern vor dem Herunterladen automatisch durch Calibre-Inhalte ersetzen? (Nur EPUB)
+  en: Update the metadata of books before downloading automatically with Calibre data? (EPUB only)
 no_config:
   de: Konfigurations-Datenbank data/data.db nicht gefunden oder fehlerhaft. Bitte
     laden Sie eine Sicherungskopie oder installieren Sie neu.

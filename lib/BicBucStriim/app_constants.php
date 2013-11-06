@@ -40,4 +40,6 @@ const SMTP_USER = 'smtp_user';
 const SMTP_PASSWORD = 'smtp_password';
 # SMTP encryption, if SMTP mailer is used
 const SMTP_ENCRYPTION = 'smtp_encryption';
+# if true then the metadata of books is updated before download
+const METADATA_UPDATE = 'metadata_update';
 ?>

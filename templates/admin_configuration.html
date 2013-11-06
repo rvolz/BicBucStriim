@@ -70,6 +70,18 @@
 			value="{{page.glob.display_app_name}}"
 		/>
 		<p>{{page.glob.l10n.display_app_name_expl}}</p>
+	</fieldset>	
+	<fieldset data-role="fieldcontain">
+		<label for="metadata_update">{{page.glob.l10n.metadata_update}}</label>
+		<select name="metadata_update" id="metadata_update" data-role="slider">
+			<option value="0" {% if page.glob.metadata_update == "0" %}selected {%endif%}>
+				{{page.glob.l10n.switch_no}}
+			</option>
+			<option value="1" {% if page.glob.metadata_update == "1" %}selected {%endif%}>
+				{{page.glob.l10n.switch_yes}}
+			</option>
+		</select>
+		<p>{{page.glob.l10n.metadata_update_expl}}</p>
 	</fieldset>		
 	<button type="submit">{{page.glob.l10n.save}}</button>	
 </form>

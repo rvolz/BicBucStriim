@@ -121,10 +121,11 @@ $globalSettings[SMTP_PASSWORD] = '';
 $globalSettings[SMTP_SERVER] = '';
 $globalSettings[SMTP_PORT] = 25;
 $globalSettings[SMTP_ENCRYPTION] = 0;
+$globalSettings[METADATA_UPDATE] = 0;
 
 $knownConfigs = array(CALIBRE_DIR, DB_VERSION, KINDLE, KINDLE_FROM_EMAIL, 
 	THUMB_GEN_CLIPPED, PAGE_SIZE, DISPLAY_APP_NAME, MAILER, SMTP_SERVER,
-	SMTP_PORT, SMTP_USER, SMTP_PASSWORD, SMTP_ENCRYPTION);
+	SMTP_PORT, SMTP_USER, SMTP_PASSWORD, SMTP_ENCRYPTION, METADATA_UPDATE);
 
 # Freeze (true) DB schema before release! Set to false for DB development.
 $app->bbs = new BicBucStriim('data/data.db', true);
@@ -1076,7 +1077,9 @@ function book($id, $file) {
 
 	$real_bookpath = $app->calibre->titleFile($id, $file);
 	$contentType = Utilities::titleMimeType($real_bookpath);
-	if ($contentType == Utilities::MIME_EPUB) {
+	$app->getLog()->info("book download for ".$real_bookpath.
+	" with metadata update = ".$globalSettings[METADATA_UPDATE]);
+	if ($contentType == Utilities::MIME_EPUB && $globalSettings[METADATA_UPDATE]) {
 		if ($details['book']->has_cover == 1)
 			$cover = $app->calibre->titleCover($id);
 		else
