@@ -1077,9 +1077,13 @@ function book($id, $file) {
 	$real_bookpath = $app->calibre->titleFile($id, $file);
 	$contentType = Utilities::titleMimeType($real_bookpath);
 	if ($contentType == Utilities::MIME_EPUB) {
+		if ($details['book']->has_cover == 1)
+			$cover = $app->calibre->titleCover($id);
+		else
+			$cover = null;
 		// If an EPUB update the metadata
 		$mdep = new MetadataEpub($real_bookpath);
-		$mdep->updateMetadata($details);		
+		$mdep->updateMetadata($details, $cover);		
 		$bookpath = $mdep->getUpdatedFile();
 		$app->getLog()->debug("book(e): file ".$bookpath);
 		$app->getLog()->debug("book(e): type ".$contentType);

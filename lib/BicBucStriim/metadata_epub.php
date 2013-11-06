@@ -17,6 +17,7 @@ require_once 'epub.php';
 class MetadataEpub {
 	// Prefix for the temporyry EPUB files
 	protected $prefix = "bbs_epub_";
+	// The actual EPUB converter
 	protected $converter;
 
 	/**
@@ -46,7 +47,7 @@ class MetadataEpub {
 	 */
 	public function __destruct() {
 		$fname = $this->converter->file();
-		if (!is_null($fname) && file_exists($fname))
+		if (!is_null($fname) && file_exists($fname));
 			unlink($fname);
 	}
 
@@ -65,9 +66,10 @@ class MetadataEpub {
 	 * Due to limitations in the EPUB library only the first language is 
 	 * used.
 	 *
-	 * @para array 	Calibre metadata
+	 * @param array 	Calibre metadata
+	 * @param string 	path to new cover image
 	 */
-	public function updateMetadata($metadata=null) {
+	public function updateMetadata($metadata=null, $cover = null) {
 		if (is_null($metadata))
 			return;
 		// replace title
@@ -95,6 +97,12 @@ class MetadataEpub {
 		// replace subject tags
 		$tags = array_map(function($tag) {return $tag->name;}, $metadata['tags']);
 		$this->converter->Subjects($tags);
+		// replace the cover image
+		if ($cover != null) {
+			$this->converter->Cover($cover, 'image/jpeg');
+		}
+		// replace the description
+		$this->converter->Description($metadata['comment']);
 		$this->converter->save();		
 	}
 }

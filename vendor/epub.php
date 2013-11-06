@@ -379,7 +379,8 @@ class EPub {
                     $parent = $this->xpath->query('//opf:metadata')->item(0);
                     $node   = $this->xml->createElement($item,$value);
                     $node   = $parent->appendChild($node);
-                    if($att) $node->attr($att,$aval);
+                    //if($att) $node->attr($att,$aval);
+                    if($att) $node->setAttribute($att,$aval);
                 }
             }
 
@@ -493,7 +494,7 @@ class EPubDOMElement extends DOMElement {
                 if($this->isDefaultNamespace($nsuri)){
                     $nsuri = '';
                 }
-            }elseif($this->namespaceURI == $nsuri){
+            } elseif($this->namespaceURI == $nsuri){
                  $nsuri = '';
             }
         }
