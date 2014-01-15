@@ -20,69 +20,90 @@ admin:
   en: Configuration
   fr: Configuration
   nl: Configuratie
+  it: Configurazione
 admin_check_version:
   de: Auf neue Version prüfen
   en: Check version
+  it: Verifica versione
 admin_check_version_legend:
   de: Prüfen, ob mittlerweile eine neue Version von BicBucStriim vorliegt.
   en: Check for a new BicBucStriim version
+  it: Verificare la presenza di una nuova versione di BicBucStriim
 admin_check_url:
   de: Gehen Sie zu %s, um die neue Version herunter zu laden
   en: Visit %s to download it
+  it: Visitare %s per scaricarla
 admin_idtemplate:
   de: ID-Vorlage
   en: ID template
+  it: Modello ID
 admin_idtemplate_clear:
   de: ID-Vorlage löschen
   en: Clear the ID template
+  it: Cancellare il Modello ID
 admin_idtemplate_label:
   de: Anzeigetext
   en: Display text
+  it: Visualizzare testo
 admin_idtemplate_name:
   de: Name
   en: Name
+  it: Nome
 admin_idtemplate_template:
   de: URL
   en: URL
+  it: URL
 admin_idtemplates:
   de: ID-Vorlagen
   en: ID Templates
+  it: Modelli ID
 admin_idtemplates_legend:
   de: Tragen Sie URLs mit dem Ersetzungsparamter <strong>%id%</strong> ein, um automatisch
     ID-Verweise zu generieren.
-  en: Enter URLs with the replecement parameter <strong>%id%</strong> to autamtically
+  en: Enter URLs with the replacement parameter <strong>%id%</strong> to automatically
     generate ID links.
+  it: Inserire gli URLs con il parametro di sostituzione <strong>%id%</strong> per generare automaticamente
+    le connnessioni ID. 
 admin_invalid_page_size:
   de: Die eingestellte Seitengröße war ungültig. Sie muss zwischen 1 und 100 liegen.
-  en: The reqeuested page size is invalid. Please choose a value between 1 and 100.
+  en:  The requested page size is invalid. Please choose a value between 1 and 100.
+  it: La dimensione della pagina richiesta non è valida. Si prega di scegliere un valore tra 1 e 100.
 admin_modified:
   de: Änderungen vorgenommen
   en: Changes applied
+  it: Modifiche applicate
 admin_modify_error:
   de: Fehler beim Speichern der Änderungen
   en: Error while applying changes
+  it: Errore mentre si applicavano le modifiche
 admin_new_version:
   de: Die neue Version %s ist verfügbar. Sie haben Version %s
   en: New version %s is available, you have %s
+  it: La nuova versione %s è disponibile, versione attuale %s
 admin_new_version_error:
   de: Versionsinformationen konnten nicht geladen werden. Bitte prüfen Sie die manuell.
   en: Unable to load new version information. Please check manually.
+  it: Impossibile caricare le informazioni sulla nuova versione. Si prega di controllare manualmente
 admin_no_new_version:
   de: Die Version %s ist aktuell
   en: Your version %s is current
+  it. La versione %s è quella aggiornata
 admin_no_selection:
   de: -- keine Auswahl --
   en: -- no selection --
+  it: -- nessuna selezione --
 admin_pw1:
   de: Admin Passwort
   en: Admin Password
   fr: Mot de passe Administrateur
   nl: Admin Wachtwoord
+  it: Password Amministratore
 admin_pw2:
   de: Admin Passwort
   en: Admin Password
   fr: Mot de passe Administrateur
   nl: Admin Wachtwoord
+  it: Password Amministratore
 admin_pw_expl:
   de: ! 'Optional: Tragen sie hier ein Passwort ein, um den Zugang zu den Admin-Einstellungen
     einzuschränken.'
@@ -91,11 +112,13 @@ admin_pw_expl:
     à la configuration'
   nl: ! 'Optioneel: Voer een wachtwoord in om de admin pagina te beschermen tegen
     wijzigingen door anderen'
+  it: ! 'Opzionale: Inserire una password per prevenire modifiche da parte di terzi della pagina di amministrazione'
 admin_pw_required1:
   de: Fehlendes Admin-Passwort
   en: No Admin password set
   fr: Pas de mot de passe admin défini
   nl: Geen Admin Wachtwoord ingesteld
+  it. Nessuna Password Amministratore settata
 admin_pw_required2:
   de: Sie wollen das Admin-Passwort für den Downloadschutz verwenden, haben aber kein
     gültiges Passwort eingetragen. Bitte tragen Sie eines ein.
@@ -105,174 +128,226 @@ admin_pw_required2:
     par un mot de passe. Utilisez le bon mot de passe.
   nl: U probeert gebruik te maken van het admin wachtwoord voor downloadbescherming,
     zonder een geldige admin wachtwoord. Vul een geldig admin wachtwoord in.
+  it: Si sta' cercando di utilizzare la password di amministrazione per scaricare un libro protetto da password. 
+  Si prega di utilizzare la password corretta.
 admin_short:
   de: Admin
   en: Admin
   fr: Admin
   nl: Admin
+  it: Admin
 admin_mailer:
   de: Mailversand
   en: Sending mail
+  it: Invio posta elettronica
 admin_mailer_expl:
   de: ! 'Wählen sie die Versandart, falls sie Bücher per Mail versenden möchten. Für
     SMTP sind weitere Einstellungen nötig:'
   en: ! 'Select the mail transport mechanism, if you want to send books via mail.
     SMTP needs further configuration: '
+  it: ! 'Selezionare il metodo di invio posta elettronica, se si vogliono inviare libri per posta elettronica.
+    SMTP richiede ulteriori configurazione: '
 admin_mailer_smtp:
   de: SMTP
   en: SMTP
+  it: SMTP
 admin_mailer_sendmail:
   de: Sendmail
   en: Sendmail
+  it: Sendmail
 admin_mailer_mail:
   de: PHP mail
   en: PHP mail
+  it. PHP mail
 admin_mail:
   de: E-Mail Konfiguration
   en: Mail configuration
+  it: Configurazione posta elettronica
 admin_mail_legend:
   de: Konfigurationsangaben für den Mailversand per SMTP
   en: Configuration details for sending mails via SMTP
+  it: Configurazione dei dettagli per l'invio di posta elettronica via SMTP
 admin_smtpenc:
   de: Verschlüsselung
   en: Encryption
+  it: Crittografia
 admin_smtpenc_expl:
   de: Verschlüsselungsarten für den Mailversand
   en: Encryption methods for communication with the SMTP server
+  it: Metodi di crittografia per comunicare con il server SMTP
 admin_smtpenc_none:
   de: Keine
   en: None
+  it: Nessuno
 admin_smtpenc_ssl:
   de: SSL
   en: SSL
+  it: SSL
 admin_smtpenc_tls:
   de: TLS
   en: TLS
+  it: TLS
 admin_smtpport:
   de: Port
   en: Port
+  it: Porta
 admin_smtpport_expl:
   de: Der Port für den SMTP-Verkehr, normalerweise 25
   en: Port number for SMTP traffic, default is 25
+  it: Porta per il traffico SMTP, pre-definita : 25
 admin_smtpserver:
   de: Servername
   en: Server name
+  it: Nome Server
 admin_smtpserver_expl:
   de: Name oder Adresse des SMTP-Servers
   en: Name or address of the SMTP server
+  it: Nome o indirizzo del server SMTP
 admin_smtpusername_expl:
   de: Der Benutzername für den SMTP-Server
   en: User name for the SMTP server
+  it: Nome Utente per il server SMTP
 admin_smtpuserpw_expl:
   de: ! 'Das Passwort für den SMTP-Server '
   en: ! 'Password for the SMTP server '
+  it: ! 'Password per il server SMTP '
 admin_username:
   de: Benutzername
   en: User name
+  it: Nome Utente
 admin_userpw:
   de: Passwort
   en: Password
+  it: Password
 admin_userpw_expl:
   de: Plichtfeld, darf nicht leer sein
   en: Required, must not be empty
+  it: Obbligatorio, non deve essere vuoto
 admin_userlangs_expl:
   de: Optional, schränkt die Anzeige auf Bücher mit dieser Sprache ein
   en: Optional, show only books with this language
+  it: Opzionale, visualizza solo i libri in questa lingua
 admin_usertags_expl:
   de: Optional, schließt Bücher mit diesem Schlagwort von der Anzeige aus
   en: Optional, don\'t show books with this tag
+  it: Opzionale, non visualizza i libri con questa etichetta
 admin_users:
   de: Benutzer
   en: Users
+  it: Utenti
 admin_users_legend1:
   de: Neuen Benutzer hinzufügen
   en: Add a user
+  it: Aggiungere un utente
 admin_users_legend2:
   de: Benutzerkonten ändern oder löschen
   en: Modify or delete an account
+  it: Modificare o cancellare un account
 admin_users_delete:
   de: Benutzerkonto löschen
   en: Delete user account
+  it: Cancellare un account
 authors:
   de: Autoren
   en: Authors
   fr: Auteurs
   nl: Auteurs
+  it: Autori
 author_details:
   de: Details Autor
   en: Author Details
   fr: Détails auteurs
   nl: Auteur Details
+  it: Dettagli Autore
 author_links:
   de: Verweise
   en: Links
+  it: Collegamenti
 author_links_expl:
   de: Interessante Verweise zum Autor eingeben oder löschen.
   en: Add or delete links regarding the author.
+  it: Aggiungere o cancellare collegamenti relativi all'autore.
 author_links_text:
   de: Name
   en: Name
+  it: Nome
 author_links_url:
   de: URL
   en: URL
+  it: URL
 author_metadata:
   de: Metadaten
   en: Meta data
+  it: Metadati
 author_notes:
   de: Notizen
   en: Notes
+  it: Annotazioni
 author_notes_expl:
   de: Notizen zum Autor ändern oder löschen. Eingabe im Markdown-Format.
   en: Edit or delete notes about the author in the Markdown format.
+  it: Modificare o cancellare annotazioni sull'autore nel formato Markdown.
 author_thumbnail:
   de: Bild
   en: Thumbnail Image
+  it: Miniatura immagine
 author_thumbnail_expl:
   de: Ein Autorenbild hochladen oder löschen. Bitte kleine Bilder verwenden (<3MB), sie werden
     auf 160*160 Pixel reduziert.
   en: Upload or delete an author image. Please use small files (<3MB), the image will be
     reduced to 160*160 pixels.
+  it: Caricare o cancellare immagine autore. Si prega di usare files di piccole dimensioni (<3MB), 
+    l'immagine verrà ridotta alle dimensioni di 160*160 pixels  
 author_thumbnail_upload_error1:
   de: Fehler beim Hochladen
   en: Upload error
+  it: Errore di Caricamento
 author_thumbnail_upload_error2:
   de: Falscher Dateityp oder zu groß
   en: Wrong file type or too big
+  it: Tipo di file errato o troppo grande
 back:
   de: Zurück
   en: Back
   fr: Retour
   nl: Terug
+  it: Indietro
 booksby:
   de: Bücher von
   en: Books by
   fr: Livres par
   nl: Boeken door
+  it: Libro di
 booksbytag:
   de: Bücher mit Schlagwort
   en: Books tagged with
   fr: Livres par tag
   nl: Boeken gelabeld met
+  it: Libro etichettato con
 booksbyseries:
   de: Bücher der Reihe
   en: Books in series
   fr: Livres par série
   nl: Boeken in de serie
+  it: Libri della serie
 book_details:
   de: Buchdetails
   en: Book Details
   fr: Détails des livres
   nl: Boek Details
+  it: Dettagli libro
 calibre_dir1:
   de: Calibre Bibliotheksverzeichnis
   en: Calibre library path
   fr: Chemin vers le répertoire Calibre
   nl: Calibre bibliotheekpad
+  it: Posizione libreria Calibre
 calibre_dir2:
   de: ! 'Zum Beispiel: /volume1/books'
   en: ! 'Example: /volume1/books'
   fr: ! 'Exemple: /volume1/books'
   nl: ! 'Voorbeeld: /volume1/books'
+  it: ! 'Esempio: /volume1/books'
 calibre_dir_expl:
   de: Der Pfad zu ihrer Calibre-Bibliothek. Tragen sie hier den vollen Verzeichnisnamen
     ein.
@@ -280,71 +355,89 @@ calibre_dir_expl:
   fr: Le chemin vers votre répertoire où se trouve votre bibliothèque Calibre. Introduisez
     un nom complet chemin/nom_répertoire
   nl: Het pad naar uw Calibre bibliotheek. Geef het volledige pad / directory naam.
+  it: Percorso della libreria Calibre. Si prega di inserire il percorso completo path/directory
 cancel:
   de: Abbrechen
   en: Cancel
+  it: Cancellare
 changes_saved:
   de: Änderungen gespeichert
   en: Changes saved
   fr: Changements sauvegardés
   nl: Wijzigingen opgeslagen
+  it: Modifiche salvate
 check_access:
   de: Freischalten
   en: Submit Password
   fr: Soumettre un mot de passe
   nl: Verzend wachtwoord
+  it. Inserire Password
 check_access_info:
   de: Diese Buch ist passwortgeschützt. Bitte freischalten, um es herunter zu laden.
   en: This book is protected. Please enter your password to enable the book download.
   fr: Ce livre est protégé. Introduisez le mot de passe pour télécharger le livre.
   nl: Dit boek is beschermd. Voer uw wachtwoord in om het mogelijk te maken dit boek
     te downloaden.
+  it: Questo libro è protetto. Si prega di inserire la password per poterlo scaricare.
 check_installation:
   de: Installation überprüfen?
   en: Check installation?
+  it: Verificare installazione?
 comment:
   de: Beschreibung
   en: Description
   fr: Description
   nl: Beschrijving
+  it: Descrizione
 custom_columns:
   de: Eigene Calibre-Daten
   en: Custom Calibre Data
+  it: Dati Calibre Personalizzati
 delete:
   de: Löschen
   en: Delete
+  it: Cancellare
 display_app_name:
   de: Alternativer Titel
   en: Alternative page title
+  it: Titolo pagina alternativo
 display_app_name_expl:
   de: Wenn die Anwendung einen aussagekräftigeren Namen anzeigen soll. Wird im Seitentitel
     angezeigt.
   en: In case you would like to give your Calibre library a more descriptive name.
     Will be displayed in page titles.
+  it: Nel caso si voglia dare alla libreria Calibre un titolo più descrittivo.
+    Comparirà nei titoli di pagina.
 dl30:
   de: Die neuesten
   en: Most recent
   fr: Les plus récents livres
   nl: Meest recente
+  it: Più recente
 download:
   de: Herunterladen
   en: Download
   fr: Télécharger
   nl: Download
+  it: Scaricare
 edit:
   de: Bearbeiten
   en: Edit
+  it: Modificare
 error:
   de: Fehler
   en: Error
   fr: Erreur
   nl: Fout
+  it: Errore
 error_kindle_send:
   de: Ein Fehler ist aufgetreten. Überprüfen Sie die E-Mail-Adresse.
   en: Something went wrong. Please check the e-mail address.
+  it: Qualcosa è andato storto. Si prega di controllare l'indirizzo di posta elettronica.
 error_no_access:
   de: Sie haben keine Zugangsberechtigung.
   en: You don\'t have sufficient access rights.
+  it: Non si dispone di sufficienti diritti di accesso.
 glob_dl_expl:
   de: Wenn sie ihr Netz mit anderen Benutzern teilen, können sie hier den Passwort-Schutz
     fürs Herunterladen der Bücher aktivieren. Falls sie schon ein Admin-Passwort vergeben
@@ -358,50 +451,62 @@ glob_dl_expl:
     administrateur, vous pouvez le réutiliser ou en définir un nouveau, différent.
   nl: Wanneer u het netwerk met anderen deelt kunt u wachtwoordbescherming voor het
     downloaden van boeken activeren. Als u al een adminwachtwoord heeft u kunt u deze
-    hergebruiken, of maak een apart wachtwoord aan voor downloads
+    hergebruiken, of maak een apart wachtwoord aan voor downloads.
+  it: Se si condivide la rete con gli altri si può attivare una password di protezione per scaricare i libri.
+    Se si possiede già una password di amministrazione è possibile utilizzarla,
+    o semplicemente specificarne una nuova differente.
 glob_dl_legend:
   de: Herunterladen per Passwort schützen
   en: Protect downloads with a password
   fr: Protéger les téléchargements avec un mot de passe
   nl: Downloads beveiligen met een wachtwoord
+  it: Proteggere i downloads con una password
 glob_dl_pw1:
   de: Passwort fürs Herunterladen
   en: Password for downloads
   fr: Mot de passe pour les téléchargements
   nl: Wachtwoord voor downloads
+  it: Password per downloads
 glob_dl_pw2:
   de: Passwort fürs Herunterladen
-  en: Download password
-  fr: Mot de passe téléchargement
-  nl: Download wachtwoord
+  en: Password for downloads
+  fr: Mot de passe pour les téléchargements
+  nl: Wachtwoord voor downloads
+  it: Password per downloads
 glob_dl_radio1:
   de: Nein, nicht nötig
   en: No, not necessary
   fr: Non, pas nécessaire
   nl: Nee, niet noodzakelijk
+  it: No, non necessario
 glob_dl_radio2:
   de: Ja, Admin-Passwort verwenden
   en: Yes, use admin password
   fr: Oui, utilisez le mot de passe admin
   nl: Ja, gebruik admin wachtwoord
+  it: Si, utilizzare la password di amministrazione
 glob_dl_radio3:
   de: Ja, anderes Passwort angeben (unten eingeben)
   en: Yes, use a separate password (enter below)
   fr: Oui, utilisez un mot de passe différent (introduisez-le plus bas)
   nl: Ja, gebruik een apart wachtwoord (vul hieronder in)
+  it: Si, utilizzare una password differente (inserire di seguito)
 home:
   de: Start
   en: Home
   fr: Accueil
   nl: Home
+  it: Home
 idlinks:
   de: ID-Verweise
   en: ID links
+  it. ID Collegamenti
 invalid_calibredir1:
   de: Ungültiges Calibre-Verzeichnis
   en: Invalid Calibre directory
   fr: Répertoire vers la bibliothèque Calibre invalide
   nl: Ongeldige Calibre map
+  it: Directory Calibre non valida
 invalid_calibredir2:
   de: Auf das angegebene Calibre-Verzeichnis kann nicht zugegriffen werden. Ist es
     ein Calibre-Verzeichnis? Passen die Zugriffsrechte? Existiert das angegebene Verzeichnis?
@@ -411,212 +516,268 @@ invalid_calibredir2:
     bon répertoire ? LEs droits d\''accès sont-ils corrects ?  Existe-t-elle ? '
   nl: De geconfigureerde Calibre directory kan niet worden gebruikt. Is het echt een
     Calibre directory? Is het leesbaar? Bestaat het?
+  it: La directory di Calibre configurata non può essere utilizzata. E' veramente una directory di Calibre?
+    Possiede i diritti di lettura? Esiste?
 invalid_password:
   de: Ungültiges Passwort
   en: Invalid Password
   fr: Mot de passe invalide
   nl: Ongeldig wachtwoord
+  it: Password errata
 invalid_password2:
   de: Das eingegebene Passwort scheint ungültig zu sein. Bitte versuchen Sie es mit
     einem anderen.
   en: This password is not valid. Please use a different one.
   fr: Ce mot de passe n\'est pas valide. Veuillez réessayer.
   nl: Dit wachtwoord is niet geldig. Gebruik een andere.
+  it: Questa password è errata. Si prega di utilizzarne una differente.
 invalid_email_address:
   de: Bitte geben Sie eine gültige Email-Adresse ein.
   en: Please enter a valid e-mail address.
+  it: Si prega di inserire un indirizzo di posta elettornica valido.
 kindle_expl:
   de: Aktiviert die Funktion zum Senden eines Buches an die Kindle E-Mail-Adresse
     (@kindle.com).
   en: Allows sending books to a Kindle e-mail address (@kindle.com).
+  it: Permette l'invio di libri a un indirizzo di posta elettronica Kindle (@ kindle.com).
 kindle_expl2:
   de: Diese E-Mail-Adresse muss in Ihrem Amazon Konto als bestätigter Absender eingetragen
     sein.
   en: This e-mail address needs to be added as an approved sender to your Amazon account.
+  it: Questo indirizzo di posta elettronica deve essere aggiunto come mittente autorizzato all'account Amazon.
 kindle_enable:
   de: Senden-an-Kindle aktivieren?
   en: Allow Send-To-Kindle?
+  it: Permettere l'invio a Kindle?
 kindle_from_email1:
   de: E-Mail Absender
   en: From-address for e-mails
+  it: Mittente posta elettronica
 kindle_from_email2:
   de: E-Mail Adresse
   en: E-mail address
+  it: Indirizzo di posta elettronica
 kindle_to_email:
   de: E-Mail-Adresse (@kindle.com)
   en: Kindle e-mail address (@kindle.com)
+  it: Indirizzo posta elettronica Kindle (@kindle.com) 
 language:
   de: Sprache
   en: Language
   fr: Langue
   nl: Taal
+  it: Lingua
 login:
   de: Anmelden
   en: Login
+  it: Accesso
 logout:
   de: Abmelden
-  en: logout
+  en: Logout
+  it. Disconnessione
+  
 logout_expl:
   de: Sie wurden abgemeldet
   en: Your logged out
+  it: Disconnessione avvenuta
 mdb_error:
   de: ! 'Calibre Datenbank existiert nicht oder konnte nicht gelesen werden: '
   en: ! 'Calibre database not found or not readable: '
   fr: ! 'Base de données Calibre database non trouvée ou illisible: '
   nl: ! 'Calibre database niet gevonden of is niet leesbaar:'
+  it: ! 'Il database di Calibre non è stato trovato o non è accessibile in lettura'
 metadata_update:
   de: Metadaten erneuern
   en: Update metadata
+  it: Aggiornamento metadati
 metadata_update_expl:
   de: Die Metadaten von Büchern vor dem Herunterladen automatisch durch Calibre-Inhalte ersetzen? (Nur EPUB)
   en: Update the metadata of books before downloading automatically with Calibre data? (EPUB only)
+  it: Aggiornare i metadati dei libri prima di scaricarli automaticamente con Calibre? (solo EPUB)
 no_config:
   de: Konfigurations-Datenbank data/data.db nicht gefunden oder fehlerhaft. Bitte
     laden Sie eine Sicherungskopie oder installieren Sie neu.
   en: Configuration database data/data.db not found or in bad shape. Please load a
     backup or repeat the installation.
+  it: Database di configurazione data/data.db non trovato o in cattive condizioni. Si prega di caricare un
+     backup o ripetere l'installazione.
 not_found1:
   de: Nicht gefunden!
   en: Not found!
   fr: Non trouvé !
   nl: Niet gevonden!
+  it: Non trovato!
 not_found2:
   de: Die angeforderte Ressource konnte nicht gefunden werden. Dies sollte eigentlich
     nicht passieren. Bitte prüfen Sie, ob ihre Calibre-Datenbank defekt ist.
-  en: The requested ressource is not available. This should not happen. Please check
+  en: The requested resource is not available. This should not happen. Please check
     your Calibre library for defects.
   fr: La resource demandée n\'est pas disponible. Cela ne devrait pas se produire...
     Vérifier votre base de donnée Calibre.
   nl: De gevraagde ressource is niet beschikbaar. Dit mag niet gebeuren. Controleer
     uw Calibre bibliotheek voor defecten.
+  it: La risorsa richiesta non è disponibile. Questo non dovrebbe accadere. Si prega di controllare
+     la libreria Calibre per possibili difetti.
 opds_authors:
   de: ! 'Autoren: '
   en: ! 'Authors: '
   nl: ! 'Auteurs: '
+  it: ! 'Autori: '
 opds_books:
   de: ! 'Bücher: '
   en: ! 'Books: '
   nl: ! 'Boeken: '
+  it: ! 'Libri: ' 
 opds_series:
   de: ! 'Reihen: '
   en: ! 'Series: '
   nl: ! 'Series: '
+  it: ! 'Serie: '
 opds_tags:
   de: ! 'Schlagwörter: '
   en: ! 'Tags: '
   nl: ! 'Labels: '
+  it: ! 'Etichette: '
 opds_root_title:
   de: BicBucStriim Hauptkatalog
   en: BicBucStriim Root Catalog
   nl: BicBucStriim Basis Catalogus
+  it: Catalogo Radice (root) di BicBucStriim
 opds_root_subtitle:
   de: Der Startkatalog ihrer Calibre-Bibliothek
   en: The root catalog to the contents of your Calibre library
   nl: De basis catalogus naar de inhoud van uw Calibre bibliotheek
+  it: Il catalogo radice (root) per il contenuto della biblioteca Calibre
 opds_by_author1:
   de: Nach Autor
   en: By Author
   nl: Op Auteur
+  it: Per Authore
 opds_by_author2:
   de: Alle Bücher nach Autoren geordnet
   en: All books sorted by author
   nl: Alle boeken gesorteerd op auteur
+  it: Tutti i libri ordinati per autore
 opds_by_author3:
   de: Autoren nach Initialen
   en: Authors by their initials
   nl: Auteurs op initiaal
+  it: Autori ordinati per iniziali
 opds_by_author4:
   de: ! 'Alle Autoren für '
   en: ! 'All Authors for '
   nl: ! 'Alle Auteurs voor '
+  it: ! 'Tutti gli Autori per '
 opds_by_author5:
   de: Autorenliste
   en: Authors list
   nl: Auteurs lijst
+  it: Lista Autori
 opds_by_author6:
   de: ! 'Alle Bücher von '
   en: ! 'All books by '
   nl: ! 'Alle boeken door '
+  it: ! 'Tutti i libri per '
 opds_by_newest1:
   de: Die neuesten
   en: By Newest
   nl: Op Nieuwste
+  it: Per i più recenti
 opds_by_newest2:
   de: Die neuesten Titel
   en: The 30 most recent titles
   nl: De 30 meest recente titels
+  it: I 30 titoli più recenti
 opds_by_search1:
   de: Nach Suche
   en: By Search
   nl: Op zoekopdracht
+  it: Per Ricerca
 opds_by_search2:
   de: Ergebnisse der Suche
   en: Search results
   nl: Zoek resultaten
+  it: Risultati Ricerca
 opds_by_search3:
   de: Büchersuche bei BicBucStriim
   en: Search for books on BicBucStriim
   nl: Zoek naar boeken op BicBucStriim
+  it: Ricerca libri in BicBucStriim
 opds_by_series1:
   de: Nach Buchreihe
   en: By Series
   nl: Op Series
+  it: Per Serie
 opds_by_series2:
   de: Reihen und ihre Titel
   en: Series and their titles
   nl: Series en hun titels
+  it: Serie e loro titoli
 opds_by_series3:
   de: Reihen nach Initialen
   en: Series by their initials
   nl: Series op initialen
+  it: Serie per loro iniziali
 opds_by_series4:
   de: ! 'Alle Reihen für '
   en: ! 'All series for '
   nl: ! 'Alle series voor '
+  it: ! 'Tutte le serie per '
 opds_by_series5:
   de: Reihenliste
   en: Series list
   nl: Series lijst
+  it: Lista Serie
 opds_by_series6:
   de: ! 'Alle Bücher für Buchreihe '
   en: ! 'All books for series '
   nl: ! 'Alle boeken voor series '
+  it: ! 'Tutti i libri per serie '
 opds_by_title1:
   de: Nach Titel
   en: By Title
   nl: Op Titel
+  it: Per Titolo
 opds_by_title2:
   de: Alle Bücher nach Titel geordnet
   en: All books sorted by title
   nl: Alle boeken gesorteerd op titel
+  it: Tutti i libri ordianti per titolo
 opds_by_tag1:
   de: Nach Schlagwort
   en: By Tag
   nl: Op Label
+  it: Per Etichette
 opds_by_tag2:
   de: Alle Bücher nach Schlagwort geordnet
   en: All books sorted by tag
   nl: Alle boeken gesorteerd op label
+  it: Tutti i libri ordinati per titolo
 opds_by_tag3:
   de: Schlagwörter nach Initialen
   en: Tags by their initials
   nl: Labels op initialen
+  it: Etichette per loro iniziali
 opds_by_tag4:
   de: ! 'Alle Schlagwörter für '
   en: ! 'All tags for '
   nl: ! 'Alle labels voor '
+  it: ! 'Tutte le etichette per '
 opds_by_tag5:
   de: Schlagwortliste
   en: Tags list
   nl: Label lijst
+  it: Elenco Etichette
 opds_by_tag6:
   de: ! 'Alle Bücher für Schlagwort '
   en: ! 'All books for tag '
   nl: ! 'Alle boeken voor label '
+  it: ! 'Tutti i libri per etichietta '
 page_size:
   de: Seitengröße
   en: Page size
   nl: paginaformaat
+  it: Dimensioni pagina
 page_size_expl:
   de: Anzahl der Elemente in einer Liste. Erhöhen Sie den Wert, um mehr Titel, Autoren,
     ... pro Seite anzuzeigen. Standard ist 30, Maximum 100
@@ -624,115 +785,142 @@ page_size_expl:
     page. Default is 30, max is 100
   nl: Aantal elementen in een lijst. Te verhogen tot meer titels, auteurs... per pagina.
     Standaard is 30, maximum is 100
+  it: Numero di elementi in elenco. Aumentare per visualizzare più titoli, autori ... per
+    pagina. Il parametro è settato a 30, il massimo è 100
 pagination_next:
   de: vor
   en: next
   fr: suiv.
   nl: volgende
+  it: prossimo
 pagination_page:
   de: Seite
   en: Page
   fr: Page
   nl: Pagina
+  it: Pagina
 pagination_prev:
   de: zurück
   en: previous
   fr: préc.
   nl: vorige
+  it: precedente
 pagination_search:
   de: Suche
   en: Search
   fr: Recherche
   nl: Zoeken
+  it: Ricerca
 pagination_search_lbl:
   de: Suchen
   en: Search
   fr: Recherche
   nl: Zoeken
+  it: Ricerca
 pagination_search_ph:
   de: Suchen ...
   en: Search ...
   nl: Zoeken ...
+  it: Ricerca ...
 password_dialog_titel:
   de: Passwort
   en: Password
   nl: Wachtwoord
+  it: Password
 presskey:
   de: Taste drücken, um das Buch im betreffenden Format herunter zu laden.
   en: Press a button to download the book in the respective format.
   fr: Cliquez sur le bouton pour télécharger le livre dans le format correspondant.
   nl: Druk op een knop om het boek in het opgegeven formaat te downloaden.
+  it: Premere un tasto per scaricare il libro nel rispettivo formato.
 presskey2:
   de: Geben Sie Ihre Kindle E-Mail-Adresse ein, um das Buch an ihr Gerät zu senden.
   en: Enter your Kindle e-mail address to sync this book to your device.
+  it: Inserire l'indirizzo di posta elettronica Kindle per sincronizzare questo libro con il dispositivo.
 presskey3:
   de: ! ' muss als erlaubter Absender in Ihrem Amazon Account eingetragen sein.'
   en: ! ' needs to be added as an approved sender to your Amazon account.'
+  it: ! ' è necessario aggiungerlo come mittente approvato all\'account Amazon. '
 published:
   de: Veröffentlicht
   en: Published
   fr: Publié
   nl: Gepubliceerd
+  it: Pubblicato
 save:
   de: Speichern
   en: Save
   fr: Sauver
   nl: Opslaan
+  it: Salvato
 send_now:
   de: Jetzt senden
   en: Send now
+  it: Inviare ora
 send_success:
   de: Das Buch wurde versendet!
   en: The book has been sent!
+  it: Il libro è stato inviato!
 send_to_kindle:
   de: Senden an Kindle
   en: Send to Kindle
+  it: Inviato a Kindle
 series:
   de: Reihen
   en: Series
   fr: Séries
   nl: Series
+  it: serie
 series_details:
   de: Details Reihe
   en: Series Details
   fr: Details de la Série
   nl: Serie Details
+  it: Dettagli della serire
 switch_yes:
   de: Ja
   en: 'Yes'
   fr: Oui
   nl: Ja
+  it: Si
 switch_no:
   de: Nein
   en: 'No'
   fr: Non
   nl: Nee
+  it: No
 tag:
   de: Schlagwort
   en: Tag
+  it: Etichetta
 tags:
   de: Schlagwörter
   en: Tags
   fr: Tags
   nl: Labels
+  it: Etichette
 tag_details:
   de: Details Schlagwort
   en: Tag Details
   fr: Détails du Tag
   nl: Label Details
+  it: Dettagli Etichette
 tag_protect:
   de: Selektiver Download-Schutz durch Schlagworte?
   en: Selective download protection using tags?
   nl: Bescherming via label?
+  it: Protezione del download selettivo utilizzando le etichiette?
 tag_protect_field:
   de: Schlagwort eingeben
   en: Enter tag for selective download protection
   nl: Selectie op label
+  it: Inserire le etichette per la protezione del download selettivo
 tag_protect_field_exp1:
   de: Geben Sie hier das Schlagwort ein, mit dem Titel vor dem Herunterladen geschützt
     werden sollen.
   en: Choose a tag that will be used for selective download protection.
   nl: Plaats hier de label die moet worden beschermd
+  it: Scegliere una etichetta da utilizzare per la protezione del download selettivo.
 tag_protect_expl:
   de: Mit dieser Option kann der Dwonload-Schutz auf Bücher mit dem angegebenen Schlagwort
     beschränkt werden. Alle anderen Titel können ohne Passwort heruntergeladen werden.
@@ -740,32 +928,40 @@ tag_protect_expl:
     All other books can be downloaded without password.
   nl: Indien ingeschakeld, zullen de boeken met onderstaand label worden beveiligd.
     Let op! Andere boeken zijn dan te downloaden.
+  it: Se attivata, solo i libri con l'etichetta selezionata saranno protetti da password.
+     Tutti gli altri libri possono essere scaricati senza una password.
 thumb_gen_clipped:
   de: Vorschaubilder beschneiden?
   en: Clip thumbnails?
   fr: Découper les miniatures?
   nl: Clip thumbnails?
+  it: Tagliare le miniature?
 thumb_gen_clipped_expl:
   de: Wenn eingeschaltet, werden die Ränder von Vorschaubilder abgeschnitten, um mehr
     Details zu liefern.
   en: If switched on, the edges of thumbnails will be clipped to show more details.
   fr: Si activé, les bords de vignettes sera ramenée à montrer plus de détails.
   nl: Indien ingeschakeld, zullen de randen van de miniaturen worden geknipt om meer details weer te geven
+  it: Se attivato, i bordi delle miniature saranno tagliate per mostrare più particolari.
 titles:
   de: Bücher
   en: Books
   fr: Livres
   nl: Boeken
+  it. Libri
 unknown_error1:
   de: Unbekannter Fehler
   en: Unknown Error
   fr: Erreur inconnue
   nl: Onbekende Fout
+  it: Errore Sconosciuto
 unknown_error2:
   de: Ein bisher unbekannter Fehler wurde gemeldet.
   en: An unknown error occured.
   fr: Une erreur s\'est produite
   nl: Er is een onbekende fout opgetreden.
+  it: Si è verificato un errore sconosciuto.
 upload:
   de: Hochladen
   en: Upload
+  it: Caricamento
