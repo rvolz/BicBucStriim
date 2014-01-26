@@ -52,7 +52,7 @@ task :genl10n do |t|
   php << "# Generated file. Please don\'t edit here,\n"
   php << "# edit messages.yml instead. \n"
   php << "#\n"
-  ['de', 'en', 'fr', 'nl'].each do |lang|
+  ['de', 'en', 'fr', 'it', 'nl'].each do |lang|
     php << "$lang#{lang} = array(\n"
     msgs.each do |msg, locs|      
       php << "'#{msg}' => '#{locs[lang]}',\n" unless locs[lang].nil?

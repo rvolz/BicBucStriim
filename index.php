@@ -26,7 +26,7 @@ require_once 'metadata_epub.php';
 use dflydev\markdown\MarkdownExtraParser;
 
 # Allowed languages, i.e. languages with translations
-$allowedLangs = array('de','en','fr','nl');
+$allowedLangs = array('de','en','fr','it','nl');
 # Fallback language if the browser prefers other than the allowed languages
 $fallbackLang = 'en';
 # Application Name

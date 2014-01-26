@@ -11,7 +11,7 @@
 # Please make sure to use the same indentation, otherwise the file will 
 # become unusable.
 #
-# Allowed languages are: de, en, fr, nl
+# Allowed languages are: de, en, fr, nl, it
 # English is the fallback language, so each entry should have at least
 # an English localization.
 #
@@ -58,15 +58,12 @@ admin_idtemplates:
   en: ID Templates
   it: Modelli ID
 admin_idtemplates_legend:
-  de: Tragen Sie URLs mit dem Ersetzungsparamter <strong>%id%</strong> ein, um automatisch
-    ID-Verweise zu generieren.
-  en: Enter URLs with the replacement parameter <strong>%id%</strong> to automatically
-    generate ID links.
-  it: Inserire gli URLs con il parametro di sostituzione <strong>%id%</strong> per generare automaticamente
-    le connnessioni ID. 
+  de: Tragen Sie URLs mit dem Ersetzungsparamter <strong>%id%</strong> ein, um automatisch ID-Verweise zu generieren.
+  en: Enter URLs with the replacement parameter <strong>%id%</strong> to automatically generate ID links.
+  it: Inserire gli URLs con il parametro di sostituzione <strong>%id%</strong> per generare automaticamente le connnessioni ID.
 admin_invalid_page_size:
   de: Die eingestellte Seitengröße war ungültig. Sie muss zwischen 1 und 100 liegen.
-  en:  The requested page size is invalid. Please choose a value between 1 and 100.
+  en: The requested page size is invalid. Please choose a value between 1 and 100.
   it: La dimensione della pagina richiesta non è valida. Si prega di scegliere un valore tra 1 e 100.
 admin_modified:
   de: Änderungen vorgenommen
@@ -87,7 +84,7 @@ admin_new_version_error:
 admin_no_new_version:
   de: Die Version %s ist aktuell
   en: Your version %s is current
-  it. La versione %s è quella aggiornata
+  it: La versione %s è quella aggiornata
 admin_no_selection:
   de: -- keine Auswahl --
   en: -- no selection --
@@ -105,20 +102,17 @@ admin_pw2:
   nl: Admin Wachtwoord
   it: Password Amministratore
 admin_pw_expl:
-  de: ! 'Optional: Tragen sie hier ein Passwort ein, um den Zugang zu den Admin-Einstellungen
-    einzuschränken.'
-  en: ! 'Optional: Enter a password to protect the admin page from changes by others.'
-  fr: ! 'Option: Introduisez une mot de passe administrateur pour contrôler l\''accès
-    à la configuration'
-  nl: ! 'Optioneel: Voer een wachtwoord in om de admin pagina te beschermen tegen
-    wijzigingen door anderen'
-  it: ! 'Opzionale: Inserire una password per prevenire modifiche da parte di terzi della pagina di amministrazione'
+  de: "Optional: Tragen sie hier ein Passwort ein, um den Zugang zu den Admin-Einstellungen einzuschränken."
+  en: "Optional: Enter a password to protect the admin page from changes by others."
+  fr: "Option: Introduisez une mot de passe administrateur pour contrôler l\\'accès à la configuration"
+  nl: "Optioneel: Voer een wachtwoord in om de admin pagina te beschermen tegen wijzigingen door anderen"
+  it: "Opzionale: Inserire una password per prevenire modifiche da parte di terzi della pagina di amministrazione"
 admin_pw_required1:
   de: Fehlendes Admin-Passwort
   en: No Admin password set
   fr: Pas de mot de passe admin défini
   nl: Geen Admin Wachtwoord ingesteld
-  it. Nessuna Password Amministratore settata
+  it: Nessuna Password Amministratore settata
 admin_pw_required2:
   de: Sie wollen das Admin-Passwort für den Downloadschutz verwenden, haben aber kein
     gültiges Passwort eingetragen. Bitte tragen Sie eines ein.
@@ -128,8 +122,8 @@ admin_pw_required2:
     par un mot de passe. Utilisez le bon mot de passe.
   nl: U probeert gebruik te maken van het admin wachtwoord voor downloadbescherming,
     zonder een geldige admin wachtwoord. Vul een geldig admin wachtwoord in.
-  it: Si sta' cercando di utilizzare la password di amministrazione per scaricare un libro protetto da password. 
-  Si prega di utilizzare la password corretta.
+  it: Si sta\' cercando di utilizzare la password di amministrazione per scaricare un libro protetto da password. 
+    Si prega di utilizzare la password corretta.
 admin_short:
   de: Admin
   en: Admin
@@ -158,7 +152,7 @@ admin_mailer_sendmail:
 admin_mailer_mail:
   de: PHP mail
   en: PHP mail
-  it. PHP mail
+  it: PHP mail
 admin_mail:
   de: E-Mail Konfiguration
   en: Mail configuration
@@ -166,7 +160,7 @@ admin_mail:
 admin_mail_legend:
   de: Konfigurationsangaben für den Mailversand per SMTP
   en: Configuration details for sending mails via SMTP
-  it: Configurazione dei dettagli per l'invio di posta elettronica via SMTP
+  it: Configurazione dei dettagli per l\'invio di posta elettronica via SMTP
 admin_smtpenc:
   de: Verschlüsselung
   en: Encryption
@@ -194,7 +188,7 @@ admin_smtpport:
 admin_smtpport_expl:
   de: Der Port für den SMTP-Verkehr, normalerweise 25
   en: Port number for SMTP traffic, default is 25
-  it: Porta per il traffico SMTP, pre-definita : 25
+  it: ! 'Porta per il traffico SMTP, pre-definita : 25'
 admin_smtpserver:
   de: Servername
   en: Server name
@@ -266,7 +260,7 @@ author_links:
 author_links_expl:
   de: Interessante Verweise zum Autor eingeben oder löschen.
   en: Add or delete links regarding the author.
-  it: Aggiungere o cancellare collegamenti relativi all'autore.
+  it: Aggiungere o cancellare collegamenti relativi all\'autore.
 author_links_text:
   de: Name
   en: Name
@@ -286,7 +280,7 @@ author_notes:
 author_notes_expl:
   de: Notizen zum Autor ändern oder löschen. Eingabe im Markdown-Format.
   en: Edit or delete notes about the author in the Markdown format.
-  it: Modificare o cancellare annotazioni sull'autore nel formato Markdown.
+  it: Modificare o cancellare annotazioni sull\'autore nel formato Markdown.
 author_thumbnail:
   de: Bild
   en: Thumbnail Image
@@ -296,8 +290,8 @@ author_thumbnail_expl:
     auf 160*160 Pixel reduziert.
   en: Upload or delete an author image. Please use small files (<3MB), the image will be
     reduced to 160*160 pixels.
-  it: Caricare o cancellare immagine autore. Si prega di usare files di piccole dimensioni (<3MB), 
-    l'immagine verrà ridotta alle dimensioni di 160*160 pixels  
+  it: Caricare o cancellare immagine autore. Si prega di usare files di piccole dimensioni (<3MB),
+    l\'immagine verrà ridotta alle dimensioni di 160*160 pixels  
 author_thumbnail_upload_error1:
   de: Fehler beim Hochladen
   en: Upload error
@@ -353,7 +347,7 @@ calibre_dir_expl:
     ein.
   en: The path to your Calibre library. Please enter the full path/directory name.
   fr: Le chemin vers votre répertoire où se trouve votre bibliothèque Calibre. Introduisez
-    un nom complet chemin/nom_répertoire
+    un nom complet chemin/nom répertoire
   nl: Het pad naar uw Calibre bibliotheek. Geef het volledige pad / directory naam.
   it: Percorso della libreria Calibre. Si prega di inserire il percorso completo path/directory
 cancel:
@@ -371,7 +365,7 @@ check_access:
   en: Submit Password
   fr: Soumettre un mot de passe
   nl: Verzend wachtwoord
-  it. Inserire Password
+  it: Inserire Password
 check_access_info:
   de: Diese Buch ist passwortgeschützt. Bitte freischalten, um es herunter zu laden.
   en: This book is protected. Please enter your password to enable the book download.
@@ -433,7 +427,7 @@ error:
 error_kindle_send:
   de: Ein Fehler ist aufgetreten. Überprüfen Sie die E-Mail-Adresse.
   en: Something went wrong. Please check the e-mail address.
-  it: Qualcosa è andato storto. Si prega di controllare l'indirizzo di posta elettronica.
+  it: Qualcosa è andato storto. Si prega di controllare l\'indirizzo di posta elettronica.
 error_no_access:
   de: Sie haben keine Zugangsberechtigung.
   en: You don\'t have sufficient access rights.
@@ -500,7 +494,7 @@ home:
 idlinks:
   de: ID-Verweise
   en: ID links
-  it. ID Collegamenti
+  it: ID Collegamenti
 invalid_calibredir1:
   de: Ungültiges Calibre-Verzeichnis
   en: Invalid Calibre directory
@@ -508,16 +502,11 @@ invalid_calibredir1:
   nl: Ongeldige Calibre map
   it: Directory Calibre non valida
 invalid_calibredir2:
-  de: Auf das angegebene Calibre-Verzeichnis kann nicht zugegriffen werden. Ist es
-    ein Calibre-Verzeichnis? Passen die Zugriffsrechte? Existiert das angegebene Verzeichnis?
-  en: The configured Calibre directory cannot be used. Is it really a Calibre directory?
-    Is it readable? Does it exist?
-  fr: ! 'La base de données Calibre configurée ne peut pas être utilisée. Est-ce le
-    bon répertoire ? LEs droits d\''accès sont-ils corrects ?  Existe-t-elle ? '
-  nl: De geconfigureerde Calibre directory kan niet worden gebruikt. Is het echt een
-    Calibre directory? Is het leesbaar? Bestaat het?
-  it: La directory di Calibre configurata non può essere utilizzata. E' veramente una directory di Calibre?
-    Possiede i diritti di lettura? Esiste?
+  de: "Auf das angegebene Calibre-Verzeichnis kann nicht zugegriffen werden. Ist es ein Calibre-Verzeichnis? Passen die Zugriffsrechte? Existiert das angegebene Verzeichnis?"
+  en: "The configured Calibre directory cannot be used. Is it really a Calibre directory? Is it readable? Does it exist?"
+  fr: "La base de données Calibre configurée ne peut pas être utilisée. Est-ce le bon répertoire ? Les droits d\\'accès sont-ils corrects? Existe-t-elle ?" 
+  nl: "De geconfigureerde Calibre directory kan niet worden gebruikt. Is het echt een Calibre directory? Is het leesbaar? Bestaat het?"
+  it: "La directory di Calibre configurata non può essere utilizzata. E\\' veramente una directory di Calibre? Possiede i diritti di lettura? Esiste?"
 invalid_password:
   de: Ungültiges Passwort
   en: Invalid Password
@@ -525,8 +514,7 @@ invalid_password:
   nl: Ongeldig wachtwoord
   it: Password errata
 invalid_password2:
-  de: Das eingegebene Passwort scheint ungültig zu sein. Bitte versuchen Sie es mit
-    einem anderen.
+  de: Das eingegebene Passwort scheint ungültig zu sein. Bitte versuchen Sie es mit einem anderen.
   en: This password is not valid. Please use a different one.
   fr: Ce mot de passe n\'est pas valide. Veuillez réessayer.
   nl: Dit wachtwoord is niet geldig. Gebruik een andere.
@@ -536,19 +524,17 @@ invalid_email_address:
   en: Please enter a valid e-mail address.
   it: Si prega di inserire un indirizzo di posta elettornica valido.
 kindle_expl:
-  de: Aktiviert die Funktion zum Senden eines Buches an die Kindle E-Mail-Adresse
-    (@kindle.com).
+  de: Aktiviert die Funktion zum Senden eines Buches an die Kindle E-Mail-Adresse (@kindle.com).
   en: Allows sending books to a Kindle e-mail address (@kindle.com).
-  it: Permette l'invio di libri a un indirizzo di posta elettronica Kindle (@ kindle.com).
+  it: Permette l\'invio di libri a un indirizzo di posta elettronica Kindle (@ kindle.com).
 kindle_expl2:
-  de: Diese E-Mail-Adresse muss in Ihrem Amazon Konto als bestätigter Absender eingetragen
-    sein.
+  de: Diese E-Mail-Adresse muss in Ihrem Amazon Konto als bestätigter Absender eingetragen sein.
   en: This e-mail address needs to be added as an approved sender to your Amazon account.
-  it: Questo indirizzo di posta elettronica deve essere aggiunto come mittente autorizzato all'account Amazon.
+  it: Questo indirizzo di posta elettronica deve essere aggiunto come mittente autorizzato all\'account Amazon.
 kindle_enable:
   de: Senden-an-Kindle aktivieren?
   en: Allow Send-To-Kindle?
-  it: Permettere l'invio a Kindle?
+  it: Permettere l\'invio a Kindle?
 kindle_from_email1:
   de: E-Mail Absender
   en: From-address for e-mails
@@ -574,8 +560,7 @@ login:
 logout:
   de: Abmelden
   en: Logout
-  it. Disconnessione
-  
+  it: Disconnessione
 logout_expl:
   de: Sie wurden abgemeldet
   en: Your logged out
@@ -600,11 +585,11 @@ no_config:
   en: Configuration database data/data.db not found or in bad shape. Please load a
     backup or repeat the installation.
   it: Database di configurazione data/data.db non trovato o in cattive condizioni. Si prega di caricare un
-     backup o ripetere l'installazione.
+     backup o ripetere l\'installazione.
 not_found1:
   de: Nicht gefunden!
   en: Not found!
-  fr: Non trouvé !
+  fr: Non trouvé!
   nl: Niet gevonden!
   it: Non trovato!
 not_found2:
@@ -779,14 +764,10 @@ page_size:
   nl: paginaformaat
   it: Dimensioni pagina
 page_size_expl:
-  de: Anzahl der Elemente in einer Liste. Erhöhen Sie den Wert, um mehr Titel, Autoren,
-    ... pro Seite anzuzeigen. Standard ist 30, Maximum 100
-  en: Number of elements in a list. Increase to show more titles, authors ... per
-    page. Default is 30, max is 100
-  nl: Aantal elementen in een lijst. Te verhogen tot meer titels, auteurs... per pagina.
-    Standaard is 30, maximum is 100
-  it: Numero di elementi in elenco. Aumentare per visualizzare più titoli, autori ... per
-    pagina. Il parametro è settato a 30, il massimo è 100
+  de: "Anzahl der Elemente in einer Liste. Erhöhen Sie den Wert, um mehr Titel, Autoren, ... pro Seite anzuzeigen. Standard ist 30, Maximum 100"
+  en: "Number of elements in a list. Increase to show more titles, authors ... per page. Default is 30, max is 100"
+  nl: "Aantal elementen in een lijst. Te verhogen tot meer titels, auteurs... per pagina. Standaard is 30, maximum is 100"
+  it: "Numero di elementi in elenco. Aumentare per visualizzare più titoli, autori ... per pagina. Il parametro è settato a 30, il massimo è 100"
 pagination_next:
   de: vor
   en: next
@@ -834,13 +815,13 @@ presskey:
   nl: Druk op een knop om het boek in het opgegeven formaat te downloaden.
   it: Premere un tasto per scaricare il libro nel rispettivo formato.
 presskey2:
-  de: Geben Sie Ihre Kindle E-Mail-Adresse ein, um das Buch an ihr Gerät zu senden.
-  en: Enter your Kindle e-mail address to sync this book to your device.
-  it: Inserire l'indirizzo di posta elettronica Kindle per sincronizzare questo libro con il dispositivo.
+  de: "Geben Sie Ihre Kindle E-Mail-Adresse ein, um das Buch an ihr Gerät zu senden."
+  en: "Enter your Kindle e-mail address to sync this book to your device."
+  it: "Inserire l\\'indirizzo di posta elettronica Kindle per sincronizzare questo libro con il dispositivo."
 presskey3:
-  de: ! ' muss als erlaubter Absender in Ihrem Amazon Account eingetragen sein.'
-  en: ! ' needs to be added as an approved sender to your Amazon account.'
-  it: ! ' è necessario aggiungerlo come mittente approvato all\'account Amazon. '
+  de: " muss als erlaubter Absender in Ihrem Amazon Account eingetragen sein."
+  en: " needs to be added as an approved sender to your Amazon account."
+  it: " è necessario aggiungerlo come mittente approvato all\\'account Amazon."
 published:
   de: Veröffentlicht
   en: Published
@@ -879,13 +860,13 @@ series_details:
   it: Dettagli della serire
 switch_yes:
   de: Ja
-  en: 'Yes'
+  en: Yes
   fr: Oui
   nl: Ja
   it: Si
 switch_no:
   de: Nein
-  en: 'No'
+  en: No
   fr: Non
   nl: Nee
   it: No
@@ -928,7 +909,7 @@ tag_protect_expl:
     All other books can be downloaded without password.
   nl: Indien ingeschakeld, zullen de boeken met onderstaand label worden beveiligd.
     Let op! Andere boeken zijn dan te downloaden.
-  it: Se attivata, solo i libri con l'etichetta selezionata saranno protetti da password.
+  it: Se attivata, solo i libri con l\'etichetta selezionata saranno protetti da password.
      Tutti gli altri libri possono essere scaricati senza una password.
 thumb_gen_clipped:
   de: Vorschaubilder beschneiden?
@@ -948,7 +929,7 @@ titles:
   en: Books
   fr: Livres
   nl: Boeken
-  it. Libri
+  it: Libri
 unknown_error1:
   de: Unbekannter Fehler
   en: Unknown Error
