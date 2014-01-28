@@ -1687,10 +1687,11 @@ function getFilter() {
 	return new CalibreFilter($lang, $tag);
 }
 
-
+# Initialize the OPDS generator
 function mkOpdsGenerator($app) {
 	global $appversion, $globalSettings;
-	$gen = new OpdsGenerator($app->request()->getRootUri(), $appversion, 
+	$root = rtrim($app->request()->getUrl().$app->request()->getRootUri(), "/");
+	$gen = new OpdsGenerator($root, $appversion, 
 		$app->calibre->calibre_dir,
 		date(DATE_ATOM, $app->calibre->calibre_last_modified),
 		$globalSettings['l10n']);
