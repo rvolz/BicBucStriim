@@ -64,6 +64,8 @@ $(document).on('pageinit', '#pauthor_detail', function() {
 			$('ul#author-links-list').listview('refresh');
 			$('ul#author-links-edit').listview('refresh');
 			$('div#flash').empty().append('<p class="success">'+data.msg+'</p>');
+			$('#link-description').val('').focus();
+			$('#link-url').val('');
 			$('#pauthor_detail').trigger('change');
 			$('#author-mdlinks-panel').trigger('updatelayout');
 		})
