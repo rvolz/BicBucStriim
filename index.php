@@ -1049,7 +1049,7 @@ function thumbnail($id) {
 	}
 	if ($has_cover) {
 		$app->response()->status(200);
-		$app->response()->header('Content-type','image/jpeg;base64');
+		$app->response()->header('Content-type','image/png;base64');
 		$app->response()->header('Content-Length',filesize($thumb));
 		readfile($thumb);		
 	} else {
