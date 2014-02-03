@@ -59,6 +59,21 @@ class Utilities {
     const MIME_EPUB = 'application/epub+zip';
 
     /**
+     * Check if a string starts with a substring.
+     * 
+     * Works around a strange feature of Calibre where middle components of names are capitalized, 
+     * eg "Aliette de Bodard" -> "Aliette De Bodard".
+     * The directory name uses the capitalized form, the book path stored in the DB uses the original 
+     * form.
+     * @param  string $haystack String to be searched
+     * @param  string $needle   String to search for
+     * @return boolean          true if $haystack starts with $needle, case insensitive
+     */
+    static function stringStartsWith($haystack, $needle) {
+        return (stripos($haystack, $needle) === 0);
+    }
+
+    /**
      * Return the MIME type for an ebook file. 
      *
      * To reduce search time the function checks first wether the file 

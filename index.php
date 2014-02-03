@@ -20,6 +20,7 @@ require_once 'opds_generator.php';
 require_once 'own_config_middleware.php';
 require_once 'calibre_config_middleware.php';
 require_once 'login_middleware.php';
+require_once 'caching_middleware.php';
 require_once 'mailer.php';
 require_once 'metadata_epub.php';
 
@@ -132,6 +133,7 @@ $app->bbs = new BicBucStriim('data/data.db', true);
 $app->add(new \CalibreConfigMiddleware(CALIBRE_DIR));
 $app->add(new \LoginMiddleware($appname, array('js', 'img', 'style')));
 $app->add(new \OwnConfigMiddleware($knownConfigs));
+$app->add(new \CachingMiddleware(array('/admin', '/login')));
 
 ###### Init routes for production
 $app->notFound('myNotFound');
