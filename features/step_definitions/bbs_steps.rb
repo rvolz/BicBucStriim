@@ -148,6 +148,10 @@ Then(/^there are "Series" links$/) do
   expect(page).to have_css('div#series')  
 end
 
+Then(/^the series link contains the text "(.*?)"$/) do |txt|
+  expect(page).to have_text(txt)  
+end
+
 Then(/^I click on "Series" to reveal the series$/) do
   all(:link, 'Series')[1].click
 end

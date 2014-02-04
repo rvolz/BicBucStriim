@@ -49,6 +49,7 @@ Feature: The title details page provides a data summary and downloads.
 		And the "Books" details page 1 for "Lob der Faulheit" appears
 		Then there are "Series" links
 		And I click on "Series" to reveal the series
+		And the series link contains the text "Serie Lessing (1.0)"
 		And I click on series "Serie Lessing" 
 		Then the "Series" details page 4 for "Serie Lessing" appears
 
