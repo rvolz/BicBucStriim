@@ -33,7 +33,7 @@ $fallbackLang = 'en';
 # Application Name
 $appname = 'BicBucStriim';
 # App version
-$appversion = '1.2.0-α';
+$appversion = '1.2.0-β';
 
 # Init app and routes
 $app = new \Slim\Slim(array(
