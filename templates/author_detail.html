@@ -56,7 +56,7 @@
 				{% if author.links %}
 					{% for link in author.links %}
 					<li class="author-link link-{{link.id}}">
-						<a href="{{link.url}}">{{link.label}}</a>
+						<a data-role="button" data-icon="cloud" rel="external" href="{{link.url}}">{{link.label}}</a>
 					</li>
 					{% endfor %}	
 				{% endif %}

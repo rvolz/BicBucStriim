@@ -98,7 +98,7 @@
 			<p>
 				{% for id in ids %}
 					{% if id_templates[id.type] != NULL %}
-						<a data-role="button" data-icon="info" rel="external" href="{{ id_templates[id.type][0]|replace({'%id%': id.val})}}">{{ id_templates[id.type][1] }}</a>
+						<a data-role="button" data-icon="cloud" rel="external" href="{{ id_templates[id.type][0]|replace({'%id%': id.val})}}">{{ id_templates[id.type][1] }}</a>
 					{% endif %}
 				{% endfor %}
 			</p>
