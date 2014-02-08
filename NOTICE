@@ -1,16 +1,25 @@
 
-
-* Twig (https://github.com/fabpot/Twig) Copyright (c) 2009 by the Twig Team. Some rights reserved. Twig is released under BSD license. 
-
-* Slim Micro Framework for PHP 5, Copyright (c) 2012 Josh Lockhart https://github.com/codeguy. Published under MIT License.
+* jQuery, (http://jquery.org) Copyright 2011, John Resig. Licensed under the MIT License.
 
 * jQuery Mobile Framework, http://twitter.github.com/bootstrap/, Copyright 2011 jQuery Project. Licensed under the MIT License v2.0. 
 
-* jQuery, (http://jquery.org) Copyright 2011, John Resig. Licensed under the MIT License.
-
 * jQuery Cookie Plugin, https://github.com/carhartl/jquery-cookie, Copyright 2011, Klaus Hartl. Licensed under MIT License.
 
+* password_compat, https://github.com/ircmaxell/password_compat. Copyright (c) 2012 Anthony Ferrara. Licensed under MIT License.
+
+* PHP Markdown & Extra, https://github.com/dflydev/dflydev-markdown. Copyright (c) 2011, Dragonfly Development Inc. Licensed under the New BSD License.
+
 * Modernizr (http://modernizr.org), Copyright (c) 2009-2011 Faruk Ates, Paul Irish, Alex Sexton, Licensed under MIT License.
+
+* Slim Micro Framework for PHP 5, Copyright (c) 2012 Josh Lockhart https://github.com/codeguy. Published under MIT License.
+
+* Strong Authentication Package, https://github.com/silentworks/Strong. Coypright Andrew Smith. Licensed under MIT License.
+
+* SwiftMailer (http://swiftmailer.org/) Copyright (c) 2013  by Fabien Potencier. Licensed under MIT License.
+
+* Twig (https://github.com/fabpot/Twig) Copyright (c) 2009 by the Twig Team. Some rights reserved. Twig is released under BSD license. 
+
+
 
 ---
 
