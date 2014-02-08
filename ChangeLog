@@ -1,6 +1,7 @@
 2014-02-DD Version 1.2.0
 
-* Added author metadata handling (thumbnail, links, notes)
+* Added author metadata handling (thumbnail, links)
+* Added cache-control for admin pages, see issue #81
 * Separated Calibre and BicBucStriim DB handling
 * Replaced PHP mail support with more flexible SwiftMailer
 * Added ID links to title details and link management to admin section, issue #60
