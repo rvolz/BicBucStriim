@@ -29,7 +29,7 @@ admin_check_version:
 admin_check_version_legend:
   de: Prüfen, ob mittlerweile eine neue Version von BicBucStriim vorliegt.
   en: Check for a new BicBucStriim version
-  fr: Verifier la présence d'une mise à jour de BicBucStriim
+  fr: Verifier la présence d\'une mise à jour de BicBucStriim
   it: Verificare la presenza di una nuova versione di BicBucStriim
 admin_check_url:
   de: Gehen Sie zu %s, um die neue Version herunter zu laden
@@ -44,7 +44,7 @@ admin_idtemplate:
 admin_idtemplate_clear:
   de: ID-Vorlage löschen
   en: Clear the ID template
-  fr: Effacer l'ID du template
+  fr: Effacer l\'ID du template
   it: Cancellare il Modello ID
 admin_idtemplate_label:
   de: Anzeigetext
@@ -84,7 +84,7 @@ admin_modified:
 admin_modify_error:
   de: Fehler beim Speichern der Änderungen
   en: Error while applying changes
-  fr: Erreur lors de l'application des modifications.
+  fr: Erreur lors de l\'application des modifications.
   it: Errore mentre si applicavano le modifiche
 admin_new_version:
   de: Die neue Version %s ist verfügbar. Sie haben Version %s
@@ -94,7 +94,7 @@ admin_new_version:
 admin_new_version_error:
   de: Versionsinformationen konnten nicht geladen werden. Bitte prüfen Sie die manuell.
   en: Unable to load new version information. Please check manually.
-  fr: Impossible de vérifier la présence d'une mise à jour. Vérifiez manuellement.
+  fr: Impossible de vérifier la présence d\'une mise à jour. Vérifiez manuellement.
   it: Impossibile caricare le informazioni sulla nuova versione. Si prega di controllare manualmente
 admin_no_new_version:
   de: Die Version %s ist aktuell
@@ -121,7 +121,7 @@ admin_pw2:
 admin_pw_expl:
   de: "Optional: Tragen sie hier ein Passwort ein, um den Zugang zu den Admin-Einstellungen einzuschränken."
   en: "Optional: Enter a password to protect the admin page from changes by others."
-  fr: "Option: Introduisez un mot de passe administrateur pour contrôler l\'accès à la configuration"
+  fr: "Option: Introduisez un mot de passe administrateur pour contrôler l\\'accès à la configuration"
   nl: "Optioneel: Voer een wachtwoord in om de admin pagina te beschermen tegen wijzigingen door anderen"
   it: "Opzionale: Inserire una password per prevenire modifiche da parte di terzi della pagina di amministrazione"
 admin_pw_required1:
@@ -153,14 +153,10 @@ admin_mailer:
   fr: Envoi de mail
   it: Invio posta elettronica
 admin_mailer_expl:
-  de: ! 'Wählen sie die Versandart, falls sie Bücher per Mail versenden möchten. Für
-    SMTP sind weitere Einstellungen nötig:'
-  en: ! 'Select the mail transport mechanism, if you want to send books via mail.
-    SMTP needs further configuration: '
-  fr: ! 'Selectionnez la méthode d\'envoi des emails. Si vous souhaitez envoyer vos livres par email.
-   Le SMTP doit être configuré : '
-  it: ! 'Selezionare il metodo di invio posta elettronica, se si vogliono inviare libri per posta elettronica.
-    SMTP richiede ulteriori configurazione: '
+  de: "Wählen sie die Versandart, falls sie Bücher per Mail versenden möchten. Für SMTP sind weitere Einstellungen nötig: "
+  en: "Select the mail transport mechanism, if you want to send books via mail. SMTP needs further configuration: "
+  fr: "Selectionnez la méthode d\\'envoi des emails. Si vous souhaitez envoyer vos livres par email. Le SMTP doit être configuré : "
+  it: "Selezionare il metodo di invio posta elettronica, se si vogliono inviare libri per posta elettronica. SMTP richiede ulteriori configurazione: "
 admin_mailer_smtp:
   de: SMTP
   en: SMTP
@@ -244,7 +240,7 @@ admin_smtpuserpw_expl:
 admin_username:
   de: Benutzername
   en: User name
-  fr: Nom d'utilisateur
+  fr: Nom d\'utilisateur
   it: Nome Utente
 admin_userpw:
   de: Passwort
@@ -331,7 +327,7 @@ author_notes:
 author_notes_expl:
   de: Notizen zum Autor ändern oder löschen. Eingabe im Markdown-Format.
   en: Edit or delete notes about the author in the Markdown format.
-  fr: Modifier ou supprimer les annotations au format Markdown concernant l'auteur
+  fr: Modifier ou supprimer les annotations au format Markdown concernant l\'auteur
   it: Modificare o cancellare annotazioni sull\'autore nel formato Markdown.
 author_thumbnail:
   de: Bild
@@ -343,13 +339,13 @@ author_thumbnail_expl:
     auf 160*160 Pixel reduziert.
   en: Upload or delete an author image. Please use small files (<3MB), the image will be
     reduced to 160*160 pixels.
-  fr: Uploader ou supprimer l'image de l\'auteur. Veuillez utiliser un fichier de moins de 3MB, l\'image sera réduite aux dimensions de 160*160 pixels.
+  fr: Uploader ou supprimer l\'image de l\'auteur. Veuillez utiliser un fichier de moins de 3MB, l\'image sera réduite aux dimensions de 160*160 pixels.
   it: Caricare o cancellare immagine autore. Si prega di usare files di piccole dimensioni (<3MB),
     l\'immagine verrà ridotta alle dimensioni di 160*160 pixels  
 author_thumbnail_upload_error1:
   de: Fehler beim Hochladen
   en: Upload error
-  fr: Problème d'upload
+  fr: Problème d\'upload
   it: Errore di Caricamento
 author_thumbnail_upload_error2:
   de: Falscher Dateityp oder zu groß
@@ -461,7 +457,7 @@ display_app_name_expl:
     angezeigt.
   en: In case you would like to give your Calibre library a more descriptive name.
     Will be displayed in page titles.
-  en: Si vous souhaitez nommer autrement votre librairie Calibre.
+  fr: Si vous souhaitez nommer autrement votre librairie Calibre.
     Cette information sera affichée sur le titre de la page.
   it: Nel caso si voglia dare alla libreria Calibre un titolo più descrittivo.
     Comparirà nei titoli di pagina.
@@ -663,7 +659,7 @@ no_config:
     laden Sie eine Sicherungskopie oder installieren Sie neu.
   en: Configuration database data/data.db not found or in bad shape. Please load a
     backup or repeat the installation.
-  fr: La configuration de la base de données data/data.db est introuvable ou corrompue. Veuillez charger une sauvegarde ou relancer l'installation.
+  fr: La configuration de la base de données data/data.db est introuvable ou corrompue. Veuillez charger une sauvegarde ou relancer l\'installation.
   it: Database di configurazione data/data.db non trovato o in cattive condizioni. Si prega di caricare un
      backup o ripetere l\'installazione.
 not_found1:
@@ -878,7 +874,7 @@ page_size:
 page_size_expl:
   de: "Anzahl der Elemente in einer Liste. Erhöhen Sie den Wert, um mehr Titel, Autoren, ... pro Seite anzuzeigen. Standard ist 30, Maximum 100"
   en: "Number of elements in a list. Increase to show more titles, authors ... per page. Default is 30, max is 100"
-  fr: "Nombre d\'éléments dans la liste. Augmentez la valeur pour voir plus de titres, d\'auteurs. 30 par défaut, maximum 100"
+  fr: "Nombre d\\'éléments dans la liste. Augmentez la valeur pour voir plus de titres, d\\'auteurs. 30 par défaut, maximum 100"
   nl: "Aantal elementen in een lijst. Te verhogen tot meer titels, auteurs... per pagina. Standaard is 30, maximum is 100"
   it: "Numero di elementi in elenco. Aumentare per visualizzare più titoli, autori ... per pagina. Il parametro è settato a 30, il massimo è 100"
 pagination_next:
@@ -937,7 +933,7 @@ presskey2:
 presskey3:
   de: " muss als erlaubter Absender in Ihrem Amazon Account eingetragen sein."
   en: " needs to be added as an approved sender to your Amazon account."
-  fr: " nécessite d\'être ajouté comme expédieur approuvé dans votre compte Amazon."
+  fr: " nécessite d\\'être ajouté comme expédieur approuvé dans votre compte Amazon."
   it: " è necessario aggiungerlo come mittente approvato all\\'account Amazon."
 published:
   de: Veröffentlicht
@@ -1030,7 +1026,7 @@ tag_protect_expl:
     beschränkt werden. Alle anderen Titel können ohne Passwort heruntergeladen werden.
   en: If this is activated, only books with the selected tag will be password-protected.
     All other books can be downloaded without password.
-  fr: Si vous l'activez, seulement les livres avec ce tag seront protégés.
+  fr: Si vous l\'activez, seulement les livres avec ce tag seront protégés.
     Tous les autres livres pourront être téléchargés sans mot de passe.
   nl: Indien ingeschakeld, zullen de boeken met onderstaand label worden beveiligd.
     Let op! Andere boeken zijn dan te downloaden.
