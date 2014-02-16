@@ -27,7 +27,7 @@ class OwnConfigMiddleware extends \Slim\Middleware {
 				$app->request->getRootUri().
 				'/installcheck.php">installcheck.php</a> to check for errors.');
 		} elseif ($config_status == 2) {
-			// TODO Redirect to a future update script
+			// TODO Redirect to an update script in the future
 			$app->halt(500, 'Old configuration database detected. Please refer to the <a href="http://projekte.textmulch.de/bicbucstriim/#upgrading">upgrade documentation</a> for more information.');
 		} else {
 			$this->next->call();
@@ -50,8 +50,6 @@ class OwnConfigMiddleware extends \Slim\Middleware {
 						array('Unknown configuration, name: ', $config->name,', value: ',$config->val)));	
 			}
 
-			## For 1.0: run a silent db update
-			# TODO post 1.0: replace with an updater 
 			if ($globalSettings[DB_VERSION] != DB_SCHEMA_VERSION) {
 				$app->getLog()->warn('own_config_middleware: old db schema detected. please run update');							
 				return 2;

@@ -110,7 +110,7 @@ else
 $template = $twig->loadTemplate('installcheck.html');
 echo $template->render(array(
 	'page' => array(
-		'rot' => '', #$app->request()->getRootUri(),
+		'rot' => '', 
 		'version' => '1.2.0-alpha'
 	),
 	'is_a' => $is_a,
