@@ -23,15 +23,12 @@ class OwnConfigMiddleware extends \Slim\Middleware {
 		$app = $this->app;
 		$config_status = $this->check_config_db();
 		if ($config_status == 0) {
-			// TODO severe error message + redirect to installcheck.php
-			$app->halt(500, 'No or bad configuration database. Please use < href="'.
+			$app->halt(500, 'No or bad configuration database. Please use <a href="'.
 				$app->request->getRootUri().
 				'/installcheck.php">installcheck.php</a> to check for errors.');
 		} elseif ($config_status == 2) {
-			// TODO severe error message + redirect to installcheck.php
-			$app->halt(500, 'Old configuration database detected. Please use < href="'.
-				$app->request->getRootUri().
-				'/update.php">update.php</a> to update the DB structure.');
+			// TODO Redirect to a future update script
+			$app->halt(500, 'Old configuration database detected. Please refer to the <a href="http://projekte.textmulch.de/bicbucstriim/#upgrading">upgrade documentation</a> for more information.');
 		} else {
 			$this->next->call();
 		}
