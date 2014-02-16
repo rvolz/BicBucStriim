@@ -15,7 +15,7 @@ require 'yaml'
 require 'logger'
 
 APPNAME = 'BicBucStriim'
-VERSION = '1.2.0-beta'
+VERSION = '1.2.0'
 
 SOURCE = "."
 LESS = File.join( SOURCE, "style")
@@ -159,7 +159,7 @@ desc "Generate and copy version information file to server"
 task :install_version_info do |t|
   version_info = {
     :version => VERSION,
-    :url => 'http://projekte.textmulch.de/bicbucstriim/downloads/BicBucStriim-1.0.0.zip'
+    :url => 'http://projekte.textmulch.de/bicbucstriim/downloads/BicBucStriim-1.2.0.zip'
   }
   File.open('version.json','w') do |f|
     f.puts version_info.to_json

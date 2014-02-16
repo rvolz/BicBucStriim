@@ -1,4 +1,4 @@
-2014-02-DD Version 1.2.0
+2014-02-15 Version 1.2.0
 
 * Added author metadata handling (thumbnail, links)
 * Added cache-control for admin pages, see issue #81

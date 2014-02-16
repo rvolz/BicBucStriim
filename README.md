@@ -10,16 +10,17 @@ BicBucStriim is a simple PHP application that runs in the Apache/PHP environment
 Features & Issues
 -----------------
 
-* shows the most recent titles on the index page
-* provides listing/filtering/searching of book titles, authors, tags and series
-* shows detail pages (including download & custom columns) for authors and books
+* shows the most recent titles of your library on the main page
+* there are sections for browsing through book titles, authors, tags and series
+* individual books can be downloaded or emailed 
+* information about your favourite authors can be added (links, picture)
+* global search 
 * speaks Dutch, English, French, German, Italian
 * is ready for mobile clients
-* provides access restrictions for users (optional, )
+* provides login-based access control 
+* users can be restricted by book language and/or tag
 * provides OPDS book catalogs for reading apps like Stanza
 * has an admin GUI for configuration
-* supports e-mailing of books
-
 
 * no support for Calibre's virtual libraries
 * only simple custom columns supported
@@ -48,26 +49,29 @@ The easy way assumes that BicBucStriim lives right below the web root of your de
 Upgrading
 ---------
 
-If you are already using BicBucStriim and don't want to lose your configuration and thumbnails:
+The database structure of version 1.2 is incompatible with previous versions, so exisiting users should start with a fresh install.
+However, if you have lots of books and don't want to regenerate all the thumbnails for them:
 
 * Backup your old BicBucStriim installation, eg. `mv bbs bbs.old`
-* Install the new version
-* Remove the data directory, eg. `rm -rf bbs/data`
-* Copy our old data directory, eg. `cp -R bbs.old/data bbs`
-* Use `chmod -R ga+w bbs/data` to correct the permissions after copying
+* Install the new version and run it
+* There should be a new directory: `bbs/data/titles`
+* Copy the thumbnail files (`thumb_*.png`) from your old `data` directory to `bbs/data/titles`
+* Use `chmod -R ga+w bbs/data/titles` to correct the permissions after copying if there are access errors
 
-After that BicBucStriim should work again.
+After that the thumbnails should appear again.
 
 Troubleshooting
 ---------------
 
-If you encounter problems, use the installation test to check your environment. Invoke this test by navigating to `http://<NAS address>/bbs/installcheck.php`. This test checks for problems that users experienced in the past.
+If you encounter problems, use the installation test to check your environment. Invoke this test by navigating to `http://<NAS address>/bbs/installcheck.php`. This test checks for certain problems, which users experienced in the past.
 
 
 Requirements
 ------------
 * Apache web server with PHP 5.3+, including support for mcrypt and sqlite3
 * Optional: if PHP module *intl* (php5-intl) is installed, book languages will be displayed
+
+BicBucStriim is known to work with other web servers too. Check the wiki for other configurations.
 
 License
 -------
