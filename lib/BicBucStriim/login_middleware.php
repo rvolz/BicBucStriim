@@ -27,23 +27,24 @@ class LoginMiddleware extends \Slim\Middleware {
         $this->static_resource_paths = $statics;
     }
 
-    /**
-     * 
-     */
+
     public function call() {
+        $this->app->hook('slim.before.dispatch', array($this, 'authBeforeDispatch'));
+        $this->next->call();
+    }
+
+    public function authBeforeDispatch() {
         $app = $this->app;
         $request = $app->request;
         $resource = $request->getResourceUri();
         $accept = $request->headers('ACCEPT');
         $app->getLog()->debug('login resource: '.$resource);
         $app->getLog()->debug('login accept: '.$accept);
-        if ($this->is_static_resource($resource) || $this->is_authorized()) {
-            $this->next->call();
-        } else {
+        if (!$this->is_static_resource($resource) && !$this->is_authorized()) {
             if ($resource === '/login/') {
                 // special case login page
                 $app->getLog()->debug('login: login page authorized');
-                $this->next->call();        
+                return;    
             } elseif (stripos($resource, '/opds') === 0) {
                 $app->getLog()->debug('login: unauthorized OPDS request');
                 $app->response->headers->set('WWW-Authenticate', sprintf('Basic realm="%s"', $this->realm));
@@ -54,9 +55,8 @@ class LoginMiddleware extends \Slim\Middleware {
                 $app->halt(401,'Please authenticate');
             } else {
                 $app->getLog()->debug('login: redirecting to login');
-                // app->redirect not useable in middleware
-                $app->response->status(302);
-                $app->response->headers->set('Location', $app->request->getRootUri().'/login/');
+                // now we can also use the native app->redirect method!
+                $this->app->redirect($app->request->getRootUri().'/login/');
             }
         }
     }
