@@ -68,6 +68,11 @@ class LoginMiddleware extends \Slim\Middleware {
     protected function is_static_resource($resource) {
         $path_parts = preg_split('/\//', $resource);
         if (isset($path_parts)) {
+            # Some OPDS clients like Aldiko don't send auth information for image resources so we have to handle them here
+            # FIXME better solution for resources
+            if (sizeof($path_parts) == 5 && ($path_parts[3] == 'cover' || $path_parts[3] == 'thumbnail')) {
+                return true;
+            }
             foreach ($this->static_resource_paths as $static_resource_path) {
                 if (strcasecmp($static_resource_path, $path_parts[1]) === 0)
                     return true;
