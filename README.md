@@ -68,7 +68,7 @@ If you encounter problems, use the installation test to check your environment. 
 
 Requirements
 ------------
-* Apache web server with PHP 5.3+, including support for mcrypt and sqlite3
+* Apache web server with PHP 5.3.7+, including support for mcrypt and sqlite3
 * Optional: if PHP module *intl* (php5-intl) is installed, book languages will be displayed
 
 BicBucStriim is known to work with other web servers too. Check the wiki for other configurations.
