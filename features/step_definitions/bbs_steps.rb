@@ -18,6 +18,8 @@ Then /^the app switches to the "(.+)" view$/ do |view|
     page.should have_title("Series")
   when 'Admin'
     page.should have_title("Configuration")
+  when 'Configuration'
+    page.find('div.ui-content h1', :visible => true).should have_content('Configuration')
   when 'Users'
     page.should have_title("Users")
   else
