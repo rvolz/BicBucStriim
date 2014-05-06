@@ -617,7 +617,7 @@ function admin_change_json() {
 	if ($req_configs[THUMB_GEN_CLIPPED] != $globalSettings[THUMB_GEN_CLIPPED]) {
 		$app->getLog()->info('admin_change: Thumbnail generation method changed. Exisiting Thumbnails will be deleted.');		
 		# Delete old thumbnails if necessary
-		if($bbs->clearThumbnails())
+		if($app->bbs->clearThumbnails())
 			$app->getLog()->info('admin_change: Deleted exisiting thumbnails.');
 		else {
 			$app->getLog()->info('admin_change: Deletion of exisiting thumbnails failed.');
