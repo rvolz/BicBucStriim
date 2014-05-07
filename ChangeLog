@@ -1,3 +1,7 @@
+2014-05-06 Version 1.2.3
+
+* Included fix for issue #90 (@OzzieIsaacs), changing the clipping of image thumbnails 
+
 2014-03-30 Version 1.2.2
 
 * Fixed issue #85 
