@@ -595,12 +595,17 @@ function admin_change_json() {
 	# Calibre dir is still empty and no change in sight --> error
 	if (!has_valid_calibre_dir() && empty($req_configs[CALIBRE_DIR]))
 		array_push($errors, 1);
-	# Calibre dir changed, check it for existence
+	# Calibre dir changed, check it for existence, delete thumbnails of old calibre library
 	elseif (array_key_exists(CALIBRE_DIR, $req_configs)) {		
 		$req_calibre_dir = $req_configs[CALIBRE_DIR];
 		if ($req_calibre_dir != $globalSettings[CALIBRE_DIR]) {
-			if (!Calibre::checkForCalibre($req_calibre_dir))
+			if (!Calibre::checkForCalibre($req_calibre_dir)){
 				array_push($errors, 1);
+			}elseif($app->bbs->clearThumbnails())
+				$app->getLog()->info('admin_change: Lib changed, deleted exisiting thumbnails.');
+			else {
+				$app->getLog()->info('admin_change: Lib changed, deletion of exisiting thumbnails failed.');
+			}
 		}
 	} 
 	## More consistency checks - kindle feature
