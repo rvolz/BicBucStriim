@@ -114,15 +114,19 @@ class Calibre {
 	function findSlice($class, $index=0, $length=100, $search=NULL, $id=NULL) {
 		if ($index < 0 || $length < 1 || !in_array($class, array('Book','Author','Tag', 'Series', 'SeriesBook', 'TagBook', 'AuthorBook')))
 			return array('page'=>0,'pages'=>0,'entries'=>NULL);
-		$offset = $index * $length;		
+		$offset = $index * $length;
+		if(!is_null($search))
+		{
+			$search= $this->calibre->quote( '%'.$search .'%' );
+		}		
 		switch($class) {
 			case 'Author': 
 				if (is_null($search)) {
 					$count = 'select count(*) from authors';
 					$query = 'select a.id, a.name, a.sort, count(bal.id) as anzahl from authors as a left join books_authors_link as bal on a.id = bal.author group by a.id order by a.sort limit '.$length.' offset '.$offset;
 				}	else {
-					$count = 'select count(*) from authors where lower(sort) like \'%'.strtolower($search).'%\'';
-					$query = 'select a.id, a.name, a.sort, count(bal.id) as anzahl from authors as a left join books_authors_link as bal on a.id = bal.author where lower(a.name) like \'%'.strtolower($search).'%\' group by a.id order by a.sort limit '.$length.' offset '.$offset;	
+					$count = 'select count(*) from authors where lower(sort) like '.strtolower($search);
+					$query = 'select a.id, a.name, a.sort, count(bal.id) as anzahl from authors as a left join books_authors_link as bal on a.id = bal.author where lower(a.name) like '.strtolower($search).' group by a.id order by a.sort limit '.$length.' offset '.$offset;	
 				}
 				break;
 			case 'AuthorBook':
@@ -130,8 +134,8 @@ class Calibre {
 					$count = 'select count(*) from (select BAL.book, Books.* from books_authors_link BAL, books Books where Books.id=BAL.book and author = '.$id.')';
 					$query = 'select BAL.book, Books.* from books_authors_link BAL, books Books where Books.id=BAL.book and author = '.$id.' order by Books.sort limit '.$length.' offset '.$offset;
 				} else {
-					$count = 'select count(*) from (select BAL.book, Books.* from books_authors_link BAL, books Books where Books.id=BAL.book and author = '.$id.') where lower(sort) like \'%'.strtolower($search).'%\'';
-					$query = 'select BAL.book, Books.* from books_authors_link BAL, books Books where Books.id=BAL.book and author ='.$id.' and lower(Books.sort) like \'%'.strtolower($search).'%\' order by Books.sort limit '.$length.' offset '.$offset;
+					$count = 'select count(*) from (select BAL.book, Books.* from books_authors_link BAL, books Books where Books.id=BAL.book and author = '.$id.') where lower(sort) like '.strtolower($search);
+					$query = 'select BAL.book, Books.* from books_authors_link BAL, books Books where Books.id=BAL.book and author ='.$id.' and lower(Books.sort) like '.strtolower($search).' order by Books.sort limit '.$length.' offset '.$offset;
 				}
 		  break;
 			case 'Book': 
@@ -148,8 +152,8 @@ class Calibre {
 					$count = 'select count(*) from series';
 					$query = 'select series.id, series.name, count(bsl.id) as anzahl from series left join books_series_link as bsl on series.id = bsl.series group by series.id order by series.name limit '.$length.' offset '.$offset;
 				}	else {
-					$count = 'select count(*) from series where lower(name) like \'%'.strtolower($search).'%\'';
-					$query = 'select series.id, series.name, count(bsl.id) as anzahl from series left join books_series_link as bsl on series.id = bsl.series where lower(series.name) like \'%'.strtolower($search).'%\' group by series.id order by series.name limit '.$length.' offset '.$offset;	
+					$count = 'select count(*) from series where lower(name) like '.strtolower($search);
+					$query = 'select series.id, series.name, count(bsl.id) as anzahl from series left join books_series_link as bsl on series.id = bsl.series where lower(series.name) like '.strtolower($search).' group by series.id order by series.name limit '.$length.' offset '.$offset;	
 				}
 				break;			
 			case 'SeriesBook':
@@ -157,8 +161,8 @@ class Calibre {
 					$count = 'select count (*) from (select BSL.book, Books.* from books_series_link BSL, books Books where Books.id=BSL.book and series = '.$id.')';
 					$query = 'select BSL.book, Books.* from books_series_link BSL, books Books where Books.id=BSL.book and series = '.$id.' order by series_index limit '.$length.' offset '.$offset;	          
 				} else {
-					$count = 'select count (*) from (select BSL.book, Books.* from books_series_link BSL, books Books where Books.id=BSL.book and series = '.$id.') where lower(sort) like \'%'.strtolower($search).'%\'';
-					$query = 'select BSL.book, Books.* from books_series_link BSL, books Books where Books.id=BSL.book and series = '.$id.' and lower(Books.sort) like \'%'.strtolower($search).'%\' order by series_index limit '.$length.' offset '.$offset;	
+					$count = 'select count (*) from (select BSL.book, Books.* from books_series_link BSL, books Books where Books.id=BSL.book and series = '.$id.') where lower(sort) like '.strtolower($search);
+					$query = 'select BSL.book, Books.* from books_series_link BSL, books Books where Books.id=BSL.book and series = '.$id.' and lower(Books.sort) like '.strtolower($search).' order by series_index limit '.$length.' offset '.$offset;	
 				}
 				break;			
 			case 'Tag': 
@@ -166,8 +170,8 @@ class Calibre {
 					$count = 'select count(*) from tags';
 					$query = 'select tags.id, tags.name, count(btl.id) as anzahl from tags left join books_tags_link as btl on tags.id = btl.tag group by tags.id order by tags.name limit '.$length.' offset '.$offset;
 				}	else {
-					$count = 'select count(*) from tags where lower(name) like \'%'.strtolower($search).'%\'';
-					$query = 'select tags.id, tags.name, count(btl.id) as anzahl from tags left join books_tags_link as btl on tags.id = btl.tag where lower(tags.name) like \'%'.strtolower($search).'%\' group by tags.id order by tags.name limit '.$length.' offset '.$offset;	
+					$count = 'select count(*) from tags where lower(name) like '.strtolower($search);
+					$query = 'select tags.id, tags.name, count(btl.id) as anzahl from tags left join books_tags_link as btl on tags.id = btl.tag where lower(tags.name) like '.strtolower($search).' group by tags.id order by tags.name limit '.$length.' offset '.$offset;	
 				}
 				break;
 			case 'TagBook':
@@ -175,8 +179,8 @@ class Calibre {
 					$count = 'select count (*) from (select BTL.book, Books.* from books_tags_link BTL, books Books where Books.id=BTL.book and tag = '.$id.')';
 					$query = 'select BTL.book, Books.* from books_tags_link BTL, books Books where Books.id=BTL.book and tag = '.$id.' order by Books.sort limit '.$length.' offset '.$offset;
 				}	else {
-					$count = 'select count (*) from (select BTL.book, Books.* from books_tags_link BTL, books Books where Books.id=BTL.book and tag = '.$id.') where lower(sort) like \'%'.strtolower($search).'%\'';
-					$query = 'select BTL.book, Books.* from books_tags_link BTL, books Books where Books.id=BTL.book and tag = '.$id.' and lower(Books.sort) like \'%'.strtolower($search).'%\' order by Books.sort limit '.$length.' offset '.$offset;
+					$count = 'select count (*) from (select BTL.book, Books.* from books_tags_link BTL, books Books where Books.id=BTL.book and tag = '.$id.') where lower(sort) like '.strtolower($search);
+					$query = 'select BTL.book, Books.* from books_tags_link BTL, books Books where Books.id=BTL.book and tag = '.$id.' and lower(Books.sort) like '.strtolower($search).' order by Books.sort limit '.$length.' offset '.$offset;
 				}			
 				break;	
 		}
@@ -206,15 +210,19 @@ class Calibre {
 	function findSliceFiltered($class, $index=0, $length=100, $filter, $search=NULL, $id=NULL) {
 		if ($index < 0 || $length < 1 || !in_array($class, array('Book','Author','Tag', 'Series', 'SeriesBook', 'TagBook', 'AuthorBook')))
 			return array('page'=>0,'pages'=>0,'entries'=>NULL);
-		$offset = $index * $length;		
+		$offset = $index * $length;
+		if(!is_null($search))
+		{
+			$search= $this->calibre->quote( '%'.$search .'%' );
+		}
 		switch($class) {
 			case 'Author': 
 				if (is_null($search)) {
 					$count = 'select count(*) from authors';
 					$query = 'select a.id, a.name, a.sort, count(bal.id) as anzahl from authors as a left join books_authors_link as bal on a.id = bal.author group by a.id order by a.sort limit '.$length.' offset '.$offset;
 				}	else {
-					$count = 'select count(*) from authors where lower(sort) like \'%'.strtolower($search).'%\'';
-					$query = 'select a.id, a.name, a.sort, count(bal.id) as anzahl from authors as a left join books_authors_link as bal on a.id = bal.author where lower(a.name) like \'%'.strtolower($search).'%\' group by a.id order by a.sort limit '.$length.' offset '.$offset;	
+					$count = 'select count(*) from authors where lower(sort) like '.strtolower($search);
+					$query = 'select a.id, a.name, a.sort, count(bal.id) as anzahl from authors as a left join books_authors_link as bal on a.id = bal.author where lower(a.name) like '.strtolower($search).' group by a.id order by a.sort limit '.$length.' offset '.$offset;	
 				}
 				break;
 			case 'AuthorBook':
@@ -222,8 +230,8 @@ class Calibre {
 					$count = 'select count(*) from (select BAL.book, Books.* from books_authors_link BAL, '.$filter->getBooksFilter().' Books where Books.id=BAL.book and author = '.$id.')';
 					$query = 'select BAL.book, Books.* from books_authors_link BAL, '.$filter->getBooksFilter().' Books where Books.id=BAL.book and author = '.$id.' order by Books.sort limit '.$length.' offset '.$offset;
 				} else {
-					$count = 'select count(*) from (select BAL.book, Books.* from books_authors_link BAL, '.$filter->getBooksFilter().' Books where Books.id=BAL.book and author = '.$id.') where lower(sort) like \'%'.strtolower($search).'%\'';
-					$query = 'select BAL.book, Books.* from books_authors_link BAL, '.$filter->getBooksFilter().' Books where Books.id=BAL.book and author ='.$id.' and lower(Books.sort) like \'%'.strtolower($search).'%\' order by Books.sort limit '.$length.' offset '.$offset;
+					$count = 'select count(*) from (select BAL.book, Books.* from books_authors_link BAL, '.$filter->getBooksFilter().' Books where Books.id=BAL.book and author = '.$id.') where lower(sort) like '.strtolower($search);
+					$query = 'select BAL.book, Books.* from books_authors_link BAL, '.$filter->getBooksFilter().' Books where Books.id=BAL.book and author ='.$id.' and lower(Books.sort) like '.strtolower($search).' order by Books.sort limit '.$length.' offset '.$offset;
 				}
 		  break;
 			case 'Book': 
@@ -231,8 +239,8 @@ class Calibre {
 					$count = 'select count(*) from '.$filter->getBooksFilter();
 					$query = 'select * from '.$filter->getBooksFilter().' order by sort limit '.$length.' offset '.$offset;
 				}	else {
-					$count = 'select count(*) from '.$filter->getBooksFilter().' where lower(title) like \'%'.strtolower($search).'%\'';
-					$query = 'select * from '.$filter->getBooksFilter().' where lower(title) like \'%'.strtolower($search).'%\' order by sort limit '.$length.' offset '.$offset;	
+					$count = 'select count(*) from '.$filter->getBooksFilter().' where lower(title) like '.strtolower($search);
+					$query = 'select * from '.$filter->getBooksFilter().' where lower(title) like '.strtolower($search).' order by sort limit '.$length.' offset '.$offset;	
 				}
 				break;
 			case 'Series': 
@@ -240,7 +248,7 @@ class Calibre {
 					$count = 'select count(*) from series';
 					$query = 'select series.id, series.name, count(bsl.id) as anzahl from series left join books_series_link as bsl on series.id = bsl.series group by series.id order by series.name limit '.$length.' offset '.$offset;
 				}	else {
-					$count = 'select count(*) from series where lower(name) like \'%'.strtolower($search).'%\'';
+					$count = 'select count(*) from series where lower(name) like '.strtolower($search);
 					$query = 'select series.id, series.name, count(bsl.id) as anzahl from series left join books_series_link as bsl on series.id = bsl.series where lower(series.name) like \'%'.strtolower($search).'%\' group by series.id order by series.name limit '.$length.' offset '.$offset;	
 				}
 				break;			
@@ -249,8 +257,8 @@ class Calibre {
 					$count = 'select count (*) from (select BSL.book, Books.* from books_series_link BSL, '.$filter->getBooksFilter().' Books where Books.id=BSL.book and series = '.$id.')';
 					$query = 'select BSL.book, Books.* from books_series_link BSL, '.$filter->getBooksFilter().' Books where Books.id=BSL.book and series = '.$id.' order by series_index limit '.$length.' offset '.$offset;	          
 				} else {
-					$count = 'select count (*) from (select BSL.book, Books.* from books_series_link BSL, '.$filter->getBooksFilter().' Books where Books.id=BSL.book and series = '.$id.') where lower(sort) like \'%'.strtolower($search).'%\'';
-					$query = 'select BSL.book, Books.* from books_series_link BSL, '.$filter->getBooksFilter().' Books where Books.id=BSL.book and series = '.$id.' and lower(Books.sort) like \'%'.strtolower($search).'%\' order by series_index limit '.$length.' offset '.$offset;	
+					$count = 'select count (*) from (select BSL.book, Books.* from books_series_link BSL, '.$filter->getBooksFilter().' Books where Books.id=BSL.book and series = '.$id.') where lower(sort) like '.strtolower($search);
+					$query = 'select BSL.book, Books.* from books_series_link BSL, '.$filter->getBooksFilter().' Books where Books.id=BSL.book and series = '.$id.' and lower(Books.sort) like '.strtolower($search).' order by series_index limit '.$length.' offset '.$offset;	
 				}
 				break;			
 			case 'Tag': 
@@ -258,8 +266,8 @@ class Calibre {
 					$count = 'select count(*) from tags';
 					$query = 'select tags.id, tags.name, count(btl.id) as anzahl from tags left join books_tags_link as btl on tags.id = btl.tag group by tags.id order by tags.name limit '.$length.' offset '.$offset;
 				}	else {
-					$count = 'select count(*) from tags where lower(name) like \'%'.strtolower($search).'%\'';
-					$query = 'select tags.id, tags.name, count(btl.id) as anzahl from tags left join books_tags_link as btl on tags.id = btl.tag where lower(tags.name) like \'%'.strtolower($search).'%\' group by tags.id order by tags.name limit '.$length.' offset '.$offset;	
+					$count = 'select count(*) from tags where lower(name) like '.strtolower($search);
+					$query = 'select tags.id, tags.name, count(btl.id) as anzahl from tags left join books_tags_link as btl on tags.id = btl.tag where lower(tags.name) like '.strtolower($search).' group by tags.id order by tags.name limit '.$length.' offset '.$offset;	
 				}
 				break;
 			case 'TagBook':
@@ -267,8 +275,8 @@ class Calibre {
 					$count = 'select count (*) from (select BTL.book, Books.* from books_tags_link BTL, '.$filter->getBooksFilter().' Books where Books.id=BTL.book and tag = '.$id.')';
 					$query = 'select BTL.book, Books.* from books_tags_link BTL, '.$filter->getBooksFilter().' Books where Books.id=BTL.book and tag = '.$id.' order by Books.sort limit '.$length.' offset '.$offset;
 				}	else {
-					$count = 'select count (*) from (select BTL.book, Books.* from books_tags_link BTL, '.$filter->getBooksFilter().' Books where Books.id=BTL.book and tag = '.$id.') where lower(sort) like \'%'.strtolower($search).'%\'';
-					$query = 'select BTL.book, Books.* from books_tags_link BTL, '.$filter->getBooksFilter().' Books where Books.id=BTL.book and tag = '.$id.' and lower(Books.sort) like \'%'.strtolower($search).'%\' order by Books.sort limit '.$length.' offset '.$offset;
+					$count = 'select count (*) from (select BTL.book, Books.* from books_tags_link BTL, '.$filter->getBooksFilter().' Books where Books.id=BTL.book and tag = '.$id.') where lower(sort) like '.strtolower($search);
+					$query = 'select BTL.book, Books.* from books_tags_link BTL, '.$filter->getBooksFilter().' Books where Books.id=BTL.book and tag = '.$id.' and lower(Books.sort) like '.strtolower($search).' order by Books.sort limit '.$length.' offset '.$offset;
 				}			
 				break;	
 		}
