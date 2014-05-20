@@ -1,6 +1,8 @@
-2014-05-06 Version 1.2.3
+2014-06-30 Version 1.2.3
 
 * Included fix for issue #90 (@OzzieIsaacs), changing the clipping of image thumbnails 
+* Included fixes for searches with embedded apostophes (@OzzieIsaacs)
+* Included deletion of thumbnails on library change (@OzzieIsaacs)
 
 2014-03-30 Version 1.2.2
 
