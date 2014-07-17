@@ -297,7 +297,8 @@ $(document).on('pageinit', '#padmin_user', function() {
 			username: $('#edituser_name').val(),
 			password: $('#edituser_password').val(),
 			languages: $('#edituser_languages').val(),
-			tags: $('#edituser_tags').val()
+			tags: $('#edituser_tags').val(),
+			role: $('#edituser_role').val()
 		};
 		var root = $(this).data('proot'),
 			id = $(this).data('user');

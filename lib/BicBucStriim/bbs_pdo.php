@@ -101,6 +101,7 @@ class BBSPDO extends \Strong\Provider
             'email' => $user->email,
             'languages' => $user->languages,
             'tags' => $user->tags,
+            'role' => $user->role,
             'logged_in' => true
         );
 

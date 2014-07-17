@@ -202,9 +202,10 @@ class BicBucStriim {
 	 * @param string 	password 	new clear text password or old encrypted password
 	 * @param string 	languages 	comma-delimited set of language identifiers
 	 * @param string 	tags 		string comma-delimited set of tags
+	 * @param string 	role        "1" for admin "0" for normal user
 	 * @return updated user account or null if there was an error
 	 */
-	public function changeUser($userid, $password, $languages, $tags) {
+	public function changeUser($userid, $password, $languages, $tags, $role) {
 		$user = $this->user($userid);
 		if (is_null($user))
 			return null;
@@ -216,6 +217,10 @@ class BicBucStriim {
 				$user->password = $mdp;
 			$user->languages = $languages;
 			$user->tags = $tags;
+			if(strcasecmp($role, "admin")==0)
+				$user->role = "1";
+			else
+				$user->role = "0";
 			try {
 				$id = R::store($user);
 				return $user;

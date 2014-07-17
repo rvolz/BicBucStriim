@@ -38,6 +38,13 @@
 		</select>
 		<p>{{page.glob.langa.admin_usertags_expl}}</p>					
 	</fieldset>	
+	<fieldset data-role="fieldcontain">
+		<label for="edituser_role">{{page.glob.langa.role}}</label>
+		<select name="edituser_role" id="edituser_role" value="{{user.role}}">
+			<option value="normal" {% if user.role == 0 %}selected="true"{% endif %}>Normal</option>
+			<option value="admin" {% if user.role == 1 %}selected="true"{% endif %}>Admin</option>
+		</select>
+	</fieldset>
 	<button  data-ajax="true" data-icon="check" type="submit">
 		{{page.glob.langa.save}}
 	</button>	
