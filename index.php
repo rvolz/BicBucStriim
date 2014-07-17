@@ -564,7 +564,7 @@ function admin_modify_user($id) {
 	$user_data = $app->request()->put();
 	$app->getLog()->debug('admin_modify_user: '.var_export($user_data, true));	
 	$user = $app->bbs->changeUser($id, $user_data['password'], 
-		$user_data['languages'], $user_data['tags']);
+		$user_data['languages'], $user_data['tags'],$user_data['role']);
 	$app->getLog()->debug('admin_modify_user: '.var_export($user, true));	
 	$resp = $app->response();
 	if (isset($user) && !is_null($user)) {
@@ -1918,7 +1918,7 @@ function is_admin() {
 	global $app;
 	if ($app->strong->loggedIn()) {
 		$user = $app->strong->getUser();
-		return ($user['id'] === '1');
+		return ($user['role'] === '1');
 	} else {
 		return false;
 	}
