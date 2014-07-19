@@ -471,12 +471,12 @@ class BicBucStriim {
 		if($dh = opendir($this->thumb_dir)){
 		while(($file = readdir($dh)) !== false) {
 			$fn = $this->thumb_dir.'/'.$file;
-		  if(fnmatch("thumb*.png", $file) && file_exists($fn)) {
-			if (!@unlink($fn)) {
-				$cleared = false;
-				break;
+			if(preg_match("/^thumb*.png$/", $file) && file_exists($fn)) {
+				if (!@unlink($fn)) {
+					$cleared = false;
+					break;
+				}
 			}
-		  }
 		}
 			closedir($dh);
 		} else 
