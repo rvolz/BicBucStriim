@@ -27,10 +27,11 @@ function is_apache($srv) {
 # see http://christian.roy.name/blog/detecting-modrewrite-using-php
 function mod_rewrite_enabled() {
 	if (function_exists('apache_get_modules')) {
-	  $modules = apache_get_modules();
-	  $mod_rewrite = in_array('mod_rewrite', $modules);
+	  	$modules = apache_get_modules();
+	  	$mod_rewrite = in_array('mod_rewrite', $modules);
 	} else {
-	  $mod_rewrite =  getenv('HTTP_MOD_REWRITE')=='On' ? true : false ;
+		# Recent Apache versions (Synology DSM5) prefix envvars with the module name
+		$mod_rewrite =  (getenv('HTTP_MOD_REWRITE')=='On' || getenv('REDIRECT_HTTP_MOD_REWRITE')=='On') ? true : false ;
 	}	
 	return $mod_rewrite;
 }
@@ -111,7 +112,7 @@ $template = $twig->loadTemplate('installcheck.html');
 echo $template->render(array(
 	'page' => array(
 		'rot' => '', 
-		'version' => '1.2.4a'
+		'version' => '1.2.4'
 	),
 	'is_a' => $is_a,
 	'srv' => $srv,
