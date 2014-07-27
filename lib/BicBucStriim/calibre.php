@@ -913,6 +913,10 @@ class Calibre {
 	 * @return array           array of Series with book count
 	 */
 	function seriesNamesForInitial($initial) {
+		if(strcasecmp($initial,"all") == 0)
+		{
+			return $this->find('Series', 'select series.id, series.name, count(btl.id) as anzahl from series left join books_series_link as btl on series.id = btl.series group by series.id order by series.name');
+		}
 		return $this->find('Series', 'select series.id, series.name, count(btl.id) as anzahl from series left join books_series_link as btl on series.id = btl.series where substr(upper(series.name),1,1) = \''.$initial.'\' group by series.id order by series.name');	
 	}
 
