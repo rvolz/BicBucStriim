@@ -34,7 +34,7 @@ admin_check_version_legend:
 admin_check_url:
   de: Gehen Sie zu %s, um die neue Version herunter zu laden
   en: Visit %s to download it
-  fr: Connetez-vous sur %s pour la télécharger
+  fr: Connectez-vous sur %s pour la télécharger
   it: Visitare %s per scaricarla
 admin_idtemplate:
   de: ID-Vorlage
@@ -79,7 +79,7 @@ admin_invalid_page_size:
 admin_modified:
   de: Änderungen vorgenommen
   en: Changes applied
-  fr: Modification appliquées.
+  fr: Modifications appliquées.
   it: Modifiche applicate
 admin_modify_error:
   de: Fehler beim Speichern der Änderungen
@@ -127,7 +127,7 @@ admin_pw_expl:
 admin_pw_required1:
   de: Fehlendes Admin-Passwort
   en: No Admin password set
-  fr: Aucun mot de passe admin défini
+  fr: Aucun mot de passe Administrateur défini
   nl: Geen Admin Wachtwoord ingesteld
   it: Nessuna Password Amministratore settata
 admin_pw_required2:
@@ -135,7 +135,7 @@ admin_pw_required2:
     gültiges Passwort eingetragen. Bitte tragen Sie eines ein.
   en: You are trying to use the admin password for download protection without a valid
     admin password. Please enter a valid admin password.
-  fr: Vous essayez d\'utiliser le mot de passe admin pour télécharger des livres protégés
+  fr: Vous essayez d\'utiliser le mot de passe Administrateur pour télécharger des livres protégés
     par un mot de passe. Utilisez le bon mot de passe.
   nl: U probeert gebruik te maken van het admin wachtwoord voor downloadbescherming,
     zonder een geldige admin wachtwoord. Vul een geldig admin wachtwoord in.
@@ -215,7 +215,7 @@ admin_smtpport:
 admin_smtpport_expl:
   de: Der Port für den SMTP-Verkehr, normalerweise 25
   en: Port number for SMTP traffic, default is 25
-  fr: Numéro de port pour sortant SMTP, par défaut 25
+  fr: Numéro de port sortant SMTP, par défaut 25
   it: ! 'Porta per il traffico SMTP, pre-definita : 25'
 admin_smtpserver:
   de: Servername
@@ -317,7 +317,7 @@ author_links_url:
 author_metadata:
   de: Metadaten
   en: Meta data
-  fr: Meta-donnée
+  fr: Metadonnées
   it: Metadati
 author_notes:
   de: Notizen
@@ -391,7 +391,7 @@ calibre_dir1:
 calibre_dir2:
   de: ! 'Zum Beispiel: /volume1/books'
   en: ! 'Example: /volume1/books'
-  fr: ! 'Exemple: /volume1/books'
+  fr: ! 'Exemple : /volume1/books'
   nl: ! 'Voorbeeld: /volume1/books'
   it: ! 'Esempio: /volume1/books'
 calibre_dir_expl:
@@ -399,7 +399,7 @@ calibre_dir_expl:
     ein.
   en: The path to your Calibre library. Please enter the full path/directory name.
   fr: Le chemin vers votre répertoire où se trouve votre bibliothèque Calibre. Saisissez
-    le chemin/nom de répertoire complet
+    le chemin/nom de répertoire complet.
   nl: Het pad naar uw Calibre bibliotheek. Geef het volledige pad / directory naam.
   it: Percorso della libreria Calibre. Si prega di inserire il percorso completo path/directory
 cancel:
@@ -450,7 +450,7 @@ delete:
 display_app_name:
   de: Alternativer Titel
   en: Alternative page title
-  fr: Titre de la page alternatif
+  fr: Titre alternatif de la page
   it: Titolo pagina alternativo
 display_app_name_expl:
   de: Wenn die Anwendung einen aussagekräftigeren Namen anzeigen soll. Wird im Seitentitel
@@ -487,7 +487,7 @@ error:
 error_kindle_send:
   de: Ein Fehler ist aufgetreten. Überprüfen Sie die E-Mail-Adresse.
   en: Something went wrong. Please check the e-mail address.
-  fr: Problème. Véririez la configuration de l\'adresse Email.
+  fr: Problème rencontré. Vérifiez la configuration de l\'adresse Email.
   it: Qualcosa è andato storto. Si prega di controllare l\'indirizzo di posta elettronica.
 error_no_access:
   de: Sie haben keine Zugangsberechtigung.
@@ -567,7 +567,7 @@ invalid_calibredir1:
 invalid_calibredir2:
   de: "Auf das angegebene Calibre-Verzeichnis kann nicht zugegriffen werden. Ist es ein Calibre-Verzeichnis? Passen die Zugriffsrechte? Existiert das angegebene Verzeichnis?"
   en: "The configured Calibre directory cannot be used. Is it really a Calibre directory? Is it readable? Does it exist?"
-  fr: "La base de données Calibre configurée ne peut pas être utilisée. Est-ce le bon répertoire ? Les droits d\\'accès sont-ils corrects? Existe-t-elle ?" 
+  fr: "La base de données Calibre configurée ne peut pas être utilisée. Est-ce le bon répertoire ? Les droits d\\'accès sont-ils corrects ? Existe-t-elle ?" 
   nl: "De geconfigureerde Calibre directory kan niet worden gebruikt. Is het echt een Calibre directory? Is het leesbaar? Bestaat het?"
   it: "La directory di Calibre configurata non può essere utilizzata. E\\' veramente una directory di Calibre? Possiede i diritti di lettura? Esiste?"
 invalid_password:
@@ -590,12 +590,12 @@ invalid_email_address:
 kindle_expl:
   de: Aktiviert die Funktion zum Senden eines Buches an die Kindle E-Mail-Adresse (@kindle.com).
   en: Allows sending books to a Kindle e-mail address (@kindle.com).
-  fr: Permettre l\'envoie des livres à sur une adresse Email Kindle (@kindle.com).
+  fr: Permettre l\'envoi des livres à une adresse Email Kindle (@kindle.com).
   it: Permette l\'invio di libri a un indirizzo di posta elettronica Kindle (@ kindle.com).
 kindle_expl2:
   de: Diese E-Mail-Adresse muss in Ihrem Amazon Konto als bestätigter Absender eingetragen sein.
   en: This e-mail address needs to be added as an approved sender to your Amazon account.
-  fr: Cette adresse Email à besoin d\'être authorisée dans votre compte Amazon Kindle.
+  fr: Cette adresse Email a besoin d\'être authorisée dans votre compte Amazon Kindle.
   it: Questo indirizzo di posta elettronica deve essere aggiunto come mittente autorizzato all\'account Amazon.
 kindle_enable:
   de: Senden-an-Kindle aktivieren?
@@ -636,23 +636,23 @@ logout:
 logout_expl:
   de: Sie wurden abgemeldet
   en: Your logged out
-  fr: Vous êtes déconnecté
+  fr: Vous êtes déconnectés
   it: Disconnessione avvenuta
 mdb_error:
   de: ! 'Calibre Datenbank existiert nicht oder konnte nicht gelesen werden: '
   en: ! 'Calibre database not found or not readable: '
-  fr: ! 'La base de données Calibre est introuvable oy illisible: '
+  fr: ! 'La base de données Calibre est introuvable ou illisible : '
   nl: ! 'Calibre database niet gevonden of is niet leesbaar:'
   it: ! 'Il database di Calibre non è stato trovato o non è accessibile in lettura'
 metadata_update:
   de: Metadaten erneuern
   en: Update metadata
-  fr: Mise à jour des metas-données
+  fr: Mise à jour des metadonnées
   it: Aggiornamento metadati
 metadata_update_expl:
   de: Die Metadaten von Büchern vor dem Herunterladen automatisch durch Calibre-Inhalte ersetzen? (Nur EPUB)
   en: Update the metadata of books before downloading automatically with Calibre data? (EPUB only)
-  fr: Mettre à jour les meta-données des livres avant le téléchargement automatique des données Calibre (EPUB uniquement)
+  fr: Mettre à jour les metadonnées des livres avant le téléchargement automatique des données Calibre (EPUB uniquement)
   it: Aggiornare i metadati dei libri prima di scaricarli automaticamente con Calibre? (solo EPUB)
 no_config:
   de: Konfigurations-Datenbank data/data.db nicht gefunden oder fehlerhaft. Bitte
@@ -673,8 +673,8 @@ not_found2:
     nicht passieren. Bitte prüfen Sie, ob ihre Calibre-Datenbank defekt ist.
   en: The requested resource is not available. This should not happen. Please check
     your Calibre library for defects.
-  fr: La resource demandée n\'est pas disponible. Cela ne devrait pas se produire...
-    Vérifiez votre base de donnée Calibre.
+  fr: La ressource demandée n\'est pas disponible. Cela ne devrait pas se produire...
+    Vérifiez votre base de données Calibre.
   nl: De gevraagde ressource is niet beschikbaar. Dit mag niet gebeuren. Controleer
     uw Calibre bibliotheek voor defecten.
   it: La risorsa richiesta non è disponibile. Questo non dovrebbe accadere. Si prega di controllare
@@ -682,25 +682,25 @@ not_found2:
 opds_authors:
   de: ! 'Autoren: '
   en: ! 'Authors: '
-  fr: ! 'Auteurs: '
+  fr: ! 'Auteurs : '
   nl: ! 'Auteurs: '
   it: ! 'Autori: '
 opds_books:
   de: ! 'Bücher: '
   en: ! 'Books: '
-  fr: ! 'Livres: '
+  fr: ! 'Livres : '
   nl: ! 'Boeken: '
   it: ! 'Libri: ' 
 opds_series:
   de: ! 'Reihen: '
   en: ! 'Series: '
-  fr: ! 'Séries: '
+  fr: ! 'Séries : '
   nl: ! 'Series: '
   it: ! 'Serie: '
 opds_tags:
   de: ! 'Schlagwörter: '
   en: ! 'Tags: '
-  fr: ! 'Tags: '
+  fr: ! 'Tags : '
   nl: ! 'Labels: '
   it: ! 'Etichette: '
 opds_root_title:
@@ -790,7 +790,7 @@ opds_by_series1:
 opds_by_series2:
   de: Reihen und ihre Titel
   en: Series and their titles
-  fr: Séries et leur titres
+  fr: Séries et leurs titres
   nl: Series en hun titels
   it: Serie e loro titoli
 opds_by_series3:
@@ -944,7 +944,7 @@ published:
 save:
   de: Speichern
   en: Save
-  fr: Enregisrer
+  fr: Enregistrer
   nl: Opslaan
   it: Salvato
 send_now:
@@ -1035,7 +1035,7 @@ tag_protect_expl:
 thumb_gen_clipped:
   de: Vorschaubilder beschneiden?
   en: Clip thumbnails?
-  fr: Découper les miniatures?
+  fr: Découper les miniatures ?
   nl: Clip thumbnails?
   it: Tagliare le miniature?
 thumb_gen_clipped_expl:

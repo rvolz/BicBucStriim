@@ -1,4 +1,9 @@
-2014-06-30 Version 1.2.3
+2014-07-20 Version 1.2.4
+
+* Fixes issue #101 etc. undeclared function "fnmatch" in configuration page
+* Fixes issue #101 etc. incorrect display for URL reqriting in installcheck
+
+2014-07-13 Version 1.2.3
 
 * Included fix for issue #90 (@OzzieIsaacs), changing the clipping of image thumbnails 
 * Included fixes for searches with embedded apostophes (@OzzieIsaacs)

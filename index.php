@@ -33,14 +33,14 @@ $fallbackLang = 'en';
 # Application Name
 $appname = 'BicBucStriim';
 # App version
-$appversion = '1.2.3a';
+$appversion = '1.2.5a';
 
 # Init app and routes
 $app = new \Slim\Slim(array(
 	'view' => new \Slim\Views\Twig(),
-	'mode' => 'production',
+	#'mode' => 'production',
 	#'mode' => 'debug',
-	#'mode' => 'development',
+	'mode' => 'development',
 ));
 
 $app->configureMode('production','confprod');
@@ -1102,7 +1102,9 @@ function book($id, $file) {
 		if ($booksize > 0)
 			header("Content-Length: ".$booksize);
 		header("Content-Type: ".$contentType);
-		header("Content-Disposition: ".$file);
+		header("Content-Disposition: attachment; filename=\"".$file."\"");
+		header("Content-Description: File Transfer");
+		header("Content-Transfer-Encoding: binary");
 		readfile_chunked($bookpath);
 	} else {
 		// Else send the file as is
@@ -1113,7 +1115,9 @@ function book($id, $file) {
 		$app->getLog()->debug("book: size ".$booksize);
 		header("Content-Length: ".$booksize);
 		header("Content-Type: ".$contentType);
-		header("Content-Disposition: ".$file);
+		header("Content-Disposition: attachment; filename=\"".$file."\"");
+		header("Content-Description: File Transfer");
+		header("Content-Transfer-Encoding: binary");
 		readfile_chunked($bookpath);
 	}
 }
