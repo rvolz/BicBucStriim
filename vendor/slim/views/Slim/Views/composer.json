@@ -1,7 +1,7 @@
 {
     "name": "slim/views",
     "type": "library",
-    "description": "Twig View Parser package for the Slim Framework",
+    "description": "Smarty and Twig View Parser package for the Slim Framework",
     "keywords": ["templating", "extensions", "slimphp"],
     "homepage": "http://github.com/codeguy/Slim-Views",
     "license": "MIT",
@@ -18,8 +18,12 @@
         }
     ],
     "require": {
-        "slim/slim": ">=2.0.0",
+        "slim/slim": ">=2.4.0",
         "php": ">=5.3.0"
+    },
+    "suggest": {
+        "smarty/smarty": "Smarty templating system",
+        "twig/twig": "Twig templating system"
     },
     "autoload": {
         "psr-0": {

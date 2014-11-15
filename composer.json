@@ -1,10 +1,10 @@
 {
 	"require": {
 		"dflydev/markdown": "1.0.2",
-	    "slim/slim": "2.3.4",
+	    "slim/slim": "2.4.3",
     	"slim/strong": "dev-develop",
-    	"slim/views": "0.1.0",
+    	"slim/views": "0.1.2",
     	"swiftmailer/swiftmailer": "5.0.1",
-    	"twig/twig": "1.13.1"
+    	"twig/twig": "1.16.0"
   	}
 }

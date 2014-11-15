@@ -13,7 +13,8 @@
  * Interface implemented by lexer classes.
  *
  * @author Fabien Potencier <fabien@symfony.com>
- * @deprecated since 1.12 (to be removed in 2.0)
+ *
+ * @deprecated since 1.12 (to be removed in 3.0)
  */
 interface Twig_LexerInterface
 {
@@ -24,6 +25,8 @@ interface Twig_LexerInterface
      * @param string $filename A unique identifier for the source code
      *
      * @return Twig_TokenStream A token stream instance
+     *
+     * @throws Twig_Error_Syntax When the code is syntactically wrong
      */
     public function tokenize($code, $filename = null);
 }

@@ -6,7 +6,7 @@
  * @copyright   2011 Josh Lockhart
  * @link        http://www.slimframework.com
  * @license     http://www.slimframework.com/license
- * @version     2.3.4
+ * @version     2.4.2
  * @package     Slim
  *
  * MIT LICENSE
@@ -135,7 +135,7 @@ class Environment implements \ArrayAccess, \IteratorAggregate
             if (strpos($requestUri, $scriptName) !== false) {
                 $physicalPath = $scriptName; // <-- Without rewriting
             } else {
-                $physicalPath = dirname($scriptName); // <-- With rewriting
+                $physicalPath = str_replace('\\', '', dirname($scriptName)); // <-- With rewriting
             }
             $env['SCRIPT_NAME'] = rtrim($physicalPath, '/'); // <-- Remove trailing slashes
 

@@ -177,7 +177,7 @@ argument::
 
     $filter = new Twig_SimpleFilter('rot13', 'str_rot13', $options);
 
-Environment aware Filters
+Environment-aware Filters
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 If you want to access the current environment instance in your filter, set the
@@ -191,7 +191,7 @@ environment as the first argument to the filter call::
         return str_rot13($string);
     }, array('needs_environment' => true));
 
-Context aware Filters
+Context-aware Filters
 ~~~~~~~~~~~~~~~~~~~~~
 
 If you want to access the current context in your filter, set the
@@ -211,14 +211,14 @@ Automatic Escaping
 ~~~~~~~~~~~~~~~~~~
 
 If automatic escaping is enabled, the output of the filter may be escaped
-before printing. If your filter acts as an escaper (or explicitly outputs html
+before printing. If your filter acts as an escaper (or explicitly outputs HTML
 or JavaScript code), you will want the raw output to be printed. In such a
 case, set the ``is_safe`` option::
 
     $filter = new Twig_SimpleFilter('nl2br', 'nl2br', array('is_safe' => array('html')));
 
 Some filters may need to work on input that is already escaped or safe, for
-example when adding (safe) html tags to originally unsafe output. In such a
+example when adding (safe) HTML tags to originally unsafe output. In such a
 case, set the ``pre_escape`` option to escape the input data before it is run
 through your filter::
 
@@ -241,7 +241,7 @@ The following filters will be matched by the above defined dynamic filter:
 
 A dynamic filter can define more than one dynamic parts::
 
-    $filter = new Twig_SimpleFilter('*_path', function ($name, $suffix, $arguments) {
+    $filter = new Twig_SimpleFilter('*_path_*', function ($name, $suffix, $arguments) {
         // ...
     });
 
@@ -277,12 +277,64 @@ to create an instance of ``Twig_SimpleTest``::
     });
     $twig->addTest($test);
 
-Tests do not support any options.
+Tests allow you to create custom application specific logic for evaluating
+boolean conditions. As a simple example, let's create a Twig test that checks if
+objects are 'red'::
+
+    $twig = new Twig_Environment($loader)
+    $test = new Twig_SimpleTest('red', function ($value) {
+        if (isset($value->color) && $value->color == 'red') {
+            return true;
+        }
+        if (isset($value->paint) && $value->paint == 'red') {
+            return true;
+        }
+        return false;
+    });
+    $twig->addTest($test);
+
+Test functions should always return true/false.
+
+When creating tests you can use the ``node_class`` option to provide custom test
+compilation. This is useful if your test can be compiled into PHP primitives.
+This is used by many of the tests built into Twig::
+
+    $twig = new Twig_Environment($loader)
+    $test = new Twig_SimpleTest(
+        'odd',
+        null,
+        array('node_class' => 'Twig_Node_Expression_Test_Odd'));
+    $twig->addTest($test);
+
+    class Twig_Node_Expression_Test_Odd extends Twig_Node_Expression_Test
+    {
+        public function compile(Twig_Compiler $compiler)
+        {
+            $compiler
+                ->raw('(')
+                ->subcompile($this->getNode('node'))
+                ->raw(' % 2 == 1')
+                ->raw(')')
+            ;
+        }
+    }
+
+The above example shows how you can create tests that use a node class. The
+node class has access to one sub-node called 'node'. This sub-node contains the
+value that is being tested. When the ``odd`` filter is used in code such as:
+
+.. code-block:: jinja
+
+    {% if my_value is odd %}
+
+The ``node`` sub-node will contain an expression of ``my_value``. Node-based
+tests also have access to the ``arguments`` node. This node will contain the
+various other arguments that have been provided to your test.
 
 Tags
 ----
 
-One of the most exciting feature of a template engine like Twig is the
+One of the most exciting features of a template engine like Twig is the
 possibility to define new language constructs. This is also the most complex
 feature as you need to understand how Twig's internals work.
 
@@ -641,7 +693,7 @@ responsible for parsing the tag and compiling it to PHP.
 Operators
 ~~~~~~~~~
 
-The ``getOperators()`` methods allows to add new operators. Here is how to add
+The ``getOperators()`` methods lets you add new operators. Here is how to add
 ``!``, ``||``, and ``&&`` operators::
 
     class Project_Twig_Extension extends Twig_Extension
@@ -665,7 +717,7 @@ The ``getOperators()`` methods allows to add new operators. Here is how to add
 Tests
 ~~~~~
 
-The ``getTests()`` methods allows to add new test functions::
+The ``getTests()`` method lets you add new test functions::
 
     class Project_Twig_Extension extends Twig_Extension
     {
@@ -683,16 +735,8 @@ Overloading
 -----------
 
 To overload an already defined filter, test, operator, global variable, or
-function, define it again **as late as possible**::
-
-    $twig = new Twig_Environment($loader);
-    $twig->addFilter(new Twig_SimpleFilter('date', function ($timestamp, $format = 'F j, Y H:i') {
-        // do something different from the built-in date filter
-    }));
-
-Here, we have overloaded the built-in ``date`` filter with a custom one.
-
-That also works with an extension::
+function, re-define it in an extension and register it **as late as
+possible** (order matters)::
 
     class MyCoreExtension extends Twig_Extension
     {
@@ -715,6 +759,19 @@ That also works with an extension::
     }
 
     $twig = new Twig_Environment($loader);
+    $twig->addExtension(new MyCoreExtension());
+
+Here, we have overloaded the built-in ``date`` filter with a custom one.
+
+If you do the same on the Twig_Environment itself, beware that it takes
+precedence over any other registered extensions::
+
+    $twig = new Twig_Environment($loader);
+    $twig->addFilter(new Twig_SimpleFilter('date', function ($timestamp, $format = 'F j, Y H:i') {
+        // do something different from the built-in date filter
+    }));
+    // the date filter will come from the above registration, not
+    // from the registered extension below
     $twig->addExtension(new MyCoreExtension());
 
 .. caution::

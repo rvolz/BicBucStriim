@@ -242,7 +242,7 @@ does not return ``false``.
 Validating the Template Syntax
 ------------------------------
 
-When template code is providing by a third-party (through a web interface for
+When template code is provided by a third-party (through a web interface for
 instance), it might be interesting to validate the template syntax before
 saving it. If the template code is stored in a `$template` variable, here is
 how you can do it::
@@ -335,7 +335,7 @@ you have some dynamic JavaScript files thanks to the ``autoescape`` tag:
 
 But if you have many HTML and JS files, and if your template names follow some
 conventions, you can instead determine the default escaping strategy to use
-based on the template name. Let's say that your template names always ends
+based on the template name. Let's say that your template names always end
 with ``.html`` for HTML files, ``.js`` for JavaScript ones, and ``.css`` for
 stylesheets, here is how you can configure Twig::
 

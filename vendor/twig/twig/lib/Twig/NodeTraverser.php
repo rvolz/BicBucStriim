@@ -12,7 +12,7 @@
 /**
  * Twig_NodeTraverser is a node traverser.
  *
- * It visits all nodes and their children and call the given visitor for each.
+ * It visits all nodes and their children and calls the given visitor for each.
  *
  * @author Fabien Potencier <fabien@symfony.com>
  */
@@ -24,8 +24,8 @@ class Twig_NodeTraverser
     /**
      * Constructor.
      *
-     * @param Twig_Environment $env      A Twig_Environment instance
-     * @param array            $visitors An array of Twig_NodeVisitorInterface instances
+     * @param Twig_Environment            $env      A Twig_Environment instance
+     * @param Twig_NodeVisitorInterface[] $visitors An array of Twig_NodeVisitorInterface instances
      */
     public function __construct(Twig_Environment $env, array $visitors = array())
     {
@@ -70,7 +70,7 @@ class Twig_NodeTraverser
     protected function traverseForVisitor(Twig_NodeVisitorInterface $visitor, Twig_NodeInterface $node = null)
     {
         if (null === $node) {
-            return null;
+            return;
         }
 
         $node = $visitor->enterNode($node, $this->env);

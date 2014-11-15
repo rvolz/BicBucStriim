@@ -23,13 +23,13 @@ The ``reverse`` filter reverses a sequence, a mapping, or a string:
 
     .. code-block:: jinja
 
-        {% for key, value in {1: "a", 2: "b"}|reverse %}
+        {% for key, value in {1: "a", 2: "b", 3: "c"}|reverse %}
             {{ key }}: {{ value }}
         {%- endfor %}
 
         {# output: 0: c    1: b    2: a #}
 
-        {% for key, value in {1: "a", 2: "b"}|reverse(true) %}
+        {% for key, value in {1: "a", 2: "b", 3: "c"}|reverse(true) %}
             {{ key }}: {{ value }}
         {%- endfor %}
 
@@ -42,6 +42,6 @@ The ``reverse`` filter reverses a sequence, a mapping, or a string:
 Arguments
 ---------
 
- * ``preserve_keys``: Preserve keys when reversing a mapping or a sequence.
+* ``preserve_keys``: Preserve keys when reversing a mapping or a sequence.
 
 .. _`Traversable`: http://php.net/Traversable
