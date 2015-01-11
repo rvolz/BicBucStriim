@@ -64,11 +64,24 @@ function get_gd_version() {
 } 
 
 function check_calibre($dir) {
-	$ret = 2;	
-	if (file_exists($dir) && is_readable($dir)) {
-		$mdb = realpath($dir).'/metadata.db';
-		if (file_exists($mdb)) {
-			$ret = 1;
+	clearstatcache();
+	$ret = array('status' => 2, 'dir_exists' => false, 'dir_is_readable' => false, 'dir_is_executable' => false, 'realpath' => '', 'library_ok' => false);
+	if (file_exists($dir)) {
+		$ret['dir_exists'] = true;
+		if (is_readable($dir)) {
+	 		$ret['dir_is_readable'] = true;
+	 		$ret['dir_is_executable'] = is_executable($dir);
+			$mdb = realpath($dir).'/metadata.db';
+			$ret['realpath'] = $mdb;
+			if (file_exists($mdb)) {
+				$ret['status'] = 1;	
+				try {
+					$mydb = new PDO('sqlite:'.$mdb, NULL, NULL, array());
+					$ret['library_ok'] = true;
+				} catch (PDOException $e) {
+					;
+				}			
+			}
 		}
 	} 
 	return $ret;

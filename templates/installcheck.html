@@ -67,13 +67,13 @@
       <table>
         <tr>
           <td class="80column">
-            {% if cd == 0 %}
+            {% if cd.status == 0 %}
               &nbsp;
             {% else %}
-              {% if cd == 1 %}
+              {% if cd.status == 1 %}
                 <img src="img/bbs-light-green.png" />
               {% else %}
-                <img src="img/bbs-light-red.png" />
+                <img src="img/bbs-light-red.png" />                
               {% endif %}
             {% endif %}              
           </td>
@@ -88,6 +88,19 @@
             </form>
           </td>
         </tr>
+      {% if cd.status == 2 %}
+        <tr>
+          <td colspan="2">
+            <ul>
+            <li>Directory exists? {% if cd.dir_exists %}Yes{%else%}No{%endif%}</li>
+            <li>Directory is readable? {% if cd.dir_ist_readable %}Yes{%else%}No{%endif%}</li>
+            <li>Directory is executable? {% if cd.dir_ist_executable %}Yes{%else%}No{%endif%}</li>
+            <li>Real path of database is: {{ cd.realpath }}</li>
+            <li>Database opened? {% if cd.library_ok %}Yes{%else%}No{%endif%}</li>
+            </ul>
+          </td>
+        </tr>
+      {% endif %}
       </table>
       <hr/>
       <h2>Environment checks</h2>
