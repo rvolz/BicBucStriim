@@ -190,6 +190,11 @@ $app->get('/opds/serieslist/:initial/', 'opdsBySeriesNamesForInitial');
 $app->get('/opds/serieslist/:initial/:id/:page/', 'opdsBySeries');
 $app->get('/opds/opensearch.xml', 'opdsSearchDescriptor');
 $app->get('/opds/searchlist/:id/', 'opdsBySearch');
+$app->get('/opds/titles/:id/', 'title');
+$app->get('/opds/titles/:id/cover/', 'cover');
+$app->get('/opds/titles/:id/file/:file', 'book');
+$app->get('/opds/titles/:id/thumbnail/', 'thumbnail');
+
 $app->run();
 
 

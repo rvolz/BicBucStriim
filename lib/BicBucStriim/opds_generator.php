@@ -495,7 +495,7 @@ class OpdsGenerator {
    *                              else a direct one 
    */
   function partialAcquisitionEntry($entry, $protected) {
-    $titleLink = $this->bbs_root.'/titles/'.$entry['book']->id;
+    $titleLink = $this->bbs_root.'/opds/titles/'.$entry['book']->id;
     $this->xmlw->startElement('entry');
     $this->xmlw->writeElement('id','urn:bicbucstriim:'.$titleLink);
     $this->xmlw->writeElement('title',$entry['book']->title);
