@@ -39,7 +39,7 @@ class LoginMiddleware extends \Slim\Middleware {
         $resource = $request->getResourceUri();
         $accept = $request->headers('ACCEPT');
         $app->getLog()->debug('login resource: '.$resource);
-        $app->getLog()->debug('login accept: '.$accept);
+        $app->getLog()->debug('login accept: '.var_export($accept,true));
         if (!$this->is_static_resource($resource) && !$this->is_authorized()) {
             if ($resource === '/login/') {
                 // special case login page
@@ -49,7 +49,7 @@ class LoginMiddleware extends \Slim\Middleware {
                 $app->getLog()->debug('login: unauthorized OPDS request');
                 $app->response->headers->set('WWW-Authenticate', sprintf('Basic realm="%s"', $this->realm));
                 $app->halt(401,'Please authenticate');
-            } elseif ($accept === 'application/json') {
+            } elseif ($app->request->isXhr() || $app->request->isAjax()) {
                 $app->getLog()->debug('login: unauthorized JSON request');
                 $app->response->headers->set('WWW-Authenticate', sprintf('Basic realm="%s"', $this->realm));
                 $app->halt(401,'Please authenticate');
