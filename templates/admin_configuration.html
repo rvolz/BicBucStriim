@@ -14,6 +14,18 @@
 		<p>{{page.glob.l10n.calibre_dir_expl}}</p>					
 	</fieldset>	
 	<fieldset data-role="fieldcontain">
+		<label for="must_login">{{page.glob.l10n.admin_must_login}}</label>
+		<select name="must_login" id="must_login" data-role="slider">
+			<option value="0" {% if page.glob.must_login == "0" %}selected {%endif%}>
+				{{page.glob.l10n.switch_no}}
+			</option>
+			<option value="1" {% if page.glob.must_login == "1" %}selected {%endif%}>
+				{{page.glob.l10n.switch_yes}}
+			</option>
+		</select>
+		<p>{{page.glob.l10n.admin_must_login_expl}}</p>					
+	</fieldset>	
+	<fieldset data-role="fieldcontain">
 		<label for="kindle">{{page.glob.l10n.kindle_enable}}</label>
 		<select name="kindle" id="kindle" data-role="slider">
 			<option value="0" {% if page.glob.kindle == "0" %}selected {%endif%}>

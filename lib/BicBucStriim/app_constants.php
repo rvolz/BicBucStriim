@@ -42,4 +42,6 @@ const SMTP_PASSWORD = 'smtp_password';
 const SMTP_ENCRYPTION = 'smtp_encryption';
 # if true then the metadata of books is updated before download
 const METADATA_UPDATE = 'metadata_update';
+# if true then login is required
+const LOGIN_REQUIRED = 'login_required';
 ?>

@@ -3,7 +3,7 @@
 /**
  * BicBucStriim
  *
- * Copyright 2012-2013 Rainer Volz
+ * Copyright 2012-2014 Rainer Volz
  * Licensed under MIT License, see LICENSE
  * 
  */ 

@@ -2,7 +2,7 @@
 /**
  * BicBucStriim
  *
- * Copyright 2012-2013 Rainer Volz
+ * Copyright 2012-2014 Rainer Volz
  * Licensed under MIT License, see LICENSE
  * 
  */
@@ -123,10 +123,12 @@ $globalSettings[SMTP_SERVER] = '';
 $globalSettings[SMTP_PORT] = 25;
 $globalSettings[SMTP_ENCRYPTION] = 0;
 $globalSettings[METADATA_UPDATE] = 0;
+$globalSettings[LOGIN_REQUIRED] = 0;
 
 $knownConfigs = array(CALIBRE_DIR, DB_VERSION, KINDLE, KINDLE_FROM_EMAIL, 
 	THUMB_GEN_CLIPPED, PAGE_SIZE, DISPLAY_APP_NAME, MAILER, SMTP_SERVER,
-	SMTP_PORT, SMTP_USER, SMTP_PASSWORD, SMTP_ENCRYPTION, METADATA_UPDATE);
+	SMTP_PORT, SMTP_USER, SMTP_PASSWORD, SMTP_ENCRYPTION, METADATA_UPDATE, 
+	LOGIN_REQUIRED);
 
 # Freeze (true) DB schema before release! Set to false for DB development.
 $app->bbs = new BicBucStriim('data/data.db', true);
@@ -134,6 +136,11 @@ $app->add(new \CalibreConfigMiddleware(CALIBRE_DIR));
 $app->add(new \LoginMiddleware($appname, array('js', 'img', 'style')));
 $app->add(new \OwnConfigMiddleware($knownConfigs));
 $app->add(new \CachingMiddleware(array('/admin', '/login')));
+
+if ($globalSettings[LOGIN_REQUIRED])
+	$app->must_login = true;
+else
+	$app->must_login = false;
 
 ###### Init routes for production
 $app->notFound('myNotFound');
@@ -1733,6 +1740,10 @@ function mkPage($subtitle='', $menu=0, $level=0) {
 		$title = $globalSettings[DISPLAY_APP_NAME].$globalSettings['sep'].$subtitle;
 	$rot = $app->request()->getRootUri();
 	$auth = $app->strong->loggedIn();
+	if ($globalSettings[LOGIN_REQUIRED])
+		$adm = is_admin();
+	else
+		$adm = true;	# the admin button should be always visible if no login is required
 	$page = array('title' => $title, 
 		'rot' => $rot,
 		'h1' => $subtitle,
@@ -1741,7 +1752,7 @@ function mkPage($subtitle='', $menu=0, $level=0) {
 		'menu' => $menu,
 		'level' => $level,
 		'auth' => $auth,
-		'admin' => is_admin());
+		'admin' => $adm);
 	return $page;
 }
 
