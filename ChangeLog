@@ -1,8 +1,15 @@
 
 * Updated dependencies: Slim 2.4.3, Twig 1.16
+* Updated jQuery Mobile dependency
 * Modified book download, added headers for better Tolino compatibility 
 * Added french typo corrections, #111 by @murdos
 * Added pull request #102 (@jampot), all series in OPDS
+* Added pull request #140 (@alexandregz), Galician language
+* Fixed issue #107, the app returns now 401 for unauthorized download requests via OPDS
+* Added a switch for disabling the multi-user login requirement, #88
+* Added pull request #103 (@jampot), add series name/number to emailed files
+* Clarified the requirements for the ap, #122
+* Added icon for Apple home screens etc, #97
 
 2014-07-20 Version 1.2.4
 
