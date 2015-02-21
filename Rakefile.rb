@@ -95,6 +95,7 @@ task :pack => [:lessc, :genl10n] do |t|
     p.package_files.include("index.php")
     p.package_files.include("installcheck.php")
     p.package_files.include("favicon.ico")
+    p.package_files.include("bbs-icon.png")
     p.package_files.include("ChangeLog")
     p.package_files.include(".htaccess")
     p.package_files.include("NOTICE")
