@@ -1140,11 +1140,27 @@ function book($id, $file) {
 function kindle($id, $file) {
 	global $app, $globalSettings;
 	$book = $app->calibre->title($id);
+
 	if (is_null($book)) {
 		$app->getLog()->debug("kindle: book not found: ".$id);
 		$app->response()->status(404);
 		return;
 	}	
+
+	$details = $app->calibre->titleDetails($globalSettings['lang'], $id);
+	$filename = "";
+	if($details['series']!=null)
+	{
+		$filename .= $details['series'][0]->name;
+		$filename .= "[" . $details['book']->series_index ."] ";
+		
+	}
+	$filename .= $details['book']->title;
+	$filename .= " - ";
+	foreach ($details['authors'] as $author) {
+			$filename.=$author->name;
+	}
+	$filename.=".mobi";
 	# Validate request e-mail format
 	$to_email = $app->request()->post('email');
 	if (!isEMailValid($to_email)) {
@@ -1174,7 +1190,7 @@ function kindle($id, $file) {
 		}
 		$send_success = 0;
 		try {
-			$message = $mailer->createBookMessage($bookpath, $globalSettings[DISPLAY_APP_NAME], $to_email, $globalSettings[KINDLE_FROM_EMAIL]);
+			$message = $mailer->createBookMessage($bookpath, $globalSettings[DISPLAY_APP_NAME], $to_email, $globalSettings[KINDLE_FROM_EMAIL],$filename);
 			$send_success = $mailer->sendMessage($message);
 			if ($send_success == 0)
 				$app->getLog()->warn('kindle: book delivery to '.$to_email.' failed, dump: '.$mailer->getDump());

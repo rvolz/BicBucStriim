@@ -48,9 +48,10 @@ class Mailer {
 	 * @param string 	subject 	mail subject line
 	 * @param string 	recipient 	mail address of recipient
 	 * @param string 	sender 		mail address of sender
+	 * @param string 	filename 	new filename
 	 * @return 						email
 	 */
-	public function createBookMessage($bookpath, $subject, $recipient, $sender) {
+	public function createBookMessage($bookpath, $subject, $recipient, $sender,$filename) {
 		// Create the message
 		$message = Swift_Message::newInstance()
 			// Give the message a subject
@@ -62,7 +63,7 @@ class Mailer {
 			// Give it a body
 			->setBody('This book was sent to you by BicBucStriim.')
 			// Optionally add any attachments
-			->attach(Swift_Attachment::fromPath($bookpath));
+			->attach(Swift_Attachment::fromPath($bookpath)->setFilename($filename));
 		return $message;
 	}
 
