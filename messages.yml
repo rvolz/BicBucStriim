@@ -220,6 +220,15 @@ admin_mail_legend:
   fr: Détails de la configuration de l\'envoi des emails par SMTP
   it: Configurazione dei dettagli per l\'invio di posta elettronica via SMTP
   gl: Configuración do envío de correos por SMTP
+admin_role:
+  de: Rolle
+  en: Role
+admin_role_admin:
+  de: Admin
+  en: Admin
+admin_role_user:
+  de: Benutzer
+  en: User
 admin_smtpenc:
   de: Verschlüsselung
   en: Encryption

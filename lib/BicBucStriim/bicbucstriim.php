@@ -81,7 +81,7 @@ class BicBucStriim {
 				$this->mydb->exec($schema[$i]);   			
 		}
 		$mdp = password_hash('admin', PASSWORD_BCRYPT);
-		$this->mydb->exec('insert into user (username, password) values ("admin", "'.$mdp.'")');
+		$this->mydb->exec('insert into user (username, password, role) values ("admin", "'.$mdp.'",1)');
 		$this->mydb->exec('insert into config (name, val) values ("db_version", "3")');
 		$this->mydb = null;
 	}
