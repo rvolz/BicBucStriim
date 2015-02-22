@@ -60,6 +60,12 @@ However, if you have lots of books and don't want to regenerate all the thumbnai
 
 After that the thumbnails should appear again.
 
+Notice for Github users, v1.2.5+: In 1.2.5a #104 added the possibility to have multiple admin users. If you have trouble to login as admin, either
+
+1. use the sqlite3 cli to `update user set role=1 where username='admin';` 
+2. delete `data/data.db` 
+
+
 Troubleshooting
 ---------------
 
@@ -83,7 +89,7 @@ BicBucStriim itself is licensed under the MIT license, for the licenses of the l
 
 (The MIT License)
 
-Copyright (c) 2012-2014 Rainer Volz
+Copyright (c) 2012-2015 Rainer Volz
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the 'Software'), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
