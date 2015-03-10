@@ -123,7 +123,7 @@ Then(/^clicking on download format "(.*)" starts the download for file "(.*)" an
   result = expect(page.response_headers['Content-Type']).to eq(ft)
   if result
     expect(page.response_headers['Content-Length']).to eq(length)
-    result = expect(page.response_headers['Content-Disposition']).to  eq(file)
+    result = expect(page.response_headers['Content-Disposition']).to  eq("attachment; filename=\"#{file}\"")
   end
   result
 end
