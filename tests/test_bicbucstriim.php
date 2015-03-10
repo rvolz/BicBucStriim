@@ -30,6 +30,7 @@ class TestOfBicBucStriim extends UnitTestCase {
 	function tearDown() {
 		// Must use nuke() to clear caches etc.
 		R::nuke();
+		R::close();
 		$this->bbs = NULL;
 		system("rm -rf ".self::DATA);
 	}
@@ -51,29 +52,29 @@ class TestOfBicBucStriim extends UnitTestCase {
 
 	function testConfigs() {
 		$configs = $this->bbs->configs();
-		$this->assertEqual(0, count($configs));
+		$this->assertEqual(1, count($configs));
 
 		$configA = array('propa' => 'vala', 'propb' => 1);
 		$this->bbs->saveConfigs($configA);
 		$configs = $this->bbs->configs();
-		$this->assertEqual(2, count($configs));
-		$this->assertEqual('propa', $configs[1]->name);
-		$this->assertEqual('vala', $configs[1]->val);
-		$this->assertEqual('propb', $configs[2]->name);
-		$this->assertEqual(1, $configs[2]->val);
+		$this->assertEqual(3, count($configs));
+		$this->assertEqual('propa', $configs[2]->name);
+		$this->assertEqual('vala', $configs[2]->val);
+		$this->assertEqual('propb', $configs[3]->name);
+		$this->assertEqual(1, $configs[3]->val);
 
 		$configB = array('propa' => 'vala', 'propb' => 2);
 		$this->bbs->saveConfigs($configB);
 		$configs = $this->bbs->configs();
-		$this->assertEqual(2, count($configs));
-		$this->assertEqual('propa', $configs[1]->name);
-		$this->assertEqual('vala', $configs[1]->val);
-		$this->assertEqual('propb', $configs[2]->name);
-		$this->assertEqual(2, $configs[2]->val);
+		$this->assertEqual(3, count($configs));
+		$this->assertEqual('propa', $configs[2]->name);
+		$this->assertEqual('vala', $configs[2]->val);
+		$this->assertEqual('propb', $configs[3]->name);
+		$this->assertEqual(2, $configs[3]->val);
 	}
 
 	function testAddUser() {
-		$this->assertEqual(0, count($this->bbs->users()));
+		$this->assertEqual(1, count($this->bbs->users()));
 		$user = $this->bbs->addUser('testuser', 'testuser');
 		$this->assertNotNull($user);
 		$this->assertEqual('testuser', $user->username);
@@ -101,8 +102,8 @@ class TestOfBicBucStriim extends UnitTestCase {
 	function testGetUser() {
 		$this->bbs->addUser('testuser', 'testuser');
 		$this->bbs->addUser('testuser2', 'testuser2');
-		$this->assertEqual(2, count($this->bbs->users()));
-		$user = $this->bbs->user(2);
+		$this->assertEqual(3, count($this->bbs->users()));
+		$user = $this->bbs->user(3);
 		$this->assertNotNull($user);
 		$this->assertEqual('testuser2', $user->username);
 		$this->assertNotEqual('testuser2', $user->password);
@@ -114,7 +115,7 @@ class TestOfBicBucStriim extends UnitTestCase {
 	function testDeleteUser() {
 		$this->bbs->addUser('testuser', 'testuser');
 		$this->bbs->addUser('testuser2', 'testuser2');
-		$this->assertEqual(2, count($this->bbs->users()));
+		$this->assertEqual(3, count($this->bbs->users()));
 
 		$deleted = $this->bbs->deleteUser(1);
 		$this->assertFalse($deleted);
@@ -122,10 +123,10 @@ class TestOfBicBucStriim extends UnitTestCase {
 		$deleted = $this->bbs->deleteUser(100);
 		$this->assertFalse($deleted);
 
-		$deleted = $this->bbs->deleteUser(2);
+		$deleted = $this->bbs->deleteUser(3);
 		$this->assertTrue($deleted);
-		$this->assertEqual(1, count($this->bbs->users()));
-		$user = $this->bbs->user(1);
+		$this->assertEqual(2, count($this->bbs->users()));
+		$user = $this->bbs->user(2);
 		$this->assertNotNull($user);
 		$this->assertEqual('testuser', $user->username);
 	}
@@ -134,19 +135,32 @@ class TestOfBicBucStriim extends UnitTestCase {
 		$this->bbs->addUser('testuser', 'testuser');
 		$this->bbs->addUser('testuser2', 'testuser2');
 		$users = $this->bbs->users();
-		$password2 = $users[2]->password;
+		$password2 = $users[3]->password;
 
-		$changed = $this->bbs->changeUser(2, $password2, 'deu', 'poetry');
+		$changed = $this->bbs->changeUser(3, $password2, 'deu', 'poetry', 'user');
 		$this->assertEqual($password2, $changed->password);
 		$this->assertEqual('deu', $changed->languages);
 		$this->assertEqual('poetry', $changed->tags);
 
-		$changed = $this->bbs->changeUser(2, 'new password', 'deu', 'poetry');
+		$changed = $this->bbs->changeUser(3, 'new password', 'deu', 'poetry', 'user');
 		$this->assertNotEqual($password2, $changed->password);
 		$this->assertEqual('deu', $changed->languages);
 		$this->assertEqual('poetry', $changed->tags);
 
-		$changed = $this->bbs->changeUser(2, '', 'deu', 'poetry');
+		$changed = $this->bbs->changeUser(3, '', 'deu', 'poetry', 'user');
+		$this->assertNull($changed);
+	}
+
+	function testChangeUserRole() {
+		$this->bbs->addUser('testuser', 'testuser');
+		$this->bbs->addUser('testuser2', 'testuser2');
+		$users = $this->bbs->users();
+		$password2 = $users[3]->password;
+
+		$this->assertEqual('0', $users[3]->role);
+		$changed = $this->bbs->changeUser(3, $password2, 'deu', 'poetry', 'admin');
+		$this->assertEqual('1', $changed->role);
+		$changed = $this->bbs->changeUser(3, '', 'deu', 'poetry', 'admin');
 		$this->assertNull($changed);
 	}
 
@@ -276,8 +290,10 @@ class TestOfBicBucStriim extends UnitTestCase {
 
 	function testClearThumbnail() {
 		$result = $this->bbs->titleThumbnail(3, 'tests/fixtures/author1.jpg', true);
+		$this->assertNotNull($result);
 		$this->assertTrue($this->bbs->isTitleThumbnailAvailable(3));
 		$this->assertTrue($this->bbs->clearThumbnails());
+		clearstatcache(true);
 		$this->assertFalse(file_exists($result));
 	}
 

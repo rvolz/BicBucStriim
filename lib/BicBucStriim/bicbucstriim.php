@@ -59,7 +59,7 @@ class BicBucStriim {
 			$this->mydb->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			$this->mydb->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 			$this->last_error = $this->mydb->errorCode();
-			R::setup($this->mydb);
+			R::setup('sqlite:'.$rp);
 			R::freeze($freeze);
 		} else {
 			$this->mydb = NULL;
@@ -476,7 +476,7 @@ class BicBucStriim {
 		if($dh = opendir($this->thumb_dir)){
 		while(($file = readdir($dh)) !== false) {
 			$fn = $this->thumb_dir.'/'.$file;
-			if(preg_match("/^thumb*.png$/", $file) && file_exists($fn)) {
+			if(preg_match("/^thumb.*\\.png$/", $file) && file_exists($fn)) {
 				if (!@unlink($fn)) {
 					$cleared = false;
 					break;
