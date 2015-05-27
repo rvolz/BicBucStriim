@@ -1,4 +1,4 @@
-
+2015-05-27 Version 1.2.5
 * Updated dependencies: Slim 2.4.3, Twig 1.16
 * Updated jQuery Mobile dependency
 * Modified book download, added headers for better Tolino compatibility 
