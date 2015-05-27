@@ -104,8 +104,8 @@ admin_must_login:
   de: Anmeldung benötigt
   en: Login required
 admin_must_login_expl:
-  de: "Wenn eingeschaltet können nur angemeldete Benutzer auf die Bibliothek zugreifen"
-  en: "If switched on only logged in users can access the library"
+  de: "Wenn eingeschaltet können nur angemeldete Benutzer auf die Bibliothek zugreifen. Änderung kann Neustart des Webservers/PHP erfordern."
+  en: "If switched on only logged in users can access the library. Changing this might require to restart the web/PHP server."
 admin_new_version:
   de: Die neue Version %s ist verfügbar. Sie haben Version %s
   en: New version %s is available, you have %s
