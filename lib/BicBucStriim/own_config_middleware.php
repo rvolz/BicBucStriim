@@ -54,6 +54,14 @@ class OwnConfigMiddleware extends \Slim\Middleware {
 				$app->getLog()->warn('own_config_middleware: old db schema detected. please run update');							
 				return 2;
 			}
+
+			if ($globalSettings[LOGIN_REQUIRED] == 1) {
+				$app->must_login = true;
+				$app->getLog()->info('multi user mode: login required');	
+			} else {
+				$app->must_login = false;
+				$app->getLog()->debug('easy mode: login not required');	
+			}
 			
 			if (!isset($app->strong)) 
 				$app->strong = $this->getAuthProvider($app->bbs->mydb);

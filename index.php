@@ -123,7 +123,7 @@ $globalSettings[SMTP_SERVER] = '';
 $globalSettings[SMTP_PORT] = 25;
 $globalSettings[SMTP_ENCRYPTION] = 0;
 $globalSettings[METADATA_UPDATE] = 0;
-$globalSettings[LOGIN_REQUIRED] = 0;
+$globalSettings[LOGIN_REQUIRED] = 1;
 
 $knownConfigs = array(CALIBRE_DIR, DB_VERSION, KINDLE, KINDLE_FROM_EMAIL, 
 	THUMB_GEN_CLIPPED, PAGE_SIZE, DISPLAY_APP_NAME, MAILER, SMTP_SERVER,
@@ -136,11 +136,6 @@ $app->add(new \CalibreConfigMiddleware(CALIBRE_DIR));
 $app->add(new \LoginMiddleware($appname, array('js', 'img', 'style')));
 $app->add(new \OwnConfigMiddleware($knownConfigs));
 $app->add(new \CachingMiddleware(array('/admin', '/login')));
-
-if ($globalSettings[LOGIN_REQUIRED])
-	$app->must_login = true;
-else
-	$app->must_login = false;
 
 ###### Init routes for production
 $app->notFound('myNotFound');

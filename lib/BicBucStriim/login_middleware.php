@@ -42,7 +42,7 @@ class LoginMiddleware extends \Slim\Middleware {
         $accept = $request->headers('ACCEPT');
         $app->getLog()->debug('login resource: '.$resource);
         $app->getLog()->debug('login accept: '.var_export($accept,true));
-        if ($app->must_login) {         
+        if ($globalSettings[LOGIN_REQUIRED] === 1) {         
             if (!$this->is_static_resource($resource) && !$this->is_authorized()) {
                 if ($resource === '/login/') {
                     // special case login page
