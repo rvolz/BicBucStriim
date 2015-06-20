@@ -235,7 +235,7 @@ function perform_login() {
 			$success = $app->strong->login($uname, $upw);
 			$app->getLog()->debug('login success: '.var_export($success,true));	
 			if($success)
-				$app->redirect($app->request->getRootUri());
+				$app->redirect($app->request->getRootUri().'/');
 			else 
 				$app->render('login.html', array(
 					'page' => mkPage(getMessageString('login')))); 			
