@@ -50,7 +50,7 @@ class BBSPDO extends \Strong\Provider
      * and password
      *
      * @param string $username
-     * @param string $hash
+     * @param string $password
      * @param bool $remember
      * @return boolean
      */

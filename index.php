@@ -216,13 +216,13 @@ function myNotFound() {
 }
 
 function show_login() {
-	global $app, $globalSettings;
+	global $app;
 	$app->render('login.html', array(
 		'page' => mkPage(getMessageString('login')))); 
 }
 
 function perform_login() {
-	global $app, $globalSettings, $bbs;
+	global $app;
 	$login_data = $app->request()->post();
 	$app->getLog()->debug('login: '.var_export($login_data,true));	
 	if (isset($login_data['username']) && isset($login_data['password'])) {
@@ -247,7 +247,7 @@ function perform_login() {
 }
 
 function logout() {
-	global $app, $globalSettings;
+	global $app;
 	if ($app->strong->loggedIn())
 		$app->strong->logout();
 	$app->render('logout.html', array(
@@ -300,7 +300,6 @@ function mkMailers() {
 function admin_configuration() {
 	global $app;
 
-	$mailers = mkMailers();
 	$app->render('admin_configuration.html',array(
 		'page' => mkPage(getMessageString('admin'), 0, 2),
 		'mailers' => mkMailers(),
@@ -581,7 +580,7 @@ function admin_modify_user($id) {
  * Processes changes in the admin page -> POST /admin/configuration/
  */
 function admin_change_json() {
-	global $app, $globalSettings, $bbs;
+	global $app, $globalSettings;
 	$app->getLog()->debug('admin_change: started');	
 	# Check access permission
 	if (!is_admin()) {
@@ -1234,7 +1233,7 @@ function authorsSlice($index=0) {
  * @deprecated since 0.9.3
  */
 function author($id) {
-	global $app, $globalSettings;
+	global $app;
 
 	$details = $app->calibre->authorDetails($id);
 	if (is_null($details)) {
@@ -1298,7 +1297,7 @@ function authorDetailsSlice($id, $index=0) {
  * @return HTML page 
  */
 function authorNotes($id) {
-	global $app, $globalSettings;
+	global $app;
   
 	$author = $app->calibre->author($id);
 	if (is_null($author)) {
@@ -1353,7 +1352,7 @@ function seriesSlice($index=0) {
  * @deprecated since 0.9.3
  */
 function series($id) {
-	global $app, $globalSettings;
+	global $app;
 
 	$details = $app->calibre->seriesDetails($id);
 	if (is_null($details)) {
@@ -1415,7 +1414,7 @@ function tagsSlice($index=0) {
 # Details for a single tag -> /tags/:id/:page
 # @deprecated since 0.9.3
 function tag($id) {
-	global $app, $globalSettings;
+	global $app;
 
 	$details = $app->calibre->tagDetails($id);
 	if (is_null($details)) {
@@ -1893,6 +1892,7 @@ function getUserLang($allowedLangs, $fallbackLang) {
  * @return boolean      	true = key available
  */
 function has_global_setting($key) {
+	global $globalSettings;
 	return (isset($globalSettings[$key]) && !empty($globalSettings[$key]));
 }
 
@@ -1901,6 +1901,7 @@ function has_global_setting($key) {
  * @return boolean 	true if available
  */
 function has_valid_calibre_dir() {
+	global $globalSettings;
 	return (has_global_setting(CALIBRE_DIR) && 
 		BicBucStriim::checkForCalibre($globalSettings[CALIBRE_DIR]));
 }

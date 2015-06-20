@@ -9,3 +9,4 @@ tests/data
 .vagrant*
 screenshot*
 composer.phar
+.idea
