@@ -1903,7 +1903,7 @@ function has_global_setting($key) {
 function has_valid_calibre_dir() {
 	global $globalSettings;
 	return (has_global_setting(CALIBRE_DIR) && 
-		BicBucStriim::checkForCalibre($globalSettings[CALIBRE_DIR]));
+		Calibre::checkForCalibre($globalSettings[CALIBRE_DIR]));
 }
 
 /**
