@@ -123,10 +123,10 @@ class Calibre {
 			case 'Author': 
 				if (is_null($search)) {
 					$count = 'select count(*) from authors';
-					$query = 'select a.id, a.name, a.sort, count(bal.id) as anzahl from authors as a left join books_authors_link as bal on a.id = bal.author group by a.id order by a.sort limit '.$length.' offset '.$offset;
+					$query = 'select a.id, a.name, a.sort, (select count(*) from books_authors_link b where b.author = a.id) as anzahl from authors as a order by a.sort limit '.$length.' offset '.$offset;
 				}	else {
 					$count = 'select count(*) from authors where lower(sort) like '.strtolower($search);
-					$query = 'select a.id, a.name, a.sort, count(bal.id) as anzahl from authors as a left join books_authors_link as bal on a.id = bal.author where lower(a.name) like '.strtolower($search).' group by a.id order by a.sort limit '.$length.' offset '.$offset;	
+					$query = 'select a.id, a.name, a.sort,  (select count(*) from books_authors_link b where b.author = a.id) as anzahl from authors as a where lower(a.name) like '.strtolower($search).' order by a.sort limit '.$length.' offset '.$offset;
 				}
 				break;
 			case 'AuthorBook':
@@ -150,10 +150,10 @@ class Calibre {
 			case 'Series': 
 				if (is_null($search)) {
 					$count = 'select count(*) from series';
-					$query = 'select series.id, series.name, count(bsl.id) as anzahl from series left join books_series_link as bsl on series.id = bsl.series group by series.id order by series.name limit '.$length.' offset '.$offset;
+					$query = 'select series.id, series.name, (select count(*) from books_series_link b where b.series = series.id) as anzahl from series order by series.name limit '.$length.' offset '.$offset;
 				}	else {
 					$count = 'select count(*) from series where lower(name) like '.strtolower($search);
-					$query = 'select series.id, series.name, count(bsl.id) as anzahl from series left join books_series_link as bsl on series.id = bsl.series where lower(series.name) like '.strtolower($search).' group by series.id order by series.name limit '.$length.' offset '.$offset;	
+					$query = 'select series.id, series.name, (select count(*) from books_series_link b where b.series = series.id) as anzahl from series where lower(series.name) like '.strtolower($search).' order by series.name limit '.$length.' offset '.$offset;
 				}
 				break;			
 			case 'SeriesBook':
@@ -168,10 +168,10 @@ class Calibre {
 			case 'Tag': 
 				if (is_null($search)) {
 					$count = 'select count(*) from tags';
-					$query = 'select tags.id, tags.name, count(btl.id) as anzahl from tags left join books_tags_link as btl on tags.id = btl.tag group by tags.id order by tags.name limit '.$length.' offset '.$offset;
+					$query = 'select tags.id, tags.name, (select count(*) from books_tags_link b where b.tag = tags.id) as anzahl from tags order by tags.name limit '.$length.' offset '.$offset;
 				}	else {
 					$count = 'select count(*) from tags where lower(name) like '.strtolower($search);
-					$query = 'select tags.id, tags.name, count(btl.id) as anzahl from tags left join books_tags_link as btl on tags.id = btl.tag where lower(tags.name) like '.strtolower($search).' group by tags.id order by tags.name limit '.$length.' offset '.$offset;	
+					$query = 'select tags.id, tags.name, (select count(*) from books_tags_link b where b.tag = tags.id) as anzahl from tags where lower(tags.name) like '.strtolower($search).' order by tags.name limit '.$length.' offset '.$offset;
 				}
 				break;
 			case 'TagBook':
