@@ -1256,7 +1256,13 @@ function author($id) {
  */
 function authorDetailsSlice($id, $index=0) {
 	global $app, $globalSettings;
-  
+
+	// sql injection check
+	if (!is_numeric($id)) {
+		$app->getLog()->warn('invalid author id '.$id);
+		$app->notFound();
+	}
+
 	$filter = getFilter();
 	$tl = $app->calibre->authorDetailsSlice($globalSettings['lang'], $id, $index, $globalSettings[PAGE_SIZE], $filter);
 	if (is_null($tl)) {

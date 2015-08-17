@@ -226,9 +226,10 @@ class TestOfCalibre extends UnitTestCase {
 		$this->assertEqual(1, $result0['pages']);
 	}
 
-	function testCount($value='') {
-		$count = 'select count(*) from books where lower(title) like \'%i%\'';
-		$result = $this->calibre->count($count);
+	function testCount() {
+		$count = 'select count(*) from books where lower(title) like :search';
+		$params = array('search'=>'%i%');
+		$result = $this->calibre->count($count, $params);
 		$this->assertEqual(6,$result);
 	}
 
