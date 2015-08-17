@@ -98,7 +98,7 @@ class TestOfOpdsGenerator extends UnitTestCase {
 
 	function testPartialAcquisitionEntry() {
 		$expected = '<entry>
- <id>urn:bicbucstriim:/bbs/titles/2</id>
+ <id>urn:bicbucstriim:/bbs/opds/titles/2</id>
  <title>Trutz Simplex</title>
  <dc:issued>2012</dc:issued>
  <updated>2012-01-01T11:59:59'.$this->genTimestampOffset('2012-01-01 11:59:59').'</updated>
@@ -107,10 +107,10 @@ class TestOfOpdsGenerator extends UnitTestCase {
  </author>
  <content type="text/html"></content>
  <dc:language>deu</dc:language>
- <link href="/bbs/titles/2/thumbnail/" type="image/png" rel="http://opds-spec.org/image/thumbnail"/>
- <link href="/bbs/titles/2/cover/" type="image/jpeg" rel="http://opds-spec.org/image"/>
- <link href="/bbs/titles/2/file/Trutz+Simplex+-+Hans+Jakob+Christoffel+von+Grimmelshausen.epub" type="application/epub+zip" rel="http://opds-spec.org/acquisition"/>
- <link href="/bbs/titles/2/file/Trutz+Simplex+-+Hans+Jakob+Christoffel+von+Grimmelshausen.mobi" type="application/x-mobipocket-ebook" rel="http://opds-spec.org/acquisition"/>
+ <link href="/bbs/opds/titles/2/thumbnail/" type="image/png" rel="http://opds-spec.org/image/thumbnail"/>
+ <link href="/bbs/opds/titles/2/cover/" type="image/jpeg" rel="http://opds-spec.org/image"/>
+ <link href="/bbs/opds/titles/2/file/Trutz+Simplex+-+Hans+Jakob+Christoffel+von+Grimmelshausen.epub" type="application/epub+zip" rel="http://opds-spec.org/acquisition"/>
+ <link href="/bbs/opds/titles/2/file/Trutz+Simplex+-+Hans+Jakob+Christoffel+von+Grimmelshausen.mobi" type="application/x-mobipocket-ebook" rel="http://opds-spec.org/acquisition"/>
  <category term="Biografien &amp; Memoiren" label="Biografien &amp; Memoiren"/>
 </entry>
 ';
@@ -126,7 +126,7 @@ class TestOfOpdsGenerator extends UnitTestCase {
 
 function testPartialAcquisitionEntryWithProtection() {
 		$expected = '<entry>
- <id>urn:bicbucstriim:/bbs/titles/2</id>
+ <id>urn:bicbucstriim:/bbs/opds/titles/2</id>
  <title>Trutz Simplex</title>
  <dc:issued>2012</dc:issued>
  <updated>2012-01-01T11:59:59'.$this->genTimestampOffset('2012-01-01T11:59:59').'</updated>
@@ -135,12 +135,12 @@ function testPartialAcquisitionEntryWithProtection() {
  </author>
  <content type="text/html"></content>
  <dc:language>deu</dc:language>
- <link href="/bbs/titles/2/thumbnail/" type="image/png" rel="http://opds-spec.org/image/thumbnail"/>
- <link href="/bbs/titles/2/cover/" type="image/jpeg" rel="http://opds-spec.org/image"/>
- <link href="/bbs/titles/2/showaccess/" type="text/html" rel="http://opds-spec.org/acquisition">
+ <link href="/bbs/opds/titles/2/thumbnail/" type="image/png" rel="http://opds-spec.org/image/thumbnail"/>
+ <link href="/bbs/opds/titles/2/cover/" type="image/jpeg" rel="http://opds-spec.org/image"/>
+ <link href="/bbs/opds/titles/2/showaccess/" type="text/html" rel="http://opds-spec.org/acquisition">
   <opds:indirectAcquisition type="application/epub+zip"/>
  </link>
- <link href="/bbs/titles/2/showaccess/" type="text/html" rel="http://opds-spec.org/acquisition">
+ <link href="/bbs/opds/titles/2/showaccess/" type="text/html" rel="http://opds-spec.org/acquisition">
   <opds:indirectAcquisition type="application/x-mobipocket-ebook"/>
  </link>
  <category term="Biografien &amp; Memoiren" label="Biografien &amp; Memoiren"/>
