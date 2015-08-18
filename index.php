@@ -347,6 +347,12 @@ function admin_get_idtemplates() {
 function admin_modify_idtemplate($id) {
 	global $app;
 
+    // parameter checking
+    if (!is_numeric($id)) {
+        $app->getLog()->warn('admin_modify_idtemplate: invalid template id '.$id);
+        $app->halt(400, "Bad parameter");
+    }
+
 	$template_data = $app->request()->put();
 	$app->getLog()->debug('admin_modify_idtemplate: '.var_export($template_data, true));
 	try {
@@ -378,6 +384,12 @@ function admin_modify_idtemplate($id) {
 
 function admin_clear_idtemplate($id) {
 	global $app;
+
+    // parameter checking
+    if (!is_numeric($id)) {
+        $app->getLog()->warn('admin_clear_idtemplate: invalid template id '.$id);
+        $app->halt(400, "Bad parameter");
+    }
 
 	$app->getLog()->debug('admin_clear_idtemplate: '.var_export($id, true));	
 	$success = $app->bbs->deleteIdTemplate($id);
@@ -470,6 +482,12 @@ function admin_get_users() {
 function admin_get_user($id) {
 	global $app;
 
+    // parameter checking
+    if (!is_numeric($id)) {
+        $app->getLog()->warn('admin_get_user: invalid user id '.$id);
+        $app->halt(400, "Bad parameter");
+    }
+
 	$user = $app->bbs->user($id);
 	$languages = $app->calibre->languages();
 	foreach ($languages as $language) {
@@ -532,6 +550,12 @@ function admin_add_user() {
 function admin_delete_user($id) {
 	global $app;
 
+    // parameter checking
+    if (!is_numeric($id)) {
+        $app->getLog()->warn('admin_delete_user: invalid user id '.$id);
+        $app->halt(400, "Bad parameter");
+    }
+
 	$app->getLog()->debug('admin_delete_user: '.var_export($id, true));	
 	$success = $app->bbs->deleteUser($id);
 	$resp = $app->response();
@@ -554,6 +578,12 @@ function admin_delete_user($id) {
  */
 function admin_modify_user($id) {
 	global $app;
+
+    // parameter checking
+    if (!is_numeric($id)) {
+        $app->getLog()->warn('admin_modify_user: invalid user id '.$id);
+        $app->halt(400, "Bad parameter");
+    }
 
 	$user_data = $app->request()->put();
 	$app->getLog()->debug('admin_modify_user: '.var_export($user_data, true));	
@@ -724,6 +754,12 @@ function admin_check_version() {
 function edit_author_thm($id) {
 	global $app, $globalSettings;
 
+    // parameter checking
+    if (!is_numeric($id)) {
+        $app->getLog()->warn('edit_author_thm: invalid author id '.$id);
+        $app->halt(400, "Bad parameter");
+    }
+
 	$allowedExts = array("jpeg", "jpg", "png");
 	#$temp = explode(".", $_FILES["file"]["name"]);
 	#$extension = end($temp);
@@ -763,6 +799,12 @@ function edit_author_thm($id) {
 function del_author_thm($id) {
 	global $app;
 
+    // parameter checking
+    if (!is_numeric($id)) {
+        $app->getLog()->warn('del_author_thm: invalid author id '.$id);
+        $app->halt(400, "Bad parameter");
+    }
+
 	$app->getLog()->debug('del_author_thm: '.$id);
 	$del = $app->bbs->deleteAuthorThumbnail($id);
 	$resp = $app->response();
@@ -785,6 +827,12 @@ function del_author_thm($id) {
  */
 function edit_author_notes($id) {
 	global $app;
+
+    // parameter checking
+    if (!is_numeric($id)) {
+        $app->getLog()->warn('edit_author_notes: invalid author id '.$id);
+        $app->halt(400, "Bad parameter");
+    }
 
 	$app->getLog()->debug('edit_author_notes: '.$id);
 	$note_data = $app->request()->post();
@@ -820,6 +868,12 @@ function edit_author_notes($id) {
 function del_author_notes($id) {
 	global $app;
 
+    // parameter checking
+    if (!is_numeric($id)) {
+        $app->getLog()->warn('del_author_notes: invalid author id '.$id);
+        $app->halt(400, "Bad parameter");
+    }
+
 	$app->getLog()->debug('del_author_notes: '.$id);
 	$del = $app->bbs->deleteAuthorNote($id);
 	$resp = $app->response();
@@ -842,6 +896,12 @@ function del_author_notes($id) {
  */
 function new_author_link($id) {
 	global $app;
+
+    // parameter checking
+    if (!is_numeric($id)) {
+        $app->getLog()->warn('new_author_link: invalid author id '.$id);
+        $app->halt(400, "Bad parameter");
+    }
 
 	$link_data = $app->request()->post();
 	$app->getLog()->debug('new_author_link: '.var_export($link_data, true));	
@@ -871,7 +931,13 @@ function new_author_link($id) {
 function del_author_link($id, $link) {
 	global $app;
 
-	$app->getLog()->debug('del_author_link: author '.$id.', link '.$link);	
+    // parameter checking
+    if (!is_numeric($id) || !is_numeric($link)) {
+        $app->getLog()->warn('del_author_link: invalid author id '.$id.' or link id '.$link);
+        $app->halt(400, "Bad parameter");
+    }
+
+    $app->getLog()->debug('del_author_link: author '.$id.', link '.$link);
 	$ret = $app->bbs->deleteAuthorLink($id, $link);
 	$resp = $app->response();
 	if ($ret) {
@@ -912,6 +978,8 @@ function main() {
 function globalSearch() {
 	global $app, $globalSettings;
 
+    // TODO check search paramater?
+
 	$filter = getFilter();
 	$search = $app->request()->get('search');
 	$tlb = $app->calibre->titlesSlice($globalSettings['lang'], 0, $globalSettings[PAGE_SIZE], $filter, trim($search));
@@ -944,7 +1012,13 @@ function globalSearch() {
 function titlesSlice($index=0) {
 	global $app, $globalSettings;
 
-	$filter = getFilter();
+    // parameter checking
+    if (!is_numeric($index)) {
+        $app->getLog()->warn('titlesSlice: invalid page id '.$index);
+        $app->halt(400, "Bad parameter");
+    }
+
+    $filter = getFilter();
 	$search = $app->request()->get('search');
 	if (isset($search)) {
 		$tl = $app->calibre->titlesSlice($globalSettings['lang'], $index,$globalSettings[PAGE_SIZE], $filter, trim($search));
@@ -964,8 +1038,14 @@ function titlesSlice($index=0) {
 # Show a single title > /titles/:id. The ID ist the Calibre ID
 function title($id) {
 	global $app, $globalSettings;
-	
-	$details = $app->calibre->titleDetails($globalSettings['lang'], $id);	
+
+    // parameter checking
+    if (!is_numeric($id)) {
+        $app->getLog()->warn('title: invalid title id '.$id);
+        $app->halt(400, "Bad parameter");
+    }
+
+    $details = $app->calibre->titleDetails($globalSettings['lang'], $id);
 	if (is_null($details)) {
 		$app->getLog()->warn("title: book not found: ".$id);
 		$app->notFound();
@@ -1015,7 +1095,13 @@ function title($id) {
 function cover($id) {
 	global $app;
 
-	$has_cover = false;
+    // parameter checking
+    if (!is_numeric($id)) {
+        $app->getLog()->warn('cover: invalid title id '.$id);
+        $app->halt(400, "Bad parameter");
+    }
+
+    $has_cover = false;
 	$rot = $app->request()->getRootUri();
 	$book = $app->calibre->title($id);
 	if (is_null($book)) {
@@ -1044,7 +1130,13 @@ function cover($id) {
 function thumbnail($id) {
 	global $app, $globalSettings;
 
-	$app->getLog()->debug('thumbnail: '.$id);
+    // parameter checking
+    if (!is_numeric($id)) {
+        $app->getLog()->warn('thumbnail: invalid title id '.$id);
+        $app->halt(400, "Bad parameter");
+    }
+
+    $app->getLog()->debug('thumbnail: '.$id);
 	$has_cover = false;
 	$rot = $app->request()->getRootUri();
 	$book = $app->calibre->title($id);
@@ -1076,7 +1168,14 @@ function thumbnail($id) {
 function book($id, $file) {
 	global $app, $globalSettings;
 
-	$details = $app->calibre->titleDetails($globalSettings['lang'], $id);
+    // parameter checking
+    if (!is_numeric($id)) {
+        $app->getLog()->warn('book: invalid title id '.$id);
+        $app->halt(400, "Bad parameter");
+    }
+    // TODO check file parameter?
+
+    $details = $app->calibre->titleDetails($globalSettings['lang'], $id);
 	if (is_null($details)) {
 		$app->getLog()->warn("book: no book found for ".$id);
 		$app->notFound();
@@ -1133,21 +1232,26 @@ function book($id, $file) {
 # Route: /titles/:id/kindle/:file
 function kindle($id, $file) {
 	global $app, $globalSettings;
+
+    // parameter checking
+    if (!is_numeric($id)) {
+        $app->getLog()->warn('kindle: invalid title id '.$id);
+        $app->halt(400, "Bad parameter");
+    }
+    // TODO check file parameter?
+
 	$book = $app->calibre->title($id);
 
 	if (is_null($book)) {
 		$app->getLog()->debug("kindle: book not found: ".$id);
-		$app->response()->status(404);
-		return;
-	}	
+		$app->notFound();
+	}
 
 	$details = $app->calibre->titleDetails($globalSettings['lang'], $id);
 	$filename = "";
-	if($details['series']!=null)
-	{
+	if($details['series']!=null) {
 		$filename .= $details['series'][0]->name;
 		$filename .= "[" . $details['book']->series_index ."] ";
-		
 	}
 	$filename .= $details['book']->title;
 	$filename .= " - ";
@@ -1158,7 +1262,7 @@ function kindle($id, $file) {
 	# Validate request e-mail format
 	$to_email = $app->request()->post('email');
 	if (!isEMailValid($to_email)) {
-		$app->getLog()->debug("kindle: invalid email, ".$to_email);	
+		$app->getLog()->debug("kindle: invalid email, ".$to_email);
 		$app->response()->status(400);
 		return;
 	} else {
@@ -1204,9 +1308,19 @@ function kindle($id, $file) {
 	}
 }
 
-# A list of authors at $index -> /authorslist/:index
+
+/**
+ *  A list of authors at $index -> /authorslist/:index
+ * @param int $index author list page index
+ */
 function authorsSlice($index=0) {
 	global $app, $globalSettings;
+
+    // parameter checking
+    if (!is_numeric($index)) {
+        $app->getLog()->warn('authorsSlice: invalid page id '.$index);
+        $app->halt(400, "Bad parameter");
+    }
 
 	$search = $app->request()->get('search');
 	if (isset($search))
@@ -1230,6 +1344,7 @@ function authorsSlice($index=0) {
 
 /**
  * Details for a single author -> /authors/:id
+ * @param int $id author id
  * @deprecated since 0.9.3
  */
 function author($id) {
@@ -1257,10 +1372,10 @@ function author($id) {
 function authorDetailsSlice($id, $index=0) {
 	global $app, $globalSettings;
 
-	// sql injection check
-	if (!is_numeric($id)) {
-		$app->getLog()->warn('invalid author id '.$id);
-		$app->notFound();
+	// parameter checking
+	if (!is_numeric($id) || !is_numeric($index)) {
+		$app->getLog()->warn('authorDetailsSlice: invalid author id '.$id.' or page id '.$index);
+		$app->halt(400, "Bad parameter");
 	}
 
 	$filter = getFilter();
@@ -1299,15 +1414,20 @@ function authorDetailsSlice($id, $index=0) {
 /**
  * Notes for a single author -> /authors/:id/notes/
  * 
- * @param  integer $id    author id
- * @return HTML page 
+ * @param  int $id    author id
  */
 function authorNotes($id) {
 	global $app;
-  
+
+	// parameter checking
+	if (!is_numeric($id)) {
+		$app->getLog()->warn('authorNotes: invalid author id '.$id);
+		$app->halt(400, "Bad parameter");
+	}
+
 	$author = $app->calibre->author($id);
 	if (is_null($author)) {
-		$app->getLog()->debug('no author found: '.$id);
+		$app->getLog()->debug('authorNotes: author id not found '.$id);
 		$app->notFound();
 	}
 	$note = $app->bbs->authorNote($id);
@@ -1331,17 +1451,24 @@ function authorNotes($id) {
 
 /**
  * Return a HTML page of series at page $index. 
- * @param  integer $index=0 page index into series list
+ * @param  int $index=0 page index into series list
  */
 function seriesSlice($index=0) {
 	global $app, $globalSettings;
+
+	// parameter checking
+	if (!is_numeric($index)) {
+		$app->getLog()->warn('seriesSlice: invalid series index '.$index);
+		$app->halt(400, "Bad parameter");
+	}
 
 	$search = $app->request()->get('search');
 	if (isset($search)) {
 		$app->getLog()->debug('seriesSlice: search '.$search);			
 		$tl = $app->calibre->seriesSlice($index, $globalSettings[PAGE_SIZE], trim($search));	
-	} else
-		$tl = $app->calibre->seriesSlice($index, $globalSettings[PAGE_SIZE]);
+	} else {
+        $tl = $app->calibre->seriesSlice($index, $globalSettings[PAGE_SIZE]);
+    }
 	$app->render('series.html',array(
 		'page' => mkPage(getMessageString('series'),5, 1), 
 		'url' => 'serieslist',
@@ -1375,17 +1502,22 @@ function series($id) {
  * Details for a single series -> /series/:id/:page/
  * Shows the detail data for the series plus a paginated list of books
  * 
- * @param  integer $id    series id
- * @param  integer $index page index for books
- * @return HTML page
+ * @param  int $id    series id
+ * @param  int $index page index for books
  */
 function seriesDetailsSlice ($id, $index=0) {
 	global $app, $globalSettings;
 
+    // parameter checking
+    if (!is_numeric($id) || !is_numeric($index)) {
+        $app->getLog()->warn('seriesDetailsSlice: invalid series id '.$id.' or page id '.$index);
+        $app->halt(400, "Bad parameter");
+    }
+
 	$filter = getFilter();
 	$tl = $app->calibre->seriesDetailsSlice($globalSettings['lang'], $id, $index, $globalSettings[PAGE_SIZE], $filter);
 	if (is_null($tl)) {
-		$app->getLog()->debug('no series '.$id);
+		$app->getLog()->debug('seriesDetailsSlice: no series '.$id);
 		$app->notFound();		
 	}
 	$books = array_map('checkThumbnail', $tl['entries']);	
@@ -1399,9 +1531,18 @@ function seriesDetailsSlice ($id, $index=0) {
 }
 
 
-# A list of tags at $index -> /tagslist/:index
+/**
+ * A list of tags at $index -> /tagslist/:index
+ * @param int $index
+ */
 function tagsSlice($index=0) {
 	global $app, $globalSettings;
+
+    // parameter checking
+    if (!is_numeric($index)) {
+        $app->getLog()->warn('tagsSlice: invalid page id '.$index);
+        $app->halt(400, "Bad parameter");
+    }
 
 	$search = $app->request()->get('search');
 	if (isset($search))
@@ -1443,6 +1584,12 @@ function tag($id) {
  */
 function tagDetailsSlice ($id, $index=0) {
 	global $app, $globalSettings;
+
+    // parameter checking
+    if (!is_numeric($id) || !is_numeric($index)) {
+        $app->getLog()->warn('tagsDetailsSlice: invalid tag id '.$id.' or page id '.$index);
+        $app->halt(400, "Bad parameter");
+    }
 
 	$filter = getFilter();
 	$tl = $app->calibre->tagDetailsSlice($globalSettings['lang'], $id, $index, $globalSettings[PAGE_SIZE], $filter);
@@ -1511,6 +1658,12 @@ function opdsNewest() {
 function opdsByTitle($index=0) {
 	global $app, $globalSettings;
 
+    // parameter checking
+    if (!is_numeric($index)) {
+        $app->getLog()->warn('opdsByTitle: invalid page id '.$index);
+        $app->halt(400, "Bad parameter");
+    }
+
 	$filter = getFilter();
 	$search = $app->request()->get('search');
 	if (isset($search))
@@ -1539,9 +1692,16 @@ function opdsByAuthorInitial() {
 
 /**
  * Return a page with author names for a initial
+ * @param string $initial single uppercase character
  */
 function opdsByAuthorNamesForInitial($initial) {
 	global $app;
+
+    // parameter checking
+    if (!(ctype_upper($initial))) {
+        $app->getLog()->warn('opdsByAuthorNamesForInitial: invalid initial '.$initial);
+        $app->halt(400, "Bad parameter");
+    }
 
 	$authors = $app->calibre->authorsNamesForInitial($initial);
 	$gen = mkOpdsGenerator($app);	
@@ -1557,6 +1717,12 @@ function opdsByAuthorNamesForInitial($initial) {
  */
 function opdsByAuthor($initial, $id, $page) {
 	global $app, $globalSettings;
+
+    // parameter checking
+    if (!is_numeric($id) || !is_numeric($page)) {
+        $app->getLog()->warn('opdsByAuthor: invalid author id '.$id.' or page id '.$page);
+        $app->halt(400, "Bad parameter");
+    }
 
 	$filter = getFilter();
 	$tl = $app->calibre->authorDetailsSlice($globalSettings['lang'], $id, $page, $globalSettings[PAGE_SIZE], $filter);
@@ -1584,9 +1750,16 @@ function opdsByTagInitial() {
 
 /**
  * Return a page with author names for a initial
+ * @param string $initial single uppercase character
  */
 function opdsByTagNamesForInitial($initial) {
 	global $app;
+
+    // parameter checking
+    if (!(ctype_upper($initial))) {
+        $app->getLog()->warn('opdsByTagNamesForInitial: invalid initial '.$initial);
+        $app->halt(400, "Bad parameter");
+    }
 
 	$tags = $app->calibre->tagsNamesForInitial($initial);
 	$gen = mkOpdsGenerator($app);	
@@ -1596,14 +1769,20 @@ function opdsByTagNamesForInitial($initial) {
 
 /**
  * Return a feed with partial acquisition entries for the tags's books
- * @param  string 	initial initial character
- * @param  int 		id      tag id
- * @param  int 		page 	page index
+ * @param  string 	$initial initial character
+ * @param  int 		$id      tag id
+ * @param  int 		$page 	page index
  */
 function opdsByTag($initial, $id, $page) {
 	global $app, $globalSettings;
 
-	$filter = getFilter();
+    // parameter checking
+    if (!is_numeric($id) || !is_numeric($page)) {
+        $app->getLog()->warn('opdsByTag: invalid tag id '.$id.' or page id '.$page);
+        $app->halt(400, "Bad parameter");
+    }
+
+    $filter = getFilter();
 	$tl = $app->calibre->tagDetailsSlice($globalSettings['lang'], $id, $page, $globalSettings[PAGE_SIZE], $filter);
 	$books1 = $app->calibre->titleDetailsFilteredOpds($tl['entries']);
 	$books = array_map('checkThumbnailOpds', $books1);	
@@ -1627,11 +1806,18 @@ function opdsBySeriesInitial() {
 
 /**
  * Return a page with author names for a initial
+ * @param string $initial "all" or single uppercase character
  */
 function opdsBySeriesNamesForInitial($initial) {
 	global $app;
 
-	$tags = $app->calibre->seriesNamesForInitial($initial);
+    // parameter checking
+    if (!($initial=='all' || ctype_upper($initial))) {
+        $app->getLog()->warn('opdsBySeriesNamesForInitial: invalid initial '.$initial);
+        $app->halt(400, "Bad parameter");
+    }
+
+    $tags = $app->calibre->seriesNamesForInitial($initial);
 	$gen = mkOpdsGenerator($app);	
 	$cat = $gen->seriesNamesForInitialCatalog(NULL, $tags, $initial);
 	mkOpdsResponse($app, $cat, OpdsGenerator::OPDS_MIME_NAV);
@@ -1646,7 +1832,13 @@ function opdsBySeriesNamesForInitial($initial) {
 function opdsBySeries($initial, $id, $page) {
 	global $app, $globalSettings;
 
-	$filter = getFilter();
+    // parameter checking
+    if (!is_numeric($id) || !is_numeric($page)) {
+        $app->getLog()->warn('opdsBySeries: invalid series id '.$id.' or page id '.$page);
+        $app->halt(400, "Bad parameter");
+    }
+
+    $filter = getFilter();
 	$tl = $app->calibre->seriesDetailsSlice($globalSettings['lang'], $id, $page, $globalSettings[PAGE_SIZE], $filter);
 	$books1 = $app->calibre->titleDetailsFilteredOpds($tl['entries']);
 	$books = array_map('checkThumbnailOpds', $books1);	
@@ -1675,6 +1867,12 @@ function opdsSearchDescriptor() {
  */
 function opdsBySearch($index=0) {
 	global $app, $globalSettings;
+
+    // parameter checking
+    if (!is_numeric($index)) {
+        $app->getLog()->warn('opdsBySearch: invalid page id '.$index);
+        $app->halt(400, "Bad parameter");
+    }
 
 	$search = $app->request()->get('search');
 	if (!isset($search)) {
@@ -1824,7 +2022,7 @@ function title_forbidden($book_details) {
  * @return string     localized message string
  */
 function getMessageString($id) {
-	global $app, $globalSettings;
+	global $globalSettings;
 	$msg = $globalSettings['l10n']->message($id);
 	return $msg;
 }
@@ -1862,7 +2060,9 @@ function getLastSearchPage($tl) {
  * 3. HTTP_ACCEPT_LANGUAGE
  * 4. Fallback language
  *
- * @return the user language, like 'de' or 'en'
+ * @param array $allowedLangs list of existing languages
+ * @param string $fallbackLang id of the fallback language if nothing helps
+ * @return string the user language, like 'de' or 'en'
  */
 function getUserLang($allowedLangs, $fallbackLang) {
   // reset user_lang array
@@ -1931,7 +2131,6 @@ function is_admin() {
 function readfile_chunked($filename) {
 	global $app;
 	$app->getLog()->debug('readfile_chunked '.$filename);
-	$buffer = '';
 	$handle = fopen($filename, 'rb');
 	if ($handle === false) {
 		return false;
