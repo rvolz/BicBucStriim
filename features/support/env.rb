@@ -29,14 +29,14 @@ class WarningSuppressor
   end
 end
 Capybara.register_driver :webkit do |app|
-  Capybara::Webkit::Driver.new(app, stderr: WarningSuppressor)
+  Capybara::Webkit::Driver.new(app, :stderr => WarningSuppressor)
 end
 
 #Capybara.default_driver = :selenium
 Capybara.default_driver = :webkit
 Capybara.javascript_driver = :webkit
 # Default is 2 seconds, but the VM is sometimes slow.
-Capybara.default_wait_time = 8
+Capybara.default_max_wait_time = 8
 
 
 class WebWorld

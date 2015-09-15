@@ -178,7 +178,7 @@ end
 
 When(/^I close the author image panel$/) do
   keypress_script = "$('#author-mdthumb-panel').panel('close');"
-  page.driver.browser.execute_script(keypress_script)
+  page.execute_script(keypress_script)
 end
 
 

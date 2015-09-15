@@ -10,3 +10,4 @@ tests/data
 screenshot*
 composer.phar
 .idea
+*.iml

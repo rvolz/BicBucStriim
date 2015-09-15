@@ -14,13 +14,13 @@ end
 
 # Normal features work with the "admin" login
 # and a page size of "2"
-Before("~@initial") do  	
-  	visit "/login/"
-  	fill_in('username', :with => "admin")
+Before("~@initial") do
+  visit "/login/"
+  fill_in('username', :with => "admin")
 	fill_in('password', :with => "admin")
 	click_button 'Login', :wait => 1500
-  	fill_in('calibre_dir', :with => '/tmp/calibre')
-  	fill_in('page_size', :with => 2)
-  	click_button 'Save'
+  fill_in('calibre_dir', :with => '/tmp/calibre')
+  fill_in('page_size', :with => 2)
+  click_button 'Save'
 end
 
