@@ -1,7 +1,7 @@
 <?php
-set_include_path("tests");
-require_once 'lib/simpletest/autorun.php';
-require_once 'vendor/rb.php';
+set_include_path("tests:vendor");
+require_once 'simpletest/simpletest/autorun.php';
+require_once 'rb.php';
 require_once 'lib/BicBucStriim/data_constants.php';
 require_once 'lib/BicBucStriim/calibre_thing.php';
 require_once 'lib/BicBucStriim/bicbucstriim.php';

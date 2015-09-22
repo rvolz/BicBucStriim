@@ -1,96 +1,5 @@
 [
     {
-        "name": "ircmaxell/password-compat",
-        "version": "1.0.3",
-        "version_normalized": "1.0.3.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/ircmaxell/password_compat.git",
-            "reference": "v1.0.3"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/ircmaxell/password_compat/zipball/v1.0.3",
-            "reference": "v1.0.3",
-            "shasum": ""
-        },
-        "time": "2013-04-30 19:58:08",
-        "type": "library",
-        "installation-source": "dist",
-        "autoload": {
-            "files": [
-                "lib/password.php"
-            ]
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Anthony Ferrara",
-                "email": "ircmaxell@ircmaxell.com",
-                "homepage": "http://blog.ircmaxell.com"
-            }
-        ],
-        "description": "A compatibility library for the proposed simplified password hashing algorithm: https://wiki.php.net/rfc/password_hash",
-        "homepage": "https://github.com/ircmaxell/password_compat",
-        "keywords": [
-            "hashing",
-            "password"
-        ]
-    },
-    {
-        "name": "slim/strong",
-        "version": "dev-develop",
-        "version_normalized": "dev-develop",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/silentworks/Strong.git",
-            "reference": "55b411d2579259fb29e6f00cf8ab24e9b9216a67"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/silentworks/Strong/zipball/55b411d2579259fb29e6f00cf8ab24e9b9216a67",
-            "reference": "55b411d2579259fb29e6f00cf8ab24e9b9216a67",
-            "shasum": ""
-        },
-        "require": {
-            "ircmaxell/password-compat": "1.0.*",
-            "php": ">=5.3.0"
-        },
-        "time": "2013-05-15 16:53:38",
-        "type": "library",
-        "installation-source": "source",
-        "autoload": {
-            "psr-0": {
-                "Strong": "src/"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Andrew Smith",
-                "email": "a.smith@silentworks.co.uk",
-                "homepage": "http://www.silentworks.co.uk/"
-            },
-            {
-                "name": "Jakub Westfalewski",
-                "email": "jwest@jwest.pl",
-                "homepage": "http://jwest.pl/"
-            }
-        ],
-        "description": "Authentication Library with multiple drivers",
-        "homepage": "http://github.com/silentworks/Strong",
-        "keywords": [
-            "Authentication",
-            "extensions"
-        ]
-    },
-    {
         "name": "swiftmailer/swiftmailer",
         "version": "v5.0.1",
         "version_normalized": "5.0.1.0",
@@ -101,7 +10,7 @@
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/swiftmailer/swiftmailer/zipball/v5.0.1",
+            "url": "https://api.github.com/repos/swiftmailer/swiftmailer/zipball/619aceb969f1e8759edc28fb22f9b64b3bddbc1e",
             "reference": "v5.0.1",
             "shasum": ""
         },
@@ -203,12 +112,12 @@
         "version_normalized": "2.4.3.0",
         "source": {
             "type": "git",
-            "url": "https://github.com/codeguy/Slim.git",
+            "url": "https://github.com/slimphp/Slim.git",
             "reference": "4906b77a07c7bd6ff1a99aea903e940a2d4fa106"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/codeguy/Slim/zipball/4906b77a07c7bd6ff1a99aea903e940a2d4fa106",
+            "url": "https://api.github.com/repos/slimphp/Slim/zipball/4906b77a07c7bd6ff1a99aea903e940a2d4fa106",
             "reference": "4906b77a07c7bd6ff1a99aea903e940a2d4fa106",
             "shasum": ""
         },
@@ -252,12 +161,12 @@
         "target-dir": "Slim/Views",
         "source": {
             "type": "git",
-            "url": "https://github.com/codeguy/Slim-Views.git",
+            "url": "https://github.com/slimphp/Slim-Views.git",
             "reference": "f0a05ea0b654218e40de692ed7cddcad1cf4b828"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/codeguy/Slim-Views/zipball/f0a05ea0b654218e40de692ed7cddcad1cf4b828",
+            "url": "https://api.github.com/repos/slimphp/Slim-Views/zipball/f0a05ea0b654218e40de692ed7cddcad1cf4b828",
             "reference": "f0a05ea0b654218e40de692ed7cddcad1cf4b828",
             "shasum": ""
         },
@@ -307,12 +216,12 @@
         "version_normalized": "1.16.0.0",
         "source": {
             "type": "git",
-            "url": "https://github.com/fabpot/Twig.git",
+            "url": "https://github.com/twigphp/Twig.git",
             "reference": "8ce37115802e257a984a82d38254884085060024"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/fabpot/Twig/zipball/8ce37115802e257a984a82d38254884085060024",
+            "url": "https://api.github.com/repos/twigphp/Twig/zipball/8ce37115802e257a984a82d38254884085060024",
             "reference": "8ce37115802e257a984a82d38254884085060024",
             "shasum": ""
         },
@@ -358,6 +267,175 @@
         "homepage": "http://twig.sensiolabs.org",
         "keywords": [
             "templating"
+        ]
+    },
+    {
+        "name": "ircmaxell/password-compat",
+        "version": "v1.0.4",
+        "version_normalized": "1.0.4.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/ircmaxell/password_compat.git",
+            "reference": "5c5cde8822a69545767f7c7f3058cb15ff84614c"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/ircmaxell/password_compat/zipball/5c5cde8822a69545767f7c7f3058cb15ff84614c",
+            "reference": "5c5cde8822a69545767f7c7f3058cb15ff84614c",
+            "shasum": ""
+        },
+        "require-dev": {
+            "phpunit/phpunit": "4.*"
+        },
+        "time": "2014-11-20 16:49:30",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "files": [
+                "lib/password.php"
+            ]
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Anthony Ferrara",
+                "email": "ircmaxell@php.net",
+                "homepage": "http://blog.ircmaxell.com"
+            }
+        ],
+        "description": "A compatibility library for the proposed simplified password hashing algorithm: https://wiki.php.net/rfc/password_hash",
+        "homepage": "https://github.com/ircmaxell/password_compat",
+        "keywords": [
+            "hashing",
+            "password"
+        ]
+    },
+    {
+        "name": "slim/strong",
+        "version": "dev-develop",
+        "version_normalized": "dev-develop",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/silentworks/Strong.git",
+            "reference": "6b29c9a88255ac5e12261d4d06a43d320dd38e87"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/silentworks/Strong/zipball/6b29c9a88255ac5e12261d4d06a43d320dd38e87",
+            "reference": "6b29c9a88255ac5e12261d4d06a43d320dd38e87",
+            "shasum": ""
+        },
+        "require": {
+            "ircmaxell/password-compat": "1.0.*",
+            "php": ">=5.3.0"
+        },
+        "time": "2014-04-21 10:00:41",
+        "type": "library",
+        "installation-source": "source",
+        "autoload": {
+            "psr-0": {
+                "Strong": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Andrew Smith",
+                "email": "a.smith@silentworks.co.uk",
+                "homepage": "http://www.silentworks.co.uk/"
+            },
+            {
+                "name": "Jakub Westfalewski",
+                "email": "jwest@jwest.pl",
+                "homepage": "http://jwest.pl/"
+            }
+        ],
+        "description": "Authentication Library with multiple drivers",
+        "homepage": "http://github.com/silentworks/Strong",
+        "keywords": [
+            "Authentication",
+            "extensions"
+        ],
+        "abandoned": true
+    },
+    {
+        "name": "simpletest/simpletest",
+        "version": "v1.1.6",
+        "version_normalized": "1.1.6.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/simpletest/simpletest.git",
+            "reference": "43d947f842b7295c091a57c979a4533d3d6e9212"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/simpletest/simpletest/zipball/43d947f842b7295c091a57c979a4533d3d6e9212",
+            "reference": "43d947f842b7295c091a57c979a4533d3d6e9212",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.0.5"
+        },
+        "time": "2013-09-21 21:04:19",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "classmap": [
+                "."
+            ]
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "LGPL-2.0+"
+        ],
+        "authors": [
+            {
+                "name": "Lars Vierbergen",
+                "email": "vierbergenlars@gmail.com"
+            },
+            {
+                "name": "Lachlan Donald",
+                "email": "lachlan@ljd.cc"
+            },
+            {
+                "name": "Marcus Baker",
+                "email": "marcus@lastcraft.com",
+                "role": "Original project lead"
+            },
+            {
+                "name": "Jason Sweat",
+                "role": "Original developer"
+            },
+            {
+                "name": "Travis Swicegood",
+                "role": "Original developer"
+            },
+            {
+                "name": "Perrick Penet",
+                "role": "Original developer"
+            },
+            {
+                "name": "Edward Z. Yang",
+                "role": "Original developer"
+            }
+        ],
+        "description": "Unit testing, mock objects and web testing framework for PHP built around test cases.",
+        "homepage": "http://simpletest.org/",
+        "keywords": [
+            "SimpleTest",
+            "code-coverage",
+            "junit",
+            "php",
+            "selenium",
+            "testing",
+            "unit-test",
+            "xunit"
         ]
     }
 ]

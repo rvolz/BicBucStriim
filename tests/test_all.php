@@ -1,7 +1,8 @@
 <?php
-set_include_path("tests");
-require_once('lib/simpletest/autorun.php');
-
+set_include_path("tests:vendor");
+#require_once('lib/simpletest/autorun.php');
+require 'autoload.php';
+require 'simpletest/simpletest/autorun.php';
 class TestsAll extends TestSuite {
 	function TestsAll() {
 		$this->TestSuite('All Tests');

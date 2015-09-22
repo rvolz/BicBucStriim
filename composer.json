@@ -6,5 +6,8 @@
     	"slim/views": "0.1.2",
     	"swiftmailer/swiftmailer": "5.0.1",
     	"twig/twig": "1.16.0"
-  	}
+  	},
+  	"require-dev": {
+      "simpletest/simpletest": "^1.1"
+    }
 }

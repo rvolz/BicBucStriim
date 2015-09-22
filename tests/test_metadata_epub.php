@@ -5,7 +5,7 @@
  */
 
 set_include_path("tests:vendor");
-require_once('lib/simpletest/autorun.php');
+require_once('simpletest/simpletest/autorun.php');
 require_once('lib/BicBucStriim/calibre.php');
 require_once('lib/BicBucStriim/metadata_epub.php');
 class TestOfMetadataEpub extends UnitTestCase {

@@ -1,0 +1,44 @@
+{
+	"name": "simpletest/simpletest",
+	"description": "Unit testing, mock objects and web testing framework for PHP built around test cases.",
+	"keywords": ["simpletest", "php", "unit-test", "testing", "junit", "xunit", "code-coverage", "selenium"],
+	"homepage": "http://simpletest.org/",
+	"authors": [
+		{
+			"name": "Marcus Baker",
+			"email": "marcus@lastcraft.com",
+			"role": "Original project lead"
+		},
+		{
+			"name": "Jason Sweat",
+			"role": "Original developer"
+		},
+		{
+			"name": "Travis Swicegood",
+			"role": "Original developer"
+		},
+		{
+			"name": "Perrick Penet",
+			"role": "Original developer"
+		},
+		{
+			"name": "Edward Z. Yang",
+			"role": "Original developer"
+		},
+		{
+			"name": "Lachlan Donald",
+			"email": "lachlan@ljd.cc"
+		},
+		{
+			"name": "Lars Vierbergen",
+			"email": "vierbergenlars@gmail.com"
+		}
+	],
+	"license": "LGPL-2.0+",
+	"require": {
+		"php": ">=5.0.5"
+	},
+	"autoload": {
+		"classmap": ["."]
+	}
+}
