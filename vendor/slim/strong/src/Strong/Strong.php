@@ -55,10 +55,10 @@ class Strong
             if (!class_exists($provider)) {
                 throw new \Exception('Strong is missing provider ' . $provider . ' in ' . get_class($this));
             }
-        }
 
-        // Load the provider
-        $provider = new $provider($this->config);
+            // Load the provider
+            $provider = new $provider($this->config);
+        }
 
         if (!($provider instanceof \Strong\Provider)) {
             throw new \Exception('The current Provider ' . get_class($provider) . ' does not extend \Strong\Provider');

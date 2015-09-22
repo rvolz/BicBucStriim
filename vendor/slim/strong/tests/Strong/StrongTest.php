@@ -14,6 +14,13 @@ class Strong_StrongTest extends PHPUnit_Framework_TestCase {
         $this->assertInstanceOf('\Strong\Strong', $strong);
     }
 
+    public function testCreateInstanceWithProviderObject() {
+        $provider = new \Strong\Provider\Mock(array());
+        $strong = new Strong(array('provider' => $provider));
+        $this->assertInstanceOf('\Strong\Strong', $strong);
+        $this->assertSame($provider, $strong->getProvider());
+    }
+
     public function testGetInstance() {
         $strong = Strong::factory(array('provider' => 'mock'));
         $strong = Strong::getInstance();
