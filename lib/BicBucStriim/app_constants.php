@@ -44,4 +44,5 @@ const SMTP_ENCRYPTION = 'smtp_encryption';
 const METADATA_UPDATE = 'metadata_update';
 # if true then login is required
 const LOGIN_REQUIRED = 'must_login';
+
 ?>

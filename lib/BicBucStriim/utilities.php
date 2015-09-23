@@ -27,7 +27,20 @@ class TagBook extends Item {}
 class Identifier extends Item {}
 
 
-# Confiuration utilities for BBS
+# Search types for Calibre::findSliceFiltered
+abstract class CalibreSearchType
+{
+    const Author = 1;
+    const AuthorBook = 2;
+    const Book = 3;
+    const Series = 4;
+    const SeriesBook = 5;
+    const Tag = 6;
+    const TagBook = 7;
+    const TimeOrderedBook = 8;
+}
+
+# Configuration utilities for BBS
 class Encryption extends Item{}
 class ConfigMailer extends Item{}
 class IdUrlTemplate extends Item{}

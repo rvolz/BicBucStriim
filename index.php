@@ -38,9 +38,9 @@ $appversion = '1.2.7a';
 # Init app and routes
 $app = new \Slim\Slim(array(
 	'view' => new \Slim\Views\Twig(),
-	'mode' => 'production',
+	#'mode' => 'production',
 	#'mode' => 'debug',
-	#'mode' => 'development',
+	'mode' => 'development',
 ));
 
 $app->configureMode('production','confprod');
@@ -959,7 +959,8 @@ function del_author_link($id, $link) {
  ********************************************************************/
 
 /**
- * Generate the main page with the 30 mos recent titles
+ * Generate the main page with the 30 most recent titles
+ * @deprecated
  */
 function main() {
 	global $app, $globalSettings;

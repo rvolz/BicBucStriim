@@ -30,7 +30,7 @@ class Calibre
 
     /**
      * Check if the Calibre DB is readable
-     * @param  string    path    Path to Calibre DB
+     * @param  string $path Path to Calibre DB
      * @return boolean            true if exists and is readable, else false
      */
     static function checkForCalibre($path)
@@ -42,8 +42,8 @@ class Calibre
 
     /**
      * Open the Calibre DB.
-     * @param string    calibrePath    Complete path to Calibre library file
-     * @param string    thumbDir        Directory name for thumbnail files
+     * @param string $calibrePath Complete path to Calibre library file
+     * @param string $thumbDir Directory name for thumbnail files
      */
     function __construct($calibrePath, $thumbDir = './data')
     {
@@ -80,6 +80,7 @@ class Calibre
      * @return [type]        [description]
      * @deprecated
      */
+    protected
     function find($class, $sql)
     {
         $stmt = $this->calibre->query($sql, PDO::FETCH_CLASS, $class);
@@ -98,10 +99,9 @@ class Calibre
      * @param array $params array of query parameters
      * @return array found items
      */
+    protected
     function findPrepared($class, $sql, $params)
     {
-        //print_r($sql);
-        //print_r($params);
         $stmt = $this->calibre->prepare($sql);
         $stmt->execute($params);
         $this->last_error = $stmt->errorCode();
@@ -116,6 +116,7 @@ class Calibre
      * @param  string $sql [description]
      * @return object                instance of class $class or NULL
      */
+    protected
     function findOne($class, $sql)
     {
         $result = $this->find($class, $sql);
@@ -172,19 +173,20 @@ class Calibre
      * If $search is defined it is used to filter the titles, ignoring case.
      * Return an array with elements: current page, no. of pages, $length entries
      *
-     * @param  string            class       name of class to return
-     * @param  integer            index=0     page index
-     * @param  integer            length=100  length of page
-     * @param  CalibreFilter    filter        filter expression
-     * @param  string            search=NULL search pattern for sort/name fields
-     * @param  integer            id=NULL     optional author/tag/series ID     *
-     * @return array                        an array with current page (key 'page'),
-     *                                    number of pages (key 'pages'),
-     *                                    an array of $class instances (key 'entries') or NULL
+     * @param  integer          searchType      index of search type to use, see CalibreSearchType
+     * @param  integer          index=0         page index
+     * @param  integer          length=100      length of page
+     * @param  CalibreFilter    filter          filter expression
+     * @param  string           search=NULL     search pattern for sort/name fields
+     * @param  integer          id=NULL         optional author/tag/series ID     *
+     * @return array                            an array with current page (key 'page'),
+     *                                          number of pages (key 'pages'),
+     *                                          an array of $class instances (key 'entries') or NULL
      */
-    function findSliceFiltered($class, $index = 0, $length = 100, $filter, $search = NULL, $id = NULL)
+    protected
+    function findSliceFiltered($searchType, $index = 0, $length = 100, $filter, $search = NULL, $id = NULL)
     {
-        if ($index < 0 || $length < 1 || !in_array($class, array('Book', 'Author', 'Tag', 'Series', 'SeriesBook', 'TagBook', 'AuthorBook')))
+        if ($index < 0 || $length < 1 || $searchType < CalibreSearchType::Author || $searchType > CalibreSearchType::TimeOrderedBook)
             return array('page' => 0, 'pages' => 0, 'entries' => NULL);
         $offset = $index * $length;
         if (!is_null($search)) {
@@ -193,8 +195,9 @@ class Calibre
         $countParams = $this->mkCountParams($id, $filter, $search);
         $queryParams = $this->mkQueryParams($id, $filter, $search, $length, $offset);
         $queryFilter = $filter->getBooksFilter();
-        switch ($class) {
-            case 'Author':
+        switch ($searchType) {
+            case CalibreSearchType::Author:
+                $class = 'Author';
                 if (is_null($search)) {
                     $count = 'SELECT count(*) FROM authors';
                     $query = 'SELECT a.id, a.name, a.sort, count(bal.id) AS anzahl FROM authors AS a LEFT JOIN books_authors_link AS bal ON a.id = bal.author GROUP BY a.id ORDER BY a.sort';
@@ -203,7 +206,8 @@ class Calibre
                     $query = 'SELECT a.id, a.name, a.sort, count(bal.id) AS anzahl FROM authors AS a LEFT JOIN books_authors_link AS bal ON a.id = bal.author WHERE lower(a.name) LIKE :search GROUP BY a.id ORDER BY a.sort';
                 }
                 break;
-            case 'AuthorBook':
+            case CalibreSearchType::AuthorBook:
+                $class = 'AuthorBook';
                 if (is_null($search)) {
                     $count = 'SELECT count(*) FROM (SELECT BAL.book, Books.* FROM books_authors_link BAL, ' . $queryFilter . ' Books WHERE Books.id=BAL.book AND author=:id)';
                     $query = 'SELECT BAL.book, Books.* FROM books_authors_link BAL, ' . $queryFilter . ' Books WHERE Books.id=BAL.book AND author=:id ORDER BY Books.sort';
@@ -212,16 +216,18 @@ class Calibre
                     $query = 'SELECT BAL.book, Books.* FROM books_authors_link BAL, ' . $queryFilter . ' Books WHERE Books.id=BAL.book AND author=:id AND lower(Books.sort) LIKE :search ORDER BY Books.sort';
                 }
                 break;
-            case 'Book':
+            case CalibreSearchType::Book:
+                $class = 'Book';
                 if (is_null($search)) {
-                    $count = 'SELECT count(*) FROM ' . $filter->getBooksFilter();
-                    $query = 'SELECT * FROM ' . $filter->getBooksFilter() . ' ORDER BY sort';
+                    $count = 'SELECT count(*) FROM ' . $queryFilter;
+                    $query = 'SELECT * FROM ' . $queryFilter . ' ORDER BY sort';
                 } else {
-                    $count = 'SELECT count(*) FROM ' . $filter->getBooksFilter() . ' WHERE lower(title) LIKE :search';
-                    $query = 'SELECT * FROM ' . $filter->getBooksFilter() . ' WHERE lower(title) LIKE :search ORDER BY sort';
+                    $count = 'SELECT count(*) FROM ' . $queryFilter . ' WHERE lower(title) LIKE :search';
+                    $query = 'SELECT * FROM ' . $queryFilter . ' WHERE lower(title) LIKE :search ORDER BY sort';
                 }
                 break;
-            case 'Series':
+            case CalibreSearchType::Series:
+                $class = 'Series';
                 if (is_null($search)) {
                     $count = 'SELECT count(*) FROM series';
                     $query = 'SELECT series.id, series.name, count(bsl.id) AS anzahl FROM series LEFT JOIN books_series_link AS bsl ON series.id = bsl.series GROUP BY series.id ORDER BY series.name';
@@ -230,7 +236,8 @@ class Calibre
                     $query = 'SELECT series.id, series.name, count(bsl.id) AS anzahl FROM series LEFT JOIN books_series_link AS bsl ON series.id = bsl.series WHERE lower(series.name) LIKE :search GROUP BY series.id ORDER BY series.name';
                 }
                 break;
-            case 'SeriesBook':
+            case CalibreSearchType::SeriesBook:
+                $class = 'SeriesBook';
                 if (is_null($search)) {
                     $count = 'SELECT count (*) FROM (SELECT BSL.book, Books.* FROM books_series_link BSL, ' . $queryFilter . ' Books WHERE Books.id=BSL.book AND series=:id)';
                     $query = 'SELECT BSL.book, Books.* FROM books_series_link BSL, ' . $queryFilter . ' Books WHERE Books.id=BSL.book AND series=:id ORDER BY series_index';
@@ -239,7 +246,8 @@ class Calibre
                     $query = 'SELECT BSL.book, Books.* FROM books_series_link BSL, ' . $queryFilter . ' Books WHERE Books.id=BSL.book AND series=:id AND lower(Books.sort) LIKE :search ORDER BY series_index';
                 }
                 break;
-            case 'Tag':
+            case CalibreSearchType::Tag:
+                $class = 'Tag';
                 if (is_null($search)) {
                     $count = 'SELECT count(*) FROM tags';
                     $query = 'SELECT tags.id, tags.name, count(btl.id) AS anzahl FROM tags LEFT JOIN books_tags_link AS btl ON tags.id = btl.tag GROUP BY tags.id ORDER BY tags.name';
@@ -248,7 +256,8 @@ class Calibre
                     $query = 'SELECT tags.id, tags.name, count(btl.id) AS anzahl FROM tags LEFT JOIN books_tags_link AS btl ON tags.id = btl.tag WHERE lower(tags.name) LIKE :search GROUP BY tags.id ORDER BY tags.name';
                 }
                 break;
-            case 'TagBook':
+            case CalibreSearchType::TagBook:
+                $class = 'TagBook';
                 if (is_null($search)) {
                     $count = 'SELECT count (*) FROM (SELECT BTL.book, Books.* FROM books_tags_link BTL, ' . $queryFilter . ' Books WHERE Books.id=BTL.book AND tag=:id)';
                     $query = 'SELECT BTL.book, Books.* FROM books_tags_link BTL, ' . $queryFilter . ' Books WHERE Books.id=BTL.book AND tag=:id ORDER BY Books.sort';
@@ -257,13 +266,28 @@ class Calibre
                     $query = 'SELECT BTL.book, Books.* FROM books_tags_link BTL, ' . $queryFilter . ' Books WHERE Books.id=BTL.book AND tag=:id AND lower(Books.sort) LIKE :search ORDER BY Books.sort';
                 }
                 break;
+            case CalibreSearchType::TimeOrderedBook:
+                $class = 'Book';
+                if (is_null($search)) {
+                    $count = 'SELECT count(*) FROM ' . $queryFilter;
+                    $query = 'SELECT * FROM ' . $queryFilter . ' ORDER BY timestamp DESC';
+                } else {
+                    $count = 'SELECT count(*) FROM ' . $queryFilter . ' WHERE lower(title) LIKE :search';
+                    $query = 'SELECT * FROM ' . $queryFilter . ' WHERE lower(title) LIKE :search ORDER BY timestamp DESC';
+                }
+                break;
         }
         $query = $query . ' limit :length offset :offset';
         $no_entries = $this->count($count, $countParams);
-        $no_pages = (int)($no_entries / $length);
-        if ($no_entries % $length > 0)
-            $no_pages += 1;
-        $entries = $this->findPrepared($class, $query, $queryParams);
+        if ($no_entries > 0) {
+            $no_pages = (int)($no_entries / $length);
+            if ($no_entries % $length > 0)
+                $no_pages += 1;
+            $entries = $this->findPrepared($class, $query, $queryParams);
+        } else {
+            $no_pages = 0;
+            $entries = array();
+        }
         return array('page' => $index, 'pages' => $no_pages, 'entries' => $entries, 'total' => $no_entries);
     }
 
@@ -289,10 +313,10 @@ class Calibre
 
     /**
      * Return the ID for a language code from the Calibre languages table
-     * @param languageCode    ISO 639-2 code, e.g. 'deu', 'eng'
-     * @return                integer ID or null
+     * @param string $languageCode ISO 639-2 code, e.g. 'deu', 'eng'
+     * @return          integer         ID or null
      */
-    function getLanguageId($languageCode)
+    protected function getLanguageId($languageCode)
     {
         $result = $this->calibre->query('SELECT id FROM languages WHERE lang_code = "' . $languageCode . '"')->fetchColumn();
         if ($result == NULL || $result == FALSE)
@@ -302,11 +326,11 @@ class Calibre
     }
 
     /**
-     * Return the ID for a tag  from teh Calibre tags table
-     * @param tagName    textual tag name
-     * @return            integer ID or null
+     * Return the ID for a tag  from the Calibre tags table
+     * @param string    tagName     textual tag name
+     * @return          integer     ID or null
      */
-    function getTagId($tagName)
+    protected function getTagId($tagName)
     {
         $result = $this->calibre->query('SELECT id FROM tags WHERE name = "' . $tagName . '"')->fetchColumn();
         if ($result == NULL || $result == FALSE)
@@ -321,6 +345,7 @@ class Calibre
      * @param  int $nrOfTitles number of titles, page size. Default is 30.
      * @param  object $filter CalibreFilter
      * @return array of books
+     * @deprecated
      */
     function last30Books($lang, $nrOfTitles = 30, $filter)
     {
@@ -338,9 +363,9 @@ class Calibre
      * @param string $lang the target language code for the display
      * @param array $books array of books
      */
-    function addBookDetails($lang, $books)
+    protected function addBookDetails($lang, $books)
     {
-        foreach ($books as $book) {
+        foreach ((array)$books as $book) {
             $fmts = $this->titleGetFormats($book->id);
             $fmtnames = array();
             foreach ($fmts as $format) {
@@ -359,7 +384,7 @@ class Calibre
                 $book->language = join(',', $langtexts);
             }
         }
-        foreach ($books as $book) {
+        foreach ((array)$books as $book) {
             if (empty($book->formats) && !isset($book->language))
                 $book->addInfo = '';
             elseif (empty($book->formats) && isset($book->language))
@@ -372,8 +397,8 @@ class Calibre
     }
 
     /**
-     * Return just the pur author information.
-     * @param int    $id    Calibre ID for author
+     * Return just the pure author information.
+     * @param integer $id Calibre ID for author
      * @return object    Calibre author record
      */
     public function author($id)
@@ -416,7 +441,7 @@ class Calibre
         $author = $this->findOne('Author', 'SELECT * FROM authors WHERE id=' . $id);
         if (is_null($author))
             return NULL;
-        $slice = $this->findSliceFiltered('AuthorBook', $index, $length, $filter, NULL, $id);
+        $slice = $this->findSliceFiltered(CalibreSearchType::AuthorBook, $index, $length, $filter, NULL, $id);
         $this->addBookDetails($lang, $slice['entries']);
         return array('author' => $author) + $slice;
     }
@@ -433,7 +458,7 @@ class Calibre
      */
     function authorsSlice($index = 0, $length = 100, $search = NULL)
     {
-        return $this->findSliceFiltered('Author', $index, $length, new CalibreFilter(), $search, NULL);
+        return $this->findSliceFiltered(CalibreSearchType::Author, $index, $length, new CalibreFilter(), $search, NULL);
     }
 
     /**
@@ -524,7 +549,7 @@ class Calibre
         $tag = $this->findOne('Tag', 'SELECT * FROM tags WHERE id=' . $id);
         if (is_null($tag))
             return NULL;
-        $slice = $this->findSliceFiltered('TagBook', $index, $length, $filter, NULL, $id);
+        $slice = $this->findSliceFiltered(CalibreSearchType::TagBook, $index, $length, $filter, NULL, $id);
         $this->addBookDetails($lang, $slice['entries']);
         return array('tag' => $tag) + $slice;
     }
@@ -534,7 +559,7 @@ class Calibre
     # Return an array with elements: current page, no. of pages, $length entries
     function tagsSlice($index = 0, $length = 100, $search = NULL)
     {
-        return $this->findSliceFiltered('Tag', $index, $length, new CalibreFilter(), $search, NULL);
+        return $this->findSliceFiltered(CalibreSearchType::Tag, $index, $length, new CalibreFilter(), $search, NULL);
     }
 
     /**
@@ -560,6 +585,23 @@ class Calibre
             array('initial'=>$initial));
     }
 
+    /**
+     * Search a list of books in timestamp order, defined by the parameters $index and $length.
+     * If $search is defined it is used to filter the book title, ignoring case.
+     * @param string $lang target language code
+     * @param integer $index page index, default 0
+     * @param integer $length page length, default 100
+     * @param object $filter CalibreFilter
+     * @param string $search search phrase, default null
+     * @return  array               an array with elements: current page, no. of pages, $length entries
+     */
+    function timeOrderedTitlesSlice($lang, $index = 0, $length = 100, $filter, $search = NULL)
+    {
+        $books = $this->findSliceFiltered(CalibreSearchType::TimeOrderedBook, $index, $length, $filter, $search);
+        $this->addBookDetails($lang, $books['entries']);
+        return $books;
+    }
+
 
     /**
      * Search a list of books defined by the parameters $index and $length.
@@ -573,7 +615,7 @@ class Calibre
      */
     function titlesSlice($lang, $index = 0, $length = 100, $filter, $search = NULL)
     {
-        $books = $this->findSliceFiltered('Book', $index, $length, $filter, $search);
+        $books = $this->findSliceFiltered(CalibreSearchType::Book, $index, $length, $filter, $search);
         $this->addBookDetails($lang, $books['entries']);
         return $books;
     }
@@ -718,7 +760,7 @@ class Calibre
 
 
     # Add a new cc value. If the key already exists, combine the values with a string join.
-    function addCc($def, $value, $result)
+    private function addCc($def, $value, $result)
     {
         if (array_key_exists($def->name, $result)) {
             $oldv = $result[$def->name];
@@ -919,7 +961,7 @@ class Calibre
         $series = $this->findOne('Series', 'SELECT * FROM series WHERE id=' . $id);
         if (is_null($series))
             return NULL;
-        $slice = $this->findSliceFiltered('SeriesBook', $index, $length, $filter, NULL, $id);
+        $slice = $this->findSliceFiltered(CalibreSearchType::SeriesBook, $index, $length, $filter, NULL, $id);
         $this->addBookDetails($lang, $slice['entries']);
         return array('series' => $series) + $slice;
     }
@@ -936,7 +978,7 @@ class Calibre
      */
     function seriesSlice($index = 0, $length = 100, $search = NULL)
     {
-        return $this->findSliceFiltered('Series', $index, $length, new CalibreFilter(), $search, NULL);
+        return $this->findSliceFiltered(CalibreSearchType::Series, $index, $length, new CalibreFilter(), $search, NULL);
     }
 
     /**
