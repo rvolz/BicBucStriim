@@ -1,17 +1,126 @@
-body{padding-top:60px;padding-bottom:40px}
-#passwordform #pw_dlg_status{text-align:center;background-color:orange;font-size:large;display:none}
-.title_detail header h1{margin-top:2px;margin-bottom:2px}
-.title_detail header p{margin-top:2px;margin-bottom:2px}
-.title_detail .title_detail_image{width:40%;float:left}.title_detail .title_detail_image img{max-width:90%}
-.title_detail .title_details{width:55%;float:right;padding-left:1%}
-.author-thmb-breakpoint.ui-grid-a .ui-block-a{width:200px}
-section.author-detail-row header{min-height:70px}section.author-detail-row header a#author_edit{float:right}
-section.author-detail-row header div#author-metadata{margin-top:10px;margin-bottom:10px}
-table#custom_columns_table tbody th{border-bottom:1px dotted gray;border-right:1px dotted gray;text-align:right;vertical-align:top;padding:10px}
-table#custom_columns_table td{border-bottom:1px dotted gray;padding:10px}
-div.footer p{text-align:center;font-size:80%}
-fieldset p{font-size:80%}
-div#flash{color:white}div#flash p{padding:5px}
-div#flash .success{background-color:green}
-div#flash .error{background-color:red}
-@media (max-width:768px){.title_detail .title_detail_image{float:none;margin-left:auto;margin-right:auto}.title_detail .title_detail_image img{display:block} .title_detail .title_details{margin-left:auto;margin-right:auto;width:100%;float:none} .author-thmb-breakpoint.ui-grid-a .ui-block-a{width:100%} .author-thmb-breakpoint.ui-grid-a .ui-block-b{width:100%}}@media (min-width:768px) and (max-width:980px){}@media (min-width:981px){}
+/*
+ *  BicBucStriim
+ *
+ *  Copyright (c) 2012-2015 Rainer Volz
+ *  Licensed under MIT License, see LICENSE
+ *
+ */
+
+body {
+    padding-top: 60px;
+    padding-bottom: 40px
+}
+
+#passwordform #pw_dlg_status {
+    text-align: center;
+    background-color: orange;
+    font-size: large;
+    display: none
+}
+
+.title_detail header h1 {
+    margin-top: 2px;
+    margin-bottom: 2px
+}
+
+.title_detail header p {
+    margin-top: 2px;
+    margin-bottom: 2px
+}
+
+.title_detail .title_detail_image {
+    width: 40%;
+    float: left
+}
+
+.title_detail .title_detail_image img {
+    max-width: 90%
+}
+
+.title_detail .title_details {
+    width: 55%;
+    float: right;
+    padding-left: 1%
+}
+
+.author-thmb-breakpoint.ui-grid-a .ui-block-a {
+    width: 200px
+}
+
+section.author-detail-row header {
+    min-height: 70px
+}
+
+section.author-detail-row header a#author_edit {
+    float: right
+}
+
+section.author-detail-row header div#author-metadata {
+    margin-top: 10px;
+    margin-bottom: 10px
+}
+
+table#custom_columns_table tbody th {
+    border-bottom: 1px dotted gray;
+    border-right: 1px dotted gray;
+    text-align: right;
+    vertical-align: top;
+    padding: 10px
+}
+
+table#custom_columns_table td {
+    border-bottom: 1px dotted gray;
+    padding: 10px
+}
+
+div.footer p {
+    text-align: center;
+    font-size: 80%
+}
+
+fieldset p {
+    font-size: 80%
+}
+
+div#flash {
+    color: white
+}
+
+div#flash p {
+    padding: 5px
+}
+
+div#flash .success {
+    background-color: green
+}
+
+div#flash .error {
+    background-color: red
+}
+
+@media (max-width: 768px) {
+    .title_detail .title_detail_image {
+        float: none;
+        margin-left: auto;
+        margin-right: auto
+    }
+
+    .title_detail .title_detail_image img {
+        display: block
+    }
+
+    .title_detail .title_details {
+        margin-left: auto;
+        margin-right: auto;
+        width: 100%;
+        float: none
+    }
+
+    .author-thmb-breakpoint.ui-grid-a .ui-block-a {
+        width: 100%
+    }
+
+    .author-thmb-breakpoint.ui-grid-a .ui-block-b {
+        width: 100%
+    }
+}

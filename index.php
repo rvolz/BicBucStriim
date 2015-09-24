@@ -2,9 +2,9 @@
 /**
  * BicBucStriim
  *
- * Copyright 2012-2014 Rainer Volz
+ * Copyright 2012-2015 Rainer Volz
  * Licensed under MIT License, see LICENSE
- * 
+ *
  */
 
 require 'vendor/autoload.php';
@@ -1021,11 +1021,17 @@ function titlesSlice($index=0) {
 
     $filter = getFilter();
 	$search = $app->request()->get('search');
-	if (isset($search)) {
-		$tl = $app->calibre->titlesSlice($globalSettings['lang'], $index,$globalSettings[PAGE_SIZE], $filter, trim($search));
+    if (isset($search)) {
+        $search = trim($search);
+    }
+    $sort = $app->request()->get('sort');
+
+    if (isset($sort) && $sort == 'byReverseDate') {
+        $tl = $app->calibre->timeOrderedTitlesSlice($globalSettings['lang'], $index, $globalSettings[PAGE_SIZE], $filter, $search);
 	} else {
-		$tl = $app->calibre->titlesSlice($globalSettings['lang'], $index,$globalSettings[PAGE_SIZE], $filter);
-	}
+        $tl = $app->calibre->titlesSlice($globalSettings['lang'], $index, $globalSettings[PAGE_SIZE], $filter, $search);
+    }
+
 	$books = array_map('checkThumbnail', $tl['entries']);	
 	$app->render('titles.html',array(
 		'page' => mkPage(getMessageString('titles'),2, 1), 
@@ -1033,7 +1039,8 @@ function titlesSlice($index=0) {
 		'books' => $books,
 		'curpage' => $tl['page'],
 		'pages' => $tl['pages'],
-		'search' => $search));
+        'search' => $search,
+        'sort' => $sort));
 }
 
 # Show a single title > /titles/:id. The ID ist the Calibre ID

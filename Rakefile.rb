@@ -34,8 +34,8 @@ task :lessc do
   output = File.join( CONFIG['css'], CONFIG['output'] )
  
   source = File.open( input, "r" ).read
- 
-  parser = Less::Parser.new( :paths => [less] )
+
+  parser = Less::Parser.new :paths => [less]
   tree = parser.parse( source )
  
   File.open( output, "w+" ) do |f|
@@ -102,7 +102,7 @@ task :pack => [:lessc, :genl10n] do |t|
     p.package_files.include("LICENSE")
     p.package_files.include("README.md")
   end
-  Rake::Task['package'].invoke
+  Rake::Task['repackage'].invoke
 end
 
 # Integration testing tasks only make sense when vagrant is installed.
@@ -169,5 +169,5 @@ task :install_version_info do |t|
   rm 'version.json'
 end
 
-task :default => [:clobber, :package2]
+task :default => [:clobber, :pack]
 

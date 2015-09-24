@@ -3,8 +3,9 @@
  *
  * Copyright 2012-2013 Rainer Volz
  * Licensed under MIT License, see LICENSE
- * 
- */ 
+ *
+ */
+
 
 // Author metadata on author details page
 $(document).on('pageinit', '#pauthor_detail', function() {
@@ -327,6 +328,14 @@ $(document).on('pageinit', '#padmin_user', function() {
 });
 
 
+// Search button for content pages
+$(document).on('vclick', '#enableSearchButton', function () {
+    $('#generalSearchForm').show();
+});
+
+$(document).on('pageinit', '#ptitles', function () {
+    $('#generalSearchForm').hide();
+});
 
 /* Send-to-Kindle Ajax function 
 Target-Url: /titles/:id/kindle/:file via POST
