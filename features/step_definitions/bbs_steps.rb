@@ -56,7 +56,7 @@ Then(/^there are no "(.*?)" buttons$/) do |arg1|
 end
 
 Then(/^there are "(.*?)" buttons$/) do |arg1|
-  expect(page).to have_link(arg1, :count => 2)
+  expect(page).to have_link(arg1, :count => 1)
 end
 
 When(/^I click on the "(.*?)" button$/) do |arg1|
@@ -76,8 +76,10 @@ When(/^I go to the "(.+)" page (\d+)$/) do |topic, page|
   visit "/#{part}list/#{page}/"
 end
 
-When(/^I enter "(.*?)" into the search field$/) do |arg1|
-  # Add "\n" to simulate key press 
+When(/^I enter "(.*?)" into the "(.+)" search field$/) do |arg1, view|
+  # Add "\n" to simulate key press
+  id = "show_#{view}_options"
+  click_on id
   fill_in('search', :with => "#{arg1}\n")
 end
 

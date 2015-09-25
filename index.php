@@ -124,11 +124,12 @@ $globalSettings[SMTP_PORT] = 25;
 $globalSettings[SMTP_ENCRYPTION] = 0;
 $globalSettings[METADATA_UPDATE] = 0;
 $globalSettings[LOGIN_REQUIRED] = 1;
+$globalSettings[TITLE_TIME_SORT] = TITLE_TIME_SORT_TIMESTAMP;
 
 $knownConfigs = array(CALIBRE_DIR, DB_VERSION, KINDLE, KINDLE_FROM_EMAIL, 
 	THUMB_GEN_CLIPPED, PAGE_SIZE, DISPLAY_APP_NAME, MAILER, SMTP_SERVER,
-	SMTP_PORT, SMTP_USER, SMTP_PASSWORD, SMTP_ENCRYPTION, METADATA_UPDATE, 
-	LOGIN_REQUIRED);
+	SMTP_PORT, SMTP_USER, SMTP_PASSWORD, SMTP_ENCRYPTION, METADATA_UPDATE,
+    LOGIN_REQUIRED, TITLE_TIME_SORT);
 
 # Freeze (true) DB schema before release! Set to false for DB development.
 $app->bbs = new BicBucStriim('data/data.db', true);
@@ -294,6 +295,20 @@ function mkMailers() {
 }
 
 
+function mkTitleTimeSortOptions()
+{
+    $e0 = new ConfigTtsOption();
+    $e0->key = TITLE_TIME_SORT_TIMESTAMP;
+    $e0->text = getMessageString('admin_tts_by_timestamp');
+    $e1 = new ConfigTtsOption();
+    $e1->key = TITLE_TIME_SORT_PUBDATE;
+    $e1->text = getMessageString('admin_tts_by_pubdate');
+    $e2 = new ConfigTtsOption();
+    $e2->key = TITLE_TIME_SORT_LASTMODIFIED;
+    $e2->text = getMessageString('admin_tts_by_lastmodified');
+    return array($e0, $e1, $e2);
+}
+
 /**
  * Generate the configuration page -> GET /admin/configuration/
  */
@@ -303,6 +318,7 @@ function admin_configuration() {
 	$app->render('admin_configuration.html',array(
 		'page' => mkPage(getMessageString('admin'), 0, 2),
 		'mailers' => mkMailers(),
+        'ttss' => mkTitleTimeSortOptions(),
 		'isadmin' => is_admin()));
 }
 
@@ -699,6 +715,7 @@ function admin_change_json() {
 			'page' => mkPage(getMessageString('admin'), 0, 2), 
 			'messages' => array(getMessageString('changes_saved')),
 			'mailers' => mkMailers(),
+            'ttss' => mkTitleTimeSortOptions(),
 			'isadmin' => true,
 			));	
 	}
@@ -780,7 +797,7 @@ function edit_author_thm($id) {
 			$app->redirect($rot.'/authors/'.$id.'/0/');
 		} else {
 			$app->getLog()->debug('edit_author_thm: upload ok, converting');
-			$author = $app->calibre->findOne('Author', 'select * from authors where id='.$id);
+            $author = $app->calibre->author($id);
 			$created = $app->bbs->editAuthorThumbnail($id, $author->name, $globalSettings[THUMB_GEN_CLIPPED], $_FILES["file"]["tmp_name"], $_FILES["file"]["type"]);
 			$app->getLog()->debug('edit_author_thm: converted, redirecting');
 			$rot = $app->request()->getRootUri();
@@ -1027,7 +1044,21 @@ function titlesSlice($index=0) {
     $sort = $app->request()->get('sort');
 
     if (isset($sort) && $sort == 'byReverseDate') {
-        $tl = $app->calibre->timeOrderedTitlesSlice($globalSettings['lang'], $index, $globalSettings[PAGE_SIZE], $filter, $search);
+        switch ($globalSettings[TITLE_TIME_SORT]) {
+            case TITLE_TIME_SORT_TIMESTAMP:
+                $tl = $app->calibre->timestampOrderedTitlesSlice($globalSettings['lang'], $index, $globalSettings[PAGE_SIZE], $filter, $search);
+                break;
+            case TITLE_TIME_SORT_PUBDATE:
+                $tl = $app->calibre->pubdateOrderedTitlesSlice($globalSettings['lang'], $index, $globalSettings[PAGE_SIZE], $filter, $search);
+                break;
+            case TITLE_TIME_SORT_LASTMODIFIED:
+                $tl = $app->calibre->lastmodifiedOrderedTitlesSlice($globalSettings['lang'], $index, $globalSettings[PAGE_SIZE], $filter, $search);
+                break;
+            default:
+                $app->getLog()->error('titlesSlice: invalid sort order ' . $globalSettings[TITLE_TIME_SORT]);
+                $tl = $app->calibre->timestampOrderedTitlesSlice($globalSettings['lang'], $index, $globalSettings[PAGE_SIZE], $filter, $search);
+                break;
+        }
 	} else {
         $tl = $app->calibre->titlesSlice($globalSettings['lang'], $index, $globalSettings[PAGE_SIZE], $filter, $search);
     }

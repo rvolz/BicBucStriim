@@ -6,7 +6,7 @@ Feature: User starts a global search
 
 	Scenario: Search from the start screen with one result
 		When I navigate to the home page
-		And search for "stones"
+	  And search for "stones" in home
 		Then I see 1 book as a result
 		And I see 0 authors as a result
 		And I see 0 tags as a result
@@ -14,7 +14,7 @@ Feature: User starts a global search
 		
 	Scenario: Search from the start screen with multiple results
 		When I navigate to the home page
-		And search for "s"
+	  And search for "s" in home
 		Then I see 6 books as a result
 		And I see 5 authors as a result
 		And I see 1 tags as a result

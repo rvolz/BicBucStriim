@@ -37,12 +37,18 @@ abstract class CalibreSearchType
     const SeriesBook = 5;
     const Tag = 6;
     const TagBook = 7;
-    const TimeOrderedBook = 8;
+    const TimestampOrderedBook = 8;
+    const PubDateOrderedBook = 9;
+    const LastModifiedOrderedBook = 10;
 }
 
 # Configuration utilities for BBS
 class Encryption extends Item{}
 class ConfigMailer extends Item{}
+
+class ConfigTtsOption extends Item
+{
+}
 class IdUrlTemplate extends Item{}
 
 class Utilities {

@@ -1,5 +1,6 @@
-
-When(/^search for "(.*?)"$/) do |arg1|
+When(/^search for "(.*?) in "(.+)"$/) do |arg1, view|
+  id = "show_#{view}_options"
+  click_on id
 	fill_in('search', :with => "#{arg1}\n")
 end
 

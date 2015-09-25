@@ -48,7 +48,7 @@ Feature: The authors list displays all book authors in the library.
 	Scenario: Searching leads to global search
 		When I click on menu item "Authors"
 		And the app switches to the "Authors" view
-		And I enter "sto" into the search field
+	  And I enter "sto" into the authors search field
 		Then the search result page appears
 		And the page contains "Books: 1"
 		And the page contains "Authors: 1"

@@ -295,6 +295,21 @@ admin_smtpuserpw_expl:
   fr: ! 'Mot de passe du serveur SMTP '
   it: ! 'Password per il server SMTP '
   gl: ! 'Contrasinal para o servidor SMTP '
+admin_tts:
+  de: Titel-Sortierung nach Datum
+  en: Sort titles by date
+admin_tts_expl:
+  de: ! 'Wenn Titel nach Zeit sortiert angezeigt werden sollen, bietet Calibre verschiedene Möglichkeiten. Standardmäßig werden sie nach dem Datum des Eingangs in die Calibre-Bibliothek sortiert.'
+  en: ! 'Calibre offers various ways to sort books by date. By default books will be sorted by the date when they were added to the Calibre library.'
+admin_tts_by_lastmodified:
+  de: Änderungsdatum
+  en: Date modified
+admin_tts_by_pubdate:
+  de: Veröffentlichung
+  en: Publication date
+admin_tts_by_timestamp:
+  de: Eingangsdatum
+  en: Date added
 admin_username:
   de: Benutzername
   en: User name
@@ -537,6 +552,9 @@ custom_columns:
   fr: Données Calibre personnalisées
   it: Dati Calibre Personalizzati
   gl: Datos personalizados de Calibre
+date:
+  de: Datum
+  en: Date
 delete:
   de: Löschen
   en: Delete
@@ -1244,6 +1262,9 @@ thumb_gen_clipped_expl:
   nl: Indien ingeschakeld, zullen de randen van de miniaturen worden geknipt om meer details weer te geven
   it: Se attivato, i bordi delle miniature saranno tagliate per mostrare più particolari.
   gl: Se o activas, os bordes das miniaturas serán recortadas para amosar máis detalles.
+title:
+  de: Titel
+  en: Title
 titles:
   de: Bücher
   en: Books
@@ -1251,6 +1272,9 @@ titles:
   nl: Boeken
   it: Libri
   gl: Libros
+titles_sort:
+  de: Sortieren nach
+  en: Sort by
 unknown_error1:
   de: Unbekannter Fehler
   en: Unknown Error

@@ -31,8 +31,6 @@
 
 {% block leftpanel %}
 <section data-role="panel" data-display="overlay" data-position="left" id="titles_options_panel">
-    <h2>Options</h2>
-
     <div class="ui-body ui-body-a ui-corner-all">
         <h3>{{page.glob.l10n.pagination_search}}</h3>
 
@@ -46,11 +44,12 @@
         </form>
     </div>
     <div class="ui-body ui-body-a ui-corner-all">
-        <h3>Sortierung nach</h3>
+        <h3>{{page.glob.l10n.titles_sort}}</h3>
 
         <div data-role="controlgroup" data-type="horizontal">
-            <a href="{{page.rot}}/titleslist/0/?sort=byReverseDate" class="ui-btn ui-btn-corner-all">Datum</a>
-            <a href="{{page.rot}}/titleslist/0/?sort=byTitle" class="ui-btn ui-btn-corner-all">Titel</a>
+            <a href="{{page.rot}}/titleslist/0/?sort=byReverseDate" class="ui-btn ui-btn-corner-all">{{page.glob.l10n.date}}</a>
+            <a href="{{page.rot}}/titleslist/0/?sort=byTitle"
+               class="ui-btn ui-btn-corner-all">{{page.glob.l10n.title}}</a>
         </div>
     </div>
 </section>

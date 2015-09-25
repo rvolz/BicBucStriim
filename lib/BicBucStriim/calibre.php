@@ -186,7 +186,7 @@ class Calibre
     protected
     function findSliceFiltered($searchType, $index = 0, $length = 100, $filter, $search = NULL, $id = NULL)
     {
-        if ($index < 0 || $length < 1 || $searchType < CalibreSearchType::Author || $searchType > CalibreSearchType::TimeOrderedBook)
+        if ($index < 0 || $length < 1 || $searchType < CalibreSearchType::Author || $searchType > CalibreSearchType::LastModifiedOrderedBook)
             return array('page' => 0, 'pages' => 0, 'entries' => NULL);
         $offset = $index * $length;
         if (!is_null($search)) {
@@ -220,10 +220,10 @@ class Calibre
                 $class = 'Book';
                 if (is_null($search)) {
                     $count = 'SELECT count(*) FROM ' . $queryFilter;
-                    $query = 'SELECT * FROM ' . $queryFilter . ' ORDER BY sort';
+                    $query = $this->mkBooksQuery($searchType, true, $queryFilter, false);
                 } else {
                     $count = 'SELECT count(*) FROM ' . $queryFilter . ' WHERE lower(title) LIKE :search';
-                    $query = 'SELECT * FROM ' . $queryFilter . ' WHERE lower(title) LIKE :search ORDER BY sort';
+                    $query = $this->mkBooksQuery($searchType, true, $queryFilter, true);
                 }
                 break;
             case CalibreSearchType::Series:
@@ -266,14 +266,16 @@ class Calibre
                     $query = 'SELECT BTL.book, Books.* FROM books_tags_link BTL, ' . $queryFilter . ' Books WHERE Books.id=BTL.book AND tag=:id AND lower(Books.sort) LIKE :search ORDER BY Books.sort';
                 }
                 break;
-            case CalibreSearchType::TimeOrderedBook:
+            case CalibreSearchType::TimestampOrderedBook:
+            case CalibreSearchType::PubDateOrderedBook:
+            case CalibreSearchType::LastModifiedOrderedBook:
                 $class = 'Book';
                 if (is_null($search)) {
                     $count = 'SELECT count(*) FROM ' . $queryFilter;
-                    $query = 'SELECT * FROM ' . $queryFilter . ' ORDER BY timestamp DESC';
+                    $query = $this->mkBooksQuery($searchType, false, $queryFilter, false);
                 } else {
                     $count = 'SELECT count(*) FROM ' . $queryFilter . ' WHERE lower(title) LIKE :search';
-                    $query = 'SELECT * FROM ' . $queryFilter . ' WHERE lower(title) LIKE :search ORDER BY timestamp DESC';
+                    $query = $this->mkBooksQuery($searchType, false, $queryFilter, true);
                 }
                 break;
         }
@@ -291,6 +293,42 @@ class Calibre
         return array('page' => $index, 'pages' => $no_pages, 'entries' => $entries, 'total' => $no_entries);
     }
 
+    /**
+     * Generate a SQL query for selecting books ordered by various fields
+     * @param CalibreSearchType $searchType
+     * @param boolean $sortAscending ASC, result should be sorted ASC or DESC?
+     * @param CalibreFilter $queryFilter
+     * @param bool $search false, a query with a search filter?
+     * @return string                               SQL query
+     */
+    private function mkBooksQuery($searchType, $sortAscending, $queryFilter, $search = false)
+    {
+        switch ($searchType) {
+            case CalibreSearchType::Book:
+                $sortField = 'sort';
+                break;
+            case CalibreSearchType::TimestampOrderedBook:
+                $sortField = 'timestamp';
+                break;
+            case CalibreSearchType::PubDateOrderedBook:
+                $sortField = 'pubdate';
+                break;
+            case CalibreSearchType::LastModifiedOrderedBook:
+                $sortField = 'last_modified';
+                break;
+        }
+        if ($sortAscending) {
+            $sortModifier = " ASC";
+        } else {
+            $sortModifier = " DESC";
+        }
+        if ($search) {
+            $query = 'SELECT * FROM ' . $queryFilter . ' WHERE lower(title) LIKE :search ORDER BY ' . $sortField . ' ' . $sortModifier;
+        } else {
+            $query = 'SELECT * FROM ' . $queryFilter . ' ORDER BY ' . $sortField . ' ' . $sortModifier;
+        }
+        return $query;
+    }
 
     /**
      * Return the number (int) of rows for a SQL COUNT Statement, e.g.
@@ -586,6 +624,40 @@ class Calibre
     }
 
     /**
+     * Search a list of books in publication date order, defined by the parameters $index and $length.
+     * If $search is defined it is used to filter the book title, ignoring case.
+     * @param string $lang target language code
+     * @param integer $index page index, default 0
+     * @param integer $length page length, default 100
+     * @param object $filter CalibreFilter
+     * @param string $search search phrase, default null
+     * @return  array               an array with elements: current page, no. of pages, $length entries
+     */
+    function pubdateOrderedTitlesSlice($lang, $index = 0, $length = 100, $filter, $search = NULL)
+    {
+        $books = $this->findSliceFiltered(CalibreSearchType::PubDateOrderedBook, $index, $length, $filter, $search);
+        $this->addBookDetails($lang, $books['entries']);
+        return $books;
+    }
+
+    /**
+     * Search a list of books in last modified order, defined by the parameters $index and $length.
+     * If $search is defined it is used to filter the book title, ignoring case.
+     * @param string $lang target language code
+     * @param integer $index page index, default 0
+     * @param integer $length page length, default 100
+     * @param object $filter CalibreFilter
+     * @param string $search search phrase, default null
+     * @return  array               an array with elements: current page, no. of pages, $length entries
+     */
+    function lastmodifiedOrderedTitlesSlice($lang, $index = 0, $length = 100, $filter, $search = NULL)
+    {
+        $books = $this->findSliceFiltered(CalibreSearchType::LastModifiedOrderedBook, $index, $length, $filter, $search);
+        $this->addBookDetails($lang, $books['entries']);
+        return $books;
+    }
+
+    /**
      * Search a list of books in timestamp order, defined by the parameters $index and $length.
      * If $search is defined it is used to filter the book title, ignoring case.
      * @param string $lang target language code
@@ -595,14 +667,12 @@ class Calibre
      * @param string $search search phrase, default null
      * @return  array               an array with elements: current page, no. of pages, $length entries
      */
-    function timeOrderedTitlesSlice($lang, $index = 0, $length = 100, $filter, $search = NULL)
+    function timestampOrderedTitlesSlice($lang, $index = 0, $length = 100, $filter, $search = NULL)
     {
-        $books = $this->findSliceFiltered(CalibreSearchType::TimeOrderedBook, $index, $length, $filter, $search);
+        $books = $this->findSliceFiltered(CalibreSearchType::TimestampOrderedBook, $index, $length, $filter, $search);
         $this->addBookDetails($lang, $books['entries']);
         return $books;
     }
-
-
     /**
      * Search a list of books defined by the parameters $index and $length.
      * If $search is defined it is used to filter the book title, ignoring case.

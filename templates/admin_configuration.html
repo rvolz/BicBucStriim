@@ -53,6 +53,18 @@
 		<p>{{page.glob.l10n.admin_mailer_expl}} <a href="../mail/">SMTP</a></p>					
 	</fieldset>
 	<fieldset data-role="fieldcontain">
+        <label for="title_time_sort">{{page.glob.l10n.admin_tts}}</label>
+        <select name="title_time_sort" id="title_time_sort" value="{{page.glob.title_time_sort}}">
+            {% for tts in ttss %}
+            <option value="{{tts.key}}" {%if page.glob.title_time_sort== tts.key %}selected="true" {% endif %}>
+                {{tts.text}}
+            </option>
+            {% endfor %}
+        </select>
+
+        <p>{{page.glob.l10n.admin_tts_expl}}</p>
+    </fieldset>
+    <fieldset data-role="fieldcontain">
 		<label for="thumb_gen_clipped">{{page.glob.l10n.thumb_gen_clipped}}</label>
 		<select name="thumb_gen_clipped" id="thumb_gen_clipped" data-role="slider">
 			<option value="0" {% if page.glob.thumb_gen_clipped == "0" %}selected {%endif%}>

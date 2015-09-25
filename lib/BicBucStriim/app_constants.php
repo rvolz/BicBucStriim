@@ -44,5 +44,10 @@ const SMTP_ENCRYPTION = 'smtp_encryption';
 const METADATA_UPDATE = 'metadata_update';
 # if true then login is required
 const LOGIN_REQUIRED = 'must_login';
-
+# field for time-sorting of books
+const TITLE_TIME_SORT = 'title_time_sort';
+# Possible values for the above field
+const TITLE_TIME_SORT_TIMESTAMP = 'timestamp';
+const TITLE_TIME_SORT_PUBDATE = 'pubdate';
+const TITLE_TIME_SORT_LASTMODIFIED = 'lastmodified';
 ?>
