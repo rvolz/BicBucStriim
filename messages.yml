@@ -692,6 +692,9 @@ idlinks:
   fr: Liens ID
   it: ID Collegamenti
   gl: Ligazóns ID
+intro:
+  de: Ihre Bibliothek
+  en: Your library
 invalid_calibredir1:
   de: Ungültiges Calibre-Verzeichnis
   en: Invalid Calibre directory

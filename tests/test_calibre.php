@@ -36,6 +36,15 @@ class TestOfCalibre extends UnitTestCase
         $this->assertEqual(0, $this->calibre->last_error);
     }
 
+    function testLibraryStats()
+    {
+        $result = $this->calibre->libraryStats(new CalibreFilter());
+        $this->assertEqual(7, $result["titles"]);
+        $this->assertEqual(6, $result["authors"]);
+        $this->assertEqual(6, $result["tags"]);
+        $this->assertEqual(3, $result["series"]);
+    }
+
     function testLast30()
     {
         $result = $this->calibre->last30Books('en', 30, new CalibreFilter());

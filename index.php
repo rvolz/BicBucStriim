@@ -758,7 +758,6 @@ function admin_check_version() {
 			));	
 }
 
-
 /*********************************************************************
  * Metadata functions
  ********************************************************************/
@@ -977,17 +976,18 @@ function del_author_link($id, $link) {
 
 /**
  * Generate the main page with the 30 most recent titles
- * @deprecated
  */
 function main() {
 	global $app, $globalSettings;
 
 	$filter = getFilter();
 	$books1 = $app->calibre->last30Books($globalSettings['lang'], $globalSettings[PAGE_SIZE], $filter);
-	$books = array_map('checkThumbnail', $books1);	
+    $books = array_map('checkThumbnail', $books1);
+    $stats = $app->calibre->libraryStats($filter);
 	$app->render('index_last30.html',array(
-		'page' => mkPage(getMessageString('dl30'),1, 1), 
-		'books' => $books));	
+		'page' => mkPage(getMessageString('dl30'),1, 1),
+        'books' => $books,
+        'stats' => $stats));
 }
 
 

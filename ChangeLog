@@ -1,6 +1,9 @@
-2015-MM-DD Version 1.X.Y
+2015-09-25 Version 1.X.Y
 
-*
+* Added sorting by date to books view #116 #99 #50
+* Users can switch between title and date sorting in titles view
+* Added admin configuration to specify the kind of date used for sorting (timestamp, pubdate or modified)
+* Updated layout
 
 2015-09-11 Version 1.2.6
 * Security changes: protection against SQL injection, see #175

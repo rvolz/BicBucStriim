@@ -10,6 +10,15 @@
 {% block pid %}id="phome"{%endblock%}
 
 {% block content %}
+<h2>{{page.glob.l10n.intro}}</h2>
+<ul>
+    <li>{{stats.titles}} {{page.glob.l10n.titles}}</li>
+    <li>{{stats.authors}} {{page.glob.l10n.authors}}</li>
+    <li>{{stats.tags}} {{page.glob.l10n.tags}}</li>
+    <li>{{stats.series}} {{page.glob.l10n.series}}</li>
+</ul>
+
+<h2>{{page.glob.l10n.dl30}}</h2>
 <ul data-role="listview">
 	{% for book in books %}
   	{% include "title_entry.html" %}
