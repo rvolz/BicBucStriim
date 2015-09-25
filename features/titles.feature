@@ -48,7 +48,7 @@ Feature: The titles list displays all books in the library.
 	Scenario: Searching leads to global search
 		When I click on menu item "Books"
 		And the app switches to the "Books" view
-	  And I enter "sto" into the titles search field
+	  And I enter "sto" into the "titles" search field
 		Then the search result page appears
 		And the page contains "Books: 1"
 		And the page contains "Authors: 1"

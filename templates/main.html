@@ -41,6 +41,12 @@
         </p>
 
         <div data-role="controlgroup" data-type="horizontal" class="ui-btn-right ui-mini">
+            {% if page.level == 1 and page.menu == 1 %}
+            <a id="show_home_options" href="#home_options_panel"
+               class="ui-btn ui-btn-b ui-icon-search ui-btn-icon-notext ui-btn-inline">
+                {{ page.glob.l10n.pagination_search }}
+            </a>
+            {% endif %}
             {% if page.level == 1 and page.menu == 2 %}
             <a id="show_titles_options" href="#titles_options_panel"
                class="ui-btn ui-btn-b ui-icon-search ui-btn-icon-notext ui-btn-inline">

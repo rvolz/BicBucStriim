@@ -6,10 +6,29 @@
 <link rel="alternate" href="{{page.rot}}/opds/newest/" 
 	type="application/atom+xml;profile=opds-catalog" title="OPDS catalog: newest books">
 {% endblock %}
+
+{% block pid %}id="phome"{%endblock%}
+
 {% block content %}
 <ul data-role="listview">
 	{% for book in books %}
   	{% include "title_entry.html" %}
   {% endfor %}
 </ul>
+{% endblock %}
+
+
+{% block leftpanel %}
+<section data-role="panel" data-display="overlay" data-position="left" id="home_options_panel">
+    <h2>{{page.glob.l10n.pagination_search}}</h2>
+
+    <form action="{{page.rot}}/search/"
+          method="get" class="ui-bar-a">
+        <div data-role="fieldcontain" class="ui-hide-label">
+            <label for="search">{{page.glob.l10n.pagination_search_lbl}}</label>
+            <input type="search" name="search" id="search" value="{{search}}"
+                   placeholder="{{page.glob.l10n.pagination_search_ph}}"/>
+        </div>
+    </form>
+</section>
 {% endblock %}
