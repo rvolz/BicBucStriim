@@ -53,7 +53,7 @@ class LoginMiddleware extends \Slim\Middleware {
                     $app->getLog()->debug('login: unauthorized OPDS request');
                     $app->response->headers->set('WWW-Authenticate', sprintf('Basic realm="%s"', $this->realm));
                     $app->halt(401,'Please authenticate');
-                } elseif ($app->request->isXhr() || $app->request->isAjax()) {
+                } elseif ($app->request->getMethod() != 'GET' && ($app->request->isXhr() || $app->request->isAjax())) {
                     $app->getLog()->debug('login: unauthorized JSON request');
                     $app->response->headers->set('WWW-Authenticate', sprintf('Basic realm="%s"', $this->realm));
                     $app->halt(401,'Please authenticate');
