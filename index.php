@@ -235,12 +235,15 @@ function perform_login() {
 		} else {
             $app->login_service->login($app->auth, array('username' => $uname, 'password' => $upw));
             $success = $app->auth->getStatus();
-            $app->getLog()->debug('login success: ' . var_export($success, true));
-            if ($app->auth->isValid())
+            $app->getLog()->debug('login success: ' . $success);
+            if ($app->auth->isValid()) {
+                $app->getLog()->info('logged in user : ' . $app->auth->getUserName());
 				$app->redirect($app->request->getRootUri().'/');
-			else 
+            } else {
+                $app->getLog()->error('error logging in user : ' . $login_data['username']);
 				$app->render('login.html', array(
-					'page' => mkPage(getMessageString('login')))); 			
+                    'page' => mkPage(getMessageString('login'))));
+            }
 		}
 	} else {
 		$app->render('login.html', array(
@@ -250,8 +253,16 @@ function perform_login() {
 
 function logout() {
 	global $app;
-    if ($app->auth->isValid())
+    if ($app->auth->isValid()) {
+        $username = $app->auth->getUserName();
+        $app->getLog()->debug("logging out user: " . $username);
         $app->logout_service->logout($app->auth);
+        if ($app->auth->isValid()) {
+            $app->getLog()->error("error logging out user: " . $username);
+        } else {
+            $app->getLog()->info("logged out user: " . $username);
+        }
+    }
 	$app->render('logout.html', array(
 		'page' => mkPage(getMessageString('logout')))); 
 }

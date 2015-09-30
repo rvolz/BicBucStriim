@@ -9,7 +9,8 @@
 <div data-role="navbar">
     <ul>
         <li>
-            <a href="{{page.rot}}/" data-icon="home" {% if page.menu== 1 %}class="ui-btn-active" {%endif%}>
+            <a href="{{page.rot}}/" data-icon="home" data-rel="external" {% if page.menu== 1 %}class="ui-btn-active"
+               {%endif%}>
                 {{page.glob.l10n.home}}
             </a>
         </li>
