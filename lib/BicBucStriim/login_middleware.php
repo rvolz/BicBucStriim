@@ -9,7 +9,7 @@
 
 require 'vendor/autoload.php';
 require_once 'lib/BicBucStriim/bicbucstriim.php';
-use Strong\Strong;
+use Aura\Auth;
 
 class LoginMiddleware extends \Slim\Middleware {
 
@@ -23,6 +23,7 @@ class LoginMiddleware extends \Slim\Middleware {
      * @param array $config
      */
     public function __construct($realm, $statics) {
+        $app = $this->app;
         $this->realm = $realm;  
         $this->static_resource_paths = $statics;
     }
@@ -103,7 +104,16 @@ class LoginMiddleware extends \Slim\Middleware {
     protected function is_authorized() {
         $app = $this->app;
         $req = $app->request;
-        if ($app->strong->loggedIn()) {
+        $auth_factory = new \Aura\Auth\AuthFactory($_COOKIE);
+        $app->auth = $auth_factory->newInstance();
+        $hash = new \Aura\Auth\Verifier\PasswordVerifier(PASSWORD_BCRYPT);
+        $cols = array('username', 'password', 'id', 'email', 'role', 'languages', 'tags');
+        $pdo_adapter = $auth_factory->newPdoAdapter($app->bbs->mydb, $hash, $cols, 'user');
+        $app->login_service = $auth_factory->newLoginService($pdo_adapter);
+        $app->logout_service = $auth_factory->newLogoutService($pdo_adapter);
+        $resume_service = $auth_factory->newResumeService($pdo_adapter);
+        $resume_service->resume($app->auth);
+        if ($app->auth->isValid()) {
             // already logged in
             return true;
         } else {
@@ -116,8 +126,10 @@ class LoginMiddleware extends \Slim\Middleware {
             if (is_null($auth))
                 return false; 
             else {
-                $li = $app->strong->login($auth[0], $auth[1]); 
-                //$app->getLog()->debug('login answer: '.var_export($li,true));
+                $li = $app->login_service->login($app->auth, array(
+                    'username' => $auth[0],
+                    'password' => $auth[1]));
+                // $app->getLog()->debug('login answer: '.var_export($li,true));
                 return $li;
             }
         }

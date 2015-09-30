@@ -2,8 +2,6 @@
 
 require 'vendor/autoload.php';
 require_once 'lib/BicBucStriim/bicbucstriim.php';
-require_once 'lib/BicBucStriim/bbs_pdo.php';
-use Strong\Strong;
 
 class OwnConfigMiddleware extends \Slim\Middleware {
 
@@ -62,9 +60,6 @@ class OwnConfigMiddleware extends \Slim\Middleware {
 				$app->must_login = false;
 				$app->getLog()->debug('easy mode: login not required');	
 			}
-			
-			if (!isset($app->strong)) 
-				$app->strong = $this->getAuthProvider($app->bbs->mydb);
 			$app->getLog()->debug("own_config_middleware: config loaded");
 		} else {
 			$app->getLog()->info("own_config_middleware: no config db found - creating a new one with default values");
@@ -78,16 +73,10 @@ class OwnConfigMiddleware extends \Slim\Middleware {
 				array_push($cnfs, $cnf);
 			}
 			$app->bbs->saveConfigs($cnfs);
-			if (!isset($app->strong)) 
-				$app->strong = $this->getAuthProvider($app->bbs->mydb);
 			$we_have_config = 1;
 		}
 		return $we_have_config;
 	}
 
-	protected function getAuthProvider($db) {
-		$provider = new BBSPDO(array('pdo' => $db));
-		return new Strong(array('provider' => $provider, 'pdo' => $db));;
-	}
 }
 ?>

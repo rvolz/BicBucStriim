@@ -1,0 +1,43 @@
+{
+  "name": "aura/auth",
+  "type": "library",
+  "description": "Aura Auth provides a unified interface to authenticate a user with local or remote authentication systems.",
+  "keywords": [
+    "auth",
+    "authenticate",
+    "authentication"
+  ],
+  "homepage": "https://github.com/auraphp/Aura.Auth",
+  "license": "BSD-2-Clause",
+  "authors": [
+    {
+      "name": "Aura.Auth Contributors",
+      "homepage": "https://github.com/auraphp/Aura.Auth/contributors"
+    }
+  ],
+  "require": {
+    "php": ">=5.3.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Aura\\Auth\\": "src/",
+      "Aura\\Auth\\_Config\\": "config/"
+    }
+  },
+  "extra": {
+    "aura": {
+      "type": "library",
+      "config": {
+        "common": "Aura\\Auth\\_Config\\Common"
+      }
+    },
+    "branch-alias": {
+      "dev-develop-2": "2.0.x-dev"
+    }
+  },
+  "suggest": {
+    "ext/ldap": "For LDAP integration.",
+    "ext/imap": "For IMAP/POP/NNTP integration.",
+    "ircmaxell/password-compat": "Provides password_verify() for PHP versions earlier than 5.5"
+  }
+}

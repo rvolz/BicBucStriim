@@ -233,9 +233,10 @@ function perform_login() {
 			$app->render('login.html', array(
 				'page' => mkPage(getMessageString('login')))); 			
 		} else {
-			$success = $app->strong->login($uname, $upw);
-			$app->getLog()->debug('login success: '.var_export($success,true));	
-			if($success)
+            $app->login_service->login($app->auth, array('username' => $uname, 'password' => $upw));
+            $success = $app->auth->getStatus();
+            $app->getLog()->debug('login success: ' . var_export($success, true));
+            if ($app->auth->isValid())
 				$app->redirect($app->request->getRootUri().'/');
 			else 
 				$app->render('login.html', array(
@@ -249,8 +250,8 @@ function perform_login() {
 
 function logout() {
 	global $app;
-	if ($app->strong->loggedIn())
-		$app->strong->logout();
+    if ($app->auth->isValid())
+        $app->logout_service->logout($app->auth);
 	$app->render('logout.html', array(
 		'page' => mkPage(getMessageString('logout')))); 
 }
@@ -1951,7 +1952,7 @@ function checkThumbnailOpds($record) {
 function getFilter() {
 	global $app;
 
-	$user = $app->strong->getUser();
+    $user = $app->auth->getUserData();
 	$app->getLog()->debug('getFilter: '.var_export($user,true));	
 	$lang = null;
 	$tag = null;
@@ -1992,7 +1993,7 @@ function mkPage($subtitle='', $menu=0, $level=0) {
 	else
 		$title = $globalSettings[DISPLAY_APP_NAME].$globalSettings['sep'].$subtitle;
 	$rot = $app->request()->getRootUri();
-	$auth = $app->strong->loggedIn();
+    $auth = $app->auth->isValid();
 	if ($globalSettings[LOGIN_REQUIRED])
 		$adm = is_admin();
 	else
@@ -2017,7 +2018,7 @@ function mkPage($subtitle='', $menu=0, $level=0) {
 function title_forbidden($book_details) {
 	global $app;
 
-	$user = $app->strong->getUser();
+    $user = $app->auth->getUserData();
 	if (empty($user['languages']) && empty($user['tags'])) {
 		return false;
 	}
@@ -2157,8 +2158,8 @@ function has_valid_calibre_dir() {
  */
 function is_admin() {
 	global $app;
-	if ($app->strong->loggedIn()) {
-		$user = $app->strong->getUser();
+    if ($app->auth->isValid()) {
+        $user = $app->auth->getUserData();
 		return ($user['role'] === '1');
 	} else {
 		return false;

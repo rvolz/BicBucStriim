@@ -1,0 +1,54 @@
+{
+  "name": "aura/session",
+  "type": "library",
+  "description": "Provides session management functionality, including lazy session starting, session segments, next-request-only (\"flash\") values, and CSRF tools.",
+  "keywords": [
+    "session",
+    "sessions",
+    "flash",
+    "flash message",
+    "csrf"
+  ],
+  "homepage": "https://github.com/auraphp/Aura.Session",
+  "license": "BSD-2-Clause",
+  "authors": [
+    {
+      "name": "Aura.Session Contributors",
+      "homepage": "https://github.com/auraphp/Aura.Session/contributors"
+    }
+  ],
+  "require": {
+    "php": ">=5.3.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Aura\\Session\\": "src/",
+      "Aura\\Session\\_Config\\": "config/"
+    }
+  },
+  "extra": {
+    "aura": {
+      "type": "library",
+      "config": {
+        "common": "Aura\\Session\\_Config\\Common"
+      }
+    },
+    "branch-alias": {
+      "dev-develop-2": "2.0.x-dev"
+    }
+  },
+  "suggest": {
+    "ext-openssl": "OpenSSL generates the best secure CSRF tokens.",
+    "ext-mcrypt": "Mcrypt generates the next best secure CSRF tokens.",
+    "ircmaxell/random-lib": "A Library For Generating Secure Random Numbers"
+  },
+  "require-dev": {
+    "aura/di": "~2.0"
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Aura\\Session\\": "tests/",
+      "Aura\\Di\\": "vendor/aura/di/tests/"
+    }
+  }
+}

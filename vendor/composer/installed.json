@@ -314,57 +314,6 @@
         ]
     },
     {
-        "name": "slim/strong",
-        "version": "dev-develop",
-        "version_normalized": "dev-develop",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/silentworks/Strong.git",
-            "reference": "6b29c9a88255ac5e12261d4d06a43d320dd38e87"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/silentworks/Strong/zipball/6b29c9a88255ac5e12261d4d06a43d320dd38e87",
-            "reference": "6b29c9a88255ac5e12261d4d06a43d320dd38e87",
-            "shasum": ""
-        },
-        "require": {
-            "ircmaxell/password-compat": "1.0.*",
-            "php": ">=5.3.0"
-        },
-        "time": "2014-04-21 10:00:41",
-        "type": "library",
-        "installation-source": "source",
-        "autoload": {
-            "psr-0": {
-                "Strong": "src/"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Andrew Smith",
-                "email": "a.smith@silentworks.co.uk",
-                "homepage": "http://www.silentworks.co.uk/"
-            },
-            {
-                "name": "Jakub Westfalewski",
-                "email": "jwest@jwest.pl",
-                "homepage": "http://jwest.pl/"
-            }
-        ],
-        "description": "Authentication Library with multiple drivers",
-        "homepage": "http://github.com/silentworks/Strong",
-        "keywords": [
-            "Authentication",
-            "extensions"
-        ],
-        "abandoned": true
-    },
-    {
         "name": "simpletest/simpletest",
         "version": "v1.1.6",
         "version_normalized": "1.1.6.0",
@@ -436,6 +385,133 @@
             "testing",
             "unit-test",
             "xunit"
+        ]
+    },
+    {
+        "name": "aura/auth",
+        "version": "2.0.0-beta2",
+        "version_normalized": "2.0.0.0-beta2",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/auraphp/Aura.Auth.git",
+            "reference": "8010400aa090f52e9c4056399c018c4bb96d7fc1"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/auraphp/Aura.Auth/zipball/8010400aa090f52e9c4056399c018c4bb96d7fc1",
+            "reference": "8010400aa090f52e9c4056399c018c4bb96d7fc1",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.3.0"
+        },
+        "suggest": {
+            "ext/imap": "For IMAP/POP/NNTP integration.",
+            "ext/ldap": "For LDAP integration.",
+            "ircmaxell/password-compat": "Provides password_verify() for PHP versions earlier than 5.5"
+        },
+        "time": "2014-11-07 15:41:31",
+        "type": "library",
+        "extra": {
+            "aura": {
+                "type": "library",
+                "config": {
+                    "common": "Aura\\Auth\\_Config\\Common"
+                }
+            },
+            "branch-alias": {
+                "dev-develop-2": "2.0.x-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Aura\\Auth\\": "src/",
+                "Aura\\Auth\\_Config\\": "config/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "BSD-2-Clause"
+        ],
+        "authors": [
+            {
+                "name": "Aura.Auth Contributors",
+                "homepage": "https://github.com/auraphp/Aura.Auth/contributors"
+            }
+        ],
+        "description": "Aura Auth provides a unified interface to authenticate a user with local or remote authentication systems.",
+        "homepage": "https://github.com/auraphp/Aura.Auth",
+        "keywords": [
+            "Authentication",
+            "auth",
+            "authenticate"
+        ]
+    },
+    {
+        "name": "aura/session",
+        "version": "2.0.1",
+        "version_normalized": "2.0.1.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/auraphp/Aura.Session.git",
+            "reference": "9e018278794228e40c7695b699c848bea2355a12"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/auraphp/Aura.Session/zipball/9e018278794228e40c7695b699c848bea2355a12",
+            "reference": "9e018278794228e40c7695b699c848bea2355a12",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.3.0"
+        },
+        "require-dev": {
+            "aura/di": "~2.0"
+        },
+        "suggest": {
+            "ext-mcrypt": "Mcrypt generates the next best secure CSRF tokens.",
+            "ext-openssl": "OpenSSL generates the best secure CSRF tokens.",
+            "ircmaxell/random-lib": "A Library For Generating Secure Random Numbers"
+        },
+        "time": "2015-03-27 18:33:22",
+        "type": "library",
+        "extra": {
+            "aura": {
+                "type": "library",
+                "config": {
+                    "common": "Aura\\Session\\_Config\\Common"
+                }
+            },
+            "branch-alias": {
+                "dev-develop-2": "2.0.x-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Aura\\Session\\": "src/",
+                "Aura\\Session\\_Config\\": "config/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "BSD-2-Clause"
+        ],
+        "authors": [
+            {
+                "name": "Aura.Session Contributors",
+                "homepage": "https://github.com/auraphp/Aura.Session/contributors"
+            }
+        ],
+        "description": "Provides session management functionality, including lazy session starting, session segments, next-request-only (\"flash\") values, and CSRF tools.",
+        "homepage": "https://github.com/auraphp/Aura.Session",
+        "keywords": [
+            "csrf",
+            "flash",
+            "flash message",
+            "session",
+            "sessions"
         ]
     }
 ]
