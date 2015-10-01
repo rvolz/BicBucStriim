@@ -15,7 +15,7 @@ require 'yaml'
 require 'logger'
 
 APPNAME = 'BicBucStriim'
-VERSION = '1.2.7a'
+VERSION = '1.3.1'
 
 SOURCE = "."
 LESS = File.join( SOURCE, "style")
