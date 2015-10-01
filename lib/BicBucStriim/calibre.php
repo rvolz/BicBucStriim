@@ -125,14 +125,15 @@ class Calibre
 
     /**
      * Return a single object or NULL if not found
-     * @param  string $class [description]
-     * @param  string $sql [description]
+     * @param  string $class Calibre Item class
+     * @param  string $sql SQL statement
+     * @param string $params array of query parameters
      * @return object                instance of class $class or NULL
      */
     protected
-    function findOne($class, $sql)
+    function findOne($class, $sql, $params = array())
     {
-        $result = $this->find($class, $sql);
+        $result = $this->findPrepared($class, $sql, $params);
         if ($result == NULL || $result == FALSE)
             return NULL;
         else
@@ -482,7 +483,7 @@ class Calibre
      */
     public function author($id)
     {
-        return $this->findOne('Author', 'SELECT * FROM authors WHERE id=' . $id);
+        return $this->findOne('Author', 'SELECT * FROM authors WHERE id=:id', array('id' => $id));
     }
 
     /**
@@ -492,7 +493,7 @@ class Calibre
      */
     function authorDetails($id)
     {
-        $author = $this->findOne('Author', 'SELECT * FROM authors WHERE id=' . $id);
+        $author = $this->findOne('Author', 'SELECT * FROM authors WHERE id=:id', array('id' => $id));
         if (is_null($author)) return NULL;
         $book_ids = $this->findPrepared('BookAuthorLink', 'SELECT * FROM books_authors_link WHERE author=:id',
             array('id'=>$id));
@@ -517,7 +518,7 @@ class Calibre
      */
     function authorDetailsSlice($lang, $id, $index = 0, $length = 100, $filter)
     {
-        $author = $this->findOne('Author', 'SELECT * FROM authors WHERE id=' . $id);
+        $author = $this->findOne('Author', 'SELECT * FROM authors WHERE id=:id', array('id' => $id));
         if (is_null($author))
             return NULL;
         $slice = $this->findSliceFiltered(CalibreSearchType::AuthorBook, $index, $length, $filter, NULL, $id);
@@ -601,9 +602,9 @@ class Calibre
      */
     function tagDetails($id)
     {
-        $tag = $this->findOne('Tag', 'SELECT * FROM tags WHERE id=' . $id);
+        $tag = $this->findOne('Tag', 'SELECT * FROM tags WHERE id=:id', array('id' => $id));
         if (is_null($tag)) return NULL;
-        $book_ids = $this->find('BookTagLink', 'SELECT * FROM books_tags_link WHERE tag=' . $id);
+        $book_ids = $this->findPrepared('BookTagLink', 'SELECT * FROM books_tags_link WHERE tag=:id', array('id' => $id));
         $books = array();
         foreach ($book_ids as $bid) {
             $book = $this->title($bid->book);
@@ -625,7 +626,7 @@ class Calibre
      */
     function tagDetailsSlice($lang, $id, $index = 0, $length = 100, $filter)
     {
-        $tag = $this->findOne('Tag', 'SELECT * FROM tags WHERE id=' . $id);
+        $tag = $this->findOne('Tag', 'SELECT * FROM tags WHERE id=:id', array('id' => $id));
         if (is_null($tag))
             return NULL;
         $slice = $this->findSliceFiltered(CalibreSearchType::TagBook, $index, $length, $filter, NULL, $id);
@@ -735,7 +736,7 @@ class Calibre
     # Find only one book
     function title($id)
     {
-        return $this->findOne('Book', 'SELECT * FROM books WHERE id=' . $id);
+        return $this->findOne('Book', 'SELECT * FROM books WHERE id=:id', array('id' => $id));
     }
 
     # Returns the path to the cover image of a book or NULL.
@@ -757,9 +758,9 @@ class Calibre
     function getLanguage($book_id)
     {
         $lang_code = null;
-        $lang_id = $this->findOne('BookLanguageLink', 'SELECT * FROM books_languages_link WHERE book=' . $book_id);
+        $lang_id = $this->findOne('BookLanguageLink', 'SELECT * FROM books_languages_link WHERE book=:id', array('id' => $book_id));
         if (!is_null($lang_id))
-            $lang_code = $this->findOne('Language', 'SELECT * FROM languages WHERE id=' . $lang_id->lang_code);
+            $lang_code = $this->findOne('Language', 'SELECT * FROM languages WHERE id=:id', array('id' => $lang_id->lang_code));
         if (is_null($lang_code))
             $lang_text = '';
         else
@@ -775,9 +776,9 @@ class Calibre
     function getLanguages($book_id)
     {
         $lang_codes = array();
-        $lang_ids = $this->find('BookLanguageLink', 'SELECT * FROM books_languages_link WHERE book=' . $book_id);
+        $lang_ids = $this->findPrepared('BookLanguageLink', 'SELECT * FROM books_languages_link WHERE book=:id', array('id' => $book_id));
         foreach ($lang_ids as $lang_id) {
-            $lang_code = $this->findOne('Language', 'SELECT * FROM languages WHERE id=' . $lang_id->lang_code);
+            $lang_code = $this->findOne('Language', 'SELECT * FROM languages WHERE id=:id', array('id' => $lang_id->lang_code));
             if (!is_null($lang_code))
                 array_push($lang_codes, $lang_code->lang_code);
         }
@@ -798,21 +799,21 @@ class Calibre
             array('id'=>$id));
         $authors = array();
         foreach ($author_ids as $aid) {
-            $author = $this->findOne('Author', 'SELECT * FROM authors WHERE id=' . $aid->author);
+            $author = $this->findOne('Author', 'SELECT * FROM authors WHERE id=:id', array('id' => $aid->author));
             array_push($authors, $author);
         }
         $series_ids = $this->findPrepared('BookSeriesLink', 'SELECT * FROM books_series_link WHERE book=:id',
             array('id'=>$id));
         $series = array();
         foreach ($series_ids as $aid) {
-            $this_series = $this->findOne('Series', 'SELECT * FROM series WHERE id=' . $aid->series);
+            $this_series = $this->findOne('Series', 'SELECT * FROM series WHERE id=:id', array('id' => $aid->series));
             array_push($series, $this_series);
         }
         $tag_ids = $this->findPrepared('BookTagLink', 'SELECT * FROM books_tags_link WHERE book=:id',
             array('id'=>$id));
         $tags = array();
         foreach ($tag_ids as $tid) {
-            $tag = $this->findOne('Tag', 'SELECT * FROM tags WHERE id=' . $tid->tag);
+            $tag = $this->findOne('Tag', 'SELECT * FROM tags WHERE id=:id', array('id' => $tid->tag));
             array_push($tags, $tag);
         }
         $langcodes = $this->getLanguages($id);
@@ -828,7 +829,7 @@ class Calibre
         }
         $formats = $this->findPrepared('Data', 'SELECT * FROM data WHERE book=:id',
             array('id'=>$id));
-        $comment = $this->findOne('Comment', 'SELECT * FROM comments WHERE book=' . $id);
+        $comment = $this->findOne('Comment', 'SELECT * FROM comments WHERE book=:id', array('id' => $id));
         $ids = $this->findPrepared('Identifier', 'SELECT * FROM identifiers WHERE book=:id',
             array('id'=>$id));
         if (is_null($comment))
@@ -860,7 +861,7 @@ class Calibre
         $tag_ids = $this->findPrepared('BookTagLink', 'SELECT * FROM books_tags_link WHERE book=:id',array('id'=>$id));
         $tags = array();
         foreach ($tag_ids as $tid) {
-            $tag = $this->findOne('Tag', 'SELECT * FROM tags WHERE id=' . $tid->tag);
+            $tag = $this->findOne('Tag', 'SELECT * FROM tags WHERE id=:id', array('id' => $tid->tag));
             array_push($tags, $tag);
         }
         $langcodes = $this->getLanguages($id);
@@ -938,26 +939,26 @@ class Calibre
         $author_ids = $this->findPrepared('BookAuthorLink', 'SELECT * FROM books_authors_link WHERE book=:id', array('id'=>$book->id));
         $authors = array();
         foreach ($author_ids as $aid) {
-            $author = $this->findOne('Author', 'SELECT * FROM authors WHERE id=' . $aid->author);
+            $author = $this->findOne('Author', 'SELECT * FROM authors WHERE id=:id', array('id' => $aid->author));
             array_push($authors, $author);
         }
         $tag_ids = $this->findPrepared('BookTagLink', 'SELECT * FROM books_tags_link WHERE book=:id', array('id'=>$book->id));
         $tags = array();
         foreach ($tag_ids as $tid) {
-            $tag = $this->findOne('Tag', 'SELECT * FROM tags WHERE id=' . $tid->tag);
+            $tag = $this->findOne('Tag', 'SELECT * FROM tags WHERE id=:id', array('id' => $tid->tag));
             array_push($tags, $tag);
         }
-        $lang_id = $this->findOne('BookLanguageLink', 'SELECT * FROM books_languages_link WHERE book='.$book->id);
+        $lang_id = $this->findOne('BookLanguageLink', 'SELECT * FROM books_languages_link WHERE book=:id', array('id' => $book->id));
         if (is_null($lang_id))
             $lang_text = '';
         else {
-            $lang_code = $this->findOne('Language', 'SELECT * FROM languages WHERE id='.$lang_id->lang_code);
+            $lang_code = $this->findOne('Language', 'SELECT * FROM languages WHERE id=:id', array('id' => $lang_id->lang_code));
             if (is_null($lang_code))
                 $lang_text = '';
             else
                 $lang_text = $lang_code->lang_code;
         }
-        $comment = $this->findOne('Comment', 'SELECT * FROM comments WHERE book=' . $book->id);
+        $comment = $this->findOne('Comment', 'SELECT * FROM comments WHERE book=:id', array('id' => $book->id));
         if (is_null($comment))
             $comment_text = '';
         else
@@ -1048,7 +1049,7 @@ class Calibre
      */
     function seriesDetails($id)
     {
-        $series = $this->findOne('Series', 'SELECT * FROM series WHERE id=' . $id);
+        $series = $this->findOne('Series', 'SELECT * FROM series WHERE id=:id', array('id' => $id));
         if (is_null($series)) return NULL;
         $books = $this->findPrepared('Book',
             'SELECT BSL.book, Books.* FROM books_series_link BSL, books Books WHERE Books.id=BSL.book AND series=:id ORDER BY series_index',
@@ -1069,7 +1070,7 @@ class Calibre
      */
     function seriesDetailsSlice($lang, $id, $index = 0, $length = 100, $filter)
     {
-        $series = $this->findOne('Series', 'SELECT * FROM series WHERE id=' . $id);
+        $series = $this->findOne('Series', 'SELECT * FROM series WHERE id=:id', array('id' => $id));
         if (is_null($series))
             return NULL;
         $slice = $this->findSliceFiltered(CalibreSearchType::SeriesBook, $index, $length, $filter, NULL, $id);
