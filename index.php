@@ -1240,7 +1240,7 @@ function book($id, $file) {
 
 	$real_bookpath = $app->calibre->titleFile($id, $file);
 	$contentType = Utilities::titleMimeType($real_bookpath);
-	$app->getLog()->info("book download for ".$real_bookpath.
+	$app->getLog()->info("book download by " . $app->auth->getUserName() . " for " . $real_bookpath .
 	" with metadata update = ".$globalSettings[METADATA_UPDATE]);
 	if ($contentType == Utilities::MIME_EPUB && $globalSettings[METADATA_UPDATE]) {
 		if ($details['book']->has_cover == 1)
