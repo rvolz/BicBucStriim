@@ -1,4 +1,4 @@
-2015-09-25 Version 1.X.Y
+2015-10-01 Version 1.3.0
 
 * Added sorting by date to books view #116 #99 #50
 * Users can switch between title and date sorting in titles view
@@ -6,6 +6,7 @@
 * Updated layout
 * Replaced outdated auth library Slim\Strong with Aura\Auth
 * Added Aura\Session library to handle sessions properly, #173
+* Added workaround for SQL statements due to outdated SQLITE libs on QNAP devices, #146
 
 2015-09-11 Version 1.2.6
 * Security changes: protection against SQL injection, see #175

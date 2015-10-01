@@ -15,7 +15,7 @@ Features & Issues
 * individual books can be downloaded or emailed 
 * information about your favourite authors can be added (links, picture)
 * global search 
-* speaks Dutch, English, French, German, Italian
+* speaks Dutch, English, French, German, Galician, Italian
 * is ready for mobile clients
 * provides login-based access control 
 * users can be restricted by book language and/or tag
@@ -59,11 +59,6 @@ However, if you have lots of books and don't want to regenerate all the thumbnai
 * Use `chmod -R ga+w bbs/data/titles` to correct the permissions after copying if there are access errors
 
 After that the thumbnails should appear again.
-
-Notice for Github users, v1.2.5+: Issue #104 added the possibility to have multiple admin users. If you have trouble to login as admin, either
-
-1. use the sqlite3 cli to `update user set role=1 where username='admin';` 
-2. delete `data/data.db` 
 
 
 Troubleshooting
