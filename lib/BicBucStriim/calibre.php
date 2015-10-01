@@ -215,9 +215,10 @@ class Calibre
                 $class = 'Author';
                 $count = $this->mkAuthorsCount($queryFilter, $searching);
                 if (is_null($search)) {
-                    $query = 'SELECT a.id, a.name, a.sort, count(bal.id) AS anzahl FROM authors AS a LEFT JOIN books_authors_link AS bal ON a.id = bal.author GROUP BY a.id ORDER BY a.sort';
+                    //$query = 'SELECT a.id, a.name, a.sort, count(bal.id) AS anzahl FROM authors AS a LEFT JOIN books_authors_link AS bal ON a.id = bal.author GROUP BY a.id ORDER BY a.sort';
+                    $query = 'SELECT a.id, a.name, a.sort, (SELECT COUNT(*) FROM books_authors_link b WHERE b.author=a.id) AS anzahl FROM authors AS a GROUP BY a.id ORDER BY a.sort';
                 } else {
-                    $query = 'SELECT a.id, a.name, a.sort, count(bal.id) AS anzahl FROM authors AS a LEFT JOIN books_authors_link AS bal ON a.id = bal.author WHERE lower(a.name) LIKE :search GROUP BY a.id ORDER BY a.sort';
+                    $query = 'SELECT a.id, a.name, a.sort, (SELECT COUNT(*) FROM books_authors_link b WHERE b.author=a.id) AS anzahl FROM authors AS a WHERE lower(a.name) LIKE :search GROUP BY a.id ORDER BY a.sort';
                 }
                 break;
             case CalibreSearchType::AuthorBook:
@@ -239,9 +240,9 @@ class Calibre
                 $class = 'Series';
                 $count = $this->mkSeriesCount($queryFilter, $searching);
                 if (is_null($search)) {
-                    $query = 'SELECT series.id, series.name, count(bsl.id) AS anzahl FROM series LEFT JOIN books_series_link AS bsl ON series.id = bsl.series GROUP BY series.id ORDER BY series.name';
+                    $query = 'SELECT series.id, series.name, (SELECT COUNT(*) FROM books_series_link AS bsl WHERE series.id = bsl.series ) AS anzahl FROM series GROUP BY series.id ORDER BY series.name';
                 } else {
-                    $query = 'SELECT series.id, series.name, count(bsl.id) AS anzahl FROM series LEFT JOIN books_series_link AS bsl ON series.id = bsl.series WHERE lower(series.name) LIKE :search GROUP BY series.id ORDER BY series.name';
+                    $query = 'SELECT series.id, series.name, (SELECT COUNT(*) FROM books_series_link AS bsl WHERE series.id = bsl.series ) AS anzahl FROM series WHERE lower(series.name) LIKE :search GROUP BY series.id ORDER BY series.name';
                 }
                 break;
             case CalibreSearchType::SeriesBook:
@@ -258,9 +259,9 @@ class Calibre
                 $class = 'Tag';
                 $count = $this->mkTagsCount($queryFilter, $searching);
                 if (is_null($search)) {
-                    $query = 'SELECT tags.id, tags.name, count(btl.id) AS anzahl FROM tags LEFT JOIN books_tags_link AS btl ON tags.id = btl.tag GROUP BY tags.id ORDER BY tags.name';
+                    $query = 'SELECT tags.id, tags.name, (SELECT COUNT(*) FROM books_tags_link AS btl WHERE tags.id = btl.tag) AS anzahl FROM tags GROUP BY tags.id ORDER BY tags.name';
                 } else {
-                    $query = 'SELECT tags.id, tags.name, count(btl.id) AS anzahl FROM tags LEFT JOIN books_tags_link AS btl ON tags.id = btl.tag WHERE lower(tags.name) LIKE :search GROUP BY tags.id ORDER BY tags.name';
+                    $query = 'SELECT tags.id, tags.name, (SELECT COUNT(*) FROM books_tags_link AS btl WHERE tags.id = btl.tag) AS anzahl FROM tags WHERE lower(tags.name) LIKE :search GROUP BY tags.id ORDER BY tags.name';
                 }
                 break;
             case CalibreSearchType::TagBook:
@@ -560,7 +561,7 @@ class Calibre
     function authorsNamesForInitial($initial)
     {
         return $this->findPrepared('Author',
-            'SELECT a.id, a.name, a.sort, count(bal.id) AS anzahl FROM authors AS a LEFT JOIN books_authors_link AS bal ON a.id = bal.author WHERE substr(upper(a.sort),1,1)=:initial GROUP BY a.id ORDER BY a.sort',
+            'SELECT a.id, a.name, a.sort, (SELECT COUNT(*) FROM books_authors_link AS bal WHERE a.id = bal.author) AS anzahl FROM authors AS a WHERE substr(upper(a.sort),1,1)=:initial GROUP BY a.id ORDER BY a.sort',
             array('initial'=>$initial));
     }
 
@@ -661,7 +662,7 @@ class Calibre
     function tagsNamesForInitial($initial)
     {
         return $this->findPrepared('Tag',
-            'SELECT tags.id, tags.name, count(btl.id) AS anzahl FROM tags LEFT JOIN books_tags_link AS btl ON tags.id = btl.tag WHERE substr(upper(tags.name),1,1)=:initial GROUP BY tags.id ORDER BY tags.name',
+            'SELECT tags.id, tags.name, (SELECT COUNT(*) FROM books_tags_link AS btl WHERE tags.id = btl.tag ) AS anzahl FROM tags WHERE substr(upper(tags.name),1,1)=:initial GROUP BY tags.id ORDER BY tags.name',
             array('initial'=>$initial));
     }
 
@@ -1110,10 +1111,10 @@ class Calibre
     function seriesNamesForInitial($initial)
     {
         if (strcasecmp($initial, "all") == 0) {
-            $seriesNames =  $this->findPrepared('Series', 'SELECT series.id, series.name, count(btl.id) AS anzahl FROM series LEFT JOIN books_series_link AS btl ON series.id = btl.series GROUP BY series.id ORDER BY series.name',
+            $seriesNames = $this->findPrepared('Series', 'SELECT series.id, series.name, (SELECT COUNT(*) FROM books_series_link AS btl WHERE series.id = btl.series) AS anzahl FROM series GROUP BY series.id ORDER BY series.name',
                 array());
         } else {
-            $seriesNames = $this->findPrepared('Series', 'SELECT series.id, series.name, count(btl.id) AS anzahl FROM series LEFT JOIN books_series_link AS btl ON series.id = btl.series WHERE substr(upper(series.name),1,1)=:initial GROUP BY series.id ORDER BY series.name',
+            $seriesNames = $this->findPrepared('Series', 'SELECT series.id, series.name, (SELECT COUNT(*) FROM books_series_link AS btl WHERE series.id = btl.series) AS anzahl FROM series WHERE substr(upper(series.name),1,1)=:initial GROUP BY series.id ORDER BY series.name',
                 array('initial'=>$initial));
         }
         return $seriesNames;
