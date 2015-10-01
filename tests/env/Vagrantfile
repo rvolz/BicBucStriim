@@ -9,7 +9,7 @@ Vagrant.configure("2") do |config|
 
   # Every Vagrant virtual environment requires a box to build off of.
   # In this case Ubuntu Server 12.04 i386
-  config.vm.box = "ub-1204-386"
+  config.vm.box = "ubuntu/trusty32"
 
   # Forward a port from the guest to the host, which allows for outside
   # computers to access the VM, whereas host only networking does not.
@@ -23,7 +23,7 @@ Vagrant.configure("2") do |config|
   config.vm.provision :shell, :inline => "sudo a2enmod rewrite"
   # Send a host config with "AllowOverride All" to enable .htaccess/mod_rewrite
   # By default AllowOverride is set to None
-  config.vm.provision :shell, :inline => "sudo cp /vagrant/default /etc/apache2/sites-available"
+  config.vm.provision :shell, :inline => "sudo cp /vagrant/default /etc/apache2/sites-available/000-default.conf"
   config.vm.provision :shell, :inline => "sudo service apache2 restart"
   # Make the dir for the calibre library
   config.vm.provision :shell, :inline => "sudo mkdir /tmp/calibre; sudo chown vagrant:vagrant /tmp/calibre"
