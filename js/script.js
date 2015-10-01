@@ -1,11 +1,15 @@
 /**
  * BicBucStriim
  *
- * Copyright 2012-2013 Rainer Volz
+ * Copyright 2012-2015 Rainer Volz
  * Licensed under MIT License, see LICENSE
  *
  */
 
+// Clear flash when showing page
+$(document).on('pageload', '#pauthor_detail', function () {
+    $('div#flash').empty();
+});
 
 // Author metadata on author details page
 $(document).on('pageinit', '#pauthor_detail', function() {
@@ -18,6 +22,8 @@ $(document).on('pageinit', '#pauthor_detail', function() {
 	$('#author-mdlinks-panel').on('panelbeforeopen', function( event, ui ) {
 		$('#popupMenu').popup('close');
 	});
+
+    $('div#flash').empty();
 
 	// Delete author image
 	$('#delete-image').on('vclick', function() {
