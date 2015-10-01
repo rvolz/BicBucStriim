@@ -114,7 +114,7 @@ class HtpasswdAdapter extends AbstractAdapter
     {
         // force the full, real path to the file
         $real = realpath($this->file);
-        if (!$real) {
+        if (! $real) {
             throw new Exception\FileNotReadable($this->file);
         }
 
@@ -157,7 +157,7 @@ class HtpasswdAdapter extends AbstractAdapter
      */
     protected function verify($password, $hashvalue)
     {
-        if (!$this->verifier->verify($password, $hashvalue)) {
+        if (! $this->verifier->verify($password, $hashvalue)) {
             throw new Exception\PasswordIncorrect;
         }
     }

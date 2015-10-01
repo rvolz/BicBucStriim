@@ -5,6 +5,7 @@
 * Added admin configuration to specify the kind of date used for sorting (timestamp, pubdate or modified)
 * Updated layout
 * Replaced outdated auth library Slim\Strong with Aura\Auth
+* Added Aura\Session library to handle sessions properly, #173
 
 2015-09-11 Version 1.2.6
 * Security changes: protection against SQL injection, see #175

@@ -92,7 +92,7 @@ class HtpasswdVerifier implements VerifierInterface
         $binary = $this->computeBinary($plaintext, $salt, $context);
         $p = $this->computeP($binary);
         $computed_hash = '$apr1$' . $salt . '$' . $p
-            . $this->convert64(ord($binary[11]), 3);
+                       . $this->convert64(ord($binary[11]), 3);
         return $computed_hash === $hashvalue;
     }
 

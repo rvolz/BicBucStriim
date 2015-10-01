@@ -4,21 +4,21 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "67bea8910cd25f56f76038dcc170e4d7",
-    "content-hash": "ca381df8c24e62b6f5b9377d8d13e4bc",
+    "hash": "6d43c91e3b552da6e584c37d7b7d1a89",
+    "content-hash": "86c031903df2d5ad9b4f74f9be7cf682",
     "packages": [
         {
             "name": "aura/auth",
-            "version": "2.0.0-beta2",
+            "version": "2.x-dev",
             "source": {
                 "type": "git",
                 "url": "https://github.com/auraphp/Aura.Auth.git",
-                "reference": "8010400aa090f52e9c4056399c018c4bb96d7fc1"
+                "reference": "f9691d48860b163641ddf2a1e616d035ff8f885b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/auraphp/Aura.Auth/zipball/8010400aa090f52e9c4056399c018c4bb96d7fc1",
-                "reference": "8010400aa090f52e9c4056399c018c4bb96d7fc1",
+                "url": "https://api.github.com/repos/auraphp/Aura.Auth/zipball/f9691d48860b163641ddf2a1e616d035ff8f885b",
+                "reference": "f9691d48860b163641ddf2a1e616d035ff8f885b",
                 "shasum": ""
             },
             "require": {
@@ -36,9 +36,6 @@
                     "config": {
                         "common": "Aura\\Auth\\_Config\\Common"
                     }
-                },
-                "branch-alias": {
-                    "dev-develop-2": "2.0.x-dev"
                 }
             },
             "autoload": {
@@ -64,7 +61,7 @@
                 "auth",
                 "authenticate"
             ],
-            "time": "2014-11-07 15:41:31"
+            "time": "2015-08-08 09:48:54"
         },
         {
             "name": "aura/session",
@@ -510,7 +507,7 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "aura/auth": 10
+        "aura/auth": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,

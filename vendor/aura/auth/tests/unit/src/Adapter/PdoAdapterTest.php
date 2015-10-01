@@ -43,17 +43,17 @@ class PdoAdapterTest extends \PHPUnit_Framework_TestCase
             array(
                 'username' => 'boshag',
                 'password' => hash('md5', '123456'),
-                'active' => 'y',
+                'active'    => 'y',
             ),
             array(
                 'username' => 'repeat',
                 'password' => hash('md5', '234567'),
-                'active' => 'y',
+                'active'    => 'y',
             ),
             array(
                 'username' => 'repeat',
                 'password' => hash('md5', '234567'),
-                'active' => 'n',
+                'active'    => 'n',
             ),
         );
 

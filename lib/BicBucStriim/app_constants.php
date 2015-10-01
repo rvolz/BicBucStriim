@@ -2,10 +2,11 @@
 /**
  * BicBucStriim
  *
- * Copyright 2012-2013 Rainer Volz
+ * Copyright 2012-2015 Rainer Volz
  * Licensed under MIT License, see LICENSE
- * 
- */ 
+ *
+ */
+
 # Current DB schema version
 const DB_SCHEMA_VERSION = 3;
 

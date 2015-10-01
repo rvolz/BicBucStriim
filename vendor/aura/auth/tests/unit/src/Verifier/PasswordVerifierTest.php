@@ -5,7 +5,7 @@ class PasswordVerifierTest extends \PHPUnit_Framework_TestCase
 {
     public function testBcrypt()
     {
-        if (!defined('PASSWORD_BCRYPT')) {
+        if (! defined('PASSWORD_BCRYPT')) {
             $this->markTestSkipped("password_hash functionality not available. Install ircmaxell/password-compat for 5.3+");
         }
 

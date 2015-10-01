@@ -487,7 +487,9 @@ namespace OAuth2\Adapter;
 
 use Aura\Auth\Adapter\AdapterInterface;
 use Aura\Auth\Exception;
-use League\OAuth2\Client\Provider\IdentityProvider;
+use Aura\Auth\Auth;
+use Aura\Auth\Adapter\Status;
+use League\OAuth2\Client\Provider\AbstractProvider;
 
 class LeagueOAuth2Adapter implements AdapterInterface
 {
@@ -498,7 +500,7 @@ class LeagueOAuth2Adapter implements AdapterInterface
      */
     protected $provider;
 
-    public function __construct(IdentityProvider $provider)
+    public function __construct(AbstractProvider $provider)
     {
         $this->provider = $provider;
     }
@@ -521,22 +523,13 @@ class LeagueOAuth2Adapter implements AdapterInterface
             array('code' => $input['code'])
         );
 
-        $details = $this->provider->getUserDetails($token);
+        $details = $this->provider->getResourceOwner($token);
         $data = [
-            'uid' => $details->__get('uid'),
-            'nickname' => $details->__get('nickname'),
-            'name' => $details->__get('name'),
-            'firstName' => $details->__get('firstName'),
-            'lastName' => $details->__get('lastName'),
-            'email' => $details->__get('email'),
-            'location' => $details->__get('location'),
-            'description' => $details->__get('description'),
-            'imageUrl' => $details->__get('imageUrl'),
-            'urls' => $details->__get('urls'),
+            'name' => $details->getName(),
+            'email' => $details->getEmail(),
         ];
         $data['token'] = $token;
-        $username = $data['nickname'];
-        unset($data['nickname']);
+        $username = $data['email'];
         return [$username, $data];
     }
 
@@ -544,7 +537,7 @@ class LeagueOAuth2Adapter implements AdapterInterface
      * @param Auth $auth
      * Logout method is required to fulfill the contract with AdapterInterface
      */
-    public function logout(Auth $auth)
+    public function logout(Auth $auth, $status = Status::ANON)
     {
         //nothing to do here
     }
@@ -576,27 +569,32 @@ look like.
 <?php
 namespace OAuth2;
 
+use Aura\Auth\AuthFactory;
 use League\OAuth2\Client\Provider\Github;
 use OAuth2\Adapter\LeagueOAuth2Adapter;
 use Aura\Auth\Exception;
 
 require_once 'vendor/autoload.php';
 
-$githubProvider = new Github(array(
+$auth_factory = new AuthFactory($_COOKIE);
+$auth = $auth_factory->newInstance();
+
+$github_provider = new Github(array(
     'clientId' => 'xxxxxxxxxxxxxxxx',
     'clientSecret' => 'xxxxxxxxxxxxxxxxxxxx',
     'redirectUri' => 'http://aura.auth.dev/'
 ));
 
 if (!isset($_GET['code'])) {
-    header('Location: ' . $githubProvider->getAuthorizationUrl());
+    header('Location: ' . $github_provider->getAuthorizationUrl());
     exit;
 } else {
-    $auraAdapter = new LeagueOAuth2Adapter($githubProvider);
+    $oauth_adapter = new LeagueOAuth2Adapter($github_provider);
+    $login_service = $auth_factory->newLoginService($oauth_adapter);
     try {
         // array is the username and an array of info and indicates successful
         // login
-        $data = $githubAdapter->login($_GET);
+        $data = $login_service->login($auth, $_GET);
     } catch (Exception $e) {
         // handle the exception
     }
@@ -646,40 +644,70 @@ switch (true) {
 
 #### Logging In
 
-This is an example of the code needed to effect a login. Note that the `echo` statements are intended to explain the different resulting states of the `login()` call, and may be replaced by whatever logic you feel is appropriate.
+This is an example of the code needed to effect a login. Note that the `echo` and `$log` statements are intended to explain the different resulting states of the `login()` call, and may be replaced by whatever logic you feel is appropriate; in particular, you should probably not expose the exact nature of the failure, to help mitigate brute-force attempts.
 
 ```php
 <?php
+
+class InvalidLoginException extends Exception {}
+
 $auth = $auth_factory->newInstance();
 
 $login_service = $auth_factory->newLoginService(...);
 
 try {
+
     $login_service->login($auth, array(
         'username' => $_POST['username'],
         'password' => $_POST['password'],
     );
     echo "You are now logged into a new session.";
+
 } catch (\Aura\Auth\Exception\UsernameMissing $e) {
-    echo "The 'username' field is missing or empty.";
+
+    $log->notice("The 'username' field is missing or empty.");
+    throw new InvalidLoginException();
+
 } catch (\Aura\Auth\Exception\PasswordMissing $e) {
-    echo "The 'password' field is missing or empty.";
+
+    $log->notice("The 'password' field is missing or empty.");
+    throw new InvalidLoginException();
+
 } catch (\Aura\Auth\Exception\UsernameNotFound $e) {
-    echo "The username you entered was not found.";
+
+    $log->warning("The username you entered was not found.");
+    throw new InvalidLoginException();
+
 } catch (\Aura\Auth\Exception\MultipleMatches $e) {
-    echo "There is more than one account with that username.";
+
+    $log->warning("There is more than one account with that username.");
+    throw new InvalidLoginException();
+
 } catch (\Aura\Auth\Exception\PasswordIncorrect $e) {
-    echo "The password you entered was incorrect.";
+
+    $log->notice("The password you entered was incorrect.");
+    throw new InvalidLoginException();
+
 } catch (\Aura\Auth\Exception\ConnectionFailed $e) {
-    echo "Cound not connect to IMAP or LDAP server.";
-    echo "This could be because the username or password was wrong,";
-    echo "or because the the connect operation itself failed in some way. ";
-    echo $e->getMessage();
+
+    $log->notice("Cound not connect to IMAP or LDAP server.");
+    $log->info("This could be because the username or password was wrong,");
+    $log->info("or because the the connect operation itself failed in some way. ");
+    $log->info($e->getMessage());
+    throw new InvalidLoginException();
+
 } catch (\Aura\Auth\Exception\BindFailed $e) {
-    echo "Cound not bind to LDAP server.";
-    echo "This could be because the username or password was wrong,";
-    echo "or because the the bind operations itself failed in some way. ";
-    echo $e->getMessage();
+
+    $log->notice("Cound not bind to LDAP server.");
+    $log->info("This could be because the username or password was wrong,");
+    $log->info("or because the the bind operation itself failed in some way. ");
+    $log->info($e->getMessage());
+    throw new InvalidLoginException();
+
+} catch (InvalidLoginException $e) {
+
+    echo "Invalid login details. Please try again.";
+
 }
 ?>
 ```
@@ -895,4 +923,3 @@ $di->params['Aura\Auth\Adapter\PdoAdapter'] = array(
 );
 ?>
 ```
-

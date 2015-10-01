@@ -76,8 +76,7 @@ class LdapAdapter extends AbstractAdapter
         $server,
         $dnformat,
         array $options = array()
-    )
-    {
+    ) {
         $this->phpfunc = $phpfunc;
         $this->server = $server;
         $this->dnformat = $dnformat;
@@ -117,7 +116,7 @@ class LdapAdapter extends AbstractAdapter
     protected function connect()
     {
         $conn = $this->phpfunc->ldap_connect($this->server);
-        if (!$conn) {
+        if (! $conn) {
             throw new Exception\ConnectionFailed($this->server);
         }
 
@@ -147,10 +146,10 @@ class LdapAdapter extends AbstractAdapter
         $bind_rdn = sprintf($this->dnformat, $username);
 
         $bound = $this->phpfunc->ldap_bind($conn, $bind_rdn, $password);
-        if (!$bound) {
+        if (! $bound) {
             $error = $this->phpfunc->ldap_errno($conn)
-                . ': '
-                . $this->phpfunc->ldap_error($conn);
+                   . ': '
+                   . $this->phpfunc->ldap_error($conn);
             $this->phpfunc->ldap_close($conn);
             throw new Exception\BindFailed($error);
         }
@@ -175,18 +174,18 @@ class LdapAdapter extends AbstractAdapter
     {
         return strtr($str, array(
             '\\' => '\\\\',
-            '&' => '\\&',
-            '!' => '\\!',
-            '|' => '\\|',
-            '=' => '\\=',
-            '<' => '\\<',
-            '>' => '\\>',
-            ',' => '\\,',
-            '+' => '\\+',
-            '-' => '\\-',
-            '"' => '\\"',
-            "'" => "\\'",
-            ';' => '\\;',
+            '&'  => '\\&',
+            '!'  => '\\!',
+            '|'  => '\\|',
+            '='  => '\\=',
+            '<'  => '\\<',
+            '>'  => '\\>',
+            ','  => '\\,',
+            '+'  => '\\+',
+            '-'  => '\\-',
+            '"'  => '\\"',
+            "'"  => "\\'",
+            ';'  => '\\;',
         ));
     }
 }

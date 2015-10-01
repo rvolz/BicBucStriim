@@ -69,8 +69,7 @@ class Auth
         $last_active,
         $username,
         array $userdata
-    )
-    {
+    ) {
         $this->setStatus($status);
         $this->setFirstActive($first_active);
         $this->setLastActive($last_active);

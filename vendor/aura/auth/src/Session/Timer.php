@@ -74,8 +74,7 @@ class Timer
         $ini_cookie_lifetime = 0,
         $idle_ttl = 1440,
         $expire_ttl = 14400
-    )
-    {
+    ) {
         $this->ini_gc_maxlifetime = $ini_gc_maxlifetime;
         $this->ini_cookie_lifetime = $ini_cookie_lifetime;
         $this->setIdleTtl($idle_ttl);
@@ -160,7 +159,7 @@ class Timer
     public function hasExpired($first_active)
     {
         return $this->expire_ttl <= 0
-        || ($first_active + $this->getExpireTtl()) < time();
+            || ($first_active + $this->getExpireTtl()) < time();
     }
 
     /**
@@ -175,7 +174,7 @@ class Timer
     public function hasIdled($last_active)
     {
         return $this->idle_ttl <= 0
-        || ($last_active + $this->getIdleTtl()) < time();
+            || ($last_active + $this->getIdleTtl()) < time();
     }
 
     /**

@@ -13,6 +13,8 @@ namespace Aura\Auth;
 use Aura\Auth\Adapter;
 use Aura\Auth\Service;
 use Aura\Auth\Session;
+use Aura\Auth\Session\SessionInterface;
+use Aura\Auth\Session\SegmentInterface;
 use Aura\Auth\Verifier;
 use Aura\Auth\Adapter\AdapterInterface;
 use PDO;
@@ -24,6 +26,7 @@ use PDO;
  * @package Aura.Auth
  *
  */
+
 class AuthFactory
 {
     /**
@@ -59,15 +62,14 @@ class AuthFactory
         array $cookie,
         SessionInterface $session = null,
         SegmentInterface $segment = null
-    )
-    {
+    ) {
         $this->session = $session;
-        if (!$this->session) {
+        if (! $this->session) {
             $this->session = new Session\Session($cookie);
         }
 
         $this->segment = $segment;
-        if (!$this->segment) {
+        if (! $this->segment) {
             $this->segment = new Session\Segment;
         }
     }
@@ -136,8 +138,7 @@ class AuthFactory
         AdapterInterface $adapter = null,
         $idle_ttl = 1440,
         $expire_ttl = 14400
-    )
-    {
+    ) {
 
         $adapter = $this->fixAdapter($adapter);
 
@@ -204,8 +205,7 @@ class AuthFactory
         array $cols,
         $from,
         $where = null
-    )
-    {
+    ) {
         if (is_object($verifier_spec)) {
             $verifier = $verifier_spec;
         } else {
@@ -259,8 +259,7 @@ class AuthFactory
         $options = 0,
         $retries = 1,
         array $params = null
-    )
-    {
+    ) {
         return new Adapter\ImapAdapter(
             new Phpfunc,
             $mailbox,
@@ -276,7 +275,7 @@ class AuthFactory
      *
      * @param string $server An LDAP server string.
      *
-     * @param string $dnformat A distinguised name format string for looking up
+     * @param string $dnformat A distinguished name format string for looking up
      * the username.
      *
      * @param array $options Use these connection options.
@@ -288,8 +287,7 @@ class AuthFactory
         $server,
         $dnformat,
         array $options = array()
-    )
-    {
+    ) {
         return new Adapter\LdapAdapter(
             new Phpfunc,
             $server,

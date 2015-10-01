@@ -54,8 +54,7 @@ class LogoutService
     public function __construct(
         AdapterInterface $adapter,
         SessionInterface $session
-    )
-    {
+    ) {
         $this->adapter = $adapter;
         $this->session = $session;
     }

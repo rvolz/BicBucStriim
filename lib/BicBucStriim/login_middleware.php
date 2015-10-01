@@ -9,6 +9,9 @@
 
 require 'vendor/autoload.php';
 require_once 'lib/BicBucStriim/bicbucstriim.php';
+require_once 'lib/BicBucStriim/session_factory.php';
+require_once 'lib/BicBucStriim/segment_factory.php';
+require_once 'lib/BicBucStriim/session.php';
 use Aura\Auth;
 
 class LoginMiddleware extends \Slim\Middleware {
@@ -42,8 +45,7 @@ class LoginMiddleware extends \Slim\Middleware {
         $resource = $request->getResourceUri();
         $accept = $request->headers('ACCEPT');
         $app->getLog()->debug('login resource: '.$resource);
-        $app->getLog()->debug('login accept: '.var_export($accept,true));
-        if ($globalSettings[LOGIN_REQUIRED] === 1) {         
+        if ($globalSettings[LOGIN_REQUIRED] === 1) {
             if (!$this->is_static_resource($resource) && !$this->is_authorized()) {
                 if ($resource === '/login/') {
                     // special case login page
@@ -104,7 +106,10 @@ class LoginMiddleware extends \Slim\Middleware {
     protected function is_authorized() {
         $app = $this->app;
         $req = $app->request;
-        $auth_factory = new \Aura\Auth\AuthFactory($_COOKIE);
+        $session_factory = new \BicBucStriim\SessionFactory();
+        $session = $session_factory->newInstance($_COOKIE);
+        $session->setCookieParams(array('path' => $app->request->getRootUri()));
+        $auth_factory = new \Aura\Auth\AuthFactory($_COOKIE, $session);
         $app->auth = $auth_factory->newInstance();
         $hash = new \Aura\Auth\Verifier\PasswordVerifier(PASSWORD_BCRYPT);
         $cols = array('username', 'password', 'id', 'email', 'role', 'languages', 'tags');
@@ -113,6 +118,7 @@ class LoginMiddleware extends \Slim\Middleware {
         $app->logout_service = $auth_factory->newLogoutService($pdo_adapter);
         $resume_service = $auth_factory->newResumeService($pdo_adapter);
         $resume_service->resume($app->auth);
+        $app->getLog()->debug("after resume: " . $app->auth->getStatus());
         if ($app->auth->isValid()) {
             // already logged in
             return true;

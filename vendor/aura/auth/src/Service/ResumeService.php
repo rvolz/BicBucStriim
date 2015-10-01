@@ -79,8 +79,7 @@ class ResumeService
         SessionInterface $session,
         Timer $timer,
         LogoutService $logout_service
-    )
-    {
+    ) {
         $this->adapter = $adapter;
         $this->session = $session;
         $this->timer = $timer;
@@ -100,7 +99,7 @@ class ResumeService
     public function resume(Auth $auth)
     {
         $this->session->resume();
-        if (!$this->timedOut($auth)) {
+        if (! $this->timedOut($auth)) {
             $auth->setLastActive(time());
             $this->adapter->resume($auth);
         }

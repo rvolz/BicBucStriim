@@ -25,6 +25,6 @@ class FakeSession implements SessionInterface
 
     public function regenerateId()
     {
-        $this->session_id++;
+        $this->session_id ++;
     }
 }

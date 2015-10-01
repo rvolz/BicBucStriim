@@ -89,8 +89,7 @@ class PdoAdapter extends AbstractAdapter
         array $cols,
         $from,
         $where = null
-    )
-    {
+    ) {
         $this->pdo = $pdo;
         $this->verifier = $verifier;
         $this->setCols($cols);
@@ -113,10 +112,10 @@ class PdoAdapter extends AbstractAdapter
      */
     protected function setCols($cols)
     {
-        if (!isset($cols[0]) || trim($cols[0] == '')) {
+        if (! isset($cols[0]) || trim($cols[0] == '')) {
             throw new Exception\UsernameColumnNotSpecified;
         }
-        if (!isset($cols[1]) || trim($cols[1] == '')) {
+        if (! isset($cols[1]) || trim($cols[1] == '')) {
             throw new Exception\PasswordColumnNotSpecified;
         }
         $this->cols = $cols;
@@ -282,7 +281,7 @@ class PdoAdapter extends AbstractAdapter
             $data
         );
 
-        if (!$verified) {
+        if (! $verified) {
             throw new Exception\PasswordIncorrect;
         }
 

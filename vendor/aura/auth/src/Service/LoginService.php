@@ -54,8 +54,7 @@ class LoginService
     public function __construct(
         AdapterInterface $adapter,
         SessionInterface $session
-    )
-    {
+    ) {
         $this->adapter = $adapter;
         $this->session = $session;
     }
@@ -98,10 +97,9 @@ class LoginService
         $name,
         array $data = array(),
         $status = Status::VALID
-    )
-    {
+    ) {
         $started = $this->session->resume() || $this->session->start();
-        if (!$started) {
+        if (! $started) {
             return false;
         }
 

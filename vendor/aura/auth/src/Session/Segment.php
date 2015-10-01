@@ -72,7 +72,7 @@ class Segment implements SegmentInterface
      */
     public function set($key, $val)
     {
-        if (!isset($_SESSION)) {
+        if (! isset($_SESSION)) {
             return;
         }
 

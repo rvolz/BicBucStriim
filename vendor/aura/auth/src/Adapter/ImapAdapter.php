@@ -89,8 +89,7 @@ class ImapAdapter extends AbstractAdapter
         $options = 0,
         $retries = 1,
         array $params = null
-    )
-    {
+    ) {
         $this->phpfunc = $phpfunc;
         $this->mailbox = $mailbox;
         $this->options = $options;
@@ -125,7 +124,7 @@ class ImapAdapter extends AbstractAdapter
             $this->params
         );
 
-        if (!$conn) {
+        if (! $conn) {
             throw new Exception\ConnectionFailed($this->mailbox);
         }
 

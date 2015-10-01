@@ -5,7 +5,7 @@
     	"slim/views": "0.1.2",
     	"swiftmailer/swiftmailer": "5.0.1",
       "twig/twig": "1.16.0",
-      "aura/auth": "2.0.0-beta2",
+	  "aura/auth": "2.x-dev",
       "aura/session": "2.0.1",
       "ircmaxell/password-compat": "v1.0.4"
   	},
