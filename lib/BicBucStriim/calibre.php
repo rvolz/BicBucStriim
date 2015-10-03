@@ -196,7 +196,10 @@ class Calibre
      * @return array                            an array with current page (key 'page'),
      *                                          number of pages (key 'pages'),
      *                                          an array of $class instances (key 'entries') or NULL
-     */
+     *
+     * Changed thanks to QNAP who insist on publishing outdated libraries in their firmware
+     * TODO revert back to real SQL, not the outdated-QNAP stlyle
+ */
     protected
     function findSliceFiltered($searchType, $index = 0, $length = 100, $filter, $search = NULL, $id = NULL)
     {
@@ -215,7 +218,6 @@ class Calibre
                 $class = 'Author';
                 $count = $this->mkAuthorsCount($queryFilter, $searching);
                 if (is_null($search)) {
-                    //$query = 'SELECT a.id, a.name, a.sort, count(bal.id) AS anzahl FROM authors AS a LEFT JOIN books_authors_link AS bal ON a.id = bal.author GROUP BY a.id ORDER BY a.sort';
                     $query = 'SELECT a.id, a.name, a.sort, (SELECT COUNT(*) FROM books_authors_link b WHERE b.author=a.id) AS anzahl FROM authors AS a ORDER BY a.sort';
                 } else {
                     $query = 'SELECT a.id, a.name, a.sort, (SELECT COUNT(*) FROM books_authors_link b WHERE b.author=a.id) AS anzahl FROM authors AS a WHERE lower(a.name) LIKE :search ORDER BY a.sort';
@@ -545,12 +547,24 @@ class Calibre
     /**
      * Find the initials of all authors and their count
      * @return array an array of Items with initial character and author count
+     *
+     * Changed thanks to QNAP who insist on publishing outdated libraries in their firmware
+     * TODO revert back to real SQL, not the outdated-QNAP stlyle
      */
     function authorsInitials()
     {
-        return $this->findPrepared('Item',
-            'SELECT substr(upper(sort),1,1) AS initial, count(*) AS ctr FROM authors GROUP BY initial ORDER BY initial ASC',
+        $initials = $this->findPrepared('Item',
+            'SELECT DISTINCT substr(upper(sort),1,1) AS initial FROM authors ORDER BY initial ASC',
             array());
+        $ret = array();
+        foreach ($initials as $initial) {
+            $i = new Item();
+            $ctr = $this->findOne('Item', 'SELECT COUNT(*) as ctr FROM authors WHERE substr(upper(sort),1,1)=:initial', array('initial' => $initial->initial));
+            $i->initial = $initial->initial;
+            $i->ctr = $ctr->ctr;
+            array_push($ret, $i);
+        }
+        return $ret;
     }
 
     /**
@@ -561,7 +575,7 @@ class Calibre
     function authorsNamesForInitial($initial)
     {
         return $this->findPrepared('Author',
-            'SELECT a.id, a.name, a.sort, (SELECT COUNT(*) FROM books_authors_link AS bal WHERE a.id = bal.author) AS anzahl FROM authors AS a WHERE substr(upper(a.sort),1,1)=:initial GROUP BY a.id ORDER BY a.sort',
+            'SELECT a.id, a.name, a.sort, (SELECT COUNT(*) FROM books_authors_link AS bal WHERE a.id = bal.author) AS anzahl FROM authors AS a WHERE substr(upper(a.sort),1,1)=:initial ORDER BY a.sort',
             array('initial'=>$initial));
     }
 
@@ -646,12 +660,24 @@ class Calibre
     /**
      * Find the initials of all tags and their count
      * @return array an array of Items with initial character and tag count
+     *
+     * Changed thanks to QNAP who insist on publishing outdated libraries in their firmware
+     * TODO revert back to real SQL, not the outdated-QNAP stlyle
      */
     function tagsInitials()
     {
-        return $this->findPrepared('Item',
-            'SELECT substr(upper(name),1,1) AS initial, count(*) AS ctr FROM tags GROUP BY initial ORDER BY initial ASC',
+        $initials = $this->findPrepared('Item',
+            'SELECT DISTINCT substr(upper(name),1,1) AS initial FROM tags ORDER BY initial ASC',
             array());
+        $ret = array();
+        foreach ($initials as $initial) {
+            $i = new Item();
+            $ctr = $this->findOne('Item', 'SELECT COUNT(*) as ctr FROM tags WHERE substr(upper(name),1,1)=:initial', array('initial' => $initial->initial));
+            $i->initial = $initial->initial;
+            $i->ctr = $ctr->ctr;
+            array_push($ret, $i);
+        }
+        return $ret;
     }
 
     /**
@@ -662,7 +688,7 @@ class Calibre
     function tagsNamesForInitial($initial)
     {
         return $this->findPrepared('Tag',
-            'SELECT tags.id, tags.name, (SELECT COUNT(*) FROM books_tags_link AS btl WHERE tags.id = btl.tag ) AS anzahl FROM tags WHERE substr(upper(tags.name),1,1)=:initial GROUP BY tags.id ORDER BY tags.name',
+            'SELECT tags.id, tags.name, (SELECT COUNT(*) FROM books_tags_link AS btl WHERE tags.id = btl.tag ) AS anzahl FROM tags WHERE substr(upper(tags.name),1,1)=:initial ORDER BY tags.name',
             array('initial'=>$initial));
     }
 
@@ -1097,10 +1123,24 @@ class Calibre
     /**
      * Find the initials of all series and their number
      * @return array an array of Items with initial character and series count
+     *
+     * Changed thanks to QNAP who insist on publishing outdated libraries in their firmware
+     * TODO revert back to real SQL, not the outdated-QNAP stlyle
      */
     function seriesInitials()
     {
-        return $this->findPrepared('Item', 'SELECT substr(upper(name),1,1) AS initial, count(*) AS ctr FROM series GROUP BY initial ORDER BY initial ASC', array());
+        $initials = $this->findPrepared('Item',
+            'SELECT DISTINCT substr(upper(name),1,1) AS initial FROM series ORDER BY initial ASC',
+            array());
+        $ret = array();
+        foreach ($initials as $initial) {
+            $i = new Item();
+            $ctr = $this->findOne('Item', 'SELECT COUNT(*) as ctr FROM series WHERE substr(upper(name),1,1)=:initial', array('initial' => $initial->initial));
+            $i->initial = $initial->initial;
+            $i->ctr = $ctr->ctr;
+            array_push($ret, $i);
+        }
+        return $ret;
     }
 
     /**
@@ -1111,10 +1151,10 @@ class Calibre
     function seriesNamesForInitial($initial)
     {
         if (strcasecmp($initial, "all") == 0) {
-            $seriesNames = $this->findPrepared('Series', 'SELECT series.id, series.name, (SELECT COUNT(*) FROM books_series_link AS btl WHERE series.id = btl.series) AS anzahl FROM series GROUP BY series.id ORDER BY series.name',
+            $seriesNames = $this->findPrepared('Series', 'SELECT series.id, series.name, (SELECT COUNT(*) FROM books_series_link AS btl WHERE series.id = btl.series) AS anzahl FROM series ORDER BY series.name',
                 array());
         } else {
-            $seriesNames = $this->findPrepared('Series', 'SELECT series.id, series.name, (SELECT COUNT(*) FROM books_series_link AS btl WHERE series.id = btl.series) AS anzahl FROM series WHERE substr(upper(series.name),1,1)=:initial GROUP BY series.id ORDER BY series.name',
+            $seriesNames = $this->findPrepared('Series', 'SELECT series.id, series.name, (SELECT COUNT(*) FROM books_series_link AS btl WHERE series.id = btl.series) AS anzahl FROM series WHERE substr(upper(series.name),1,1)=:initial ORDER BY series.name',
                 array('initial'=>$initial));
         }
         return $seriesNames;
