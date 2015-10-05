@@ -389,7 +389,7 @@ class Calibre
         $stmt->execute($params);
         $result = $stmt->fetchColumn();
         if ($result == NULL || $result == FALSE)
-            return -1;
+            return 0;
         else
             return (int)$result;
     }

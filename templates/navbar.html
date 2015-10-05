@@ -67,7 +67,7 @@
             {% else %}
             {{page.glob.l10n.pagination_page}}
             {% endif %}
-            {{ curpage+1 }}/{{ pages }}
+            {% if pages > 0 %}{{ curpage+1 }}/{{ pages }}{% else %}0/0{% endif %}
             </a>
         </li>
         <li>
