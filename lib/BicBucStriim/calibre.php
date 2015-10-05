@@ -292,7 +292,7 @@ class Calibre
                 $no_pages += 1;
             $entries = $this->findPrepared($class, $query, $queryParams);
         } else {
-            $no_pages = 0;
+            $no_pages = 1;
             $entries = array();
         }
         return array('page' => $index, 'pages' => $no_pages, 'entries' => $entries, 'total' => $no_entries);
@@ -389,7 +389,7 @@ class Calibre
         $stmt->execute($params);
         $result = $stmt->fetchColumn();
         if ($result == NULL || $result == FALSE)
-            return -1;
+            return 0;
         else
             return (int)$result;
     }
