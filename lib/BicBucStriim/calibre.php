@@ -292,7 +292,7 @@ class Calibre
                 $no_pages += 1;
             $entries = $this->findPrepared($class, $query, $queryParams);
         } else {
-            $no_pages = 0;
+            $no_pages = 1;
             $entries = array();
         }
         return array('page' => $index, 'pages' => $no_pages, 'entries' => $entries, 'total' => $no_entries);
