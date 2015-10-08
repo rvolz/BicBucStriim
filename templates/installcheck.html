@@ -93,8 +93,8 @@
           <td colspan="2">
             <ul>
             <li>Directory exists? {% if cd.dir_exists %}Yes{%else%}No{%endif%}</li>
-            <li>Directory is readable? {% if cd.dir_ist_readable %}Yes{%else%}No{%endif%}</li>
-            <li>Directory is executable? {% if cd.dir_ist_executable %}Yes{%else%}No{%endif%}</li>
+            <li>Directory is readable? {% if cd.dir_is_readable %}Yes{%else%}No{%endif%}</li>
+            <li>Directory is executable? {% if cd.dir_is_executable %}Yes{%else%}No{%endif%}</li>
             <li>Real path of database is: {{ cd.realpath }}</li>
             <li>Database opened? {% if cd.library_ok %}Yes{%else%}No{%endif%}</li>
             </ul>
