@@ -108,7 +108,7 @@ class LoginMiddleware extends \Slim\Middleware {
         $req = $app->request;
         $session_factory = new \BicBucStriim\SessionFactory();
         $session = $session_factory->newInstance($_COOKIE);
-        $session->setCookieParams(array('path' => $app->request->getRootUri()));
+        $session->setCookieParams(array('path' => $app->request->getRootUri() . '/'));
         $auth_factory = new \Aura\Auth\AuthFactory($_COOKIE, $session);
         $app->auth = $auth_factory->newInstance();
         $hash = new \Aura\Auth\Verifier\PasswordVerifier(PASSWORD_BCRYPT);
