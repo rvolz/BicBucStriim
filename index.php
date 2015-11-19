@@ -2030,15 +2030,17 @@ function getFilter()
 {
     global $app;
 
-    $user = $app->auth->getUserData();
-    $app->getLog()->debug('getFilter: ' . var_export($user, true));
     $lang = null;
     $tag = null;
-    if (!empty($user['languages']))
-        $lang = $app->calibre->getLanguageId($user['languages']);
-    if (!empty($user['tags']))
-        $tag = $app->calibre->getTagId($user['tags']);
-    $app->getLog()->debug('getFilter: Using language ' . $lang . ', tag ' . $tag);
+    if ($app->auth->isValid()) {
+        $user = $app->auth->getUserData();
+        $app->getLog()->debug('getFilter: ' . var_export($user, true));
+        if (!empty($user['languages']))
+            $lang = $app->calibre->getLanguageId($user['languages']);
+        if (!empty($user['tags']))
+            $tag = $app->calibre->getTagId($user['tags']);
+        $app->getLog()->debug('getFilter: Using language ' . $lang . ', tag ' . $tag);
+    }
     return new CalibreFilter($lang, $tag);
 }
 
@@ -2100,6 +2102,8 @@ function title_forbidden($book_details)
 {
     global $app;
 
+    if (!$app->auth->isValid())
+        return false;
     $user = $app->auth->getUserData();
     if (empty($user['languages']) && empty($user['tags'])) {
         return false;
