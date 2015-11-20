@@ -71,16 +71,21 @@ class Calibre
         return (!is_null($this->calibre));
     }
 
-
+    /**
+     * Return an array with library statistics for titles, authors etc.
+     *
+     * @param object $filter    a QueryFilter
+     * @return array            array of numbers fir titles, authers etc.
+     */
     function libraryStats($filter)
     {
         $stats = array();
         $countParams = $this->mkCountParams(null, $filter, null);
         $queryFilter = $filter->getBooksFilter();
         $stats["titles"] = $this->count($this->mkBooksCount($queryFilter, false), $countParams);
-        $stats["authors"] = $this->count($this->mkAuthorsCount($queryFilter, false), $countParams);
-        $stats["tags"] = $this->count($this->mkTagsCount($queryFilter, false), $countParams);
-        $stats["series"] = $this->count($this->mkSeriesCount($queryFilter, false), $countParams);
+        $stats["authors"] = $this->count($this->mkAuthorsCount($queryFilter, false), array());
+        $stats["tags"] = $this->count($this->mkTagsCount($queryFilter, false), array());
+        $stats["series"] = $this->count($this->mkSeriesCount($queryFilter, false), array());
         return $stats;
     }
 
@@ -399,13 +404,13 @@ class Calibre
      * @param string $languageCode ISO 639-2 code, e.g. 'deu', 'eng'
      * @return          integer         ID or null
      */
-    protected function getLanguageId($languageCode)
+    public function getLanguageId($languageCode)
     {
         $result = $this->calibre->query('SELECT id FROM languages WHERE lang_code = "' . $languageCode . '"')->fetchColumn();
         if ($result == NULL || $result == FALSE)
             return NULL;
         else
-            return $result[0];
+            return $result;
     }
 
     /**
@@ -413,13 +418,13 @@ class Calibre
      * @param string    tagName     textual tag name
      * @return          integer     ID or null
      */
-    protected function getTagId($tagName)
+    public function getTagId($tagName)
     {
         $result = $this->calibre->query('SELECT id FROM tags WHERE name = "' . $tagName . '"')->fetchColumn();
         if ($result == NULL || $result == FALSE)
             return NULL;
         else
-            return $result[0];
+            return $result;
     }
 
     /**

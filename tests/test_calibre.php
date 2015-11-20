@@ -36,10 +36,47 @@ class TestOfCalibre extends UnitTestCase
         $this->assertEqual(0, $this->calibre->last_error);
     }
 
-    function testLibraryStats()
+    function testGetTagId() {
+        $this->assertEqual(21, $this->calibre->getTagId('Architecture'));
+        $this->assertNull($this->calibre->getTagId('Nothing'));
+    }
+
+    function testGetLanguageId() {
+        $this->assertEqual(3, $this->calibre->getLanguageId('eng'));
+        $this->assertNull($this->calibre->getLanguageId('Nothing'));
+    }
+
+    function testLibraryStatsEmptyFilter()
     {
         $result = $this->calibre->libraryStats(new CalibreFilter());
         $this->assertEqual(7, $result["titles"]);
+        $this->assertEqual(6, $result["authors"]);
+        $this->assertEqual(6, $result["tags"]);
+        $this->assertEqual(3, $result["series"]);
+    }
+
+    function testLibraryStatsTagFilter()
+    {
+        $result = $this->calibre->libraryStats(new CalibreFilter($lang=null,$tag=21));
+        $this->assertEqual(6, $result["titles"]);
+        $this->assertEqual(6, $result["authors"]);
+        $this->assertEqual(6, $result["tags"]);
+        $this->assertEqual(3, $result["series"]);
+    }
+
+    function testLibraryStatsLanguageFilter()
+    {
+        $result = $this->calibre->libraryStats(new CalibreFilter($lang=3,$tag=null));
+        $this->assertEqual(1, $result["titles"]);
+        $this->assertEqual(6, $result["authors"]);
+        $this->assertEqual(6, $result["tags"]);
+        $this->assertEqual(3, $result["series"]);
+    }
+
+    function testLibraryStatsLanguageAndTagFilter()
+    {
+        $result = $this->calibre->libraryStats(new CalibreFilter($lang=1,$tag=3));
+        $this->assertEqual(1, $result["titles"]);
         $this->assertEqual(6, $result["authors"]);
         $this->assertEqual(6, $result["tags"]);
         $this->assertEqual(3, $result["series"]);
