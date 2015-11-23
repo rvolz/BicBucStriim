@@ -67,6 +67,7 @@ class LoginMiddleware extends \Slim\Middleware {
             }
         } else {
             if ($resource === '/login/') {
+                $this->is_authorized();
                 // special case login page
                 $app->getLog()->debug('login: login page authorized');
                 return;    
