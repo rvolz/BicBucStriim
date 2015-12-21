@@ -118,11 +118,24 @@ class LoginMiddleware extends \Slim\Middleware {
         $app->login_service = $auth_factory->newLoginService($pdo_adapter);
         $app->logout_service = $auth_factory->newLogoutService($pdo_adapter);
         $resume_service = $auth_factory->newResumeService($pdo_adapter);
-        $resume_service->resume($app->auth);
+        try {
+            $resume_service->resume($app->auth);
+        } catch(ErrorException $e) {
+            $app->getLog()->warn('login error: bad cookie data '.var_export(get_class($e),true));
+        }
         $app->getLog()->debug("after resume: " . $app->auth->getStatus());
         if ($app->auth->isValid()) {
-            // already logged in
-            return true;
+            // already logged in -- check for bad cookie contents
+            $ud = $app->auth->getUserData();
+            if (is_array($ud) && array_key_exists('role', $ud) && array_key_exists('id', $ud)) {
+                // contents seems ok
+                return true;
+            } else {
+                $app->getLog()->warn("bad cookie contents: killing session");
+                // bad cookie contents, kill it
+                $session->destroy();
+                return false;
+            }
         } else {
             // not logged in - check for login info
             $auth = $this->checkPhpAuth($req);
