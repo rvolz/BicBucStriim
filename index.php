@@ -34,14 +34,14 @@ $fallbackLang = 'en';
 # Application Name
 $appname = 'BicBucStriim';
 # App version
-$appversion = '1.3.6';
+$appversion = '1.3.7a';
 
 # Init app and routes
 $app = new \Slim\Slim(array(
     'view' => new \Slim\Views\Twig(),
-    'mode' => 'production',
+    #'mode' => 'production',
     #'mode' => 'debug',
-    #'mode' => 'development',
+    'mode' => 'development',
 ));
 
 $app->configureMode('production', 'confprod');
@@ -390,7 +390,7 @@ function admin_modify_idtemplate($id)
     global $app;
 
     // parameter checking
-    if (!is_numeric($id)) {
+    if (!preg_match('/^\w+$/',$id)) {
         $app->getLog()->warn('admin_modify_idtemplate: invalid template id ' . $id);
         $app->halt(400, "Bad parameter");
     }
@@ -429,7 +429,7 @@ function admin_clear_idtemplate($id)
     global $app;
 
     // parameter checking
-    if (!is_numeric($id)) {
+    if (!preg_match('/^\w+$/',$id)) {
         $app->getLog()->warn('admin_clear_idtemplate: invalid template id ' . $id);
         $app->halt(400, "Bad parameter");
     }

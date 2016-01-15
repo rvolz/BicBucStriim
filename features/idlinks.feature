@@ -6,8 +6,23 @@ Feature: ID links are shown if templates are active
 	to various other web sites, e.g. a ISBN search engine or book 
 	catalogs.
 
-	Scenario: If no ID templates are configured, there are no ID links
+	Background: Navigating to the id templates page
+		When I click on menu item "Home"
+		And the app switches to the "Home" view
+		And I click on menu item "Admin"
+		And the app switches to the "Admin" view
+		And I click on menu item "ID Templates"
+		And the app switches to the "ID Templates" view
+
 
 	Scenario: Book pages with suitable IDs contain ID links
+		When I enter the id template data "ISBN search", "http://isbnsearch.org/isbn/%id%" for id "test1"
+		And I navigate to title details page "6"
+		Then there are 1 id links 
+		And the id links contain label "ISBN search" and url "http://isbnsearch.org/isbn/neuesleben1"
 
 	Scenario: Book pages without suitable IDs contain no ID links
+		When I enter the id template data "ISBN search", "http://isbnsearch.org/isbn/%id%" for id "test1"
+		And I navigate to title details page "5"
+		Then there are 0 id links
+	

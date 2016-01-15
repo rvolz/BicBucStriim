@@ -22,6 +22,8 @@ Then /^the app switches to the "(.+)" view$/ do |view|
     page.find('div.ui-content h1', :visible => true).should have_content('Configuration')
   when 'Users'
     page.should have_title("Users")
+  when 'ID Templates'
+    page.should have_title("ID Templates")    
   else
     raise RuntimeError.new("Invalid topic #{topic}")
   end
@@ -96,6 +98,10 @@ end
 When /^I click on list item "(.+)"$/ do |item|
   page.find('div.ui-content', :visible => true).should have_content(item)
   click_link "#{item}", :wait => 10
+end
+
+When(/^I navigate to title details page "([^"]*)"$/) do |arg1|
+  visit "/titles/#{arg1}"
 end
 
 Then(/^the "(.+)" details page (\d+) for "(.+)" appears$/) do |item, pgno, content|
