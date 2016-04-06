@@ -28,7 +28,7 @@ use dflydev\markdown\MarkdownExtraParser;
 use Aura\Auth as Auth;
 
 # Allowed languages, i.e. languages with translations
-$allowedLangs = array('de', 'en', 'fr', 'it', 'nl', 'gl');
+$allowedLangs = array('de', 'en', 'fr', 'gl' , 'hu', 'it', 'nl');
 # Fallback language if the browser prefers otherau than the allowed languages
 $fallbackLang = 'en';
 # Application Name
