@@ -2,7 +2,7 @@
 /**
  * BicBucStriim
  *
- * Copyright 2012-2015 Rainer Volz
+ * Copyright 2012-2016 Rainer Volz
  * Licensed under MIT License, see LICENSE
  *
  */
@@ -98,7 +98,7 @@ function confdebug()
     $app->getLog()->setLevel(\Slim\Log::DEBUG);
     $app->getLog()->setWriter(new \Slim\Extras\Log\DateTimeFileWriter(array('path' => './data', 'name_format' => 'Y-m-d')));
     $app->getLog()->info($appname . ' ' . $appversion . ': Running in debug mode.');
-    error_reporting(E_ALL);
+    error_reporting(E_ALL | E_STRICT);
 }
 
 # Init app globals

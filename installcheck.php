@@ -3,11 +3,12 @@
 /**
  * BicBucStriim installation check
  *
- * Copyight 2012 Rainer Volz
+ * Copyight 2012-2016 Rainer Volz
  * Licensed under MIT License, see LICENSE
  * 
- */ 
+ */
 
+require 'lib/BicBucStriim/inst_utils.php';
 # Use this instead of the Composer autoload for PHP 5.2 compatibility
 # At least the PHP version check should run with PHP 5.2
 require_once 'vendor/twig/twig/lib/Twig/Autoloader.php';
@@ -54,13 +55,8 @@ function get_gd_version() {
   ob_start(); 
   phpinfo(8); 
   $module_info = ob_get_contents(); 
-  ob_end_clean(); 
-  if (preg_match("/\bgd\s+version\b[^\d\n\r]+?([\d\.]+)/i", $module_info,$matches)) { 
-      $gd_version_number = $matches[1]; 
-  } else { 
-      $gd_version_number = 0; 
-  } 
-  return $gd_version_number; 
+  ob_end_clean();
+  return find_gd_version($module_info);
 } 
 
 function check_calibre($dir) {
