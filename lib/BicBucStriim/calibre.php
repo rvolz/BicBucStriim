@@ -158,7 +158,8 @@ class Calibre
             $params['lang'] = $filter->lang_id;
         }
         if (!is_null($search)) {
-            $params['search'] = $search;
+            $params['search_l'] = '%'. mb_convert_case($search, MB_CASE_LOWER, 'UTF-8') . '%';
+            $params['search_t'] = '%'. mb_convert_case($search, MB_CASE_TITLE, 'UTF-8') . '%';
         }
         return $params;
     }
@@ -176,7 +177,8 @@ class Calibre
             $params['lang'] = $filter->lang_id;
         }
         if (!is_null($search)) {
-            $params['search'] = $search;
+            $params['search_l'] = '%'. mb_convert_case($search, MB_CASE_LOWER, 'UTF-8') . '%';
+            $params['search_t'] = '%'. mb_convert_case($search, MB_CASE_TITLE, 'UTF-8') . '%';
         }
         if (!is_null($length)) {
             $params['length'] = $length;
@@ -212,9 +214,6 @@ class Calibre
             return array('page' => 0, 'pages' => 0, 'entries' => NULL);
         $offset = $index * $length;
         $searching = !is_null($search);
-        if ($searching) {
-            $search = '%' . strtolower($search) . '%';
-        }
         $countParams = $this->mkCountParams($id, $filter, $search);
         $queryParams = $this->mkQueryParams($id, $filter, $search, $length, $offset);
         $queryFilter = $filter->getBooksFilter();
@@ -225,7 +224,7 @@ class Calibre
                 if (is_null($search)) {
                     $query = 'SELECT a.id, a.name, a.sort, (SELECT COUNT(*) FROM books_authors_link b WHERE b.author=a.id) AS anzahl FROM authors AS a ORDER BY a.sort';
                 } else {
-                    $query = 'SELECT a.id, a.name, a.sort, (SELECT COUNT(*) FROM books_authors_link b WHERE b.author=a.id) AS anzahl FROM authors AS a WHERE lower(a.name) LIKE :search ORDER BY a.sort';
+                    $query = 'SELECT a.id, a.name, a.sort, (SELECT COUNT(*) FROM books_authors_link b WHERE b.author=a.id) AS anzahl FROM authors AS a WHERE lower(a.name) LIKE :search_l OR lower(a.name) LIKE :search_t ORDER BY a.sort';
                 }
                 break;
             case CalibreSearchType::AuthorBook:
@@ -234,8 +233,8 @@ class Calibre
                     $count = 'SELECT count(*) FROM (SELECT BAL.book, Books.* FROM books_authors_link BAL, ' . $queryFilter . ' Books WHERE Books.id=BAL.book AND author=:id)';
                     $query = 'SELECT BAL.book, Books.* FROM books_authors_link BAL, ' . $queryFilter . ' Books WHERE Books.id=BAL.book AND author=:id ORDER BY Books.sort';
                 } else {
-                    $count = 'SELECT count(*) FROM (SELECT BAL.book, Books.* FROM books_authors_link BAL, ' . $queryFilter . ' Books WHERE Books.id=BAL.book AND author=:id) WHERE lower(Books.sort) LIKE :search';
-                    $query = 'SELECT BAL.book, Books.* FROM books_authors_link BAL, ' . $queryFilter . ' Books WHERE Books.id=BAL.book AND author=:id AND lower(Books.sort) LIKE :search ORDER BY Books.sort';
+                    $count = 'SELECT count(*) FROM (SELECT BAL.book, Books.* FROM books_authors_link BAL, ' . $queryFilter . ' Books WHERE Books.id=BAL.book AND author=:id) WHERE Books.sort LIKE :search_l OR Books.sort LIKE :search_u OR Books.sort LIKE :search_t';
+                    $query = 'SELECT BAL.book, Books.* FROM books_authors_link BAL, ' . $queryFilter . ' Books WHERE Books.id=BAL.book AND author=:id AND (lower(Books.sort) LIKE :search_l OR lower(Books.sort) LIKE :search_t) ORDER BY Books.sort';
                 }
                 break;
             case CalibreSearchType::Book:
@@ -249,7 +248,7 @@ class Calibre
                 if (is_null($search)) {
                     $query = 'SELECT series.id, series.name, (SELECT COUNT(*) FROM books_series_link AS bsl WHERE series.id = bsl.series ) AS anzahl FROM series ORDER BY series.name';
                 } else {
-                    $query = 'SELECT series.id, series.name, (SELECT COUNT(*) FROM books_series_link AS bsl WHERE series.id = bsl.series ) AS anzahl FROM series WHERE lower(series.name) LIKE :search ORDER BY series.name';
+                    $query = 'SELECT series.id, series.name, (SELECT COUNT(*) FROM books_series_link AS bsl WHERE series.id = bsl.series ) AS anzahl FROM series WHERE lower(series.name) LIKE :search_l OR lower(series.name) LIKE :search_t ORDER BY series.name';
                 }
                 break;
             case CalibreSearchType::SeriesBook:
@@ -258,8 +257,8 @@ class Calibre
                     $count = 'SELECT count (*) FROM (SELECT BSL.book, Books.* FROM books_series_link BSL, ' . $queryFilter . ' Books WHERE Books.id=BSL.book AND series=:id)';
                     $query = 'SELECT BSL.book, Books.* FROM books_series_link BSL, ' . $queryFilter . ' Books WHERE Books.id=BSL.book AND series=:id ORDER BY series_index';
                 } else {
-                    $count = 'SELECT count (*) FROM (SELECT BSL.book, Books.* FROM books_series_link BSL, ' . $queryFilter . ' Books WHERE Books.id=BSL.book AND series=:id) WHERE lower(sort) LIKE :search';
-                    $query = 'SELECT BSL.book, Books.* FROM books_series_link BSL, ' . $queryFilter . ' Books WHERE Books.id=BSL.book AND series=:id AND lower(Books.sort) LIKE :search ORDER BY series_index';
+                    $count = 'SELECT count (*) FROM (SELECT BSL.book, Books.* FROM books_series_link BSL, ' . $queryFilter . ' Books WHERE Books.id=BSL.book AND series=:id) WHERE sort LIKE :search_l OR sort LIKE :search_u OR sort LIKE :search_t';
+                    $query = 'SELECT BSL.book, Books.* FROM books_series_link BSL, ' . $queryFilter . ' Books WHERE Books.id=BSL.book AND series=:id AND (lower(Books.sort) LIKE :search_l OR lower(Books.sort) LIKE :search_t) ORDER BY series_index';
                 }
                 break;
             case CalibreSearchType::Tag:
@@ -268,7 +267,7 @@ class Calibre
                 if (is_null($search)) {
                     $query = 'SELECT tags.id, tags.name, (SELECT COUNT(*) FROM books_tags_link AS btl WHERE tags.id = btl.tag) AS anzahl FROM tags ORDER BY tags.name';
                 } else {
-                    $query = 'SELECT tags.id, tags.name, (SELECT COUNT(*) FROM books_tags_link AS btl WHERE tags.id = btl.tag) AS anzahl FROM tags WHERE lower(tags.name) LIKE :search ORDER BY tags.name';
+                    $query = 'SELECT tags.id, tags.name, (SELECT COUNT(*) FROM books_tags_link AS btl WHERE tags.id = btl.tag) AS anzahl FROM tags WHERE lower(tags.name) LIKE :search_l OR lower(tags.name) LIKE :search_t ORDER BY tags.name';
                 }
                 break;
             case CalibreSearchType::TagBook:
@@ -277,8 +276,8 @@ class Calibre
                     $count = 'SELECT count (*) FROM (SELECT BTL.book, Books.* FROM books_tags_link BTL, ' . $queryFilter . ' Books WHERE Books.id=BTL.book AND tag=:id)';
                     $query = 'SELECT BTL.book, Books.* FROM books_tags_link BTL, ' . $queryFilter . ' Books WHERE Books.id=BTL.book AND tag=:id ORDER BY Books.sort';
                 } else {
-                    $count = 'SELECT count (*) FROM (SELECT BTL.book, Books.* FROM books_tags_link BTL, ' . $queryFilter . ' Books WHERE Books.id=BTL.book AND tag=:id) WHERE lower(sort) LIKE :search';
-                    $query = 'SELECT BTL.book, Books.* FROM books_tags_link BTL, ' . $queryFilter . ' Books WHERE Books.id=BTL.book AND tag=:id AND lower(Books.sort) LIKE :search ORDER BY Books.sort';
+                    $count = 'SELECT count (*) FROM (SELECT BTL.book, Books.* FROM books_tags_link BTL, ' . $queryFilter . ' Books WHERE Books.id=BTL.book AND tag=:id) WHERE sort LIKE :search_l OR sort LIKE :search_u OR sort LIKE :search_t';
+                    $query = 'SELECT BTL.book, Books.* FROM books_tags_link BTL, ' . $queryFilter . ' Books WHERE Books.id=BTL.book AND tag=:id AND (lower(Books.sort) LIKE :search_l OR lower(Books.sort) LIKE :search_t) ORDER BY Books.sort';
                 }
                 break;
             case CalibreSearchType::TimestampOrderedBook:
@@ -333,7 +332,7 @@ class Calibre
             $sortModifier = " DESC";
         }
         if ($search) {
-            $query = 'SELECT * FROM ' . $queryFilter . ' WHERE lower(title) LIKE :search ORDER BY ' . $sortField . ' ' . $sortModifier;
+            $query = 'SELECT * FROM ' . $queryFilter . ' WHERE lower(title) LIKE :search_l OR lower(title) LIKE :search_t ORDER BY ' . $sortField . ' ' . $sortModifier;
         } else {
             $query = 'SELECT * FROM ' . $queryFilter . ' ORDER BY ' . $sortField . ' ' . $sortModifier;
         }
@@ -345,7 +344,7 @@ class Calibre
         if (!$search) {
             $count = 'SELECT count(*) FROM ' . $queryFilter;
         } else {
-            $count = 'SELECT count(*) FROM ' . $queryFilter . ' WHERE lower(title) LIKE :search';
+            $count = 'SELECT count(*) FROM ' . $queryFilter . ' WHERE lower(title) LIKE :search_l OR lower(title) LIKE :search_t';
         }
         return $count;
     }
@@ -355,7 +354,7 @@ class Calibre
         if (!$search) {
             $count = 'SELECT count(*) FROM authors';
         } else {
-            $count = 'SELECT count(*) FROM authors WHERE lower(sort) LIKE :search';
+            $count = 'SELECT count(*) FROM authors WHERE lower(sort) LIKE :search_l OR lower(sort) LIKE :search_t';
         }
         return $count;
     }
@@ -365,7 +364,7 @@ class Calibre
         if (!$search) {
             $count = 'SELECT count(*) FROM tags';
         } else {
-            $count = 'SELECT count(*) FROM tags WHERE lower(name) LIKE :search';
+            $count = 'SELECT count(*) FROM tags WHERE lower(tags.name) LIKE :search_l OR lower(tags.name) LIKE :search_t';
         }
         return $count;
     }
@@ -375,7 +374,7 @@ class Calibre
         if (!$search) {
             $count = 'SELECT count(*) FROM series';
         } else {
-            $count = 'SELECT count(*) FROM series WHERE lower(name) LIKE :search';
+            $count = 'SELECT count(*) FROM series WHERE lower(name) LIKE :search_l OR lower(name) LIKE :search_t';
         }
         return $count;
     }

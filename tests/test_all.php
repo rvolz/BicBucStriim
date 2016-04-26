@@ -9,6 +9,7 @@ class TestsAll extends TestSuite {
 		$this->addFile('test_bicbucstriim.php');
 		$this->addFile('test_calibre.php');
 		$this->addFile('test_calibre_filter.php');
+		$this->addFile('test_calibre_icu.php');
 		$this->addFile('test_custom_columns.php');
 		$this->addFile('test_l10n.php');
 		$this->addFile('test_utilities.php');
