@@ -334,6 +334,7 @@ $(document).on('pageinit', '#padmin_user', function() {
 });
 
 
+/*
 // Search button for content pages
 $(document).on('vclick', '#enableSearchButton', function () {
     $('#generalSearchForm').show();
@@ -342,6 +343,7 @@ $(document).on('vclick', '#enableSearchButton', function () {
 $(document).on('pageinit', '#ptitles', function () {
     $('#generalSearchForm').hide();
 });
+*/
 
 /* Send-to-Kindle Ajax function 
 Target-Url: /titles/:id/kindle/:file via POST
@@ -400,5 +402,46 @@ $(document).on('pageinit', '#ptitle_detail' ,function() {
 
 $(document).on('vclick', '#kindleButton', function(){
   $('#kindlePopup').popup('open', { positionTo: 'window', transition: 'pop' } );
+});
+
+
+$(document).on('pagecreate', '#phome' ,function(event, ui) {
+    $('#home_options_panel').panel({
+        open: function () {
+            $('#search').focus();
+        }
+    });
+});
+
+$(document).on('pagecreate', '#ptitles' ,function(event, ui) {
+    $('#titles_options_panel').panel({
+        open: function () {
+            $('#search').focus();
+        }
+    });
+});
+
+$(document).on('pagecreate', '#pauthors' ,function(event, ui) {
+    $('#authors_options_panel').panel({
+        open: function () {
+            $('#search').focus();
+        }
+    });
+});
+
+$(document).on('pagecreate', '#ptags' ,function(event, ui) {
+    $('#tags_options_panel').panel({
+        open: function () {
+            $('#search').focus();
+        }
+    });
+});
+
+$(document).on('pagecreate', '#pseries' ,function(event, ui) {
+    $('#series_options_panel').panel({
+        open: function () {
+            $('#search').focus();
+        }
+    });
 });
 
