@@ -34,7 +34,7 @@ $fallbackLang = 'en';
 # Application Name
 $appname = 'BicBucStriim';
 # App version
-$appversion = '1.3.7a';
+$appversion = '1.4.0a';
 
 # Init app and routes
 $app = new \Slim\Slim(array(
@@ -2050,11 +2050,61 @@ function getFilter()
     return new CalibreFilter($lang, $tag);
 }
 
+
+/**
+ * Return a UrlInfo instance if the request contains forwarding information, or null if not.
+ *
+ * First we look for the standard 'Forwarded' header from RFC 7239, then for the non-standard X-Forwarded-... headers.
+ *
+ * @param \Slim\Http\Headers $headers
+ * @return null|UrlInfo
+ */
+function getForwardingInfo(\Slim\Http\Headers $headers)
+{
+    $info = null;
+    $forwarded = $headers->get('Forwarded');
+    if (!is_null($forwarded)) {
+        $info = new UrlInfo($forwarded);
+    } else {
+        $fhost = $headers->get('X-Forwarded-Host');
+        $fproto = $headers->get('X-Forwarded-Proto');
+        if (!is_null($fhost)) {
+            $info = new UrlInfo($fhost, $fproto);
+        }
+    }
+    return $info;
+}
+
+function mkRootUrl($relative = true)
+{
+    global $app, $globalSettings;
+
+    // Get forwarding information, if available
+    $info = getForwardingInfo($app->request->headers);
+    if (is_null($info) || !$info->is_valid()) {
+        // No forwarding info available
+        if ($relative) {
+            // Use relative URLs
+            $root = rtrim($app->request()->getRootUri(), "/");
+        } else {
+            // use full URLs
+            $root = rtrim($app->request()->getUrl() . $app->request()->getRootUri(), "/");
+        }
+    } else {
+        // Use forwarding info
+        $app->getLog()->debug("mkRootUrl: Using forwarding information " . $info);
+        $root = $info->protocol. '://'. $info->host. $app->request()->getRootUri();
+    }
+    $app->getLog()->debug("mkRootUrl: Using root url " . $root);
+    return $root;
+}
+
 # Initialize the OPDS generator
-function mkOpdsGenerator($app)
+function mkOpdsGenerator(\Slim\Slim $app)
 {
     global $appversion, $globalSettings;
-    $root = rtrim($app->request()->getUrl() . $app->request()->getRootUri(), "/");
+
+    $root = mkRootUrl(false);
     $gen = new OpdsGenerator($root, $appversion,
         $app->calibre->calibre_dir,
         date(DATE_ATOM, $app->calibre->calibre_last_modified),
@@ -2081,7 +2131,7 @@ function mkPage($subtitle = '', $menu = 0, $level = 0)
         $title = $globalSettings[DISPLAY_APP_NAME];
     else
         $title = $globalSettings[DISPLAY_APP_NAME] . $globalSettings['sep'] . $subtitle;
-    $rot = $app->request()->getRootUri();
+    $rot = mkRootUrl();
     $auth = is_authenticated();
     if ($globalSettings[LOGIN_REQUIRED])
         $adm = is_admin();
