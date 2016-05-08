@@ -129,11 +129,12 @@ $globalSettings[SMTP_ENCRYPTION] = 0;
 $globalSettings[METADATA_UPDATE] = 0;
 $globalSettings[LOGIN_REQUIRED] = 1;
 $globalSettings[TITLE_TIME_SORT] = TITLE_TIME_SORT_TIMESTAMP;
+$globalSettings[RELATIVE_URLS] = 1;
 
 $knownConfigs = array(CALIBRE_DIR, DB_VERSION, KINDLE, KINDLE_FROM_EMAIL,
     THUMB_GEN_CLIPPED, PAGE_SIZE, DISPLAY_APP_NAME, MAILER, SMTP_SERVER,
     SMTP_PORT, SMTP_USER, SMTP_PASSWORD, SMTP_ENCRYPTION, METADATA_UPDATE,
-    LOGIN_REQUIRED, TITLE_TIME_SORT);
+    LOGIN_REQUIRED, TITLE_TIME_SORT, RELATIVE_URLS);
 
 # Freeze (true) DB schema before release! Set to false for DB development.
 $app->bbs = new BicBucStriim('data/data.db', true);
@@ -690,9 +691,9 @@ function admin_change_json()
             if (!Calibre::checkForCalibre($req_calibre_dir)) {
                 array_push($errors, 1);
             } elseif ($app->bbs->clearThumbnails())
-                $app->getLog()->info('admin_change: Lib changed, deleted exisiting thumbnails.');
+                $app->getLog()->info('admin_change: Lib changed, deleted existing thumbnails.');
             else {
-                $app->getLog()->info('admin_change: Lib changed, deletion of exisiting thumbnails failed.');
+                $app->getLog()->info('admin_change: Lib changed, deletion of existing thumbnails failed.');
             }
         }
     }
@@ -708,7 +709,7 @@ function admin_change_json()
 
     ## Check for a change in the thumbnail generation method
     if ($req_configs[THUMB_GEN_CLIPPED] != $globalSettings[THUMB_GEN_CLIPPED]) {
-        $app->getLog()->info('admin_change: Thumbnail generation method changed. Exisiting Thumbnails will be deleted.');
+        $app->getLog()->info('admin_change: Thumbnail generation method changed. Existing Thumbnails will be deleted.');
         # Delete old thumbnails if necessary
         if ($app->bbs->clearThumbnails())
             $app->getLog()->info('admin_change: Deleted exisiting thumbnails.');
@@ -2075,25 +2076,23 @@ function getForwardingInfo(\Slim\Http\Headers $headers)
     return $info;
 }
 
-function mkRootUrl($relative = true)
+function mkRootUrl()
 {
     global $app, $globalSettings;
 
-    // Get forwarding information, if available
-    $info = getForwardingInfo($app->request->headers);
-    if (is_null($info) || !$info->is_valid()) {
-        // No forwarding info available
-        if ($relative) {
-            // Use relative URLs
-            $root = rtrim($app->request()->getRootUri(), "/");
-        } else {
-            // use full URLs
-            $root = rtrim($app->request()->getUrl() . $app->request()->getRootUri(), "/");
-        }
+    if ($globalSettings[RELATIVE_URLS] == '1') {
+        $root = rtrim($app->request()->getRootUri(), "/");
     } else {
-        // Use forwarding info
-        $app->getLog()->debug("mkRootUrl: Using forwarding information " . $info);
-        $root = $info->protocol. '://'. $info->host. $app->request()->getRootUri();
+        // Get forwarding information, if available
+        $info = getForwardingInfo($app->request->headers);
+        if (is_null($info) || !$info->is_valid()) {
+            // No forwarding info available
+            $root = rtrim($app->request()->getUrl() . $app->request()->getRootUri(), "/");
+        } else {
+            // Use forwarding info
+            $app->getLog()->debug("mkRootUrl: Using forwarding information " . $info);
+            $root = $info->protocol. '://'. $info->host. $app->request()->getRootUri();
+        }
     }
     $app->getLog()->debug("mkRootUrl: Using root url " . $root);
     return $root;
@@ -2104,7 +2103,7 @@ function mkOpdsGenerator(\Slim\Slim $app)
 {
     global $appversion, $globalSettings;
 
-    $root = mkRootUrl(false);
+    $root = mkRootUrl();
     $gen = new OpdsGenerator($root, $appversion,
         $app->calibre->calibre_dir,
         date(DATE_ATOM, $app->calibre->calibre_last_modified),

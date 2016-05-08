@@ -106,7 +106,20 @@
 			</option>
 		</select>
 		<p>{{page.glob.l10n.metadata_update_expl}}</p>
-	</fieldset>		
+	</fieldset>
+	<fieldset data-role="fieldcontain">
+		<label for="relative_urls">{{page.glob.l10n.relative_urls}}</label>
+		<select name="relative_urls" id="relative_urls" data-role="slider">
+			<option value="0" {% if page.glob.relative_urls == "0" %}selected {%endif%}>
+			{{page.glob.l10n.switch_no}}
+			</option>
+			<option value="1" {% if page.glob.relative_urls == "1" %}selected {%endif%}>
+			{{page.glob.l10n.switch_yes}}
+			</option>
+		</select>
+		<p>{{page.glob.l10n.relative_urls_expl}}</p>
+	</fieldset>
+
 	<button type="submit">{{page.glob.l10n.save}}</button>	
 </form>
 

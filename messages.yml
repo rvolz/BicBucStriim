@@ -1317,6 +1317,12 @@ published:
   nl: Gepubliceerd
   it: Pubblicato
   gl: Publicado
+relative_urls:
+  de: Relative URLs
+  en: Relative URLs
+relative_urls_expl:
+  de: Schalten Sie dies ab, wenn zB ihr OPDS-Reader vollständige URLs benötigt
+  en: Switch this off, if your OPDS reader requires full URLs
 save:
   hu: Mentés
   de: Speichern
