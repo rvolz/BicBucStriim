@@ -61,7 +61,7 @@ class LoginMiddleware extends \Slim\Middleware {
                 } else {
                     $app->getLog()->debug('login: redirecting to login');
                     // now we can also use the native app->redirect method!
-                    $this->app->redirect($app->request->getRootUri().'/login/');
+                    $this->app->redirect($this->mkRootUrl().'/login/');
                 }
             }
         } else {
@@ -72,7 +72,7 @@ class LoginMiddleware extends \Slim\Middleware {
                 return;    
             } elseif (stripos($resource, '/admin') === 0 && !$this->is_static_resource($resource) && !$this->is_authorized()) {
                 $app->getLog()->debug('login: redirecting to login');
-                $this->app->redirect($app->request->getRootUri().'/login/');
+                $this->app->redirect($this->mkRootUrl().'/login/');
             }
         }
     }
@@ -191,5 +191,50 @@ class LoginMiddleware extends \Slim\Middleware {
             return null;
     }
 
+    protected function mkRootUrl()
+    {
+        global $app, $globalSettings;
+
+        if ($globalSettings[RELATIVE_URLS] == '1') {
+            $root = rtrim($app->request()->getRootUri(), "/");
+        } else {
+            // Get forwarding information, if available
+            $info = getForwardingInfo($app->request->headers);
+            if (is_null($info) || !$info->is_valid()) {
+                // No forwarding info available
+                $root = rtrim($app->request()->getUrl() . $app->request()->getRootUri(), "/");
+            } else {
+                // Use forwarding info
+                $app->getLog()->debug("mkRootUrl: Using forwarding information " . $info);
+                $root = $info->protocol. '://'. $info->host. $app->request()->getRootUri();
+            }
+        }
+        $app->getLog()->debug("mkRootUrl: Using root url " . $root);
+        return $root;
+    }
+
+    /**
+     * Return a UrlInfo instance if the request contains forwarding information, or null if not.
+     *
+     * First we look for the standard 'Forwarded' header from RFC 7239, then for the non-standard X-Forwarded-... headers.
+     *
+     * @param \Slim\Http\Headers $headers
+     * @return null|UrlInfo
+     */
+    protected function getForwardingInfo(\Slim\Http\Headers $headers)
+    {
+        $info = null;
+        $forwarded = $headers->get('Forwarded');
+        if (!is_null($forwarded)) {
+            $info = new UrlInfo($forwarded);
+        } else {
+            $fhost = $headers->get('X-Forwarded-Host');
+            $fproto = $headers->get('X-Forwarded-Proto');
+            if (!is_null($fhost)) {
+                $info = new UrlInfo($fhost, $fproto);
+            }
+        }
+        return $info;
+    }
 }
 ?>
