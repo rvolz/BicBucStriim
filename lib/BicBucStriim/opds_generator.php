@@ -371,12 +371,12 @@ class OpdsGenerator {
     $this->acquisitionCatalogLink($this->bbs_root.'/opds'.$url,'self');
     $this->navigationCatalogLink($this->bbs_root.'/opds/', 'start');
     $this->navigationCatalogLink($this->bbs_root.'/opds/serieslist/'.$initial.'/', 'up');
-    $this->acquisitionCatalogLink($this->bbs_root.'/opds/authorslist/'.$initial.'/'.$series->id.'/0/','first');
+    $this->acquisitionCatalogLink($this->bbs_root.'/opds/serieslist/'.$initial.'/'.$series->id.'/0/','first');
     if ($page > 0)
-      $this->acquisitionCatalogLink($this->bbs_root.'/opds/authorslist/'.$initial.'/'.$series->id.'/'.($page-1).'/','previous');
+      $this->acquisitionCatalogLink($this->bbs_root.'/opds/serieslist/'.$initial.'/'.$series->id.'/'.($page-1).'/','previous');
     if (!is_null($next))
-      $this->acquisitionCatalogLink($this->bbs_root.'/opds/authorslist/'.$initial.'/'.$series->id.'/'.$next.'/','next');
-    $this->acquisitionCatalogLink($this->bbs_root.'/opds/authorslist/'.$initial.'/'.$series->id.'/'.$last.'/', 'last');
+      $this->acquisitionCatalogLink($this->bbs_root.'/opds/serieslist/'.$initial.'/'.$series->id.'/'.$next.'/','next');
+    $this->acquisitionCatalogLink($this->bbs_root.'/opds/serieslist/'.$initial.'/'.$series->id.'/'.$last.'/', 'last');
     # Content
     foreach($entries as $entry) {
       $url2 = $url.$entry['book']->id.'/';
