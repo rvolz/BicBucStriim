@@ -27,7 +27,7 @@ admin_check_version:
   hu: Verzió ellenőrzése
   de: Auf neue Version prüfen
   en: Check version
-  fr: Vérification de la configuration
+  fr: Vérification de la version
   it: Verifica versione
   gl: Comprobar versión
 admin_check_version_legend:
@@ -41,7 +41,7 @@ admin_check_url:
   hu: Látogad meg a %s oldalt, hogy letölthesd
   de: Gehen Sie zu %s, um die neue Version herunter zu laden
   en: Visit %s to download it
-  fr: Connectez-vous sur %s pour la télécharger
+  fr: Visitez %s pour la télécharger
   it: Visitare %s per scaricarla
   gl: Conectar a %s para baixala
 admin_idtemplate:
@@ -90,14 +90,14 @@ admin_idtemplates_legend:
   hu: URL-ek megadása a helyettesítő paraméterrel <strong>%id%</strong>, hogy automatikusan generálja az ID linkeket.
   de: Tragen Sie URLs mit dem Ersetzungsparamter <strong>%id%</strong> ein, um automatisch ID-Verweise zu generieren.
   en: Enter URLs with the replacement parameter <strong>%id%</strong> to automatically generate ID links.
-  fr: Saisissez la ou les URLs qui remplaceront <strong>%id%</strong> pour générer le liens de l\'ID.
+  fr: Saisissez la ou les URLs qui remplaceront <strong>%id%</strong> pour générer automatiquement les liens de l\'ID.
   it: Inserire gli URLs con il parametro di sostituzione <strong>%id%</strong> per generare automaticamente le connnessioni ID.
   gl: Introduze as URLs co parámetro de reemprazo <strong>%id%</strong> para xenerar automaticamente as ligazóns ID
 admin_invalid_page_size:
   hu: A kért oldal mérete érvénytelen. Kérjük válassz egy értéket 1 és 100 között.
   de: Die eingestellte Seitengröße war ungültig. Sie muss zwischen 1 und 100 liegen.
   en: The requested page size is invalid. Please choose a value between 1 and 100.
-  fr: Page invalide. Merci de choisir une valeur entre 1 et 100.
+  fr: Taille de la page invalide. Merci de choisir une valeur entre 1 et 100.
   it: La dimensione della pagina richiesta non è valida. Si prega di scegliere un valore tra 1 e 100.
   gl: Páxina inválida. Fai o favor de escoller un valor entre 1 e 100.
 admin_modified:
@@ -118,15 +118,17 @@ admin_must_login:
   hu: Bejelentkezés szükséges
   de: Anmeldung benötigt
   en: Login required
+  fr: Authentification requise
 admin_must_login_expl:
   hu: A funkció bekapcsolásakor csak bejelentkezett felhasználók férhetnek hozzá a könyvtárhoz. Módosítása esetén lehet, hogy a web/PHP szervert újra kell indítani.
   de: "Wenn eingeschaltet können nur angemeldete Benutzer auf die Bibliothek zugreifen. Änderung kann Neustart des Webservers/PHP erfordern."
   en: "If switched on only logged in users can access the library. Changing this might require to restart the web/PHP server."
+  fr: "Si activé, seuls les utilisateurs enregistrés pourront accéder à la bibliothèque. Changer cela peut requérir un redémarrage du serveur Web/PHP."
 admin_new_version:
   hu: ! 'Új verzió érhető el: %s. Jelenlegi verzió: %s.'
   de: Die neue Version %s ist verfügbar. Sie haben Version %s
   en: New version %s is available, you have %s
-  fr: La nouvelle version %s est disponible, votre version est %s
+  fr: La nouvelle version %s est disponible, votre version actuelle est %s
   it: La nuova versione %s è disponibile, versione attuale %s
   gl: A nova versión %s está dispoñivel, versión actual %s
 admin_new_version_error:
@@ -170,7 +172,7 @@ admin_pw_expl:
   hu: ! 'Opcionális: Adjon meg egy jelszót, hogy idegenek ne férhessenek hozzá az admin felülethez'
   de: "Optional: Tragen sie hier ein Passwort ein, um den Zugang zu den Admin-Einstellungen einzuschränken."
   en: "Optional: Enter a password to protect the admin page from changes by others."
-  fr: "Option: Introduisez un mot de passe administrateur pour contrôler l\\'accès à la configuration"
+  fr: "Optionel: entrez un mot de passe administrateur pour contrôler l\'accès à la configuration"
   nl: "Optioneel: Voer een wachtwoord in om de admin pagina te beschermen tegen wijzigingen door anderen"
   it: "Opzionale: Inserire una password per prevenire modifiche da parte di terzi della pagina di amministrazione"
   gl: "Opcional: Introduce un contrasinal para controlar o acceso á configuración"
@@ -208,14 +210,14 @@ admin_mailer:
   hu: Email küldés
   de: Mailversand
   en: Sending mail
-  fr: Envoi de mail
+  fr: Envoi d\'e-mail
   it: Invio posta elettronica
   gl: Envio de correo
 admin_mailer_expl:
   hu: "Válassz egy email küldési lehetőséget, ha szeretnél levélben könyvet küldeni. SMTP beállítások szükségesek hozzá: "
   de: "Wählen sie die Versandart, falls sie Bücher per Mail versenden möchten. Für SMTP sind weitere Einstellungen nötig: "
   en: "Select the mail transport mechanism, if you want to send books via mail. SMTP needs further configuration: "
-  fr: "Selectionnez la méthode d\\'envoi des emails. Si vous souhaitez envoyer vos livres par email. Le SMTP doit être configuré : "
+  fr: "Selectionnez la méthode d\'envoi des e-mails, si vous souhaitez envoyer vos livres par e-mail. Le SMTP doit être configuré : "
   it: "Selezionare il metodo di invio posta elettronica, se si vogliono inviare libri per posta elettronica. SMTP richiede ulteriori configurazione: "
   gl: "Selecciona o método de envio de correos se desexas enviar libros por correo. O servizo SMTP necesita configuración: "
 admin_mailer_smtp:
@@ -243,7 +245,7 @@ admin_mail:
   hu: Email beállítások
   de: E-Mail Konfiguration
   en: Mail configuration
-  fr: Configuration Email
+  fr: Configuration e-mail
   it: Configurazione posta elettronica
   gl: Configuración de correo
 admin_mail_legend:
@@ -257,26 +259,29 @@ admin_role:
   hu: Funkció
   de: Rolle
   en: Role
+  fr:Rôle
 admin_role_admin:
   hu: Admin
   de: Admin
   en: Admin
+  fr: Admin
 admin_role_user:
   hu: Felhasználó
   de: Benutzer
   en: User
+  fr: Utilisateur
 admin_smtpenc:
   hu: Kódolás
   de: Verschlüsselung
   en: Encryption
-  fr: Chiffrage
+  fr: Chiffrement
   it: Crittografia
   gl: Cifrado
 admin_smtpenc_expl:
   hu: Titkosítási metódusok az SMTP szerverrel való kommunikációhoz
   de: Verschlüsselungsarten für den Mailversand
   en: Encryption methods for communication with the SMTP server
-  fr: Methode de chiffrage de communication du serveur SMTP
+  fr: Méthode de chiffrement de communication du serveur SMTP
   it: Metodi di crittografia per comunicare con il server SMTP
   gl: Método de cifrado da comunicación co servidor SMTP
 admin_smtpenc_none:
@@ -311,7 +316,7 @@ admin_smtpport_expl:
   hu: ! 'SMTP port (alapértelmezett port: 25)'
   de: Der Port für den SMTP-Verkehr, normalerweise 25
   en: Port number for SMTP traffic, default is 25
-  fr: Numéro de port sortant SMTP, par défaut 25
+  fr: Port sortant SMTP, par défaut 25
   it: ! 'Porta per il traffico SMTP, pre-definita : 25'
   gl: Número de porto de saída SMTP, por defeito 25
 admin_smtpserver:
@@ -346,6 +351,7 @@ admin_tts:
   hu: Cím szerinti rendezés időrendben
   de: Titel-Sortierung nach Datum
   en: Sort titles by date
+  fr: Trier les titres par date
 admin_tts_expl:
   hu: ! ‘A Calibre különböző módokon tudja rendezni a könyveket időrendi sorrendben. Alapértelmezetten olyan sorrendben jelennek meg a könyvek, ahogy utoljára hozzá lettek adva.’
   de: ! 'Wenn Titel nach Zeit sortiert angezeigt werden sollen, bietet Calibre verschiedene Möglichkeiten. Standardmäßig werden sie nach dem Datum des Eingangs in die Calibre-Bibliothek sortiert.'
@@ -354,14 +360,17 @@ admin_tts_by_lastmodified:
   hu: Módosítás dátuma
   de: Änderungsdatum
   en: Date modified
+  fr: Date de modification
 admin_tts_by_pubdate:
   hu: Kiadás dátuma
   de: Veröffentlichung
   en: Publication date
+  fr: Date de publication
 admin_tts_by_timestamp:
   hu: Hozzáadás dátuma
   de: Eingangsdatum
   en: Date added
+  fr: Date d\'ajout
 admin_username:
   hu: Felhasználónév
   de: Benutzername
