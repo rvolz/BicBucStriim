@@ -23,6 +23,7 @@ admin:
   nl: Configuratie
   it: Configurazione
   gl: Configuración
+  es: Configuración
 admin_check_version:
   hu: Verzió ellenőrzése
   de: Auf neue Version prüfen
@@ -30,6 +31,7 @@ admin_check_version:
   fr: Vérification de la version
   it: Verifica versione
   gl: Comprobar versión
+  es: Comprobar versión
 admin_check_version_legend:
   hu: Ellenőrizd, van e új BicBucStriim verzió
   de: Prüfen, ob mittlerweile eine neue Version von BicBucStriim vorliegt.
@@ -37,6 +39,7 @@ admin_check_version_legend:
   fr: Verifier la présence d\'une mise à jour de BicBucStriim
   it: Verificare la presenza di una nuova versione di BicBucStriim
   gl: Comprobar versión de BicBucStriim
+  es: Comprobar si existe una nueva versión de BicBucStriim
 admin_check_url:
   hu: Látogad meg a %s oldalt, hogy letölthesd
   de: Gehen Sie zu %s, um die neue Version herunter zu laden
@@ -44,6 +47,7 @@ admin_check_url:
   fr: Visitez %s pour la télécharger
   it: Visitare %s per scaricarla
   gl: Conectar a %s para baixala
+  es: Visita %s para descargarla
 admin_idtemplate:
   hu: ID dablon
   de: ID-Vorlage
@@ -51,6 +55,7 @@ admin_idtemplate:
   fr: Template ID
   it: Modello ID
   gl: Template ID
+  es: Plantilla ID
 admin_idtemplate_clear:
   hu: ID sablon törlése
   de: ID-Vorlage löschen
@@ -58,6 +63,7 @@ admin_idtemplate_clear:
   fr: Effacer l\'ID du template
   it: Cancellare il Modello ID
   gl: Vacia o Template ID
+  es: Vaciar la plantilla ID
 admin_idtemplate_label:
   hu: Szöveg megjelenítése
   de: Anzeigetext
@@ -65,6 +71,7 @@ admin_idtemplate_label:
   fr: Visualisation
   it: Visualizzare testo
   gl: Amosar texto
+  es: Texto a mostrar
 admin_idtemplate_name:
   hu: Név
   de: Name
@@ -72,6 +79,7 @@ admin_idtemplate_name:
   fr: Nom
   it: Nome
   gl: Nome
+  es: Nombre
 admin_idtemplate_template:
   hu: URL
   de: URL
@@ -79,6 +87,7 @@ admin_idtemplate_template:
   fr: URL
   it: URL
   gl: URL
+  es: URL
 admin_idtemplates:
   hu: ID sablonok
   de: ID-Vorlagen
@@ -86,6 +95,7 @@ admin_idtemplates:
   fr: ID des templates
   it: Modelli ID
   gl: Templates ID
+  es: Plantillas ID
 admin_idtemplates_legend:
   hu: URL-ek megadása a helyettesítő paraméterrel <strong>%id%</strong>, hogy automatikusan generálja az ID linkeket.
   de: Tragen Sie URLs mit dem Ersetzungsparamter <strong>%id%</strong> ein, um automatisch ID-Verweise zu generieren.
@@ -93,6 +103,7 @@ admin_idtemplates_legend:
   fr: Saisissez la ou les URLs qui remplaceront <strong>%id%</strong> pour générer automatiquement les liens de l\'ID.
   it: Inserire gli URLs con il parametro di sostituzione <strong>%id%</strong> per generare automaticamente le connnessioni ID.
   gl: Introduze as URLs co parámetro de reemprazo <strong>%id%</strong> para xenerar automaticamente as ligazóns ID
+  es: Introduce las URLs con el parámetro de reemplazo <strong>%id%</strong> para generar automaticamente los enlaces ID.
 admin_invalid_page_size:
   hu: A kért oldal mérete érvénytelen. Kérjük válassz egy értéket 1 és 100 között.
   de: Die eingestellte Seitengröße war ungültig. Sie muss zwischen 1 und 100 liegen.
@@ -100,6 +111,7 @@ admin_invalid_page_size:
   fr: Taille de la page invalide. Merci de choisir une valeur entre 1 et 100.
   it: La dimensione della pagina richiesta non è valida. Si prega di scegliere un valore tra 1 e 100.
   gl: Páxina inválida. Fai o favor de escoller un valor entre 1 e 100.
+  es: Tamaño de página incorrecto. Por favor selecciona un valor entre 1 y 100.
 admin_modified:
   hu: Változtatások alkalmazása
   de: Änderungen vorgenommen
@@ -107,6 +119,7 @@ admin_modified:
   fr: Modifications appliquées.
   it: Modifiche applicate
   gl: Modificacións aplicadas
+  es: Cambios realizados
 admin_modify_error:
   hu: Módosítások közben hiba történt
   de: Fehler beim Speichern der Änderungen
@@ -114,16 +127,19 @@ admin_modify_error:
   fr: Erreur lors de l\'application des modifications.
   it: Errore mentre si applicavano le modifiche
   gl: Erro aplicando as modificacións
+  es: Error al aplicar los cambios
 admin_must_login:
   hu: Bejelentkezés szükséges
   de: Anmeldung benötigt
   en: Login required
   fr: Authentification requise
+  es: Autentificación necesaria
 admin_must_login_expl:
   hu: A funkció bekapcsolásakor csak bejelentkezett felhasználók férhetnek hozzá a könyvtárhoz. Módosítása esetén lehet, hogy a web/PHP szervert újra kell indítani.
   de: "Wenn eingeschaltet können nur angemeldete Benutzer auf die Bibliothek zugreifen. Änderung kann Neustart des Webservers/PHP erfordern."
   en: "If switched on only logged in users can access the library. Changing this might require to restart the web/PHP server."
   fr: "Si activé, seuls les utilisateurs enregistrés pourront accéder à la bibliothèque. Changer cela peut requérir un redémarrage du serveur Web/PHP."
+  es: "Si se activa sólo los usuarios registrados podrán acceder a la libreria. Cambiar esto requiere reiniciar el servidor web/PHP."
 admin_new_version:
   hu: ! 'Új verzió érhető el: %s. Jelenlegi verzió: %s.'
   de: Die neue Version %s ist verfügbar. Sie haben Version %s
@@ -131,6 +147,7 @@ admin_new_version:
   fr: La nouvelle version %s est disponible, votre version actuelle est %s
   it: La nuova versione %s è disponibile, versione attuale %s
   gl: A nova versión %s está dispoñivel, versión actual %s
+  es: Nueva versión %s disponible, la version actual es %s
 admin_new_version_error:
   hu: Nem sikerült betölteni az új verzió információit, kérjük ellenőrizd manuálisan.
   de: Versionsinformationen konnten nicht geladen werden. Bitte prüfen Sie die manuell.
@@ -138,6 +155,7 @@ admin_new_version_error:
   fr: Impossible de vérifier la présence d\'une mise à jour. Vérifiez manuellement.
   it: Impossibile caricare le informazioni sulla nuova versione. Si prega di controllare manualmente
   gl: Non foi posível comprobar a información de versión. Podes comprobalo manualmente
+  es: Imposible cargar la información de la versión. Por favor comprobar manualmente.
 admin_no_new_version:
   hu: "Aktuális verziód: %s."
   de: Die Version %s ist aktuell
@@ -145,6 +163,7 @@ admin_no_new_version:
   fr: Votre version %s est à jour.
   it: La versione %s è quella aggiornata
   gl: A versión %s está actualizada 
+  es: La version %s está actualizada
 admin_no_selection:
   hu: -- nincs kijelölés --
   de: -- keine Auswahl --
@@ -152,6 +171,7 @@ admin_no_selection:
   fr: -- aucune selection --
   it: -- nessuna selezione --
   gl: -- ningunha selección --
+  es: -- ninguna selección --
 admin_pw1:
   hu: Admin jelszó
   de: Admin Passwort
@@ -160,6 +180,7 @@ admin_pw1:
   nl: Admin Wachtwoord
   it: Password Amministratore
   gl: Contrasinal de administración
+  es: Contraseña de administrador
 admin_pw2:
   hu: Admin jelszó
   de: Admin Passwort
@@ -168,6 +189,7 @@ admin_pw2:
   nl: Admin Wachtwoord
   it: Password Amministratore
   gl: Contrasinal de administración
+  es: Contraseña de administrador
 admin_pw_expl:
   hu: ! 'Opcionális: Adjon meg egy jelszót, hogy idegenek ne férhessenek hozzá az admin felülethez'
   de: "Optional: Tragen sie hier ein Passwort ein, um den Zugang zu den Admin-Einstellungen einzuschränken."
@@ -176,6 +198,7 @@ admin_pw_expl:
   nl: "Optioneel: Voer een wachtwoord in om de admin pagina te beschermen tegen wijzigingen door anderen"
   it: "Opzionale: Inserire una password per prevenire modifiche da parte di terzi della pagina di amministrazione"
   gl: "Opcional: Introduce un contrasinal para controlar o acceso á configuración"
+  es: "Opcional: Introduce una contraseña para proteger el acceso a la configuración"
 admin_pw_required1:
   hu: Nincs admin jelszó beállítva
   de: Fehlendes Admin-Passwort
@@ -184,6 +207,7 @@ admin_pw_required1:
   nl: Geen Admin Wachtwoord ingesteld
   it: Nessuna Password Amministratore settata
   gl: Sen contrasinal de administración
+  es: No se ha establecido contraseña de administrador
 admin_pw_required2:
   hu: Nem érvényes admin jelszót akarsz használni a letöltés védelemhez.
   de: Sie wollen das Admin-Passwort für den Downloadschutz verwenden, haben aber kein
@@ -198,6 +222,8 @@ admin_pw_required2:
     Si prega di utilizzare la password corretta.
   gl: Estás tentando empregar un contrasinal de administración para baixar libros protexidos con contrasinal. 
     Deberías utilizar un contrasinal correcto
+  es: Estás intentando utilizar la contraseña de administrador para descargar libros protegidos sin una contraseña
+    de administrador válida. Por favor introduce una contraseña de administrador válida.
 admin_short:
   hu: Admin
   de: Admin
@@ -206,6 +232,7 @@ admin_short:
   nl: Admin
   it: Admin
   gl: Admin
+  es: Admin
 admin_mailer:
   hu: Email küldés
   de: Mailversand
@@ -213,6 +240,7 @@ admin_mailer:
   fr: Envoi d\'e-mail
   it: Invio posta elettronica
   gl: Envio de correo
+  es: Enviando correo
 admin_mailer_expl:
   hu: "Válassz egy email küldési lehetőséget, ha szeretnél levélben könyvet küldeni. SMTP beállítások szükségesek hozzá: "
   de: "Wählen sie die Versandart, falls sie Bücher per Mail versenden möchten. Für SMTP sind weitere Einstellungen nötig: "
@@ -220,6 +248,7 @@ admin_mailer_expl:
   fr: "Selectionnez la méthode d\\'envoi des e-mails, si vous souhaitez envoyer vos livres par e-mail. Le SMTP doit être configuré : "
   it: "Selezionare il metodo di invio posta elettronica, se si vogliono inviare libri per posta elettronica. SMTP richiede ulteriori configurazione: "
   gl: "Selecciona o método de envio de correos se desexas enviar libros por correo. O servizo SMTP necesita configuración: "
+  es: "Selecciona el método de envio de correos, si deseas enviar libros mediante correo. El servicio SMTP necesita configuración: "
 admin_mailer_smtp:
   hu: SMTP
   de: SMTP
@@ -227,6 +256,7 @@ admin_mailer_smtp:
   fr: SMTP
   it: SMTP
   gl: SMTP
+  es: SMTP
 admin_mailer_sendmail:
   hu: Sendmail
   de: Sendmail
@@ -234,6 +264,7 @@ admin_mailer_sendmail:
   fr: Sendmail
   it: Sendmail
   gl: Sendmail
+  es: Enviar correo
 admin_mailer_mail:
   hu: PHP mail
   de: PHP mail
@@ -241,6 +272,7 @@ admin_mailer_mail:
   fr: PHP mail
   it: PHP mail
   gl: PHP mail
+  es: Correo PHP
 admin_mail:
   hu: Email beállítások
   de: E-Mail Konfiguration
@@ -248,6 +280,7 @@ admin_mail:
   fr: Configuration e-mail
   it: Configurazione posta elettronica
   gl: Configuración de correo
+  es: Configuración de correo
 admin_mail_legend:
   hu: Beállítások SMTP használatához
   de: Konfigurationsangaben für den Mailversand per SMTP
@@ -255,21 +288,25 @@ admin_mail_legend:
   fr: Détails de la configuration de l\'envoi des emails par SMTP
   it: Configurazione dei dettagli per l\'invio di posta elettronica via SMTP
   gl: Configuración do envío de correos por SMTP
+  es: Detalles de configuración para el envío de correo por SMTP
 admin_role:
   hu: Funkció
   de: Rolle
   en: Role
   fr: Rôle
+  es: Rol
 admin_role_admin:
   hu: Admin
   de: Admin
   en: Admin
   fr: Admin
+  es: Admin
 admin_role_user:
   hu: Felhasználó
   de: Benutzer
   en: User
   fr: Utilisateur
+  es: Usuario
 admin_smtpenc:
   hu: Kódolás
   de: Verschlüsselung
@@ -277,6 +314,7 @@ admin_smtpenc:
   fr: Chiffrement
   it: Crittografia
   gl: Cifrado
+  es: Cifrado
 admin_smtpenc_expl:
   hu: Titkosítási metódusok az SMTP szerverrel való kommunikációhoz
   de: Verschlüsselungsarten für den Mailversand
@@ -284,6 +322,7 @@ admin_smtpenc_expl:
   fr: Méthode de chiffrement de communication du serveur SMTP
   it: Metodi di crittografia per comunicare con il server SMTP
   gl: Método de cifrado da comunicación co servidor SMTP
+  es: Método de cifrado para la comunicación con el servidor SMTP
 admin_smtpenc_none:
   hu: Semmi
   de: Keine
@@ -291,6 +330,7 @@ admin_smtpenc_none:
   fr: Aucune
   it: Nessuno
   gl: Ningún 
+  es: Ninguno
 admin_smtpenc_ssl:
   hu: SSL
   de: SSL
@@ -298,6 +338,7 @@ admin_smtpenc_ssl:
   fr: SSL
   it: SSL
   gl: SSL
+  es: SSL
 admin_smtpenc_tls:
   hu: TLS
   de: TLS
@@ -305,6 +346,7 @@ admin_smtpenc_tls:
   fr: TLS
   it: TLS
   gl: TLS
+  es: TLS
 admin_smtpport:
   hu: Port
   de: Port
@@ -312,6 +354,7 @@ admin_smtpport:
   fr: Port
   it: Porta
   gl: Porto
+  es: Puerto
 admin_smtpport_expl:
   hu: ! 'SMTP port (alapértelmezett port: 25)'
   de: Der Port für den SMTP-Verkehr, normalerweise 25
@@ -319,6 +362,7 @@ admin_smtpport_expl:
   fr: Port sortant SMTP, par défaut 25
   it: ! 'Porta per il traffico SMTP, pre-definita : 25'
   gl: Número de porto de saída SMTP, por defeito 25
+  es: Número de puerto para el tráfico SMTP, 25 por defecto
 admin_smtpserver:
   hu: Szervernév
   de: Servername
@@ -326,6 +370,7 @@ admin_smtpserver:
   fr: Nom du serveur
   it: Nome Server
   gl: Nome do servidor
+  es: Nombre del servidor
 admin_smtpserver_expl:
   hu: SMTP szerver neve, vagy címe
   de: Name oder Adresse des SMTP-Servers
@@ -333,6 +378,7 @@ admin_smtpserver_expl:
   fr: Nom ou adresse du serveur SMTP
   it: Nome o indirizzo del server SMTP
   gl: Nome ou enderezo do servidor SMTP
+  es: Nombre o dirección del servidor SMTP
 admin_smtpusername_expl:
   hu: SMTP szerver felhasználóneve
   de: Der Benutzername für den SMTP-Server
@@ -340,6 +386,7 @@ admin_smtpusername_expl:
   fr: Nom d\'utilisateur du serveur SMTP
   it: Nome Utente per il server SMTP
   gl: Usuario para o servidor SMTP
+  es: Nombre de usuario del servidor SMTP
 admin_smtpuserpw_expl:
   hu: ! ‘SMTP szerver jelszava '
   de: ! 'Das Passwort für den SMTP-Server '
@@ -347,30 +394,36 @@ admin_smtpuserpw_expl:
   fr: ! 'Mot de passe du serveur SMTP '
   it: ! 'Password per il server SMTP '
   gl: ! 'Contrasinal para o servidor SMTP '
+  es: ! 'Contraseña del servidor SMTP '
 admin_tts:
   hu: Cím szerinti rendezés időrendben
   de: Titel-Sortierung nach Datum
   en: Sort titles by date
   fr: Trier les titres par date
+  es: Ordenar títulos por fecha
 admin_tts_expl:
   hu: ! ‘A Calibre különböző módokon tudja rendezni a könyveket időrendi sorrendben. Alapértelmezetten olyan sorrendben jelennek meg a könyvek, ahogy utoljára hozzá lettek adva.’
   de: ! 'Wenn Titel nach Zeit sortiert angezeigt werden sollen, bietet Calibre verschiedene Möglichkeiten. Standardmäßig werden sie nach dem Datum des Eingangs in die Calibre-Bibliothek sortiert.'
   en: ! 'Calibre offers various ways to sort books by date. By default books will be sorted by the date when they were added to the Calibre library.'
+  es: ! 'Calibre ofrece varias formas de ordenar los libros por fecha. Por defecto los libros se ordenarán por la fecha en la que fueron añadidos a la libreria de Calibre.'
 admin_tts_by_lastmodified:
   hu: Módosítás dátuma
   de: Änderungsdatum
   en: Date modified
   fr: Date de modification
+  es: Fecha de modificación
 admin_tts_by_pubdate:
   hu: Kiadás dátuma
   de: Veröffentlichung
   en: Publication date
   fr: Date de publication
+  es: Fecha de publicación
 admin_tts_by_timestamp:
   hu: Hozzáadás dátuma
   de: Eingangsdatum
   en: Date added
   fr: Date d\'ajout
+  es: Fecha de añadido
 admin_username:
   hu: Felhasználónév
   de: Benutzername
@@ -378,6 +431,7 @@ admin_username:
   fr: Nom d\'utilisateur
   it: Nome Utente
   gl: Usuario
+  es: Nombre de usuario
 admin_userpw:
   hu: Jelszó
   de: Passwort
@@ -385,6 +439,7 @@ admin_userpw:
   fr: Mot de passe
   it: Password
   gl: Contrasinal
+  es: Contraseña
 admin_userpw_expl:
   hu: Nem hagyhatod üresen, ezt a mezőt kötelező kitölteni
   de: Plichtfeld, darf nicht leer sein
@@ -392,6 +447,7 @@ admin_userpw_expl:
   fr: Requis, doit être saisi
   it: Obbligatorio, non deve essere vuoto
   gl: Obrigratorio, non pode ser baleiro
+  es: Obligatorio, no debe estar vacío
 admin_userlangs_expl:
   hu: Csak az alábbi nyelven íródott könyveket láthatod
   de: Optional, schränkt die Anzeige auf Bücher mit dieser Sprache ein
@@ -399,6 +455,7 @@ admin_userlangs_expl:
   fr: Optionnel, n\'afficher que les livres de cette langue
   it: Opzionale, visualizza solo i libri in questa lingua
   gl: Opcional, ver só os libros nesta lingua
+  es: Opcional, mostrar sólo libros en este idioma.
 admin_usertags_expl:
   hu: Azokat a könyveket, amik az alábbi címkével vannak ellátva, nem láthatod
   de: Optional, schließt Bücher mit diesem Schlagwort von der Anzeige aus
@@ -406,6 +463,7 @@ admin_usertags_expl:
   fr: Optionnel, ne pas afficher les livres ayant ce tag
   it: Opzionale, non visualizza i libri con questa etichetta
   gl: Opcional, non ver os libros con esta etiqueta
+  es: Opcional, no mostrar libros con esta etiqueta
 admin_users:
   hu: Felhasználók
   de: Benutzer
@@ -413,6 +471,7 @@ admin_users:
   fr: Utilisateurs
   it: Utenti
   gl: Usuarios
+  es: Usuarios
 admin_users_legend1:
   hu: Felhasználó hozzáadása
   de: Neuen Benutzer hinzufügen
@@ -420,6 +479,7 @@ admin_users_legend1:
   fr: Ajouter un utilisateur
   it: Aggiungere un utente
   gl: Engadir un usuario
+  es: Añadir un usuario
 admin_users_legend2:
   hu: Módosíthatsz, vagy törölhetsz egy fiókot
   de: Benutzerkonten ändern oder löschen
@@ -427,6 +487,7 @@ admin_users_legend2:
   fr: Modifier ou supprimer un utilisateur
   it: Modificare o cancellare un account
   gl: Modificar ou cancelar un usuario
+  es: Modificar o eliminar una cuenta de usuario
 admin_users_delete:
   hu: Felhasználói fiók törlése
   de: Benutzerkonto löschen
@@ -434,6 +495,7 @@ admin_users_delete:
   en: Delete user account
   it: Cancellare un account
   gl: Cancelar un usuario
+  es: Eliminar una cuenta de usuario
 authors:
   hu: Szerzők
   de: Autoren
@@ -442,6 +504,7 @@ authors:
   nl: Auteurs
   it: Autori
   gl: Autores
+  es: Autores
 author_details:
   hu: Szerzőről
   de: Details Autor
@@ -450,6 +513,7 @@ author_details:
   nl: Auteur Details
   it: Dettagli Autore
   gl: Detalles dos autores
+  es: Detalles del autor
 author_links:
   hu: Linkek
   de: Verweise
@@ -457,6 +521,7 @@ author_links:
   fr: Liens
   it: Collegamenti
   gl: Ligazóns
+  es: Enlaces
 author_links_expl:
   hu: Adj hozzá, vagy töröld ki a szerzőhöz tartozó linket.
   de: Interessante Verweise zum Autor eingeben oder löschen.
@@ -464,6 +529,7 @@ author_links_expl:
   fr: Ajouter ou supprimer des liens concernant l\'auteur
   it: Aggiungere o cancellare collegamenti relativi all\'autore.
   gl: Engadir ou borrar ligazóns referentes ao autor
+  es: Añadir o eliminar enlaces referentes al autor.
 author_links_text:
   hu: Név
   de: Name
@@ -471,6 +537,7 @@ author_links_text:
   en: Name
   it: Nome
   gl: Nome
+  es: Nombre
 author_links_url:
   hu: URL
   de: URL
@@ -478,6 +545,7 @@ author_links_url:
   fr: URL
   it: URL
   gl: URL
+  es: URL
 author_metadata:
   hu: Metaadatok
   de: Metadaten
@@ -485,6 +553,7 @@ author_metadata:
   fr: Metadonnées
   it: Metadati
   gl: Metadata
+  es: Metadatos
 author_notes:
   hu: Megjegyzések
   de: Notizen
@@ -492,6 +561,7 @@ author_notes:
   fr: Annotations
   it: Annotazioni
   gl: Anotacións
+  es: Anotaciones
 author_notes_expl:
   hu: Szerkeszd, vagy töröld ki a szerzőhöz tartozó megjegyzéseket Markdown formátumban.
   de: Notizen zum Autor ändern oder löschen. Eingabe im Markdown-Format.
@@ -499,6 +569,7 @@ author_notes_expl:
   fr: Modifier ou supprimer les annotations au format Markdown concernant l\'auteur
   it: Modificare o cancellare annotazioni sull\'autore nel formato Markdown.
   gl: Modificar ou cancelar anotacións sobre o autor no formato Markdown.
+  es: Editar o eliminar anotaciones sobre el autor en el formato Markdown.
 author_thumbnail:
   hu: Indexkép
   de: Bild
@@ -506,6 +577,7 @@ author_thumbnail:
   fr: Image miniature
   it: Miniatura immagine
   gl: Miniatura da imaxe
+  es: Miniatura de imagen
 author_thumbnail_expl:
   hu: Tölts fel, vagy töröld a szerző képét. Kérjük, hogy kis fájlokat (<3MB) használj, mert a kép mérete 160*160 pixel lesz.
   de: Ein Autorenbild hochladen oder löschen. Bitte kleine Bilder verwenden (<3MB), sie werden
@@ -516,6 +588,7 @@ author_thumbnail_expl:
   it: Caricare o cancellare immagine autore. Si prega di usare files di piccole dimensioni (<3MB),
     l\'immagine verrà ridotta alle dimensioni di 160*160 pixels  
   gl: Subir ou suprimir a imaxen do autor. Pregase empregar un ficheiro pequeno (<3MB), a imaxe será redimensionada a 160*160 pixels.
+  es: Actualizar o eliminar la imagen del autor. Por favor utiliza ficheros pequeños (<3MB), la imagen se reducirá a 160*160 píxeles.
 author_thumbnail_upload_error1:
   hu: Feltöltési hiba
   de: Fehler beim Hochladen
@@ -523,6 +596,7 @@ author_thumbnail_upload_error1:
   fr: Problème d\'upload
   it: Errore di Caricamento
   gl: Erro na subida
+  es: Error de actualización
 author_thumbnail_upload_error2:
   hu: Hibás, vagy túl nagy fájl
   de: Falscher Dateityp oder zu groß
@@ -530,6 +604,7 @@ author_thumbnail_upload_error2:
   fr: Mauvais type de fichier ou trop gros
   it: Tipo di file errato o troppo grande
   gl: Formato de ficheiro incorrecto ou demasiado grande
+  es: Formato de fichero incorrecto o demasiado grande
 back:
   hu: Vissza
   de: Zurück
@@ -538,6 +613,7 @@ back:
   nl: Terug
   it: Indietro
   gl: Atrás
+  es: Atrás
 booksby:
   hu: Könyvek
   de: Bücher von
@@ -546,6 +622,7 @@ booksby:
   nl: Boeken door
   it: Libro di
   gl: Libros de
+  es: Libros por
 booksbytag:
   hu: Könyvek az alábbi címkével
   de: Bücher mit Schlagwort
@@ -554,6 +631,7 @@ booksbytag:
   nl: Boeken gelabeld met
   it: Libro etichettato con
   gl: Libros etiquetados con 
+  es: Libros etiquetados con 
 booksbyseries:
   hu: Könyvek az alábbi sorozatban
   de: Bücher der Reihe
@@ -562,6 +640,7 @@ booksbyseries:
   nl: Boeken in de serie
   it: Libri della serie
   gl: Libros da serie
+  es: Libros en la serie
 book_details:
   hu: Könyv részletei
   de: Buchdetails
@@ -570,6 +649,7 @@ book_details:
   nl: Boek Details
   it: Dettagli libro
   gl: Detalle dos libros
+  es: Detalles del libro
 calibre_dir1:
   hu: Calibre könyvtár elérési útja
   de: Calibre Bibliotheksverzeichnis
@@ -578,6 +658,7 @@ calibre_dir1:
   nl: Calibre bibliotheekpad
   it: Posizione libreria Calibre
   gl: Posición na libraría Calibre
+  es: Ruta de la librería de Calibre
 calibre_dir2:
   hu: ! 'Példa: /volume1/books'
   de: ! 'Zum Beispiel: /volume1/books'
@@ -586,6 +667,7 @@ calibre_dir2:
   nl: ! 'Voorbeeld: /volume1/books'
   it: ! 'Esempio: /volume1/books'
   gl: ! 'Exemplo: /volume1/books'
+  gl: ! 'Ejemplo: /volume1/libros'
 calibre_dir_expl:
   hu: Calibre könyvtárad elérési útja. Kérlek add meg a teljes útvonalat/könyvtár nevet.
   de: Der Pfad zu ihrer Calibre-Bibliothek. Tragen sie hier den vollen Verzeichnisnamen
@@ -596,6 +678,7 @@ calibre_dir_expl:
   nl: Het pad naar uw Calibre bibliotheek. Geef het volledige pad / directory naam.
   it: Percorso della libreria Calibre. Si prega di inserire il percorso completo path/directory
   gl: Cartafol onde se atopa a libraría Calibre. Introduce a ruta por completo
+  es: La ruta de tu librería de Calibre. Por favor introduce en nombre de ruta/directorio completo.
 cancel:
   hu: Mégsem
   de: Abbrechen
@@ -603,6 +686,7 @@ cancel:
   fr: Annuler
   it: Cancellare
   gl: Cancelar
+  es: Cancelar
 changes_saved:
   hu: Változtatások elmentve
   de: Änderungen gespeichert
@@ -611,6 +695,7 @@ changes_saved:
   nl: Wijzigingen opgeslagen
   it: Modifiche salvate
   gl: Modificacións gardadas
+  es: Cambios guardados
 check_access:
   hu: Jelszó beírása
   de: Freischalten
@@ -619,6 +704,7 @@ check_access:
   nl: Verzend wachtwoord
   it: Inserire Password
   gl: Introduce un contrasinal
+  es: Enviar contraseña
 check_access_info:
   hu: Ez a könyv jelszóval védett. Írd be a jelszavad, hogy engedélyezve legyen a letöltés.
   de: Diese Buch ist passwortgeschützt. Bitte freischalten, um es herunter zu laden.
@@ -628,6 +714,7 @@ check_access_info:
     te downloaden.
   it: Questo libro è protetto. Si prega di inserire la password per poterlo scaricare.
   gl: Este libro está protexido. Debes introducir o contrasinal para poder baixalo.
+  es: Este libro está protegido. Por favor introduce tu contraseña para descargarlo.
 check_installation:
   hu: Ellenőrizze a telepítést?
   de: Installation überprüfen?
@@ -635,6 +722,7 @@ check_installation:
   fr: Verification de l\'installation
   it: Verificare installazione?
   gl: Verificar instalación?
+  es: Verificar la instalación?
 comment:
   hu: Leírás
   de: Beschreibung
@@ -643,6 +731,7 @@ comment:
   nl: Beschrijving
   it: Descrizione
   gl: Descripción
+  es: Descripción
 custom_columns:
   hu: Egyedi Calibre adatok
   de: Eigene Calibre-Daten
@@ -650,10 +739,12 @@ custom_columns:
   fr: Données Calibre personnalisées
   it: Dati Calibre Personalizzati
   gl: Datos personalizados de Calibre
+  es: Datos personalizados de Calibre
 date:
   hu: Dátum
   de: Datum
   en: Date
+  es: Fecha
 delete:
   hu: Törlés
   de: Löschen
@@ -661,6 +752,7 @@ delete:
   fr: Supprimer
   it: Cancellare
   gl: Cancelar
+  es: Eliminar
 display_app_name:
   hu: Alternatív oldalcím
   de: Alternativer Titel
@@ -668,6 +760,7 @@ display_app_name:
   fr: Titre alternatif de la page
   it: Titolo pagina alternativo
   gl: Título alternativo da páxina
+  es: Título alternativo de la página
 display_app_name_expl:
   hu: Amennyiben más nevet szeretnél, mint ami a Calibre könyvárban található. Ez fog megjelenni oldalcímnek.
   de: Wenn die Anwendung einen aussagekräftigeren Namen anzeigen soll. Wird im Seitentitel
@@ -680,6 +773,8 @@ display_app_name_expl:
     Comparirà nei titoli di pagina.
   gl: Se quixer dar á libraría Calibre un título máis descriptivo.
     Esta información amosarase no título da páxina.
+  es: En caso de que quieras dar a tu libreria de Calibre un nombre más descriptivo.
+    Se mostrará en los titulos de la página.
 dl30:
   hu: Legfrissebb
   de: Die neuesten
@@ -688,6 +783,7 @@ dl30:
   nl: Meest recente
   it: Più recente
   gl: Máis recente
+  es: Más reciente
 download:
   hu: Letöltés
   de: Herunterladen
@@ -696,6 +792,7 @@ download:
   nl: Download
   it: Scaricare
   gl: Baixar
+  es: Descargar
 edit:
   hu: Szerkesztés
   de: Bearbeiten
@@ -703,6 +800,7 @@ edit:
   fr: Editer
   it: Modificare
   gl: Modificar
+  es: Editar
 error:
   hu: Hiba
   de: Fehler
@@ -711,6 +809,7 @@ error:
   nl: Fout
   it: Errore
   gl: Erro
+  es: Error
 error_kindle_send:
   hu: Valami hiba történt. Kérlek ellenőrizd az email címet.
   de: Ein Fehler ist aufgetreten. Überprüfen Sie die E-Mail-Adresse.
@@ -718,6 +817,7 @@ error_kindle_send:
   fr: Problème rencontré. Vérifiez la configuration de l\'adresse Email.
   it: Qualcosa è andato storto. Si prega di controllare l\'indirizzo di posta elettronica.
   gl: Produciuse un erro. Verifica a configuración do correo.
+  es: Algo ha ido mal. Por favor revisa la dirección de correo.
 error_no_access:
   hu: Nem rendelkezel megfelelő hozzáférési jogokkal.
   de: Sie haben keine Zugangsberechtigung.
@@ -725,6 +825,7 @@ error_no_access:
   fr: Vous n\'avez pas les droits suffisants.
   it: Non si dispone di sufficienti diritti di accesso.
   gl: Non tes permisos suficientes.
+  es: No tiene permisos de acceso suficientes.
 glob_dl_expl:
   hu: Amennyiben másokkal is meg szeretnéd osztani a könyvet, aktiválódik a jelszavas letöltés védelem. Ha van admin jelszavad használhatod azt, vagy egyszerűen adj meg egy másik jelszót.
   de: Wenn sie ihr Netz mit anderen Benutzern teilen, können sie hier den Passwort-Schutz
@@ -746,6 +847,9 @@ glob_dl_expl:
   gl: Se compartillas a conexión de rede podes activar unha protección con contrasinal
     para a baixada de libros. Se xa ts un contrasinal de administración podes reutilizalo
     ou definir un novo.
+  es: Si estás compartiendo tu red con otros puedes activar la proteccion por contraseña
+    para la descarga de libros. Si ya tienes una contraseña de administrador puedes reusarla,
+    o simplemente especificar distinta y nueva.
 glob_dl_legend:
   hu: Jelszóval védett letöltés
   de: Herunterladen per Passwort schützen
@@ -754,6 +858,7 @@ glob_dl_legend:
   nl: Downloads beveiligen met een wachtwoord
   it: Proteggere i downloads con una password
   gl: Protexer as baixadas con contrasinal
+  es: Proteger las descargas con una contraseña
 glob_dl_pw1:
   hu: Jelszó a letöltéshez
   de: Passwort fürs Herunterladen
@@ -762,6 +867,7 @@ glob_dl_pw1:
   nl: Wachtwoord voor downloads
   it: Password per downloads
   gl: Contrasinal para as baixadas
+  es: Contraseña para descargas
 glob_dl_pw2:
   hu: Jelszó a letöltéshez
   de: Passwort fürs Herunterladen
@@ -770,6 +876,7 @@ glob_dl_pw2:
   nl: Wachtwoord voor downloads
   it: Password per downloads
   gl: Contrasinal para as baixadas
+  es: Contraseña para descargas
 glob_dl_radio1:
   hu: Nem, nem szükséges
   de: Nein, nicht nötig
@@ -778,6 +885,7 @@ glob_dl_radio1:
   nl: Nee, niet noodzakelijk
   it: No, non necessario
   gl: Non necesario
+  es: No, no es necesario
 glob_dl_radio2:
   hu: Igen, használd az admin jelszót
   de: Ja, Admin-Passwort verwenden
@@ -786,6 +894,7 @@ glob_dl_radio2:
   nl: Ja, gebruik admin wachtwoord
   it: Si, utilizzare la password di amministrazione
   gl: Si, empregar o contrasinal de administración 
+  es: Si, usar la contraseña de administrador
 glob_dl_radio3:
   hu: Igen, használj egy másik jelszót (üsd be)
   de: Ja, anderes Passwort angeben (unten eingeben)
@@ -794,6 +903,7 @@ glob_dl_radio3:
   nl: Ja, gebruik een apart wachtwoord (vul hieronder in)
   it: Si, utilizzare una password differente (inserire di seguito)
   gl: Si, empregar un contrasinal diferente (introducir a continuación) 
+  es: Si, usar una contraseña distinta (introducir a continuación)
 home:
   hu: Kezdőlap
   de: Start
@@ -802,6 +912,7 @@ home:
   nl: Home
   it: Home
   gl: Comezo
+  es: Inicio
 idlinks:
   hu: ID linkek
   de: ID-Verweise
@@ -809,10 +920,12 @@ idlinks:
   fr: Liens ID
   it: ID Collegamenti
   gl: Ligazóns ID
+  es: Enlaces ID
 intro:
   hu: Könyvtárad
   de: Ihre Bibliothek
   en: Your library
+  es: Tu Biblioteca
 invalid_calibredir1:
   hu: Érvénytelen Calibre könyvtár
   de: Ungültiges Calibre-Verzeichnis
@@ -821,6 +934,7 @@ invalid_calibredir1:
   nl: Ongeldige Calibre map
   it: Directory Calibre non valida
   gl: Cartafol Calibre non válido
+  es: Directorio de Calibre no válido
 invalid_calibredir2:
   hu: "A beállított Calibre könyvtárat nem lehet használni. Valóban egy Calibre könyvtárat adtál meg? Olvasható? Létezik?"
   de: "Auf das angegebene Calibre-Verzeichnis kann nicht zugegriffen werden. Ist es ein Calibre-Verzeichnis? Passen die Zugriffsrechte? Existiert das angegebene Verzeichnis?"
@@ -829,6 +943,7 @@ invalid_calibredir2:
   nl: "De geconfigureerde Calibre directory kan niet worden gebruikt. Is het echt een Calibre directory? Is het leesbaar? Bestaat het?"
   it: "La directory di Calibre configurata non può essere utilizzata. E\\' veramente una directory di Calibre? Possiede i diritti di lettura? Esiste?"
   gl: "O cartafol configurado para o Calibre non pode ser utilizado. É realmente ese cartafol? Tes permisos de leitura? Existe?"
+  es: "No se puede usar el directorio de Calibre configurado. ¿Es realmente un directorio de Calibre? ¿Se puede leer? ¿Existe?"
 invalid_password:
   hu: Érvénytelen jelszó
   de: Ungültiges Passwort
@@ -837,6 +952,7 @@ invalid_password:
   nl: Ongeldig wachtwoord
   it: Password errata
   gl: Contrasinal incorrecto
+  es: Contraseña incorrecta
 invalid_password2:
   hu: Ez a jelszó érvénytelen. Próbálj meg egy másikat.
   de: Das eingegebene Passwort scheint ungültig zu sein. Bitte versuchen Sie es mit einem anderen.
@@ -845,6 +961,7 @@ invalid_password2:
   nl: Dit wachtwoord is niet geldig. Gebruik een andere.
   it: Questa password è errata. Si prega di utilizzarne una differente.
   gl: Este contrasinal é incorrecto. Téntao de novo con outro.
+  es: Esta contraseña no es válida. Por favor utiliza otra distinta.
 invalid_email_address:
   hu: Kérlek létező email címet adj meg.
   de: Bitte geben Sie eine gültige Email-Adresse ein.
@@ -852,6 +969,7 @@ invalid_email_address:
   fr: Merci de saisir une adresse Email valide.
   it: Si prega di inserire un indirizzo di posta elettornica valido.
   gl: Necesitase unha dirección válida de correo.
+  es: Por favor introduce una direccion de correo válida.
 kindle_expl:
   hu: Lehetővé teszi, hogy könyvet küldj a Kindle email címedre (@kindle.com).
   de: Aktiviert die Funktion zum Senden eines Buches an die Kindle E-Mail-Adresse (@kindle.com).
@@ -859,6 +977,7 @@ kindle_expl:
   fr: Permettre l\'envoi des livres à une adresse Email Kindle (@kindle.com).
   it: Permette l\'invio di libri a un indirizzo di posta elettronica Kindle (@ kindle.com).
   gl: Permitir o envío de libros a un enderezo de correo electrónico Kindle (@ kindle.com).
+  es: Permite el envio de libros a la direccion de correo Kindle (@kindle.com).
 kindle_expl2:
   hu: Olyan email cím szükséges, ami engedélyezve van az Amazon fiókodban.
   de: Diese E-Mail-Adresse muss in Ihrem Amazon Konto als bestätigter Absender eingetragen sein.
@@ -866,6 +985,7 @@ kindle_expl2:
   fr: Cette adresse Email a besoin d\'être authorisée dans votre compte Amazon Kindle.
   it: Questo indirizzo di posta elettronica deve essere aggiunto come mittente autorizzato all\'account Amazon.
   gl: Este enderezo de correo debe ser autorizado na túa conta de Amazon Kindle.
+  es: Se necesita añadir está direccion de correo como proveedor autorizado en tu cuenta de Amazon.
 kindle_enable:
   hu: Engedélyezed a Küldés-Kindle-Eszközre?
   de: Senden-an-Kindle aktivieren?
@@ -873,6 +993,7 @@ kindle_enable:
   fr: Permettre l\'envoi à un Kindle ?
   it: Permettere l\'invio a Kindle?
   gl: Permitir o envío a un dispositivo Kindle?
+  es: Permitir el envío a Kindle?
 kindle_from_email1:
   hu: Feladó
   de: E-Mail Absender
@@ -880,6 +1001,7 @@ kindle_from_email1:
   fr: Adresse de l\'expéditeur
   it: Mittente posta elettronica
   gl: Remitente do correo electrónico
+  es: Remitente de correo
 kindle_from_email2:
   hu: Email cím
   de: E-Mail Adresse
@@ -887,6 +1009,7 @@ kindle_from_email2:
   fr: Adresse Email
   it: Indirizzo di posta elettronica
   gl: Enderezo de correo electrónico
+  es: Dirección de correo
 kindle_to_email:
   hu: Email cím (@kindle.com)
   de: E-Mail-Adresse (@kindle.com)
@@ -894,6 +1017,7 @@ kindle_to_email:
   fr: Adresse Email Kindle (@kindle.com)
   it: Indirizzo posta elettronica Kindle (@kindle.com) 
   gl: Enderezo de correo electrónico Kindle (@kindle.com)
+  es: Dirección de correo Kindle (@kindle.com)
 language:
   hu: Nyelv
   de: Sprache
@@ -902,6 +1026,7 @@ language:
   nl: Taal
   it: Lingua
   gl: Lingua
+  es: Idioma
 login:
   hu: Bejelentkezés
   de: Anmelden
@@ -909,6 +1034,7 @@ login:
   fr: Connexion
   it: Accesso
   gl: Accesso
+  es: Acceso
 logout:
   hu: Kijelentkezés
   de: Abmelden
@@ -916,6 +1042,7 @@ logout:
   fr: Déconnexion
   it: Disconnessione
   gl: Desconexión
+  es: Desconexión
 logout_expl:
   hu: Sikeres kijelentkezés
   de: Sie wurden abgemeldet
@@ -923,6 +1050,7 @@ logout_expl:
   fr: Vous êtes déconnectés
   it: Disconnessione avvenuta
   gl: Desconectad@
+  es: Te has desconectado
 mdb_error:
   hu: ! 'Calibre adatbázis nem található, vagy nem olvasható: '
   de: ! 'Calibre Datenbank existiert nicht oder konnte nicht gelesen werden: '
@@ -931,6 +1059,7 @@ mdb_error:
   nl: ! 'Calibre database niet gevonden of is niet leesbaar:'
   it: ! 'Il database di Calibre non è stato trovato o non è accessibile in lettura'
   gl: ! 'A base de datos Calibre non se puido ler ou atopar'
+  es: ! 'La base de datos de Calibre no se encuentra o no se puede leer: '
 metadata_update:
   hu: Metaadat frissítés
   de: Metadaten erneuern
@@ -938,6 +1067,7 @@ metadata_update:
   fr: Mise à jour des metadonnées
   it: Aggiornamento metadati
   gl: Actualizar metadata
+  es: Actualizar metadatos
 metadata_update_expl:
   hu: Frissítse a metaadatokat mielőtt automatikusan betölti a Calibre adatokat? (Csak EPUB-nál)
   de: Die Metadaten von Büchern vor dem Herunterladen automatisch durch Calibre-Inhalte ersetzen? (Nur EPUB)
@@ -945,6 +1075,7 @@ metadata_update_expl:
   fr: Mettre à jour les metadonnées des livres avant le téléchargement automatique des données Calibre (EPUB uniquement)
   it: Aggiornare i metadati dei libri prima di scaricarli automaticamente con Calibre? (solo EPUB)
   gl: Actualizar metadata dos libros antes de baixar automaticamente co Calibre? (só EPUB)
+  es: ¿Actualizar los metadatos de los libros antes de descargar automaticamente con los datos de Calibre? (Sólo EPUB)
 no_config:
   hu: A konfigurációs adatbázis data/data.db nem található, vagy sérült. Használj biztonsági mentést, vagy telepítsd újra.
   de: Konfigurations-Datenbank data/data.db nicht gefunden oder fehlerhaft. Bitte
@@ -955,6 +1086,8 @@ no_config:
   it: Database di configurazione data/data.db non trovato o in cattive condizioni. Si prega di caricare un
      backup o ripetere l\'installazione.
   gl: A base de datos da configuración data/data.db nom se puido ler ou atopar. Debes subir unha copia de seguranza ou reinstalar.
+  es: Base de datos de configuración data/data.db no encontrada o corrupta. Por favor 
+    carga una copia de seguridad o repite la instalación.
 not_found1:
   hu: Nem található!
   de: Nicht gefunden!
@@ -963,6 +1096,7 @@ not_found1:
   nl: Niet gevonden!
   it: Non trovato!
   gl: Non se atopou!
+  es: ¡No encontrado!
 not_found2:
   hu: A kért erőforrás nem elérhető. Kérlek ellenőrizd a Calibre könyvtáradat.
   de: Die angeforderte Ressource konnte nicht gefunden werden. Dies sollte eigentlich
@@ -976,6 +1110,8 @@ not_found2:
   it: La risorsa richiesta non è disponibile. Questo non dovrebbe accadere. Si prega di controllare
      la libreria Calibre per possibili difetti.
   gl: O recurso non está dispoñível. Isto non debería ter pasado... Comproba a integridade da libraría Calibre
+  es: El recurso solicitado no está disponible. Esto no deberia suceder. Por favor revisa
+    tu libreria de Calibre.
 opds_authors:
   hu: ! 'Szerzők: '
   de: ! 'Autoren: '
@@ -984,6 +1120,7 @@ opds_authors:
   nl: ! 'Auteurs: '
   it: ! 'Autori: '
   gl: ! 'Autores: '
+  es: ! 'Autores: '
 opds_books:
   hu: ! 'Könyvek: '
   de: ! 'Bücher: '
@@ -992,6 +1129,7 @@ opds_books:
   nl: ! 'Boeken: '
   it: ! 'Libri: ' 
   gl: ! 'Libros: ' 
+  es: ! 'Libros: '
 opds_series:
   hu: ! 'Sorozatok: '
   de: ! 'Reihen: '
@@ -1000,6 +1138,7 @@ opds_series:
   nl: ! 'Series: '
   it: ! 'Serie: '
   gl: ! 'Series: '
+  es: ! 'Series: '
 opds_tags:
   hu: ! 'Címkék: '
   de: ! 'Schlagwörter: '
@@ -1008,6 +1147,7 @@ opds_tags:
   nl: ! 'Labels: '
   it: ! 'Etichette: '
   gl: ! 'Etiquetas: '
+  es: ! 'Etiquetas: '
 opds_root_title:
   hu: BicBucStriim Gyökér Katalógus
   de: BicBucStriim Hauptkatalog
@@ -1016,6 +1156,7 @@ opds_root_title:
   nl: BicBucStriim Basis Catalogus
   it: Catalogo Radice (root) di BicBucStriim
   gl: Catálogo raíz (root) do BicBucStriim
+  es: Catálogo raíz de BicBucStriim
 opds_root_subtitle:
   hu: A Gyökér Katalógus a Calibre könyvátrad tartalma
   de: Der Startkatalog ihrer Calibre-Bibliothek
@@ -1024,6 +1165,7 @@ opds_root_subtitle:
   nl: De basis catalogus naar de inhoud van uw Calibre bibliotheek
   it: Il catalogo radice (root) per il contenuto della biblioteca Calibre
   gl: O catálogo raíz (root) da libraría Calibre
+  es: El catálogo raíz para los contenidos de la biblioteca de Calibre
 opds_by_author1:
   hu: Szerző
   de: Nach Autor
@@ -1032,6 +1174,7 @@ opds_by_author1:
   nl: Op Auteur
   it: Per Authore
   gl: Por autores
+  es: Por autor
 opds_by_author2:
   hu: Összes könyv szerző szerint rendezve
   de: Alle Bücher nach Autoren geordnet
@@ -1040,6 +1183,7 @@ opds_by_author2:
   nl: Alle boeken gesorteerd op auteur
   it: Tutti i libri ordinati per autore
   gl: Todos os libros ordeaos por autores
+  es: Todos los libros ordenados por autor
 opds_by_author3:
   hu: Szerzők betűrendben
   de: Autoren nach Initialen
@@ -1048,6 +1192,7 @@ opds_by_author3:
   nl: Auteurs op initiaal
   it: Autori ordinati per iniziali
   gl: Autores ordeados por inicial
+  es: Ordenados por sus iniciales
 opds_by_author4:
   hu: ! 'Összes szerző: '
   de: ! 'Alle Autoren für '
@@ -1056,6 +1201,7 @@ opds_by_author4:
   nl: ! 'Alle Auteurs voor '
   it: ! 'Tutti gli Autori per '
   gl: ! 'Todos os autores por '
+  es: ! 'Todos los autores por '
 opds_by_author5:
   hu: Szerzők listája
   de: Autorenliste
@@ -1064,6 +1210,7 @@ opds_by_author5:
   nl: Auteurs lijst
   it: Lista Autori
   gl: Lista de autores
+  es: Lista de autores
 opds_by_author6:
   hu: ! 'Összes könyv: '
   de: ! 'Alle Bücher von '
@@ -1072,6 +1219,7 @@ opds_by_author6:
   nl: ! 'Alle boeken door '
   it: ! 'Tutti i libri per '
   gl: ! 'Todos os libros por '
+  es: ! 'Todos los libros por '
 opds_by_newest1:
   hu: Legújabbak szerint
   de: Die neuesten
@@ -1080,6 +1228,7 @@ opds_by_newest1:
   nl: Op Nieuwste
   it: Per i più recenti
   gl: Máis recente
+  es: Por más reciente
 opds_by_newest2:
   hu: A legújabb címek
   de: Die neuesten Titel
@@ -1088,6 +1237,7 @@ opds_by_newest2:
   nl: De 30 meest recente titels
   it: I 30 titoli più recenti
   gl: Os 30 títulós máis recentes
+  es: Los 30 títulos más recientes
 opds_by_search1:
   hu: Keresés szerint
   de: Nach Suche
@@ -1096,6 +1246,7 @@ opds_by_search1:
   nl: Op zoekopdracht
   it: Per Ricerca
   gl: Por pesquisa
+  es: POr búsqueda
 opds_by_search2:
   hu: Keresési eredmények
   de: Ergebnisse der Suche
@@ -1104,6 +1255,7 @@ opds_by_search2:
   nl: Zoek resultaten
   it: Risultati Ricerca
   gl: Resultado da pesquisa
+  es: Resultado de la búsqueda
 opds_by_search3:
   hu: Könyv keresése a BicBucStriim-en
   de: Büchersuche bei BicBucStriim
@@ -1112,6 +1264,7 @@ opds_by_search3:
   nl: Zoek naar boeken op BicBucStriim
   it: Ricerca libri in BicBucStriim
   gl: Pesquisar no BicBucStriim
+  es: Buscar libros en BicBucStriim
 opds_by_series1:
   hu: Sorozatok szerint
   de: Nach Buchreihe
@@ -1120,6 +1273,7 @@ opds_by_series1:
   nl: Op Series
   it: Per Serie
   gl: Por serie
+  es: Por serie
 opds_by_series2:
   hu: Sorozatok és címeik
   de: Reihen und ihre Titel
@@ -1128,6 +1282,7 @@ opds_by_series2:
   nl: Series en hun titels
   it: Serie e loro titoli
   gl: Serie e títulos
+  es: Series y sus títulos
 opds_by_series3:
   hu: Sorozatok betűrendben
   de: Reihen nach Initialen
@@ -1136,6 +1291,7 @@ opds_by_series3:
   nl: Series op initialen
   it: Serie per loro iniziali
   gl: Series por iniciais
+  es: Series por sus iniciales
 opds_by_series4:
   hu: ! 'Összes sorozat: '
   de: ! 'Alle Reihen für '
@@ -1144,6 +1300,7 @@ opds_by_series4:
   nl: ! 'Alle series voor '
   it: ! 'Tutte le serie per '
   gl: ! 'Todas as series por '
+  es: ! 'Todas las series por '
 opds_by_series5:
   hu: Sorozatok listája
   de: Reihenliste
@@ -1152,6 +1309,7 @@ opds_by_series5:
   nl: Series lijst
   it: Lista Serie
   gl: Lista de series
+  es: Lista de series
 opds_by_series6:
   hu: ! ‘Összes könyv a sorozathoz '
   de: ! 'Alle Bücher für Buchreihe '
@@ -1160,6 +1318,7 @@ opds_by_series6:
   nl: ! 'Alle boeken voor series '
   it: ! 'Tutti i libri per serie '
   gl: ! 'Todos os libros por series '
+  es: ! 'Todos los libros por series '
 opds_by_title1:
   hu: Cím szerint
   de: Nach Titel
@@ -1168,6 +1327,7 @@ opds_by_title1:
   nl: Op Titel
   it: Per Titolo
   gl: Por título
+  es: Por título
 opds_by_title2:
   hu: Összes könyv cím szerint rendezve
   de: Alle Bücher nach Titel geordnet
@@ -1176,6 +1336,7 @@ opds_by_title2:
   nl: Alle boeken gesorteerd op titel
   it: Tutti i libri ordianti per titolo
   gl: Todos os libros ordeados por título
+  es: Todos los libros ordenados por título
 opds_by_tag1:
   hu: Címke szerint
   de: Nach Schlagwort
@@ -1184,6 +1345,7 @@ opds_by_tag1:
   nl: Op Label
   it: Per Etichette
   gl: Por etiqueta
+  es: Por etiqueta
 opds_by_tag2:
   hu: Összes könyv címke szerint rendezve
   de: Alle Bücher nach Schlagwort geordnet
@@ -1192,6 +1354,7 @@ opds_by_tag2:
   nl: Alle boeken gesorteerd op label
   it: Tutti i libri ordinati per etichette
   gl: Todos os libros ordeados por etiqueta
+  es: Todos los libros ordenados por etiqueta
 opds_by_tag3:
   hu: Címkék betűrendben
   de: Schlagwörter nach Initialen
@@ -1200,6 +1363,7 @@ opds_by_tag3:
   nl: Labels op initialen
   it: Etichette per loro iniziali
   gl: Etiquetas por iniciais
+  es: Etiquetas por sus iniciales
 opds_by_tag4:
   hu: ! 'Minden címke: '
   de: ! 'Alle Schlagwörter für '
@@ -1208,6 +1372,7 @@ opds_by_tag4:
   nl: ! 'Alle labels voor '
   it: ! 'Tutte le etichette per '
   gl: ! 'Todas as etiquetas por '
+  es: ! 'Todas las etiquetas por '
 opds_by_tag5:
   hu: Címkék listája
   de: Schlagwortliste
@@ -1216,6 +1381,7 @@ opds_by_tag5:
   nl: Label lijst
   it: Elenco Etichette
   gl: Lista de etiquetas
+  es: Lista de etiquetas
 opds_by_tag6:
   hu: ! 'Összes könyv a címkéhez '
   de: ! 'Alle Bücher für Schlagwort '
@@ -1224,6 +1390,7 @@ opds_by_tag6:
   nl: ! 'Alle boeken voor label '
   it: ! 'Tutti i libri per etichietta '
   gl: ! 'Todos os libros por etiquetas '
+  es: ! 'Todos los libros por etiquetas '
 page_size:
   hu: Oldalméret
   de: Seitengröße
@@ -1232,6 +1399,7 @@ page_size:
   nl: paginaformaat
   it: Dimensioni pagina
   gl: Dimensións da páxina
+  es: Tamaño de la página
 page_size_expl:
   hu: "Elemek száma a listában. Növeld az értéket, hogy több címet, szerzőt, … láss egy lapon. Alapértelmezett érték 30, de maximum 100 lehet."
   de: "Anzahl der Elemente in einer Liste. Erhöhen Sie den Wert, um mehr Titel, Autoren, ... pro Seite anzuzeigen. Standard ist 30, Maximum 100"
@@ -1240,6 +1408,7 @@ page_size_expl:
   nl: "Aantal elementen in een lijst. Te verhogen tot meer titels, auteurs... per pagina. Standaard is 30, maximum is 100"
   it: "Numero di elementi in elenco. Aumentare per visualizzare più titoli, autori ... per pagina. Il parametro è settato a 30, il massimo è 100"
   gl: "Número de elementos na lista. Auméntao para ver máis títulos, autores,... por páxina. Por defecto son 30, o máximo é 100"
+  es: "Numero de elementos en una lista. Incrementar para mostrar mas títulos, autoes ... por página. Por defecto son 30, el máximo es 100"
 pagination_next:
   hu: következő
   de: vor
@@ -1248,6 +1417,7 @@ pagination_next:
   nl: volgende
   it: prossimo
   gl: seguinte
+  es: siguiente
 pagination_page:
   hu: Oldal
   de: Seite
@@ -1256,6 +1426,7 @@ pagination_page:
   nl: Pagina
   it: Pagina
   gl: Páxina
+  es: Página
 pagination_prev:
   hu: előző
   de: zurück
@@ -1264,6 +1435,7 @@ pagination_prev:
   nl: vorige
   it: precedente
   gl: anterior
+  es: anterior
 pagination_search:
   hu: Keresés
   de: Suche
@@ -1272,6 +1444,7 @@ pagination_search:
   nl: Zoeken
   it: Ricerca
   gl: Pesquisa
+  es: Búsqueda
 pagination_search_lbl:
   hu: Keresés
   de: Suchen
@@ -1280,6 +1453,7 @@ pagination_search_lbl:
   nl: Zoeken
   it: Ricerca
   gl: Pesquisa
+  es: Búsqueda
 pagination_search_ph:
   hu: Keresés ...
   de: Suchen ...
@@ -1288,6 +1462,7 @@ pagination_search_ph:
   nl: Zoeken ...
   it: Ricerca ...
   gl: Pesquisa ...
+  es: Búsqueda ...
 password_dialog_titel:
   hu: Jelszó
   de: Passwort
@@ -1296,6 +1471,7 @@ password_dialog_titel:
   nl: Wachtwoord
   it: Password
   gl: Contrasinal
+  es: Contraseña
 presskey:
   hu: Nyomd meg a gombot a letöltéshez, a számodra megfelelő formátumon.
   de: Taste drücken, um das Buch im betreffenden Format herunter zu laden.
@@ -1304,6 +1480,7 @@ presskey:
   nl: Druk op een knop om het boek in het opgegeven formaat te downloaden.
   it: Premere un tasto per scaricare il libro nel rispettivo formato.
   gl: Pulsa o botón para baixar o libro no seu respectivo formato.
+  es: Pulsa un botón para descargar el libro en el formato correspondiente.
 presskey2:
   hu: “Add meg a Kindle email címed, hogy szinkronizálhassa a könyvet a készülékeddel.”
   de: "Geben Sie Ihre Kindle E-Mail-Adresse ein, um das Buch an ihr Gerät zu senden."
@@ -1311,6 +1488,7 @@ presskey2:
   fr: "Saisissez votre adresse Email pour synchroniser ce livre sur votre périphérique."
   it: "Inserire l\\'indirizzo di posta elettronica Kindle per sincronizzare questo libro con il dispositivo."
   gl: "Introduze o teu enderezo Kindle para sincronizar este libro no teu dispositivo."
+  es: "Introduce tu dirección de correo Kindle para sincronizar este libro con tu dispositivo"
 presskey3:
   hu: " hozzá kell adnod a megbízható feladókhoz az Amazon fiókodban."
   de: " muss als erlaubter Absender in Ihrem Amazon Account eingetragen sein."
@@ -1318,6 +1496,7 @@ presskey3:
   fr: " nécessite d\\'être ajouté comme expédieur approuvé dans votre compte Amazon."
   it: " è necessario aggiungerlo come mittente approvato all\\'account Amazon."
   gl: " é necesario engadilo como remitente aprobado na tua conta de Amazon." 
+  es: " debe ser añadido como proveedero autorizado en tu cuenta de Amazon."
 published:
   hu: Kiadva
   de: Veröffentlicht
@@ -1326,9 +1505,11 @@ published:
   nl: Gepubliceerd
   it: Pubblicato
   gl: Publicado
+  es: Publicado
 relative_urls:
   de: Relative URLs
   en: Relative URLs
+  es: URL relativos
 relative_urls_expl:
   de: Schalten Sie dies ab, wenn zB ihr OPDS-Reader vollständige URLs benötigt
   en: Switch this off, if your OPDS reader requires full URLs
@@ -1340,6 +1521,7 @@ save:
   nl: Opslaan
   it: Salvato
   gl: Gardado
+  es: Guardar
 send_now:
   hu: Küldés most
   de: Jetzt senden
@@ -1347,6 +1529,7 @@ send_now:
   fr: Envoyer
   it: Inviare ora
   gl: Enviar
+  es: Enviar ahora
 send_success:
   hu: A könyv elküldve!
   de: Das Buch wurde versendet!
@@ -1354,6 +1537,7 @@ send_success:
   fr: Le livre a été envoyé !
   it: Il libro è stato inviato!
   gl: O libro foi enviado!
+  es: ¡Se ha enviado el libro!
 send_to_kindle:
   hu: Küldés a Kindle-re
   de: Senden an Kindle
@@ -1361,6 +1545,7 @@ send_to_kindle:
   en: Send to Kindle
   it: Inviato a Kindle
   gl: Enviado a Kindle
+  es: Enviado a Kindle
 series:
   hu: Sorozatok
   de: Reihen
@@ -1369,6 +1554,7 @@ series:
   nl: Series
   it: serie
   gl: Series
+  es: Series
 series_details:
   hu: Sorozatról
   de: Details Reihe
@@ -1377,6 +1563,7 @@ series_details:
   nl: Serie Details
   it: Dettagli della serire
   gl: Detalle da serie
+  es: Detalles de la serie
 switch_yes:
   hu: Igen
   de: Ja
@@ -1385,6 +1572,7 @@ switch_yes:
   nl: Ja
   it: Si
   gl: Si
+  es: Sí
 switch_no:
   hu: Nem
   de: Nein
@@ -1393,12 +1581,14 @@ switch_no:
   nl: Nee
   it: No
   gl: No
+  es: No
 tag:
   hu: Címke
   de: Schlagwort
   en: Tag
   it: Etichetta
   gl: Etiqueta
+  es: Etiqueta
 tags:
   hu: Címkék
   de: Schlagwörter
@@ -1407,6 +1597,7 @@ tags:
   nl: Labels
   it: Etichette
   gl: Etiqueta
+  es: Etiquetas
 tag_details:
   hu: Címkéről
   de: Details Schlagwort
@@ -1415,6 +1606,7 @@ tag_details:
   nl: Label Details
   it: Dettagli Etichette
   gl: Detalles da etiqueta
+  es: Detalles de etiqueta
 tag_protect:
   hu: Szelektív letöltés védelem címkék használatával?
   de: Selektiver Download-Schutz durch Schlagworte?
@@ -1423,6 +1615,7 @@ tag_protect:
   nl: Bescherming via label?
   it: Protezione del download selettivo utilizzando le etichiette?
   gl: Protexer as baixadas selectivamente empregando as etiquetas?
+  es: ¿Protección selectiva usando etiquetas?
 tag_protect_field:
   hu: Add meg a címkéket a szelektív letöltés védelemhez
   de: Schlagwort eingeben
@@ -1431,6 +1624,7 @@ tag_protect_field:
   nl: Selectie op label
   it: Inserire le etichette per la protezione del download selettivo
   gl: Introduce a etiqueta para a protección selectiva da baixada
+  es: Introduce una etiqueta para la protección selectiva.
 tag_protect_field_exp1:
   hu: Válaszd ki a címkéket amiket használni szeretnél a szelektív letöltés védelemhez
   de: Geben Sie hier das Schlagwort ein, mit dem Titel vor dem Herunterladen geschützt
@@ -1440,6 +1634,7 @@ tag_protect_field_exp1:
   nl: Plaats hier de label die moet worden beschermd
   it: Scegliere una etichetta da utilizzare per la protezione del download selettivo.
   gl: Escolle unha etiqueta que será empregada para a baixada selectiva.
+  es: Elige la etiqueta que se usará para la protección de descarga selectiva.
 tag_protect_expl:
   hu: Amennyiben ezt bekapcsolod, csak a kiválasztott címkével ellátott könyvek lesznek jelszóval védve. A többi könyvet jelszó nélkül is le lehet tölteni.
   de: Mit dieser Option kann der Dwonload-Schutz auf Bücher mit dem angegebenen Schlagwort
@@ -1454,6 +1649,8 @@ tag_protect_expl:
      Tutti gli altri libri possono essere scaricati senza una password.
   gl: Se o activas, só os libros con esta etiqueta estará protexidas mediante contrasinal.
      Todos os outros libros poderán ser baixadas sen contrasinal.
+  es: Si esta activado, sólo los libros con la etiqueta elegida tendran protección por contraseña.
+    Todos los demás libros se podrán descargar sin contraseña.
 thumb_gen_clipped:
   hu: Levágod a bélyegképeket?
   de: Vorschaubilder beschneiden?
@@ -1462,6 +1659,7 @@ thumb_gen_clipped:
   nl: Clip thumbnails?
   it: Tagliare le miniature?
   gl: Recortar as miniaturas?
+  es: ¿Recortar las miniaturas?
 thumb_gen_clipped_expl:
   hu: Amennyiben ezt bekapcsolod, az indexképek széleit levágja a részletek oldalon.
   de: Wenn eingeschaltet, werden die Ränder von Vorschaubilder abgeschnitten, um mehr
@@ -1471,10 +1669,12 @@ thumb_gen_clipped_expl:
   nl: Indien ingeschakeld, zullen de randen van de miniaturen worden geknipt om meer details weer te geven
   it: Se attivato, i bordi delle miniature saranno tagliate per mostrare più particolari.
   gl: Se o activas, os bordes das miniaturas serán recortadas para amosar máis detalles.
+  es: Si está activo, los bordes de las miniaturas se recortarán para mostrar mas detalles.
 title:
   hu: Cím
   de: Titel
   en: Title
+  es: Título
 titles:
   hu: Könyvek
   de: Bücher
@@ -1483,10 +1683,12 @@ titles:
   nl: Boeken
   it: Libri
   gl: Libros
+  es: Libros
 titles_sort:
   hu: "Rendezés:"
   de: Sortieren nach
   en: Sort by
+  es: Ordenar por
 unknown_error1:
   hu: Ismeretlen hiba
   de: Unbekannter Fehler
@@ -1495,6 +1697,7 @@ unknown_error1:
   nl: Onbekende Fout
   it: Errore Sconosciuto
   gl: Erro descoñecido
+  es: Error desconocido
 unknown_error2:
   hu: Ismeretlen hiba lépett fel.
   de: Ein bisher unbekannter Fehler wurde gemeldet.
@@ -1503,6 +1706,7 @@ unknown_error2:
   nl: Er is een onbekende fout opgetreden.
   it: Si è verificato un errore sconosciuto.
   gl: Produciuse un erro descoñecido.
+  es: Se ha producido un error desconocido.
 upload:
   hu: Feltöltés
   de: Hochladen
@@ -1510,3 +1714,4 @@ upload:
   fr: Upload
   it: Caricamento
   gl: Subida
+  es: Subida
