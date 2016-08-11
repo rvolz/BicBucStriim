@@ -135,7 +135,7 @@ admin_new_version_error:
   hu: Nem sikerült betölteni az új verzió információit, kérjük ellenőrizd manuálisan.
   de: Versionsinformationen konnten nicht geladen werden. Bitte prüfen Sie die manuell.
   en: Unable to load new version information. Please check manually.
-  fr: Impossible de vérifier la présence d\'une mise à jour. Vérifiez manuellement.
+  fr: Impossible de vérifier la présence d\'une mise à jour. Merci de vérifier manuellement.
   it: Impossibile caricare le informazioni sulla nuova versione. Si prega di controllare manualmente
   gl: Non foi posível comprobar a información de versión. Podes comprobalo manualmente
 admin_no_new_version:
@@ -356,6 +356,7 @@ admin_tts_expl:
   hu: ! ‘A Calibre különböző módokon tudja rendezni a könyveket időrendi sorrendben. Alapértelmezetten olyan sorrendben jelennek meg a könyvek, ahogy utoljára hozzá lettek adva.’
   de: ! 'Wenn Titel nach Zeit sortiert angezeigt werden sollen, bietet Calibre verschiedene Möglichkeiten. Standardmäßig werden sie nach dem Datum des Eingangs in die Calibre-Bibliothek sortiert.'
   en: ! 'Calibre offers various ways to sort books by date. By default books will be sorted by the date when they were added to the Calibre library.'
+  fr: ! 'Calibre propose différentes méthodes de tri des livres par date. Par défaut, les livres seront triés avec leur date d\'ajout dans la bibliothèque Calibre.'
 admin_tts_by_lastmodified:
   hu: Módosítás dátuma
   de: Änderungsdatum
@@ -512,7 +513,7 @@ author_thumbnail_expl:
     auf 160*160 Pixel reduziert.
   en: Upload or delete an author image. Please use small files (<3MB), the image will be
     reduced to 160*160 pixels.
-  fr: Uploader ou supprimer l\'image de l\'auteur. Veuillez utiliser un fichier de moins de 3MB, l\'image sera réduite aux dimensions de 160*160 pixels.
+  fr: Téléverser ou supprimer l\'image de l\'auteur. Veuillez utiliser un fichier de moins de 3MB, l\'image sera réduite aux dimensions de 160*160 pixels.
   it: Caricare o cancellare immagine autore. Si prega di usare files di piccole dimensioni (<3MB),
     l\'immagine verrà ridotta alle dimensioni di 160*160 pixels  
   gl: Subir ou suprimir a imaxen do autor. Pregase empregar un ficheiro pequeno (<3MB), a imaxe será redimensionada a 160*160 pixels.
@@ -520,14 +521,14 @@ author_thumbnail_upload_error1:
   hu: Feltöltési hiba
   de: Fehler beim Hochladen
   en: Upload error
-  fr: Problème d\'upload
+  fr: Problème d\'envoi
   it: Errore di Caricamento
   gl: Erro na subida
 author_thumbnail_upload_error2:
   hu: Hibás, vagy túl nagy fájl
   de: Falscher Dateityp oder zu groß
   en: Wrong file type or too big
-  fr: Mauvais type de fichier ou trop gros
+  fr: Mauvais type de fichier ou fichier trop gros
   it: Tipo di file errato o troppo grande
   gl: Formato de ficheiro incorrecto ou demasiado grande
 back:
@@ -550,7 +551,7 @@ booksbytag:
   hu: Könyvek az alábbi címkével
   de: Bücher mit Schlagwort
   en: Books tagged with
-  fr: Livres par tag
+  fr: Livres taggués avec
   nl: Boeken gelabeld met
   it: Libro etichettato con
   gl: Libros etiquetados con 
@@ -574,7 +575,7 @@ calibre_dir1:
   hu: Calibre könyvtár elérési útja
   de: Calibre Bibliotheksverzeichnis
   en: Calibre library path
-  fr: Chemin vers le répertoire Calibre
+  fr: Chemin vers la bibliothèque Calibre
   nl: Calibre bibliotheekpad
   it: Posizione libreria Calibre
   gl: Posición na libraría Calibre
@@ -591,7 +592,7 @@ calibre_dir_expl:
   de: Der Pfad zu ihrer Calibre-Bibliothek. Tragen sie hier den vollen Verzeichnisnamen
     ein.
   en: The path to your Calibre library. Please enter the full path/directory name.
-  fr: Le chemin vers votre répertoire où se trouve votre bibliothèque Calibre. Saisissez
+  fr: Le chemin vers le répertoire où se trouve votre bibliothèque Calibre. Saisissez
     le chemin/nom de répertoire complet.
   nl: Het pad naar uw Calibre bibliotheek. Geef het volledige pad / directory naam.
   it: Percorso della libreria Calibre. Si prega di inserire il percorso completo path/directory
@@ -632,7 +633,7 @@ check_installation:
   hu: Ellenőrizze a telepítést?
   de: Installation überprüfen?
   en: Check installation?
-  fr: Verification de l\'installation
+  fr: Vérifier l\'installation ?
   it: Verificare installazione?
   gl: Verificar instalación?
 comment:
@@ -654,6 +655,7 @@ date:
   hu: Dátum
   de: Datum
   en: Date
+  fr: Date
 delete:
   hu: Törlés
   de: Löschen
@@ -715,14 +717,14 @@ error_kindle_send:
   hu: Valami hiba történt. Kérlek ellenőrizd az email címet.
   de: Ein Fehler ist aufgetreten. Überprüfen Sie die E-Mail-Adresse.
   en: Something went wrong. Please check the e-mail address.
-  fr: Problème rencontré. Vérifiez la configuration de l\'adresse Email.
+  fr: Problème rencontré. Vérifiez l\'adresse e-mail.
   it: Qualcosa è andato storto. Si prega di controllare l\'indirizzo di posta elettronica.
   gl: Produciuse un erro. Verifica a configuración do correo.
 error_no_access:
   hu: Nem rendelkezel megfelelő hozzáférési jogokkal.
   de: Sie haben keine Zugangsberechtigung.
   en: You don\'t have sufficient access rights.
-  fr: Vous n\'avez pas les droits suffisants.
+  fr: Vous n\'avez pas les droits d\'accès suffisants.
   it: Non si dispone di sufficienti diritti di accesso.
   gl: Non tes permisos suficientes.
 glob_dl_expl:
@@ -734,7 +736,7 @@ glob_dl_expl:
   en: If you are sharing your network with others you could activate a password protection
     for book downloads. If you already have an admin password you can reuse that,
     or simply specify a new, separate one.
-  fr: Si vous votre réseau est ouvert au public, vous pouvez activer un mot de passe
+  fr: Si votre réseau est ouvert au public, vous pouvez activer un mot de passe
     pour protéger le téléchargement de vos livres. Si vous avez déjà un mot de passe
     administrateur, vous pouvez le réutiliser ou en définir un nouveau, différent.
   nl: Wanneer u het netwerk met anderen deelt kunt u wachtwoordbescherming voor het
@@ -813,6 +815,7 @@ intro:
   hu: Könyvtárad
   de: Ihre Bibliothek
   en: Your library
+  fr: Votre bibliothèque
 invalid_calibredir1:
   hu: Érvénytelen Calibre könyvtár
   de: Ungültiges Calibre-Verzeichnis
@@ -849,21 +852,21 @@ invalid_email_address:
   hu: Kérlek létező email címet adj meg.
   de: Bitte geben Sie eine gültige Email-Adresse ein.
   en: Please enter a valid e-mail address.
-  fr: Merci de saisir une adresse Email valide.
+  fr: Merci de saisir une adresse e-mail valide.
   it: Si prega di inserire un indirizzo di posta elettornica valido.
   gl: Necesitase unha dirección válida de correo.
 kindle_expl:
   hu: Lehetővé teszi, hogy könyvet küldj a Kindle email címedre (@kindle.com).
   de: Aktiviert die Funktion zum Senden eines Buches an die Kindle E-Mail-Adresse (@kindle.com).
   en: Allows sending books to a Kindle e-mail address (@kindle.com).
-  fr: Permettre l\'envoi des livres à une adresse Email Kindle (@kindle.com).
+  fr: Permettre l\'envoi des livres à une adresse e-mail Kindle (@kindle.com).
   it: Permette l\'invio di libri a un indirizzo di posta elettronica Kindle (@ kindle.com).
   gl: Permitir o envío de libros a un enderezo de correo electrónico Kindle (@ kindle.com).
 kindle_expl2:
   hu: Olyan email cím szükséges, ami engedélyezve van az Amazon fiókodban.
   de: Diese E-Mail-Adresse muss in Ihrem Amazon Konto als bestätigter Absender eingetragen sein.
   en: This e-mail address needs to be added as an approved sender to your Amazon account.
-  fr: Cette adresse Email a besoin d\'être authorisée dans votre compte Amazon Kindle.
+  fr: Cette adresse e-mail a besoin d\'être autorisée dans votre compte Amazon Kindle.
   it: Questo indirizzo di posta elettronica deve essere aggiunto come mittente autorizzato all\'account Amazon.
   gl: Este enderezo de correo debe ser autorizado na túa conta de Amazon Kindle.
 kindle_enable:
@@ -884,14 +887,14 @@ kindle_from_email2:
   hu: Email cím
   de: E-Mail Adresse
   en: E-mail address
-  fr: Adresse Email
+  fr: Adresse e-mail
   it: Indirizzo di posta elettronica
   gl: Enderezo de correo electrónico
 kindle_to_email:
   hu: Email cím (@kindle.com)
   de: E-Mail-Adresse (@kindle.com)
   en: Kindle e-mail address (@kindle.com)
-  fr: Adresse Email Kindle (@kindle.com)
+  fr: Adresse e-mail Kindle (@kindle.com)
   it: Indirizzo posta elettronica Kindle (@kindle.com) 
   gl: Enderezo de correo electrónico Kindle (@kindle.com)
 language:
@@ -935,14 +938,14 @@ metadata_update:
   hu: Metaadat frissítés
   de: Metadaten erneuern
   en: Update metadata
-  fr: Mise à jour des metadonnées
+  fr: Mise à jour des métadonnées
   it: Aggiornamento metadati
   gl: Actualizar metadata
 metadata_update_expl:
   hu: Frissítse a metaadatokat mielőtt automatikusan betölti a Calibre adatokat? (Csak EPUB-nál)
   de: Die Metadaten von Büchern vor dem Herunterladen automatisch durch Calibre-Inhalte ersetzen? (Nur EPUB)
   en: Update the metadata of books before downloading automatically with Calibre data? (EPUB only)
-  fr: Mettre à jour les metadonnées des livres avant le téléchargement automatique des données Calibre (EPUB uniquement)
+  fr: Mettre à jour les métadonnées des livres avant le téléchargement automatique des données Calibre (EPUB uniquement)
   it: Aggiornare i metadati dei libri prima di scaricarli automaticamente con Calibre? (solo EPUB)
   gl: Actualizar metadata dos libros antes de baixar automaticamente co Calibre? (só EPUB)
 no_config:
@@ -969,8 +972,8 @@ not_found2:
     nicht passieren. Bitte prüfen Sie, ob ihre Calibre-Datenbank defekt ist.
   en: The requested resource is not available. This should not happen. Please check
     your Calibre library for defects.
-  fr: La ressource demandée n\'est pas disponible. Cela ne devrait pas se produire...
-    Vérifiez votre base de données Calibre.
+  fr: La ressource demandée n\'est pas disponible. Cela ne devrait pas se produire.
+    Vérifiez votre bibliothèque Calibre.
   nl: De gevraagde ressource is niet beschikbaar. Dit mag niet gebeuren. Controleer
     uw Calibre bibliotheek voor defecten.
   it: La risorsa richiesta non è disponibile. Questo non dovrebbe accadere. Si prega di controllare
@@ -1020,7 +1023,7 @@ opds_root_subtitle:
   hu: A Gyökér Katalógus a Calibre könyvátrad tartalma
   de: Der Startkatalog ihrer Calibre-Bibliothek
   en: The root catalog to the contents of your Calibre library
-  fr: Racine du contenu de la librairie Calibre
+  fr: Racine du contenu de la bibliothèque Calibre
   nl: De basis catalogus naar de inhoud van uw Calibre bibliotheek
   it: Il catalogo radice (root) per il contenuto della biblioteca Calibre
   gl: O catálogo raíz (root) da libraría Calibre
@@ -1028,7 +1031,7 @@ opds_by_author1:
   hu: Szerző
   de: Nach Autor
   en: By Author
-  fr: Par Auteur
+  fr: Par auteur
   nl: Op Auteur
   it: Per Authore
   gl: Por autores
@@ -1084,7 +1087,7 @@ opds_by_newest2:
   hu: A legújabb címek
   de: Die neuesten Titel
   en: The 30 most recent titles
-  fr: Les 30 plus récents titres
+  fr: Les 30 titres les plus récents
   nl: De 30 meest recente titels
   it: I 30 titoli più recenti
   gl: Os 30 títulós máis recentes
@@ -1140,7 +1143,7 @@ opds_by_series4:
   hu: ! 'Összes sorozat: '
   de: ! 'Alle Reihen für '
   en: ! 'All series for '
-  fr: ! 'Toutes les series par '
+  fr: ! 'Toutes les séries par '
   nl: ! 'Alle series voor '
   it: ! 'Tutte le serie per '
   gl: ! 'Todas as series por '
@@ -1236,7 +1239,7 @@ page_size_expl:
   hu: "Elemek száma a listában. Növeld az értéket, hogy több címet, szerzőt, … láss egy lapon. Alapértelmezett érték 30, de maximum 100 lehet."
   de: "Anzahl der Elemente in einer Liste. Erhöhen Sie den Wert, um mehr Titel, Autoren, ... pro Seite anzuzeigen. Standard ist 30, Maximum 100"
   en: "Number of elements in a list. Increase to show more titles, authors ... per page. Default is 30, max is 100"
-  fr: "Nombre d\\'éléments dans la liste. Augmentez la valeur pour voir plus de titres, d\\'auteurs. 30 par défaut, maximum 100"
+  fr: "Nombre d\\'éléments dans la liste. Augmentez la valeur pour voir plus de titres, d\\'auteurs... par page. 30 par défaut, maximum 100"
   nl: "Aantal elementen in een lijst. Te verhogen tot meer titels, auteurs... per pagina. Standaard is 30, maximum is 100"
   it: "Numero di elementi in elenco. Aumentare per visualizzare più titoli, autori ... per pagina. Il parametro è settato a 30, il massimo è 100"
   gl: "Número de elementos na lista. Auméntao para ver máis títulos, autores,... por páxina. Por defecto son 30, o máximo é 100"
@@ -1284,7 +1287,7 @@ pagination_search_ph:
   hu: Keresés ...
   de: Suchen ...
   en: Search ...
-  fr: Rechercher ...
+  fr: Rechercher...
   nl: Zoeken ...
   it: Ricerca ...
   gl: Pesquisa ...
@@ -1308,14 +1311,14 @@ presskey2:
   hu: “Add meg a Kindle email címed, hogy szinkronizálhassa a könyvet a készülékeddel.”
   de: "Geben Sie Ihre Kindle E-Mail-Adresse ein, um das Buch an ihr Gerät zu senden."
   en: "Enter your Kindle e-mail address to sync this book to your device."
-  fr: "Saisissez votre adresse Email pour synchroniser ce livre sur votre périphérique."
+  fr: "Saisissez votre adresse e-mail pour synchroniser ce livre sur votre périphérique."
   it: "Inserire l\\'indirizzo di posta elettronica Kindle per sincronizzare questo libro con il dispositivo."
   gl: "Introduze o teu enderezo Kindle para sincronizar este libro no teu dispositivo."
 presskey3:
   hu: " hozzá kell adnod a megbízható feladókhoz az Amazon fiókodban."
   de: " muss als erlaubter Absender in Ihrem Amazon Account eingetragen sein."
   en: " needs to be added as an approved sender to your Amazon account."
-  fr: " nécessite d\\'être ajouté comme expédieur approuvé dans votre compte Amazon."
+  fr: " nécessite d\\'être ajouté comme expéditeur approuvé dans votre compte Amazon."
   it: " è necessario aggiungerlo come mittente approvato all\\'account Amazon."
   gl: " é necesario engadilo como remitente aprobado na tua conta de Amazon." 
 published:
@@ -1329,9 +1332,11 @@ published:
 relative_urls:
   de: Relative URLs
   en: Relative URLs
+  fr: URLs relatives
 relative_urls_expl:
   de: Schalten Sie dies ab, wenn zB ihr OPDS-Reader vollständige URLs benötigt
   en: Switch this off, if your OPDS reader requires full URLs
+  fr: Désactivez ceci, si votre lecteur OPDS requiert des URLs complètes
 save:
   hu: Mentés
   de: Speichern
@@ -1344,7 +1349,7 @@ send_now:
   hu: Küldés most
   de: Jetzt senden
   en: Send now
-  fr: Envoyer
+  fr: Envoyer maintenant
   it: Inviare ora
   gl: Enviar
 send_success:
@@ -1399,6 +1404,7 @@ tag:
   en: Tag
   it: Etichetta
   gl: Etiqueta
+  fr: Tag
 tags:
   hu: Címkék
   de: Schlagwörter
@@ -1419,7 +1425,7 @@ tag_protect:
   hu: Szelektív letöltés védelem címkék használatával?
   de: Selektiver Download-Schutz durch Schlagworte?
   en: Selective download protection using tags?
-  fr: Protection sélective via les tags ?
+  fr: Protection sélective des téléchargements via les tags ?
   nl: Bescherming via label?
   it: Protezione del download selettivo utilizzando le etichiette?
   gl: Protexer as baixadas selectivamente empregando as etiquetas?
@@ -1446,7 +1452,7 @@ tag_protect_expl:
     beschränkt werden. Alle anderen Titel können ohne Passwort heruntergeladen werden.
   en: If this is activated, only books with the selected tag will be password-protected.
     All other books can be downloaded without password.
-  fr: Si vous l\'activez, seulement les livres avec ce tag seront protégés.
+  fr: Si vous l\'activez, seuls les livres avec ce tag seront protégés.
     Tous les autres livres pourront être téléchargés sans mot de passe.
   nl: Indien ingeschakeld, zullen de boeken met onderstaand label worden beveiligd.
     Let op! Andere boeken zijn dan te downloaden.
@@ -1475,6 +1481,7 @@ title:
   hu: Cím
   de: Titel
   en: Title
+  fr: Titre
 titles:
   hu: Könyvek
   de: Bücher
@@ -1487,6 +1494,7 @@ titles_sort:
   hu: "Rendezés:"
   de: Sortieren nach
   en: Sort by
+  fr: Trié par
 unknown_error1:
   hu: Ismeretlen hiba
   de: Unbekannter Fehler
@@ -1499,7 +1507,7 @@ unknown_error2:
   hu: Ismeretlen hiba lépett fel.
   de: Ein bisher unbekannter Fehler wurde gemeldet.
   en: An unknown error occured.
-  fr: Une erreur s\'est produite
+  fr: Une erreur inconnue s\'est produite.
   nl: Er is een onbekende fout opgetreden.
   it: Si è verificato un errore sconosciuto.
   gl: Produciuse un erro descoñecido.
@@ -1507,6 +1515,6 @@ upload:
   hu: Feltöltés
   de: Hochladen
   en: Upload
-  fr: Upload
+  fr: Téléversement
   it: Caricamento
   gl: Subida
