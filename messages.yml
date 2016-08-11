@@ -341,7 +341,7 @@ admin_smtpusername_expl:
   it: Nome Utente per il server SMTP
   gl: Usuario para o servidor SMTP
 admin_smtpuserpw_expl:
-  hu: ! ‘SMTP szerver jelszava '
+  hu: ! 'SMTP szerver jelszava '
   de: ! 'Das Passwort für den SMTP-Server '
   en: ! 'Password for the SMTP server '
   fr: ! 'Mot de passe du serveur SMTP '
@@ -353,10 +353,10 @@ admin_tts:
   en: Sort titles by date
   fr: Trier les titres par date
 admin_tts_expl:
-  hu: ! ‘A Calibre különböző módokon tudja rendezni a könyveket időrendi sorrendben. Alapértelmezetten olyan sorrendben jelennek meg a könyvek, ahogy utoljára hozzá lettek adva.’
+  hu: ! 'A Calibre különböző módokon tudja rendezni a könyveket időrendi sorrendben. Alapértelmezetten olyan sorrendben jelennek meg a könyvek, ahogy utoljára hozzá lettek adva.'
   de: ! 'Wenn Titel nach Zeit sortiert angezeigt werden sollen, bietet Calibre verschiedene Möglichkeiten. Standardmäßig werden sie nach dem Datum des Eingangs in die Calibre-Bibliothek sortiert.'
   en: ! 'Calibre offers various ways to sort books by date. By default books will be sorted by the date when they were added to the Calibre library.'
-  fr: ! 'Calibre propose différentes méthodes de tri des livres par date. Par défaut, les livres seront triés avec leur date d\'ajout dans la bibliothèque Calibre.'
+  fr: ! "Calibre propose différentes méthodes de tri des livres par date. Par défaut, les livres seront triés avec leur date d'ajout dans la bibliothèque Calibre."
 admin_tts_by_lastmodified:
   hu: Módosítás dátuma
   de: Änderungsdatum
@@ -1156,7 +1156,7 @@ opds_by_series5:
   it: Lista Serie
   gl: Lista de series
 opds_by_series6:
-  hu: ! ‘Összes könyv a sorozathoz '
+  hu: ! 'Összes könyv a sorozathoz '
   de: ! 'Alle Bücher für Buchreihe '
   en: ! 'All books for series '
   fr: ! 'Tous les livres par séries '
@@ -1308,7 +1308,7 @@ presskey:
   it: Premere un tasto per scaricare il libro nel rispettivo formato.
   gl: Pulsa o botón para baixar o libro no seu respectivo formato.
 presskey2:
-  hu: “Add meg a Kindle email címed, hogy szinkronizálhassa a könyvet a készülékeddel.”
+  hu: "Add meg a Kindle email címed, hogy szinkronizálhassa a könyvet a készülékeddel."
   de: "Geben Sie Ihre Kindle E-Mail-Adresse ein, um das Buch an ihr Gerät zu senden."
   en: "Enter your Kindle e-mail address to sync this book to your device."
   fr: "Saisissez votre adresse e-mail pour synchroniser ce livre sur votre périphérique."
