@@ -29,11 +29,17 @@ class L10n extends ArrayObject {
 	 * @param string $lang  user language (according to client)
 	 */
 	function __construct($lang) {		
-		global $langde, $langen, $langfr, $langit, $langnl;
+		global $langde, $langen, $langes, $langfr, $langgl, $langhu, $langit, $langnl;
 		if ($lang == 'de')
 			$this->langa = $langde;
+		elseif ($lang == 'es')
+			$this->langa = $langes;
 		elseif ($lang == 'fr')
 			$this->langa = $langfr;
+		elseif ($lang == 'gl')
+			$this->langa = $langgl;
+		elseif ($lang == 'hu')
+			$this->langa = $langhu;
 		elseif ($lang == 'it')
 			$this->langa = $langit;
 		elseif ($lang == 'nl')
