@@ -33,7 +33,7 @@
 							{% if page.glob.glob_dl_toggle == true %} disabled="true" {% endif %} 
 							data-ajax="false" 
 							href="{{page.rot}}/titles/{{book.id}}/file/{{format.name|url_encode()}}.{{format.format|lower}}">
-								{{ format.format }}
+								{{ format.format }} | {{format.uncompressed_size|hfsize}}
 						</a>
 				{% endfor %}
 				{% if kindle_format %}
