@@ -391,9 +391,9 @@ function admin_modify_idtemplate($id)
     global $app;
 
     // parameter checking
-    if (!preg_match('/^\w+$/',$id)) {
+    if (!preg_match('/^\w+$/u',$id)) {
         $app->getLog()->warn('admin_modify_idtemplate: invalid template id ' . $id);
-        $app->halt(400, "Bad parameter");
+        $app->halt(400, "Invalid ID for template: "+$id);
     }
 
     $template_data = $app->request()->put();
@@ -430,9 +430,9 @@ function admin_clear_idtemplate($id)
     global $app;
 
     // parameter checking
-    if (!preg_match('/^\w+$/',$id)) {
+    if (!preg_match('/^\w+$/u',$id)) {
         $app->getLog()->warn('admin_clear_idtemplate: invalid template id ' . $id);
-        $app->halt(400, "Bad parameter");
+        $app->halt(400, "Invalid ID for template: "+$id);
     }
 
     $app->getLog()->debug('admin_clear_idtemplate: ' . var_export($id, true));
