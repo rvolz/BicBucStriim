@@ -1,5 +1,7 @@
-2016-04-XX Version 1.4.0
+2017-11-08 Version 1.4.0
 
+* Merged #260 by @ramsnerm, human readable filesize for book download 
+* Merged #257 by @josefglatz, .htaccess for Apache 2.3+
 * Fixed #262, added unicode handling for ID templates
 * Enabled language processing für ES, GL, HU
 * Integrated spanish translation updates by @Tocamadera, #223
