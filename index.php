@@ -1123,11 +1123,25 @@ function titlesSlice($index = 0)
         'sort' => $sort));
 }
 
+# Creates a human readable filesize string
+function human_filesize($bytes, $decimals = 2) {
+    $size = array('B','kB','MB','GB','TB','PB','EB','ZB','YB');
+    $factor = floor((strlen($bytes) - 1) / 3);
+    return sprintf("%.{$decimals}f", $bytes / pow(1024, $factor)) . @$size[$factor];
+}
+
 # Show a single title > /titles/:id. The ID ist the Calibre ID
 function title($id)
 {
     global $app, $globalSettings;
 
+    // Add filter for huma nreadable filesize
+    $filter = new Twig_SimpleFilter('hfsize', function ($string) { 
+                                                                    return human_filesize($string);
+                                                                 });
+    $tenv = $app->view->getEnvironment();
+    $tenv->addFilter($filter);
+    
     // parameter checking
     if (!is_numeric($id)) {
         $app->getLog()->warn('title: invalid title id ' . $id);
