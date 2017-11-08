@@ -8,5 +8,5 @@ gem 'rspec'
 gem 'capybara'
 gem 'capybara-screenshot'
 #gem 'selenium-webdriver'
-gem 'capybara-webkit', '~> 1.7'
+gem 'capybara-webkit', '~> 1.14'
 
