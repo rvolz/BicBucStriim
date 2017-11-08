@@ -1,7 +1,17 @@
 2016-04-XX Version 1.4.0
 
-* Fixed #200, bad parameter tests for id templates
+* Fixed #262, added unicode handling for ID templates
+* Enabled language processing für ES, GL, HU
+* Integrated spanish translation updates by @Tocamadera, #223
+* Integrated french translation updates by @Draky50110, #220, #222
+* Corrected OPDS navigation links for series, fixes #215
+* Added forwarding-sensitive url generation to login middleware, #210
+* Search fields in panels will now get automatic focus on dekstops, #183
+* Added workaround to search for items with non-ascii names, #206
+* Fixed #204, failing GD test in installation check due to new phpinfo format
+* Fixed #208, Problems due to strict error handling in newer PHP versions
 * Added Hungarian translation by @gersey, #202
+* Fixed #200, bad parameter tests for id templates
 
 2015-12-21 Version 1.3.6
 
