@@ -1,5 +1,6 @@
 2017-11-08 Version 1.4.0
 
+* Meregd code by @rand82 for showing series in author pages, #255
 * Merged #260 by @ramsnerm, human readable filesize for book download 
 * Merged #257 by @josefglatz, .htaccess for Apache 2.3+
 * Fixed #262, added unicode handling for ID templates
