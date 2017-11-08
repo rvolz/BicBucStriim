@@ -1124,8 +1124,8 @@ function titlesSlice($index = 0)
 }
 
 # Creates a human readable filesize string
-function human_filesize($bytes, $decimals = 2) {
-    $size = array('B','kB','MB','GB','TB','PB','EB','ZB','YB');
+function human_filesize($bytes, $decimals = 0) {
+    $size = array('B','KB','MB','GB','TB','PB','EB','ZB','YB');
     $factor = floor((strlen($bytes) - 1) / 3);
     return sprintf("%.{$decimals}f", $bytes / pow(1024, $factor)) . @$size[$factor];
 }
