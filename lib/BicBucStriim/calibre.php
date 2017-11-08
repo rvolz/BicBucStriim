@@ -513,6 +513,29 @@ class Calibre
     }
 
     /**
+    * Gets a unique list of all series from the author.
+    * @param integer $id author id
+    * @param array array of all books from the author
+    */
+    function authorSeries($id, $books)
+    {
+        $allSeriesIds = array();
+        foreach ($books as $book) {
+            $series_ids = $this->findPrepared('BookSeriesLink', 'SELECT * FROM books_series_link WHERE book=:id', array('id'=>$book->id));
+            foreach ($series_ids as $sid) {
+                array_push($allSeriesIds, $sid->series);
+            }
+        }
+        $uniqueSeriesIds = array_unique($allSeriesIds);
+        $series = array();
+        foreach ($uniqueSeriesIds as $sid) {
+          $this_series = $this->findOne('Series', 'SELECT * FROM series WHERE id=:id', array('id' => $sid));
+          array_push($series, $this_series);
+        }
+        return $series;
+    }
+
+    /**
      * Find a single author and return the details plus some books.
      *
      * @param  string $lang target language code

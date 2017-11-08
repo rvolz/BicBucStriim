@@ -1500,6 +1500,9 @@ function authorDetailsSlice($id, $index = 0)
         $app->notFound();
     }
     $books = array_map('checkThumbnail', $tl['entries']);
+
+    $series = $app->calibre->authorSeries($id, $books);
+
     $author = $tl['author'];
     $author->thumbnail = $app->bbs->getAuthorThumbnail($id);
     $note = $app->bbs->authorNote($id);
@@ -1520,6 +1523,7 @@ function authorDetailsSlice($id, $index = 0)
         'url' => 'authors/' . $id,
         'author' => $tl['author'],
         'books' => $books,
+        'series' => $series,
         'curpage' => $tl['page'],
         'pages' => $tl['pages'],
         'isadmin' => is_admin()));

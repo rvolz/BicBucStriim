@@ -34,42 +34,44 @@
 
 		{# Display available metadata only on first page #}
 		{% if curpage == 0 %}
-		<div id="author-metadata" 
-			{% if author.thumbnail %}
-			class="ui-grid-a author-thmb-breakpoint"
-			{% else %}
-			class="ui-grid-a ui-responsive"
-			{% endif %}
-			>
+		<div id="author-metadata" class="ui-grid-a ui-responsive">
 			<div class="ui-block-a">
+				<h3>{{ author.name }}</h3>
 				{% if author.thumbnail %}
 				<img id="author-thumbnail-pic" src="{{page.rot}}/{{author.thumbnail.url}}"/>
-				{% else %}
-				<h3>{{ author.name }}</h3>
 				{% endif %}
-			</div>			
+			</div>
 			<div id="author-links" class="ui-block-b">
-				{% if author.thumbnail != null %}
-				<h3>{{ author.name }}</h3>
-				{% endif %}
 				<ul id="author-links-list" data-role="listview" data-inset="true" >
 				{% if author.links %}
 					{% for link in author.links %}
 					<li class="author-link link-{{link.id}}">
 						<a data-role="button" data-icon="cloud" rel="external" href="{{link.url}}">{{link.label}}</a>
 					</li>
-					{% endfor %}	
+					{% endfor %}
 				{% endif %}
 				</ul>
+				{% if series != NULL %}
+				<div id="series" data-role="collapsible">
+					<h3>{{page.glob.l10n.series}}</h3>
+					<ul id="author-series-list" data-role="listview" data-inset="true" >
+						{% for this_series in series %}
+						<li class="series-link link-{{link.id}}">
+							<a data-role="button" data-icon="info" href="{{page.rot}}/series/{{this_series.id}}/0/">{{ this_series.name }}</a>
+						</li>
+						{% endfor %}
+					</ul>
+				</div>
+				{% endif %}
 			</div>
 		</div>
-		{% else %}		
+		{% else %}
 		<h3>
 			{{page.glob.l10n.booksby}} <em>{{ author.name }}</em>
 		</h3> 
 		{% endif %}
 	</header>
-
+	<div id="filler">&nbsp;</div>
 	<section id="author-books">
 		<ul data-role="listview">
 			{% for book in books %}
