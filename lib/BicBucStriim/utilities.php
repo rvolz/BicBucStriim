@@ -149,20 +149,22 @@ class Utilities {
      */
     static function titleMimeType($file_path) {
         $mtype = '';
-        
+
         if (preg_match('/epub$/',$file_path) == 1)
             return Utilities::MIME_EPUB;
-        else if (preg_match('/mobi$/', $file_path) == 1) 
+        else if (preg_match('/(mobi|azw)$/', $file_path) == 1)
             return 'application/x-mobipocket-ebook';
-        else if (preg_match('/azw3?$/', $file_path) == 1) 
+        else if (preg_match('/azw(1|2)$/', $file_path) == 1)
             return 'application/vnd.amazon.ebook';
-        else if (preg_match('/pdf$/', $file_path) == 1) 
+        else if (preg_match('/azw3$/', $file_path) == 1)
+            return 'application/x-mobi8-ebook';
+        else if (preg_match('/pdf$/', $file_path) == 1)
             return 'application/pdf';
-        else if (preg_match('/txt$/', $file_path) == 1) 
+        else if (preg_match('/txt$/', $file_path) == 1)
             return 'text/plain';
-        else if (preg_match('/html$/', $file_path) == 1) 
+        else if (preg_match('/html$/', $file_path) == 1)
             return 'text/html';
-        else if (preg_match('/zip$/', $file_path) == 1) 
+        else if (preg_match('/zip$/', $file_path) == 1)
             return 'application/zip';
 
         if (function_exists('mime_content_type')){
@@ -172,11 +174,11 @@ class Utilities {
                  $mtype = finfo_file($finfo, $file_path);
                  finfo_close($finfo);  
         }
-        
+
         if ($mtype == ''){
                  $mtype = 'application/force-download';
         }
-        
+
         return $mtype;
     }
 
