@@ -34,14 +34,14 @@ $fallbackLang = 'en';
 # Application Name
 $appname = 'BicBucStriim';
 # App version
-$appversion = '1.4.0';
+$appversion = '1.4.1-SNAPSHOT';
 
 # Init app and routes
 $app = new \Slim\Slim(array(
     'view' => new \Slim\Views\Twig(),
-    'mode' => 'production',
+    #'mode' => 'production',
     #'mode' => 'debug',
-    #'mode' => 'development',
+    'mode' => 'development',
 ));
 
 $app->configureMode('production', 'confprod');
