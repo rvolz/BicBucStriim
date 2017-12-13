@@ -1,6 +1,10 @@
+2017-11-28 Version 1.4.1
+
+* Updated MIME type for AZW3 download, #265
+
 2017-11-08 Version 1.4.0
 
-* Meregd code by @rand82 for showing series in author pages, #255
+* Merged code by @rand82 for showing series in author pages, #255
 * Merged #260 by @ramsnerm, human readable filesize for book download 
 * Merged #257 by @josefglatz, .htaccess for Apache 2.3+
 * Fixed #262, added unicode handling for ID templates
@@ -9,7 +13,7 @@
 * Integrated french translation updates by @Draky50110, #220, #222
 * Corrected OPDS navigation links for series, fixes #215
 * Added forwarding-sensitive url generation to login middleware, #210
-* Search fields in panels will now get automatic focus on dekstops, #183
+* Search fields in panels will now get automatic focus on desktops, #183
 * Added workaround to search for items with non-ascii names, #206
 * Fixed #204, failing GD test in installation check due to new phpinfo format
 * Fixed #208, Problems due to strict error handling in newer PHP versions
