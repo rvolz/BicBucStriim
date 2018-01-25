@@ -11,3 +11,6 @@ screenshot*
 composer.phar
 .idea
 *.iml
+.kobalt
+api/
+client/
