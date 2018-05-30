@@ -8,7 +8,7 @@
 require 'rake/clean'
 require 'rake/packagetask'
 require 'cucumber/rake/task'
-require 'less'
+#require 'less'
 require 'fileutils'
 require 'json'
 require 'yaml'
@@ -28,19 +28,19 @@ CONFIG = {
  
 desc "Compile Less"
 task :lessc do
-  less = CONFIG['less']
+#  less = CONFIG['less']
  
-  input = File.join( less, CONFIG['input'] )
-  output = File.join( CONFIG['css'], CONFIG['output'] )
+#  input = File.join( less, CONFIG['input'] )
+#  output = File.join( CONFIG['css'], CONFIG['output'] )
  
-  source = File.open( input, "r" ).read
+#  source = File.open( input, "r" ).read
 
-  parser = Less::Parser.new :paths => [less]
-  tree = parser.parse( source )
+#  parser = Less::Parser.new :paths => [less]
+#  tree = parser.parse( source )
  
-  File.open( output, "w+" ) do |f|
-    f.puts tree.to_css( :compress => true )
-  end
+#  File.open( output, "w+" ) do |f|
+#    f.puts tree.to_css( :compress => true )
+#  end
 end # task :lessc
 
 
