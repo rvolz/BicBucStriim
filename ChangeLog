@@ -1,3 +1,8 @@
+2018-11-16 Version 1.5.0
+
+* Merged Polish translation by @xro, #299
+* Updated infrastructure
+
 2017-11-28 Version 1.4.1
 
 * Updated MIME type for AZW3 download, #265
