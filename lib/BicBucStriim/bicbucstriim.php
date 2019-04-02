@@ -18,7 +18,7 @@ class BicBucStriim {
 
 
 	# bbs sqlite db
-	var $mydb = NULL;
+	var $mydb = null;
 	# calibre library dir
 	var $calibre_dir = '';
 	# calibre library file, last modified date
@@ -54,7 +54,7 @@ class BicBucStriim {
     	if (!file_exists($this->authors_dir))
 			mkdir($this->authors_dir);	
 		if (file_exists($rp) && is_writeable($rp)) {
-			$this->mydb = new PDO('sqlite:'.$rp, NULL, NULL, array());
+			$this->mydb = new PDO('sqlite:'.$rp, null, null, array());
 			$this->mydb->setAttribute(1002, 'SET NAMES utf8');
 			$this->mydb->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			$this->mydb->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
@@ -62,7 +62,7 @@ class BicBucStriim {
 			R::setup('sqlite:'.$rp);
 			R::freeze($freeze);
 		} else {
-			$this->mydb = NULL;
+			$this->mydb = null;
 		}
 	}
 
@@ -72,7 +72,7 @@ class BicBucStriim {
 	 */
 	public function createDataDb($dataPath='data/data.db') {
 		$schema = file($this->data_dir.'/schema.sql');
-		$this->mydb = new PDO('sqlite:'.$dataPath, NULL, NULL, array());
+		$this->mydb = new PDO('sqlite:'.$dataPath, null, null, array());
 		$this->mydb->setAttribute(1002, 'SET NAMES utf8');
 		$this->mydb->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 		$this->mydb->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
@@ -454,14 +454,14 @@ class BicBucStriim {
 		$thumb_path = $this->thumb_dir.'/'.$thumb_name;
 		if (!file_exists($thumb_path)) {
 			if (is_null($cover))
-				$thumb_path = NULL;
+				$thumb_path = null;
 			else {
 				if ($clipped)
 					$created = $this->thumbnailClipped($cover, false, self::THUMB_RES, self::THUMB_RES, $thumb_path);
 				else
 					$created = $this->thumbnailStuffed($cover, false, self::THUMB_RES, self::THUMB_RES, $thumb_path);
 				if (!$created)
-					$thumb_path = NULL;
+					$thumb_path = null;
 			}
 		}
 		return $thumb_path;
