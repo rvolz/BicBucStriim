@@ -225,8 +225,13 @@ function myNotFound()
 function show_login()
 {
     global $app;
-    $app->render('login.html', array(
-        'page' => mkPage(getMessageString('login'))));
+    if (is_authenticated()) {
+        $app->getLog()->info('user is already logged in : ' . $app->auth->getUserName());
+        $app->redirect($app->request->getRootUri() . '/');
+    } else {
+        $app->render('login.html', array(
+            'page' => mkPage(getMessageString('login'))));
+    }
 }
 
 function perform_login()
@@ -1136,12 +1141,12 @@ function title($id)
     global $app, $globalSettings;
 
     // Add filter for huma nreadable filesize
-    $filter = new Twig_SimpleFilter('hfsize', function ($string) { 
+    $filter = new Twig_SimpleFilter('hfsize', function ($string) {
                                                                     return human_filesize($string);
                                                                  });
     $tenv = $app->view->getEnvironment();
     $tenv->addFilter($filter);
-    
+
     // parameter checking
     if (!is_numeric($id)) {
         $app->getLog()->warn('title: invalid title id ' . $id);
@@ -1268,7 +1273,7 @@ function thumbnail($id)
 }
 
 
-# Return the selected file for the book with ID. 
+# Return the selected file for the book with ID.
 # Route: /titles/:id/file/:file
 function book($id, $file)
 {
