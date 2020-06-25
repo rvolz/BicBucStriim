@@ -48,7 +48,7 @@ GEM
     nokogiri (1.8.5)
       mini_portile2 (~> 2.3.0)
     public_suffix (3.0.3)
-    rack (2.0.6)
+    rack (2.2.3)
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
     rake (12.3.1)
