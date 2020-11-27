@@ -1,15 +1,31 @@
 <?php
-    // $Id$
 
-    class IteratorImplementation implements Iterator {
-        function current() { }
-        function next() { }
-        function key() { }
-        function valid() { }
-        function rewind() { }
+class IteratorImplementation implements Iterator
+{
+    public function current()
+    {
     }
 
-    class IteratorAggregateImplementation implements IteratorAggregate {
-        function getIterator() { }
+    public function next()
+    {
     }
-?>
+
+    public function key()
+    {
+    }
+
+    public function valid()
+    {
+    }
+
+    public function rewind()
+    {
+    }
+}
+
+class IteratorAggregateImplementation implements IteratorAggregate
+{
+    public function getIterator()
+    {
+    }
+}

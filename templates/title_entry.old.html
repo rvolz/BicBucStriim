@@ -1,0 +1,15 @@
+<li>
+	<a href="{{page.rot}}/titles/{{book.id}}">
+		{% if book.thumbnail%}
+		<img src="{{page.rot}}/data/titles/thumb_{{ book.id }}.png" />
+		{% else %}
+		<img src="{{page.rot}}/titles/{{ book.id }}/thumbnail" />
+		{% endif %}
+		
+		<h3>
+			{% if series %}{{book.series_index}} - {% endif %}
+			{{ book.sort }} ({{ book.pubdate|date("Y") }})
+		</h3>
+		<p>{{book.author_sort}} {{book.addInfo}}</p>
+	</a>
+</li>

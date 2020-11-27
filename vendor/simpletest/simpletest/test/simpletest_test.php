@@ -1,58 +1,68 @@
 <?php
-// $Id$
-require_once(dirname(__FILE__) . '/../autorun.php');
-require_once(dirname(__FILE__) . '/../simpletest.php');
+
+require_once __DIR__ . '/../autorun.php';
+require_once __DIR__ . '/../simpletest.php';
 
 SimpleTest::ignore('ShouldNeverBeRunEither');
 
-class ShouldNeverBeRun extends UnitTestCase {
-    function testWithNoChanceOfSuccess() {
+class ShouldNeverBeRun extends UnitTestCase
+{
+    public function testWithNoChanceOfSuccess()
+    {
         $this->fail('Should be ignored');
     }
 }
 
-class ShouldNeverBeRunEither extends ShouldNeverBeRun { }
+class ShouldNeverBeRunEither extends ShouldNeverBeRun
+{
+}
 
-class TestOfStackTrace extends UnitTestCase {
-
-    function testCanFindAssertInTrace() {
+class TestOfStackTrace extends UnitTestCase
+{
+    public function testCanFindAssertInTrace()
+    {
         $trace = new SimpleStackTrace(array('assert'));
         $this->assertEqual(
                 $trace->traceMethod(array(array(
-                        'file' => '/my_test.php',
-                        'line' => 24,
+                        'file'     => '/my_test.php',
+                        'line'     => 24,
                         'function' => 'assertSomething'))),
                 ' at [/my_test.php line 24]');
     }
 }
 
-class DummyResource { }
+class DummyResource
+{
+}
 
-class TestOfContext extends UnitTestCase {
-
-    function testCurrentContextIsUnique() {
+class TestOfContext extends UnitTestCase
+{
+    public function testCurrentContextIsUnique()
+    {
         $this->assertSame(
                 SimpleTest::getContext(),
                 SimpleTest::getContext());
     }
 
-    function testContextHoldsCurrentTestCase() {
+    public function testContextHoldsCurrentTestCase()
+    {
         $context = SimpleTest::getContext();
         $this->assertSame($this, $context->getTest());
     }
 
-    function testResourceIsSingleInstanceWithContext() {
+    public function testResourceIsSingleInstanceWithContext()
+    {
         $context = new SimpleTestContext();
         $this->assertSame(
                 $context->get('DummyResource'),
                 $context->get('DummyResource'));
     }
 
-    function testClearingContextResetsResources() {
-        $context = new SimpleTestContext();
+    public function testClearingContextResetsResources()
+    {
+        $context  = new SimpleTestContext();
         $resource = $context->get('DummyResource');
         $context->clear();
         $this->assertClone($resource, $context->get('DummyResource'));
     }
 }
-?>

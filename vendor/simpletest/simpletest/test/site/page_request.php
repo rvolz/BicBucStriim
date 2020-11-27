@@ -1,11 +1,12 @@
 <?php
-// $Id$
 
-class PageRequest {
+class PageRequest
+{
     private $parsed;
-    
-    function PageRequest($raw) {
-        $statements = explode('&', $raw);
+
+    public function __construct($raw)
+    {
+        $statements   = explode('&', $raw);
         $this->parsed = array();
         foreach ($statements as $statement) {
             if (strpos($statement, '=') === false) {
@@ -14,10 +15,11 @@ class PageRequest {
             $this->parseStatement($statement);
         }
     }
-    
-    private function parseStatement($statement) {
+
+    private function parseStatement($statement)
+    {
         list($key, $value) = explode('=', $statement);
-        $key = urldecode($key);
+        $key               = urldecode($key);
         if (preg_match('/(.*)\[\]$/', $key, $matches)) {
             $key = $matches[1];
             if (! isset($this->parsed[$key])) {
@@ -30,31 +32,40 @@ class PageRequest {
             $this->setValue($key, $value);
         }
     }
-    
-    private function addValue($key, $value) {
+
+    private function addValue($key, $value)
+    {
         if (! is_array($this->parsed[$key])) {
             $this->parsed[$key] = array($this->parsed[$key]);
         }
         $this->parsed[$key][] = urldecode($value);
     }
-    
-    private function setValue($key, $value) {
+
+    private function setValue($key, $value)
+    {
         $this->parsed[$key] = urldecode($value);
     }
-    
-    function getAll() {
+
+    public function getAll()
+    {
         return $this->parsed;
     }
-    
-    function get() {
-        $request = new PageRequest($_SERVER['QUERY_STRING']);
-        return $request->getAll();
+
+    public static function get()
+    {
+        if(isset($_SERVER['QUERY_STRING'])) {
+            $request = new self($_SERVER['QUERY_STRING']);
+
+            return $request->getAll();
+        }
+        
+        return array();
     }
-    
-    function post() {
-        global $HTTP_RAW_POST_DATA;
-        $request = new PageRequest($HTTP_RAW_POST_DATA);
+
+    public static function post()
+    {
+        $request = new self(file_get_contents('php://input'));
+
         return $request->getAll();
     }
 }
-?>

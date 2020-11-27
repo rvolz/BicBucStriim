@@ -5,7 +5,6 @@
  * Licensed under MIT License, see LICENSE
  *
  */
-
 // Clear flash when showing page
 $(document).on('pageload', '#pauthor_detail', function () {
     $('div#flash').empty();

@@ -1,12 +1,14 @@
 <?php
-require_once(dirname(__FILE__) . '/../../shell_tester.php');
-require_once(dirname(__FILE__) . '/../../mock_objects.php');
-require_once(dirname(__FILE__) . '/../../xml.php');
-require_once(dirname(__FILE__) . '/../../autorun.php');
 
-class VisualTestOfErrors extends UnitTestCase {
+require_once __DIR__ . '/../../shell_tester.php';
+require_once __DIR__ . '/../../mock_objects.php';
+require_once __DIR__ . '/../../xml.php';
+require_once __DIR__ . '/../../autorun.php';
 
-    function testErrorDisplay() {
+class VisualTestOfErrors extends UnitTestCase
+{
+    public function testErrorDisplay()
+    {
         $this->dump('Four exceptions...');
         trigger_error('Default');
         trigger_error('Error', E_USER_ERROR);
@@ -14,19 +16,22 @@ class VisualTestOfErrors extends UnitTestCase {
         trigger_error('Notice', E_USER_NOTICE);
     }
 
-    function testErrorTrap() {
+    public function testErrorTrap()
+    {
         $this->dump('Pass...');
         $this->expectError();
         trigger_error('Error');
     }
-    
-    function testUnusedErrorExpectationsCauseFailures() {
+
+    public function testUnusedErrorExpectationsCauseFailures()
+    {
         $this->dump('Two failures...');
         $this->expectError('Some error');
         $this->expectError();
     }
 
-    function testErrorTextIsSentImmediately() {
+    public function testErrorTextIsSentImmediately()
+    {
         $this->dump('One failure...');
         $this->expectError('Error');
         trigger_error('Error almost');
@@ -35,51 +40,50 @@ class VisualTestOfErrors extends UnitTestCase {
     }
 }
 
-class VisualTestOfExceptions extends UnitTestCase {
-    function skip() {
-        $this->skipUnless(version_compare(phpversion(), '5') >= 0);
-    }
-
-    function testExceptionTrap() {
+class VisualTestOfExceptions extends UnitTestCase
+{
+    public function testExceptionTrap()
+    {
         $this->dump('One exception...');
         $this->ouch();
         $this->fail('Should not be here');
     }
 
-    function testExceptionExpectationShowsErrorWhenNoException() {
+    public function testExceptionExpectationShowsErrorWhenNoException()
+    {
         $this->dump('One failure...');
         $this->expectException('SomeException');
         $this->expectException('LaterException');
     }
 
-    function testExceptionExpectationShowsPassWhenException() {
+    public function testExceptionExpectationShowsPassWhenException()
+    {
         $this->dump('Pass...');
         $this->expectException();
         $this->ouch();
     }
 
-    function ouch() {
+    public function ouch()
+    {
         eval('throw new Exception("Ouch!");');
     }
 }
 
-class OpaqueContainer {
+class OpaqueContainer
+{
     private $stuff;
     private $value;
 
-    public function __construct($value) {
+    public function __construct($value)
+    {
         $this->value = $value;
     }
 }
 
-class VisualTestOfObjectComparison extends UnitTestCase {
-    function skip() {
-        $this->skipUnless(version_compare(phpversion(), '5') >= 0);
-    }
-
-    function testDifferenceBetweenPrivateMembersCanBeDescribed() {
+class VisualTestOfObjectComparison extends UnitTestCase
+{
+    public function testDifferenceBetweenPrivateMembersCanBeDescribed()
+    {
         $this->assertIdentical(new OpaqueContainer(1), new OpaqueContainer(2));
     }
-
 }
-?>

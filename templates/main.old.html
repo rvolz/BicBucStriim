@@ -1,0 +1,106 @@
+<!doctype html>
+<!--
+  ~  BicBucStriim
+  ~
+  ~  Copyright (c) 2012-2015 Rainer Volz
+  ~  Licensed under MIT License, see LICENSE
+  ~
+  -->
+
+<!--[if lt IE 7]>
+<html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]>
+<html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]>
+<html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js" lang="{{ page.glob.lang}}" xmlns:margin="http://www.w3.org/1999/xhtml"> <!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>{{ page.title }}</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    {% block headerlinks %}{% endblock %}
+    <link rel="stylesheet" href="{{page.rot}}/style/jquery/jquery.mobile-1.4.5.min.css">
+    <link rel="stylesheet" href="{{page.rot}}/style/style.css">
+    <link rel="icon" href="{{page.rot}}/favicon.ico" type="image/x-icon">
+    <link rel="apple-touch-icon" href="{{page.rot}}/bbs-icon.png">
+    <script src="{{page.rot}}/js/libs/modernizr-2.6.2-custom.min.js"></script>
+</head>
+<body>
+<!--[if lt IE 7]><p class=chromeframe>Your browser is <em>ancient!</em> <a href="http://browsehappy.com/">Upgrade to a
+    different browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a>
+    to experience this site.</p><![endif]-->
+
+<div data-role="page" data-title="{{ page.title }}" {% block pid %}{% endblock %}>
+
+    <div data-role="header" data-position="fixed">
+        {% block leftpanel %}{% endblock %}
+        <p class="ui-header ui-bar-b" style="margin:0;line-height:2.5;">
+            {{ page.title }}
+        </p>
+
+        <div data-role="controlgroup" data-type="horizontal" class="ui-btn-right ui-mini">
+            {% if page.level == 1 and page.menu == 1 %}
+            <a id="show_home_options" href="#home_options_panel"
+               class="ui-btn ui-btn-b ui-icon-search ui-btn-icon-notext ui-btn-inline">
+                {{ page.glob.l10n.pagination_search }}
+            </a>
+            {% endif %}
+            {% if page.level == 1 and page.menu == 2 %}
+            <a id="show_titles_options" href="#titles_options_panel"
+               class="ui-btn ui-btn-b ui-icon-search ui-btn-icon-notext ui-btn-inline">
+                {{ page.glob.l10n.pagination_search }}
+            </a>
+            {% endif %}
+            {% if page.level == 1 and page.menu == 3 %}
+            <a id="show_authors_options" href="#authors_options_panel"
+               class="ui-btn ui-btn-b ui-icon-search ui-btn-icon-notext ui-btn-inline">
+                {{ page.glob.l10n.pagination_search }}
+            </a>
+            {% endif %}
+            {% if page.level == 1 and page.menu == 4 %}
+            <a id="show_tags_options" href="#tags_options_panel"
+               class="ui-btn ui-btn-b ui-icon-search ui-btn-icon-notext ui-btn-inline">
+                {{ page.glob.l10n.pagination_search }}
+            </a>
+            {% endif %}
+            {% if page.level == 1 and page.menu == 5 %}
+            <a id="show_series_options" href="#series_options_panel"
+               class="ui-btn ui-btn-b ui-icon-search ui-btn-icon-notext ui-btn-inline">
+                {{ page.glob.l10n.pagination_search }}
+            </a>
+            {% endif %}
+            {% if page.admin %}
+            <a href="{{page.rot}}/admin/" class="ui-btn ui-btn-b ui-icon-gear ui-btn-icon-notext ui-btn-inline">
+                {{ page.glob.l10n.admin_short }}
+            </a>
+            {% endif %}
+            {% if page.auth %}
+            <a class="ui-btn ui-btn-b ui-icon-power ui-btn-icon-notext ui-btn-inline " href="{{page.rot}}/logout/">
+                {{page.glob.l10n.logout}}
+            </a>
+            {% endif %}
+        </div>
+
+        {% if page.dialog==false %}
+        {% include "navbar.html" %}
+        {% endif %}
+    </div>
+    <div data-role="content">
+        {% block content %}{% endblock %}
+    </div>
+    <div data-role="footer" class="footer">
+        {% include "footer.html" %}
+    </div>
+    {% block rightpanel %}{% endblock %}
+</div>
+<!-- page -->
+
+<script src="{{page.rot}}/js/libs/jquery-1.11.1.min.js"></script>
+<script src="{{page.rot}}/js/libs/jquery.mobile-1.4.5.min.js"></script>
+<script src="{{page.rot}}/js/libs/jquery.cookie.js"></script>
+<script src="{{page.rot}}/js/libs/jquery.loadTemplate-1.1.0.min.js"></script>
+<script src="{{page.rot}}/js/script.js"></script>
+</body>
+</html>

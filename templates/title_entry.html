@@ -1,15 +1,26 @@
-<li>
-	<a href="{{page.rot}}/titles/{{book.id}}">
+<a href="{{page.rot}}/titles/{{book.id}}">
+	<figure class="md:flex bg-gray-100 rounded-xl p-8 md:p-0">
 		{% if book.thumbnail%}
-		<img src="{{page.rot}}/data/titles/thumb_{{ book.id }}.png" />
+		<img class="w-32 h-32 md:w-48 md:h-auto md:rounded-none rounded-full mx-auto" src="{{page.rot}}/data/titles/thumb_{{ book.id }}.png" alt="" width="384" height="512">
 		{% else %}
-		<img src="{{page.rot}}/titles/{{ book.id }}/thumbnail" />
+		<img class="w-32 h-32 md:w-48 md:h-auto md:rounded-none rounded-full mx-auto" src="{{page.rot}}/titles/{{ book.id }}/thumbnail" alt="" width="384" height="512">
 		{% endif %}
-		
-		<h3>
-			{% if series %}{{book.series_index}} - {% endif %}
-			{{ book.sort }} ({{ book.pubdate|date("Y") }})
-		</h3>
-		<p>{{book.author_sort}} {{book.addInfo}}</p>
-	</a>
-</li>
+
+		<div class="pt-6 md:p-8 text-center md:text-left space-y-4">
+			<blockquote>
+				<p class="text-lg font-semibold">
+					{% if series %}{{book.series_index}} - {% endif %}
+					{{ book.sort }} ({{ book.pubdate|date("Y") }})
+				</p>
+			</blockquote>
+			<figcaption class="font-medium">
+				<div class="text-cyan-600">
+					{{book.author_sort}}
+				</div>
+				<div class="text-gray-500">
+					{{book.addInfo}}
+				</div>
+			</figcaption>
+		</div>
+	</figure>
+</a>

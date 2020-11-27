@@ -1,15 +1,57 @@
 {
-	"require": {
-		"dflydev/markdown": "1.0.2",
-	    "slim/slim": "2.4.3",
-    	"slim/views": "0.1.2",
-    	"swiftmailer/swiftmailer": "5.0.1",
-      "twig/twig": "1.16.0",
-	  "aura/auth": "2.x-dev",
-      "aura/session": "2.0.1",
-      "ircmaxell/password-compat": "v1.0.4"
-  	},
-  	"require-dev": {
-      "simpletest/simpletest": "^1.1"
-    }
+  "require": {
+    "dflydev/markdown": "1.0.2",
+    "slim/slim": "2.4.3",
+    "slim/views": "0.1.2",
+    "swiftmailer/swiftmailer": "5.0.1",
+    "twig/twig": "1.16.0",
+    "aura/auth": "2.x-dev",
+    "aura/session": "2.0.1",
+    "ircmaxell/password-compat": "v1.0.4"
+  },
+  "require-dev": {
+    "simpletest/simpletest": "^1.1"
+  },
+  "scripts": {
+    "prep-work": [
+      "rm -rf work",
+      "mkdir work",
+      "cp -r data work",
+      "cp -r img work",
+      "cp -r js work",
+      "cp -r lib work",
+      "cp -r style work",
+      "cp -r templates work",
+      "cp -r vendor work",
+      "cp  *.php work",
+      "rm -rf worklib",
+      "mkdir worklib",
+      "cp -r tests/fixtures/lib2 worklib"
+    ],
+    "clean-work": [
+      "rm -rf work",
+      "rm -rf worklib"
+    ],
+    "copy-src": [
+      "cp -r lib work",
+      "cp -r templates work",
+      "cp *.php  work"
+    ],
+    "copy-resources": [
+      "cp -r style work",
+      "cp -r js work",
+      "cp -r img work"
+    ],
+    "start": [
+      "@prep-work",
+      "docker-compose start"
+    ],
+    "stop": [
+      "docker-compose stop",
+      "@clean-work"
+    ],
+    "test": [
+      "phpunit"
+    ]
+  }
 }

@@ -1,0 +1,28 @@
+{
+  "name": "BicBucStriim",
+  "version": "2.0.0.alpha",
+  "description": "BicBucStriim manages ebooks",
+  "main": "index.php",
+  "repository": "https://github.com/rvolz/BicBucStriim.git",
+  "author": "Rainer Volz <dev@textmulch.de>",
+  "license": "MIT",
+  "scripts": {
+    "serve": "cross-env NODE_ENV=development concurrently \"postcss resources/style/tailwind.css -o style/tailwind.css --watch\"",
+    "development": "cross-env NODE_ENV=development postcss resources/style/tailwind.css -o style/tailwind.css",
+    "production": "cross-env NODE_ENV=production postcss resources/style/tailwind.css -o style/tailwind.css",
+    "start": "yarn run serve"
+  },
+  "dependencies": {
+    "@tailwindcss/forms": "^0.2.1",
+    "alpinejs": "^2.7.3",
+    "autoprefixer": "^9.8.6",
+    "tailwindcss": "^1.7.2"
+  },
+  "devDependencies": {
+    "concurrently": "^5.3.0",
+    "cross-env": "^7.0.2",
+    "cssnano": "^4.1.10",
+    "live-server": "^1.2.1",
+    "postcss-cli": "^7.1.1"
+  }
+}

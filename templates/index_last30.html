@@ -19,11 +19,11 @@
 </ul>
 
 <h2>{{page.glob.l10n.dl30}}</h2>
-<ul data-role="listview">
-	{% for book in books %}
-  	{% include "title_entry.html" %}
-  {% endfor %}
-</ul>
+<div class="grid grid-cols-1 md:grid-cols-4">
+    {% for book in books %}
+    {% include "title_entry.html" %}
+    {% endfor %}
+</div>
 {% endblock %}
 
 

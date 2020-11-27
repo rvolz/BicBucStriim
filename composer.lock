@@ -1,10 +1,9 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "hash": "6d43c91e3b552da6e584c37d7b7d1a89",
     "content-hash": "86c031903df2d5ad9b4f74f9be7cf682",
     "packages": [
         {
@@ -13,16 +12,20 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/auraphp/Aura.Auth.git",
-                "reference": "f9691d48860b163641ddf2a1e616d035ff8f885b"
+                "reference": "624fc819c7f329f8a269a219cfabe252573005a2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/auraphp/Aura.Auth/zipball/f9691d48860b163641ddf2a1e616d035ff8f885b",
-                "reference": "f9691d48860b163641ddf2a1e616d035ff8f885b",
+                "url": "https://api.github.com/repos/auraphp/Aura.Auth/zipball/624fc819c7f329f8a269a219cfabe252573005a2",
+                "reference": "624fc819c7f329f8a269a219cfabe252573005a2",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "aura/di": "~2.0",
+                "phpunit/phpunit": "~5.7 || ~4.8"
             },
             "suggest": {
                 "ext/imap": "For IMAP/POP/NNTP integration.",
@@ -54,14 +57,18 @@
                     "homepage": "https://github.com/auraphp/Aura.Auth/contributors"
                 }
             ],
-            "description": "Aura Auth provides a unified interface to authenticate a user with local or remote authentication systems.",
+            "description": "Provides a unified interface to authenticate a user with local or remote authentication systems.",
             "homepage": "https://github.com/auraphp/Aura.Auth",
             "keywords": [
                 "Authentication",
                 "auth",
                 "authenticate"
             ],
-            "time": "2015-08-08 09:48:54"
+            "support": {
+                "issues": "https://github.com/auraphp/Aura.Auth/issues",
+                "source": "https://github.com/auraphp/Aura.Auth/tree/2.x"
+            },
+            "time": "2018-03-30T17:40:39+00:00"
         },
         {
             "name": "aura/session",
@@ -125,7 +132,11 @@
                 "session",
                 "sessions"
             ],
-            "time": "2015-03-27 18:33:22"
+            "support": {
+                "issues": "https://github.com/auraphp/Aura.Session/issues",
+                "source": "https://github.com/auraphp/Aura.Session/tree/develop-2"
+            },
+            "time": "2015-03-27T18:33:22+00:00"
         },
         {
             "name": "dflydev/markdown",
@@ -179,7 +190,12 @@
             "keywords": [
                 "markdown"
             ],
-            "time": "2012-01-16 03:36:37"
+            "support": {
+                "issues": "https://github.com/dflydev/dflydev-markdown/issues",
+                "source": "https://github.com/dflydev/dflydev-markdown/tree/v1.0.2"
+            },
+            "abandoned": "michelf/php-markdown",
+            "time": "2012-01-16T03:36:37+00:00"
         },
         {
             "name": "ircmaxell/password-compat",
@@ -221,7 +237,11 @@
                 "hashing",
                 "password"
             ],
-            "time": "2014-11-20 16:49:30"
+            "support": {
+                "issues": "https://github.com/ircmaxell/password_compat/issues",
+                "source": "https://github.com/ircmaxell/password_compat/tree/v1.0"
+            },
+            "time": "2014-11-20T16:49:30+00:00"
         },
         {
             "name": "slim/slim",
@@ -267,7 +287,11 @@
                 "rest",
                 "router"
             ],
-            "time": "2014-04-05 18:33:59"
+            "support": {
+                "issues": "https://github.com/slimphp/Slim/issues",
+                "source": "https://github.com/slimphp/Slim/tree/2.4.3"
+            },
+            "time": "2014-04-05T18:33:59+00:00"
         },
         {
             "name": "slim/views",
@@ -304,14 +328,14 @@
             ],
             "authors": [
                 {
-                    "name": "Andrew Smith",
-                    "email": "a.smith@silentworks.co.uk",
-                    "homepage": "http://www.silentworks.co.uk/"
-                },
-                {
                     "name": "Josh Lockhart",
                     "email": "info@joshlockhart.com",
                     "homepage": "http://www.joshlockhart.com/"
+                },
+                {
+                    "name": "Andrew Smith",
+                    "email": "a.smith@silentworks.co.uk",
+                    "homepage": "http://thoughts.silentworks.co.uk/"
                 }
             ],
             "description": "Smarty and Twig View Parser package for the Slim Framework",
@@ -321,7 +345,11 @@
                 "slimphp",
                 "templating"
             ],
-            "time": "2014-04-03 16:31:10"
+            "support": {
+                "issues": "https://github.com/slimphp/Slim-Views/issues",
+                "source": "https://github.com/slimphp/Slim-Views/tree/0.1.2"
+            },
+            "time": "2014-04-03T16:31:10+00:00"
         },
         {
             "name": "swiftmailer/swiftmailer",
@@ -329,12 +357,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/swiftmailer/swiftmailer.git",
-                "reference": "v5.0.1"
+                "reference": "619aceb969f1e8759edc28fb22f9b64b3bddbc1e"
             },
             "dist": {
                 "type": "zip",
                 "url": "https://api.github.com/repos/swiftmailer/swiftmailer/zipball/619aceb969f1e8759edc28fb22f9b64b3bddbc1e",
-                "reference": "v5.0.1",
+                "reference": "619aceb969f1e8759edc28fb22f9b64b3bddbc1e",
                 "shasum": ""
             },
             "require": {
@@ -358,7 +386,9 @@
             "authors": [
                 {
                     "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com"
+                    "email": "fabien@symfony.com",
+                    "homepage": "http://fabien.potencier.org",
+                    "role": "Lead Developer"
                 },
                 {
                     "name": "Chris Corbyn"
@@ -370,7 +400,11 @@
                 "mail",
                 "mailer"
             ],
-            "time": "2013-06-17 13:32:32"
+            "support": {
+                "issues": "https://github.com/swiftmailer/swiftmailer/issues",
+                "source": "https://github.com/swiftmailer/swiftmailer/tree/v5.0.1"
+            },
+            "time": "2013-06-17T13:32:32+00:00"
         },
         {
             "name": "twig/twig",
@@ -427,26 +461,31 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2014-07-05 12:19:05"
+            "support": {
+                "forum": "https://groups.google.com/forum/#!forum/twig-users",
+                "issues": "https://github.com/twigphp/Twig/issues",
+                "source": "https://github.com/twigphp/Twig/tree/v1.16.0"
+            },
+            "time": "2014-07-05T12:19:05+00:00"
         }
     ],
     "packages-dev": [
         {
             "name": "simpletest/simpletest",
-            "version": "v1.1.6",
+            "version": "v1.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/simpletest/simpletest.git",
-                "reference": "43d947f842b7295c091a57c979a4533d3d6e9212"
+                "reference": "4fb6006517a1428785a0ea704fbedcc675421ec4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/simpletest/simpletest/zipball/43d947f842b7295c091a57c979a4533d3d6e9212",
-                "reference": "43d947f842b7295c091a57c979a4533d3d6e9212",
+                "url": "https://api.github.com/repos/simpletest/simpletest/zipball/4fb6006517a1428785a0ea704fbedcc675421ec4",
+                "reference": "4fb6006517a1428785a0ea704fbedcc675421ec4",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.0.5"
+                "php": "^7.1"
             },
             "type": "library",
             "autoload": {
@@ -459,14 +498,6 @@
                 "LGPL-2.0+"
             ],
             "authors": [
-                {
-                    "name": "Lars Vierbergen",
-                    "email": "vierbergenlars@gmail.com"
-                },
-                {
-                    "name": "Lachlan Donald",
-                    "email": "lachlan@ljd.cc"
-                },
                 {
                     "name": "Marcus Baker",
                     "email": "marcus@lastcraft.com",
@@ -487,6 +518,17 @@
                 {
                     "name": "Edward Z. Yang",
                     "role": "Original developer"
+                },
+                {
+                    "name": "Lachlan Donald",
+                    "email": "lachlan@ljd.cc"
+                },
+                {
+                    "name": "Lars Vierbergen",
+                    "email": "vierbergenlars@gmail.com"
+                },
+                {
+                    "name": "Jens A. Koch"
                 }
             ],
             "description": "Unit testing, mock objects and web testing framework for PHP built around test cases.",
@@ -494,14 +536,15 @@
             "keywords": [
                 "SimpleTest",
                 "code-coverage",
-                "junit",
-                "php",
                 "selenium",
                 "testing",
-                "unit-test",
-                "xunit"
+                "unit-test"
             ],
-            "time": "2013-09-21 21:04:19"
+            "support": {
+                "issues": "https://github.com/simpletest/simpletest/issues",
+                "source": "https://github.com/simpletest/simpletest/tree/master"
+            },
+            "time": "2019-09-17T15:08:22+00:00"
         }
     ],
     "aliases": [],
@@ -512,5 +555,6 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],
-    "platform-dev": []
+    "platform-dev": [],
+    "plugin-api-version": "2.0.0"
 }

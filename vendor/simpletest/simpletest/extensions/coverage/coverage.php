@@ -1,54 +1,51 @@
 <?php
-/**
-* @package        SimpleTest
-* @subpackage     Extensions
-*/
-/**
-* load coverage data handle
-*/
-require_once dirname(__FILE__) . '/coverage_data_handler.php';
+
+require_once __DIR__ . '/coverage_data_handler.php';
 
 /**
- * Orchestrates code coverage both in this thread and in subthread under apache
- * Assumes this is running on same machine as apache.
- * @package        SimpleTest
- * @subpackage     Extensions
+ * SimpleTest - CodeCoverage
  */
-class CodeCoverage  {
-    var $log;
-    var $root;
-    var $includes;
-    var $excludes;
-    var $directoryDepth;
-    var $maxDirectoryDepth = 20; // reasonable, otherwise arbitrary
-    var $title = "Code Coverage";
+class CodeCoverage
+{
+    public $log;
+    public $root;
+    public $includes;
+    public $excludes;
+    public $directoryDepth;
+    public $maxDirectoryDepth = 20; // reasonable, otherwise arbitrary
+    public $title             = 'Code Coverage';
 
     # NOTE: This assumes all code shares the same current working directory.
-    var $settingsFile = './code-coverage-settings.dat';
+    public $settingsFile = './coverage-settings.json';
 
-    static $instance;
+    public static $instance;
 
-    function writeUntouched() {
-        $touched = array_flip($this->getTouchedFiles());
-        $untouched = array();
+    public function writeUntouched()
+    {
+        $touched   = array_flip($this->getTouchedFiles());
+        $untouched = [];
         $this->getUntouchedFiles($untouched, $touched, '.', '.');
         $this->includeUntouchedFiles($untouched);
     }
 
-    function &getTouchedFiles() {
+    public function getTouchedFiles()
+    {
         $handler = new CoverageDataHandler($this->log);
         $touched = $handler->getFilenames();
+
         return $touched;
     }
 
-    function includeUntouchedFiles($untouched) {
+    public function includeUntouchedFiles($untouched)
+    {
         $handler = new CoverageDataHandler($this->log);
         foreach ($untouched as $file) {
             $handler->writeUntouchedFile($file);
         }
     }
 
-    function getUntouchedFiles(&$untouched, $touched, $parentPath, $rootPath, $directoryDepth = 1) {
+    public function getUntouchedFiles(&$untouched, $touched, $parentPath, $rootPath, $directoryDepth = 1)
+    {
         $parent = opendir($parentPath);
         while ($file = readdir($parent)) {
             $path = "$parentPath/$file";
@@ -58,9 +55,8 @@ class CodeCoverage  {
                         $this->getUntouchedFiles($untouched, $touched, $path, $rootPath, $directoryDepth + 1);
                     }
                 }
-            }
-            else if ($this->isFileIncluded($path)) {
-                $relativePath = CoverageDataHandler::ltrim($rootPath .'/', $path);
+            } elseif ($this->isFileIncluded($path)) {
+                $relativePath = CoverageDataHandler::ltrim($rootPath . '/', $path);
                 if (!array_key_exists($relativePath, $touched)) {
                     $untouched[] = $relativePath;
                 }
@@ -69,29 +65,31 @@ class CodeCoverage  {
         closedir($parent);
     }
 
-    function resetLog() {
-        error_log('reseting log');
-        $new_file = fopen($this->log, "w");
-        if (!$new_file) {
-            throw new Exception("Could not create ". $this->log);
+    public function resetLog()
+    {
+        $file = fopen($this->log, 'w');
+        if (!$file) {
+            throw new Exception('Could not create ' . $this->log);
         }
-        fclose($new_file);
+        fclose($file);
         if (!chmod($this->log, 0666)) {
-            throw new Exception("Could not change ownership on file  ". $this->log);
+            throw new Exception('Could not change ownership on file  ' . $this->log);
         }
         $handler = new CoverageDataHandler($this->log);
         $handler->createSchema();
     }
 
-    function startCoverage() {
+    public function startCoverage()
+    {
         $this->root = getcwd();
-        if(!extension_loaded("xdebug")) {
-            throw new Exception("Could not load xdebug extension");
-        };
+        if (!extension_loaded('xdebug')) {
+            throw new Exception('Could not load xdebug extension');
+        }
         xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
     }
 
-    function stopCoverage() {
+    public function stopCoverage()
+    {
         $cov = xdebug_get_code_coverage();
         $this->filter($cov);
         $data = new CoverageDataHandler($this->log);
@@ -104,34 +102,38 @@ class CodeCoverage  {
         chdir($this->root);
     }
 
-    function readSettings() {
-        if (file_exists($this->settingsFile)) {
-            $this->setSettings(file_get_contents($this->settingsFile));
-        } else {
-            error_log("could not find file ". $this->settingsFile);
+    public function readSettings()
+    {
+        if (!file_exists($this->settingsFile)) {
+            error_log('Could not find settings file ' . $this->settingsFile);
         }
+
+        $this->setSettings(json_decode(file_get_contents($this->settingsFile), true));
     }
 
-    function writeSettings() {       
-        file_put_contents($this->settingsFile, $this->getSettings());
+    public function writeSettings()
+    {
+        file_put_contents($this->settingsFile, json_encode($this->getSettings(), JSON_PRETTY_PRINT));
     }
 
-    function getSettings() {
-        $data = array(
-    	'log' => realpath($this->log), 
-    	'includes' => $this->includes, 
-    	'excludes' => $this->excludes);
-        return serialize($data);
+    public function getSettings()
+    {
+        return [
+            'log'      => realpath($this->log),
+            'includes' => $this->includes,
+            'excludes' => $this->excludes
+        ];
     }
 
-    function setSettings($settings) {
-        $data = unserialize($settings);
-        $this->log = $data['log'];
+    public function setSettings($data)
+    {
+        $this->log      = $data['log'];
         $this->includes = $data['includes'];
         $this->excludes = $data['excludes'];
     }
 
-    function filter(&$coverage) {
+    public function filter(&$coverage)
+    {
         foreach ($coverage as $file => $line) {
             if (!$this->isFileIncluded($file)) {
                 unset($coverage[$file]);
@@ -139,11 +141,12 @@ class CodeCoverage  {
         }
     }
 
-    function isFileIncluded($file)  {
+    public function isFileIncluded($file)
+    {
         if (!empty($this->excludes)) {
             foreach ($this->excludes as $path) {
                 if (preg_match('|' . $path . '|', $file)) {
-                    return False;
+                    return false;
                 }
             }
         }
@@ -151,46 +154,50 @@ class CodeCoverage  {
         if (!empty($this->includes)) {
             foreach ($this->includes as $path) {
                 if (preg_match('|' . $path . '|', $file)) {
-                    return True;
+                    return true;
                 }
             }
-            return False;
+
+            return false;
         }
 
-        return True;
+        return true;
     }
 
-    function isDirectoryIncluded($dir, $directoryDepth)  {
+    public function isDirectoryIncluded($dir, $directoryDepth)
+    {
         if ($directoryDepth >= $this->maxDirectoryDepth) {
             return false;
         }
         if (isset($this->excludes)) {
             foreach ($this->excludes as $path) {
                 if (preg_match('|' . $path . '|', $dir)) {
-                    return False;
+                    return false;
                 }
             }
         }
 
-        return True;
+        return true;
     }
 
-    static function isCoverageOn() {
+    public static function isCoverageOn()
+    {
         $coverage = self::getInstance();
-        $coverage->readSettings();
+
         if (empty($coverage->log) || !file_exists($coverage->log)) {
-            trigger_error('No coverage log');
-            return False;
+            throw new Exception('Could not find the coverage log file.');
         }
-        return True;
+
+        return true;
     }
 
-    static function getInstance() {
-        if (self::$instance == NULL) {
-            self::$instance = new CodeCoverage();
+    public static function getInstance()
+    {
+        if (self::$instance === null) {
+            self::$instance = new self();
             self::$instance->readSettings();
         }
+
         return self::$instance;
     }
 }
-?>

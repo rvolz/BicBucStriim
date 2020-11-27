@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+  slim:
+    build: .
+    image: php:5-apache-gd
+    working_dir: /var/www
+    command: php -d date.timezone=Europe/Berlin -S 0.0.0.0:8081
+    environment:
+      docker: "true"
+    ports:
+      - 8081:8081
+    volumes:
+      - ./work:/var/www
+      - ./worklib:/mnt
+      - ./logs:/var/www/logs
