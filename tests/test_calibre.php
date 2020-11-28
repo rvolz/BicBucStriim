@@ -20,7 +20,7 @@ class TestOfCalibre extends UnitTestCase
 
     function tearDown()
     {
-        $this->calibre = NULL;
+        $this->calibre = null;
     }
 
     function testOpenCalibreEmptyDb()
@@ -86,11 +86,11 @@ class TestOfCalibre extends UnitTestCase
     {
         $result = $this->calibre->last30Books('en', 30, new CalibreFilter());
         $this->assertEqual(0, $this->calibre->last_error);
-        $this->assertFalse($result === FALSE);
+        $this->assertFalse($result === false);
         $this->assertEqual(7, count($result));
         $result2 = $this->calibre->last30Books('en', 2, new CalibreFilter());
         $this->assertEqual(0, $this->calibre->last_error);
-        $this->assertFalse($result2 === FALSE);
+        $this->assertFalse($result2 === false);
         $this->assertEqual(2, count($result2));
         $result3 = $this->calibre->last30Books('en', 30, new CalibreFilter($lang = 3));
         $this->assertEqual(1, count($result3));
@@ -405,7 +405,7 @@ class TestOfCalibre extends UnitTestCase
     {
         $result = $this->calibre->title(3);
         $this->assertEqual(0, $this->calibre->last_error);
-        $this->assertFalse($result === FALSE);
+        $this->assertFalse($result === false);
         $this->assertEqual('Der seltzame Springinsfeld', $result->title);
     }
 
@@ -429,7 +429,7 @@ class TestOfCalibre extends UnitTestCase
     {
         $result = $this->calibre->titleDetails('en', 3);
         $this->assertEqual(0, $this->calibre->last_error);
-        $this->assertFalse($result === FALSE);
+        $this->assertFalse($result === false);
         $this->assertEqual('Der seltzame Springinsfeld', $result['book']->title);
         $this->assertEqual('Fachbücher', $result['tags'][0]->name);
         $this->assertEqual('Serie Grimmelshausen', $result['series'][0]->name);
@@ -440,7 +440,7 @@ class TestOfCalibre extends UnitTestCase
         $book = $this->calibre->title(3);
         $result = $this->calibre->titleDetailsOpds($book);
         $this->assertEqual(0, $this->calibre->last_error);
-        $this->assertFalse($result === FALSE);
+        $this->assertFalse($result === false);
         $this->assertEqual('Der seltzame Springinsfeld', $result['book']->title);
         $this->assertEqual('Fachbücher', $result['tags'][0]->name);
     }
@@ -451,7 +451,7 @@ class TestOfCalibre extends UnitTestCase
         $this->assertEqual(2, count($books['entries']));
         $result = $this->calibre->titleDetailsFilteredOpds($books['entries']);
         $this->assertEqual(0, $this->calibre->last_error);
-        $this->assertFalse($result === FALSE);
+        $this->assertFalse($result === false);
         $this->assertEqual(1, count($result));
     }
 

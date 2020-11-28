@@ -40,8 +40,8 @@ class TestOfOpdsGenerator extends UnitTestCase {
 	}
 
 	function tearDown() {
-		$this->calibre = NULL;
-		$this->bbs = NULL;
+		$this->calibre = null;
+		$this->bbs = null;
 		system("rm -rf ".self::DATA);
 	}
 
@@ -117,7 +117,7 @@ class TestOfOpdsGenerator extends UnitTestCase {
 		$just_book = $this->calibre->title(2);
 		#print_r($just_book);
 		$book = $this->calibre->titleDetailsOpds($just_book);
-		$this->gen->openStream(NULL);
+		$this->gen->openStream(null);
 		$this->gen->partialAcquisitionEntry($book, false);
 		$result = $this->gen->closeStream();
 		#print_r($result);
@@ -148,7 +148,7 @@ function testPartialAcquisitionEntryWithProtection() {
 ';
 		$just_book = $this->calibre->title(2);
 		$book = $this->calibre->titleDetailsOpds($just_book);
-		$this->gen->openStream(NULL);
+		$this->gen->openStream(null);
 		$this->gen->partialAcquisitionEntry($book, true);
 		$result = $this->gen->closeStream();
 		#print_r($result);
@@ -181,7 +181,7 @@ function testPartialAcquisitionEntryWithProtection() {
 	function testTitlesCatalogOpenSearch() {
 		$tl = $this->calibre->titlesSlice('en', 0, 2, new CalibreFilter());
 		$books = $this->calibre->titleDetailsFilteredOpds($tl['entries']);		
-		$xml = $this->gen->titlesCatalog(NULL,$books,false, 
+		$xml = $this->gen->titlesCatalog(null,$books,false, 
 			$tl['page'],$tl['page']+1,$tl['pages']-1);
 		$feed = new SimpleXMLElement($xml);
 		$this->assertEqual(7,count($feed->link));

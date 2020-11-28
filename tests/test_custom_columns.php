@@ -20,7 +20,7 @@ class TestOfCustomColumns extends UnitTestCase {
 	}
 
 	function tearDown() {
-		$this->calibre = NULL;
+		$this->calibre = null;
 	}
 
 	# Lots of ccs -- one with multiple values

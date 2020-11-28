@@ -40,7 +40,7 @@ function mod_rewrite_enabled() {
 function has_sqlite() {
 	$version = false;
 	try {
-		$mydb = new PDO('sqlite:data/data.db', NULL, NULL, array());
+		$mydb = new PDO('sqlite:data/data.db', null, null, array());
 		return true;
 	} catch (PDOException $e) {
 		return false;
@@ -72,7 +72,7 @@ function check_calibre($dir) {
 			if (file_exists($mdb)) {
 				$ret['status'] = 1;	
 				try {
-					$mydb = new PDO('sqlite:'.$mdb, NULL, NULL, array());
+					$mydb = new PDO('sqlite:'.$mdb, null, null, array());
 					$ret['library_ok'] = true;
 				} catch (PDOException $e) {
 					;

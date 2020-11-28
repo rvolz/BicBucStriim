@@ -20,7 +20,7 @@ class Calibre
     public $last_error = 0;
 
     # calibre sqlite db
-    protected $calibre = NULL;
+    protected $calibre = null;
     # calibre library dir
     public $calibre_dir = '';
     # calibre library file, last modified date
@@ -52,13 +52,13 @@ class Calibre
         $this->thumb_dir = $thumbDir;
         if (file_exists($rp) && is_readable($rp)) {
             $this->calibre_last_modified = filemtime($rp);
-            $this->calibre = new PDO('sqlite:' . $rp, NULL, NULL, array());
+            $this->calibre = new PDO('sqlite:' . $rp, null, null, array());
             $this->calibre->setAttribute(1002, 'SET NAMES utf8');
             $this->calibre->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $this->calibre->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
             $this->last_error = $this->calibre->errorCode();
         } else {
-            $this->calibre = NULL;
+            $this->calibre = null;
         }
     }
 
@@ -139,8 +139,8 @@ class Calibre
     function findOne($class, $sql, $params = array())
     {
         $result = $this->findPrepared($class, $sql, $params);
-        if ($result == NULL || $result == FALSE)
-            return NULL;
+        if ($result == null || $result == false)
+            return null;
         else
             return $result[0];
     }
@@ -208,10 +208,10 @@ class Calibre
      * TODO revert back to real SQL, not the outdated-QNAP stlyle
  */
     protected
-    function findSliceFiltered($searchType, $index = 0, $length = 100, $filter, $search = NULL, $id = NULL)
+    function findSliceFiltered($searchType, $index = 0, $length = 100, $filter, $search = null, $id = null)
     {
         if ($index < 0 || $length < 1 || $searchType < CalibreSearchType::Author || $searchType > CalibreSearchType::LastModifiedOrderedBook)
-            return array('page' => 0, 'pages' => 0, 'entries' => NULL);
+            return array('page' => 0, 'pages' => 0, 'entries' => null);
         $offset = $index * $length;
         $searching = !is_null($search);
         $countParams = $this->mkCountParams($id, $filter, $search);
@@ -392,7 +392,7 @@ class Calibre
         $stmt = $this->calibre->prepare($sql);
         $stmt->execute($params);
         $result = $stmt->fetchColumn();
-        if ($result == NULL || $result == FALSE)
+        if ($result == null || $result == false)
             return 0;
         else
             return (int)$result;
@@ -406,8 +406,8 @@ class Calibre
     public function getLanguageId($languageCode)
     {
         $result = $this->calibre->query('SELECT id FROM languages WHERE lang_code = "' . $languageCode . '"')->fetchColumn();
-        if ($result == NULL || $result == FALSE)
-            return NULL;
+        if ($result == null || $result == false)
+            return null;
         else
             return $result;
     }
@@ -420,8 +420,8 @@ class Calibre
     public function getTagId($tagName)
     {
         $result = $this->calibre->query('SELECT id FROM tags WHERE name = "' . $tagName . '"')->fetchColumn();
-        if ($result == NULL || $result == FALSE)
-            return NULL;
+        if ($result == null || $result == false)
+            return null;
         else
             return $result;
     }
@@ -436,7 +436,7 @@ class Calibre
      */
     function last30Books($lang, $nrOfTitles = 30, $filter)
     {
-        $queryParams = $this->mkQueryParams(NULL, $filter, NULL, $nrOfTitles, NULL);
+        $queryParams = $this->mkQueryParams(null, $filter, null, $nrOfTitles, null);
         $books = $this->findPrepared('Book', 'SELECT * FROM ' . $filter->getBooksFilter() . ' ORDER BY timestamp DESC LIMIT :length', $queryParams);
         $this->addBookDetails($lang, $books);
         return $books;
@@ -501,7 +501,7 @@ class Calibre
     function authorDetails($id)
     {
         $author = $this->findOne('Author', 'SELECT * FROM authors WHERE id=:id', array('id' => $id));
-        if (is_null($author)) return NULL;
+        if (is_null($author)) return null;
         $book_ids = $this->findPrepared('BookAuthorLink', 'SELECT * FROM books_authors_link WHERE author=:id',
             array('id'=>$id));
         $books = array();
@@ -550,8 +550,8 @@ class Calibre
     {
         $author = $this->findOne('Author', 'SELECT * FROM authors WHERE id=:id', array('id' => $id));
         if (is_null($author))
-            return NULL;
-        $slice = $this->findSliceFiltered(CalibreSearchType::AuthorBook, $index, $length, $filter, NULL, $id);
+            return null;
+        $slice = $this->findSliceFiltered(CalibreSearchType::AuthorBook, $index, $length, $filter, null, $id);
         $this->addBookDetails($lang, $slice['entries']);
         return array('author' => $author) + $slice;
     }
@@ -566,9 +566,9 @@ class Calibre
      * @return array                with elements: current page,
      *                      no. of pages, $length entries
      */
-    function authorsSlice($index = 0, $length = 100, $search = NULL)
+    function authorsSlice($index = 0, $length = 100, $search = null)
     {
-        return $this->findSliceFiltered(CalibreSearchType::Author, $index, $length, new CalibreFilter(), $search, NULL);
+        return $this->findSliceFiltered(CalibreSearchType::Author, $index, $length, new CalibreFilter(), $search, null);
     }
 
     /**
@@ -645,7 +645,7 @@ class Calibre
     function tagDetails($id)
     {
         $tag = $this->findOne('Tag', 'SELECT * FROM tags WHERE id=:id', array('id' => $id));
-        if (is_null($tag)) return NULL;
+        if (is_null($tag)) return null;
         $book_ids = $this->findPrepared('BookTagLink', 'SELECT * FROM books_tags_link WHERE tag=:id', array('id' => $id));
         $books = array();
         foreach ($book_ids as $bid) {
@@ -670,8 +670,8 @@ class Calibre
     {
         $tag = $this->findOne('Tag', 'SELECT * FROM tags WHERE id=:id', array('id' => $id));
         if (is_null($tag))
-            return NULL;
-        $slice = $this->findSliceFiltered(CalibreSearchType::TagBook, $index, $length, $filter, NULL, $id);
+            return null;
+        $slice = $this->findSliceFiltered(CalibreSearchType::TagBook, $index, $length, $filter, null, $id);
         $this->addBookDetails($lang, $slice['entries']);
         return array('tag' => $tag) + $slice;
     }
@@ -679,9 +679,9 @@ class Calibre
     # Search a list of tags defined by the parameters $index and $length.
     # If $search is defined it is used to filter the tag names, ignoring case.
     # Return an array with elements: current page, no. of pages, $length entries
-    function tagsSlice($index = 0, $length = 100, $search = NULL)
+    function tagsSlice($index = 0, $length = 100, $search = null)
     {
-        return $this->findSliceFiltered(CalibreSearchType::Tag, $index, $length, new CalibreFilter(), $search, NULL);
+        return $this->findSliceFiltered(CalibreSearchType::Tag, $index, $length, new CalibreFilter(), $search, null);
     }
 
     /**
@@ -729,7 +729,7 @@ class Calibre
      * @param string $search search phrase, default null
      * @return  array               an array with elements: current page, no. of pages, $length entries
      */
-    function pubdateOrderedTitlesSlice($lang, $index = 0, $length = 100, $filter, $search = NULL)
+    function pubdateOrderedTitlesSlice($lang, $index = 0, $length = 100, $filter, $search = null)
     {
         $books = $this->findSliceFiltered(CalibreSearchType::PubDateOrderedBook, $index, $length, $filter, $search);
         $this->addBookDetails($lang, $books['entries']);
@@ -746,7 +746,7 @@ class Calibre
      * @param string $search search phrase, default null
      * @return  array               an array with elements: current page, no. of pages, $length entries
      */
-    function lastmodifiedOrderedTitlesSlice($lang, $index = 0, $length = 100, $filter, $search = NULL)
+    function lastmodifiedOrderedTitlesSlice($lang, $index = 0, $length = 100, $filter, $search = null)
     {
         $books = $this->findSliceFiltered(CalibreSearchType::LastModifiedOrderedBook, $index, $length, $filter, $search);
         $this->addBookDetails($lang, $books['entries']);
@@ -763,7 +763,7 @@ class Calibre
      * @param string $search search phrase, default null
      * @return  array               an array with elements: current page, no. of pages, $length entries
      */
-    function timestampOrderedTitlesSlice($lang, $index = 0, $length = 100, $filter, $search = NULL)
+    function timestampOrderedTitlesSlice($lang, $index = 0, $length = 100, $filter, $search = null)
     {
         $books = $this->findSliceFiltered(CalibreSearchType::TimestampOrderedBook, $index, $length, $filter, $search);
         $this->addBookDetails($lang, $books['entries']);
@@ -779,7 +779,7 @@ class Calibre
      * @param string $search    search phrase, default null
      * @return  array          an array with elements: current page, no. of pages, $length entries
      */
-    function titlesSlice($lang, $index = 0, $length = 100, $filter, $search = NULL)
+    function titlesSlice($lang, $index = 0, $length = 100, $filter, $search = null)
     {
         $books = $this->findSliceFiltered(CalibreSearchType::Book, $index, $length, $filter, $search);
         $this->addBookDetails($lang, $books['entries']);
@@ -798,7 +798,7 @@ class Calibre
     {
         $book = $this->title($id);
         if (is_null($book))
-            return NULL;
+            return null;
         else
             return Utilities::bookPath($this->calibre_dir, $book->path, 'cover.jpg');
     }
@@ -848,7 +848,7 @@ class Calibre
     function titleDetails($lang, $id)
     {
         $book = $this->title($id);
-        if (is_null($book)) return NULL;
+        if (is_null($book)) return null;
         $author_ids = $this->findPrepared('BookAuthorLink', 'SELECT * FROM books_authors_link WHERE book=:id',
             array('id'=>$id));
         $authors = array();
@@ -911,7 +911,7 @@ class Calibre
     function titleDetailsMini($id)
     {
         $book = $this->title($id);
-        if (is_null($book)) return NULL;
+        if (is_null($book)) return null;
         $tag_ids = $this->findPrepared('BookTagLink', 'SELECT * FROM books_tags_link WHERE book=:id',array('id'=>$id));
         $tags = array();
         foreach ($tag_ids as $tid) {
@@ -989,7 +989,7 @@ class Calibre
      */
     function titleDetailsOpds($book)
     {
-        if (is_null($book)) return NULL;
+        if (is_null($book)) return null;
         $author_ids = $this->findPrepared('BookAuthorLink', 'SELECT * FROM books_authors_link WHERE book=:id', array('id'=>$book->id));
         $authors = array();
         foreach ($author_ids as $aid) {
@@ -1056,7 +1056,7 @@ class Calibre
     {
         $book = $this->title($id);
         if (is_null($book))
-            return NULL;
+            return null;
         else
             return Utilities::bookPath($this->calibre_dir, $book->path, $file);
     }
@@ -1081,12 +1081,12 @@ class Calibre
     function titleGetKindleFormat($id)
     {
         $book = $this->title($id);
-        if (is_null($book)) return NULL;
+        if (is_null($book)) return null;
         $formats = $this->findPrepared('Data',
             "SELECT * FROM data WHERE book=:id AND (format='AZW' OR format='AZW3' OR format='MOBI' OR format='HTML' OR format='PDF')",
             array('id'=>$id));
         if (empty($formats))
-            return NULL;
+            return null;
         else {
             usort($formats, array($this, 'kindleFormatSort'));
             $format = $formats[0];
@@ -1104,7 +1104,7 @@ class Calibre
     function seriesDetails($id)
     {
         $series = $this->findOne('Series', 'SELECT * FROM series WHERE id=:id', array('id' => $id));
-        if (is_null($series)) return NULL;
+        if (is_null($series)) return null;
         $books = $this->findPrepared('Book',
             'SELECT BSL.book, Books.* FROM books_series_link BSL, books Books WHERE Books.id=BSL.book AND series=:id ORDER BY series_index',
             array('id'=>$id));
@@ -1126,8 +1126,8 @@ class Calibre
     {
         $series = $this->findOne('Series', 'SELECT * FROM series WHERE id=:id', array('id' => $id));
         if (is_null($series))
-            return NULL;
-        $slice = $this->findSliceFiltered(CalibreSearchType::SeriesBook, $index, $length, $filter, NULL, $id);
+            return null;
+        $slice = $this->findSliceFiltered(CalibreSearchType::SeriesBook, $index, $length, $filter, null, $id);
         $this->addBookDetails($lang, $slice['entries']);
         return array('series' => $series) + $slice;
     }
@@ -1142,9 +1142,9 @@ class Calibre
      * @param  string $search =NULL search criteria for series name
      * @return array                see findSlice
      */
-    function seriesSlice($index = 0, $length = 100, $search = NULL)
+    function seriesSlice($index = 0, $length = 100, $search = null)
     {
-        return $this->findSliceFiltered(CalibreSearchType::Series, $index, $length, new CalibreFilter(), $search, NULL);
+        return $this->findSliceFiltered(CalibreSearchType::Series, $index, $length, new CalibreFilter(), $search, null);
     }
 
     /**
