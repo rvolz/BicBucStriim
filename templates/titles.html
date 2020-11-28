@@ -28,29 +28,3 @@
     {% endfor %}
 </div>
 {% endblock %}
-
-{% block leftpanel %}
-<section data-role="panel" data-display="overlay" data-position="left" id="titles_options_panel">
-    <div class="ui-body ui-body-a ui-corner-all">
-        <h3>{{page.glob.l10n.pagination_search}}</h3>
-
-        <form action="{{page.rot}}/search/"
-              method="get">
-            <div data-role="fieldcontain" class="ui-hide-label">
-                <label for="search">{{page.glob.l10n.pagination_search_lbl}}</label>
-                <input type="search" name="search" id="search" value="{{search}}"
-                       placeholder="{{page.glob.l10n.pagination_search_ph}}" autofocus="true"/>
-            </div>
-        </form>
-    </div>
-    <div class="ui-body ui-body-a ui-corner-all">
-        <h3>{{page.glob.l10n.titles_sort}}</h3>
-
-        <div data-role="controlgroup" data-type="horizontal">
-            <a href="{{page.rot}}/titleslist/0/?sort=byReverseDate" class="ui-btn ui-btn-corner-all">{{page.glob.l10n.date}}</a>
-            <a href="{{page.rot}}/titleslist/0/?sort=byTitle"
-               class="ui-btn ui-btn-corner-all">{{page.glob.l10n.title}}</a>
-        </div>
-    </div>
-</section>
-{% endblock %}
