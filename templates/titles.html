@@ -18,15 +18,15 @@
 {% block pid %}id="ptitles"{%endblock%}
 
 {% block content %}
-<ul data-role="listview" data-filter="false">	
-	{% for book in books %}
-		{% if book.initial != "" %}
-			<li data-role="list-divider"> {{ book.initial }}</li>
-		{% else %}
-			{% include "title_entry.html" %}
-		{% endif %}
-  {% endfor %}
-</ul>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
+    {% for book in books %}
+        {% if book.initial != "" %}
+            <!-- TODO Add list divider card? -->
+        {% else %}
+            {% include "title_entry.html" %}
+        {% endif %}
+    {% endfor %}
+</div>
 {% endblock %}
 
 {% block leftpanel %}

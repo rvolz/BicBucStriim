@@ -18,25 +18,39 @@
 {% block pid %}id="pauthors"{%endblock%}
 
 {% block content %}
-<ul data-role="listview" data-filter="false">	
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
 	{% for author in authors %}
 		{% if author.initial != "" %}
-			<li data-role="list-divider"> {{ author.initial }}</li>
+			<!-- TODO Add list divider card? -->
 		{% else %}
-			<li>
-				<a href="{{page.rot}}/authors/{{ author.id }}/0/">
+			<a href="{{page.rot}}/authors/{{ author.id }}/0/">
+				<figure class="md:flex bg-gray-100 rounded-xl p-8 md:p-0">
 					{% if author.thumbnail %}
-					<img src="{{page.rot}}/{{author.thumbnail.url}}"/>
+					<img class="w-32 h-32 md:w-48 md:h-auto md:rounded-none rounded-full mx-auto" src="{{page.rot}}/{{author.thumbnail.url}}" alt="" width="384" height="512">
 					{% else %}
-					<img src="{{page.rot}}/img/writer.png"/>
+					<img class="w-32 h-32 md:w-48 md:h-auto md:rounded-none rounded-full mx-auto" src="{{page.rot}}/img/writer.png" alt="" width="384" height="512">
 					{% endif %}
-					<h3>{{ author.sort }}</h3>
-					<span class="ui-li-count">{{author.anzahl}}</span>
-				</a>
-			</li>
+
+					<div class="pt-6 md:p-8 text-center md:text-left space-y-4">
+						<blockquote>
+							<p class="text-lg font-semibold">
+								{{ author.sort }}
+							</p>
+						</blockquote>
+						<figcaption class="font-medium">
+							<div class="text-cyan-600">
+								{{author.sort}}
+							</div>
+							<div class="text-gray-500">
+								{{author.anzahl}}
+							</div>
+						</figcaption>
+					</div>
+				</figure>
+			</a>
 		{% endif %}
   {% endfor %}
-</ul>
+</div>
 {% endblock %}
 
 
