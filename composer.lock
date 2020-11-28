@@ -1,10 +1,9 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "hash": "6d43c91e3b552da6e584c37d7b7d1a89",
     "content-hash": "86c031903df2d5ad9b4f74f9be7cf682",
     "packages": [
         {
@@ -61,7 +60,7 @@
                 "auth",
                 "authenticate"
             ],
-            "time": "2015-08-08 09:48:54"
+            "time": "2015-08-08T09:48:54+00:00"
         },
         {
             "name": "aura/session",
@@ -125,7 +124,7 @@
                 "session",
                 "sessions"
             ],
-            "time": "2015-03-27 18:33:22"
+            "time": "2015-03-27T18:33:22+00:00"
         },
         {
             "name": "dflydev/markdown",
@@ -179,7 +178,7 @@
             "keywords": [
                 "markdown"
             ],
-            "time": "2012-01-16 03:36:37"
+            "time": "2012-01-16T03:36:37+00:00"
         },
         {
             "name": "ircmaxell/password-compat",
@@ -221,7 +220,7 @@
                 "hashing",
                 "password"
             ],
-            "time": "2014-11-20 16:49:30"
+            "time": "2014-11-20T16:49:30+00:00"
         },
         {
             "name": "slim/slim",
@@ -267,7 +266,7 @@
                 "rest",
                 "router"
             ],
-            "time": "2014-04-05 18:33:59"
+            "time": "2014-04-05T18:33:59+00:00"
         },
         {
             "name": "slim/views",
@@ -321,7 +320,7 @@
                 "slimphp",
                 "templating"
             ],
-            "time": "2014-04-03 16:31:10"
+            "time": "2014-04-03T16:31:10+00:00"
         },
         {
             "name": "swiftmailer/swiftmailer",
@@ -370,7 +369,7 @@
                 "mail",
                 "mailer"
             ],
-            "time": "2013-06-17 13:32:32"
+            "time": "2013-06-17T13:32:32+00:00"
         },
         {
             "name": "twig/twig",
@@ -427,7 +426,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2014-07-05 12:19:05"
+            "time": "2014-07-05T12:19:05+00:00"
         }
     ],
     "packages-dev": [
@@ -501,7 +500,7 @@
                 "unit-test",
                 "xunit"
             ],
-            "time": "2013-09-21 21:04:19"
+            "time": "2013-09-21T21:04:19+00:00"
         }
     ],
     "aliases": [],
@@ -512,5 +511,6 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],
-    "platform-dev": []
+    "platform-dev": [],
+    "plugin-api-version": "2.0.0"
 }
