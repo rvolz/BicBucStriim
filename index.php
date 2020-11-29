@@ -23,6 +23,7 @@ require_once 'login_middleware.php';
 require_once 'caching_middleware.php';
 require_once 'mailer.php';
 require_once 'metadata_epub.php';
+require_once 'version.php';
 
 use dflydev\markdown\MarkdownExtraParser;
 use Aura\Auth as Auth;
@@ -34,7 +35,7 @@ $fallbackLang = 'en';
 # Application Name
 $appname = 'BicBucStriim';
 # App version
-$appversion = '1.5.0';
+$appversion = BICBUCSTRIIM_VERSION;
 
 # Init app and routes
 $app = new \Slim\Slim(array(

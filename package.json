@@ -1,6 +1,6 @@
 {
   "name": "BicBucStriim",
-  "version": "2.0.0.alpha",
+  "version": "2.0.0-alpha.1",
   "description": "BicBucStriim manages ebooks",
   "main": "index.php",
   "repository": "https://github.com/rvolz/BicBucStriim.git",

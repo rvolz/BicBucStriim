@@ -22,4 +22,4 @@ class DataConstants {
 	const AUTHOR_NOTE = 1;	
 }
 
-?>
+

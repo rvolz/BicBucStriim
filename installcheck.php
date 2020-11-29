@@ -9,6 +9,7 @@
  */
 
 require 'lib/BicBucStriim/inst_utils.php';
+require 'lib/BicBucStriim/version.php';
 # Use this instead of the Composer autoload for PHP 5.2 compatibility
 # At least the PHP version check should run with PHP 5.2
 require_once 'vendor/twig/twig/lib/Twig/Autoloader.php';
@@ -121,7 +122,7 @@ $template = $twig->loadTemplate('installcheck.html');
 echo $template->render(array(
 	'page' => array(
 		'rot' => '',
-		'version' => '1.5.0'
+		'version' => BICBUCSTRIIM_VERSION
 	),
 	'is_a' => $is_a,
 	'srv' => $srv,
