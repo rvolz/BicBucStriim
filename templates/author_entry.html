@@ -1,0 +1,17 @@
+<a href="{{page.rot}}/authors/{{ author.id }}/0/">
+    <div class="card">
+        {% if author.thumbnail %}
+        <img class="card-image" src="{{page.rot}}/{{author.thumbnail.url}}" alt="{{book.author_sort}}" width="384" height="512">
+        {% else %}
+        <img class="card-image" src="{{page.rot}}/img/writer.png" alt="{{book.author_sort}}" width="384" height="512">
+        {% endif %}
+        <div class="card-content">
+            <p class="text-lg font-semibold truncate">
+                {{ author.sort }}
+            </p>
+            <p class="font-medium text-cyan-600">
+                {{page.glob.l10n.titles}}: {{author.anzahl}}
+            </p>
+        </div>
+    </div>
+</a>

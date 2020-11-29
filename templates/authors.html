@@ -1,14 +1,6 @@
 {% extends 'main.html' %}
 
 {% block headerlinks %}
-  <!--
-  ~  BicBucStriim
-  ~
-  ~  Copyright (c) 2012-2015 Rainer Volz
-  ~  Licensed under MIT License, see LICENSE
-  ~
-  -->
-
 <link rel="related" href="{{page.rot}}/opds/"
   	type="application/atom+xml;profile=opds-catalog" title="OPDS index">
   <link rel="alternate" href="{{page.rot}}/opds/authorlist/" 
@@ -18,36 +10,12 @@
 {% block pid %}id="pauthors"{%endblock%}
 
 {% block content %}
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
+<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
 	{% for author in authors %}
 		{% if author.initial != "" %}
 			<!-- TODO Add list divider card? -->
 		{% else %}
-			<a href="{{page.rot}}/authors/{{ author.id }}/0/">
-				<figure class="md:flex bg-gray-100 rounded-xl p-8 md:p-0">
-					{% if author.thumbnail %}
-					<img class="w-32 h-32 md:w-48 md:h-auto md:rounded-none rounded-full mx-auto" src="{{page.rot}}/{{author.thumbnail.url}}" alt="" width="384" height="512">
-					{% else %}
-					<img class="w-32 h-32 md:w-48 md:h-auto md:rounded-none rounded-full mx-auto" src="{{page.rot}}/img/writer.png" alt="" width="384" height="512">
-					{% endif %}
-
-					<div class="pt-6 md:p-8 text-center md:text-left space-y-4">
-						<blockquote>
-							<p class="text-lg font-semibold">
-								{{ author.sort }}
-							</p>
-						</blockquote>
-						<figcaption class="font-medium">
-							<div class="text-cyan-600">
-								{{author.sort}}
-							</div>
-							<div class="text-gray-500">
-								{{author.anzahl}}
-							</div>
-						</figcaption>
-					</div>
-				</figure>
-			</a>
+			{% include "author_entry.html" %}
 		{% endif %}
   {% endfor %}
 </div>

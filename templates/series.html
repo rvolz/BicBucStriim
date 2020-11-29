@@ -1,14 +1,6 @@
 {% extends 'main.html' %}
 
 {% block headerlinks %}
-<!--
-  ~  BicBucStriim
-  ~
-  ~  Copyright (c) 2012-2015 Rainer Volz
-  ~  Licensed under MIT License, see LICENSE
-  ~
-  -->
-
 <link rel="related" href="{{page.rot}}/opds/"
 	type="application/atom+xml;profile=opds-catalog" title="OPDS index">
 <link rel="alternate" href="{{page.rot}}/opds/serieslist/" 
@@ -18,40 +10,12 @@
 {% block pid %}id="pseries"{%endblock%}
 
 {% block content %}
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
+<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
 	{% for this_series in series %}
 		{% if this_series.initial != "" %}
 			<!-- TODO Add list divider card? -->
 		{% else %}
-			<a href="{{page.rot}}/series/{{ this_series.id }}/0/">
-				<figure class="md:flex bg-gray-100 rounded-xl p-8 md:p-0">
-					{% if this_series.thumbnail %}
-					<img class="w-32 h-32 md:w-48 md:h-auto md:rounded-none rounded-full mx-auto" src="{{page.rot}}/{{this_series.thumbnail.url}}" alt="" width="384" height="512">
-					{% else %}
-					<svg class="h-12 w-12" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2" />
-					</svg>
-					<!-- TODO Series icon? -->
-					<!--img class="w-32 h-32 md:w-48 md:h-auto md:rounded-none rounded-full mx-auto" src="{{page.rot}}/img/series.png" alt="" width="384" height="512"-->
-					{% endif %}
-
-					<div class="pt-6 md:p-8 text-center md:text-left space-y-4">
-						<blockquote>
-							<p class="text-lg font-semibold">
-								{{ this_series.name }}
-							</p>
-						</blockquote>
-						<figcaption class="font-medium">
-							<div class="text-cyan-600">
-								{{this_series.name}}
-							</div>
-							<div class="text-gray-500">
-								{{this_series.anzahl}}
-							</div>
-						</figcaption>
-					</div>
-				</figure>
-			</a>
+			{% include "series_entry.html" %}
 		{% endif %}
   	{% endfor %}
 </div>

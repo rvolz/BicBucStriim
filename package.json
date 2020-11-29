@@ -7,9 +7,9 @@
   "author": "Rainer Volz <dev@textmulch.de>",
   "license": "MIT",
   "scripts": {
-    "serve": "cross-env NODE_ENV=development concurrently \"postcss resources/style/tailwind.css -o style/tailwind.css --watch\"",
-    "development": "cross-env NODE_ENV=development postcss resources/style/tailwind.css -o style/tailwind.css",
-    "production": "cross-env NODE_ENV=production postcss resources/style/tailwind.css -o style/tailwind.css",
+    "serve": "cross-env NODE_ENV=development concurrently \"postcss assets/style/tailwind.css -o style/tailwind.css --watch\"",
+    "development": "cross-env NODE_ENV=development postcss assets/style/tailwind.css -o style/tailwind.css",
+    "production": "cross-env NODE_ENV=production postcss assets/style/tailwind.css -o style/tailwind.css",
     "start": "yarn run serve",
     "genl10n": "node scripts/genl10n.js assets/l10n/messages.yml lib/BicBucStriim",
     "package": "node scripts/package.js"
