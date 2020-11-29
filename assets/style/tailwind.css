@@ -1,3 +1,24 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+@layer components {
+    h2 {
+        @apply text-xl font-bold;
+    }
+    h3 {
+        @apply text-lg font-bold;
+    }
+    h4 {
+        @apply font-bold;
+    }
+    .title_detail_dloptions {
+        @apply border-8 border-gray-300 border-double py-2 my-2;
+    }
+    .icon {
+        display: inline-flex;
+        align-self: flex-start;
+        padding-right: 100px;
+    }
+}

@@ -824,6 +824,38 @@ select {
   padding: 1rem 1.5rem;
 }
 
+h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+h3 {
+  font-size: 1.125rem;
+  font-weight: 700;
+}
+
+h4 {
+  font-weight: 700;
+}
+
+.title_detail_dloptions {
+  border-width: 8px;
+  --border-opacity: 1;
+  border-color: #e2e8f0;
+  border-color: rgba(226, 232, 240, var(--border-opacity));
+  border-style: double;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.icon {
+  display: inline-flex;
+  align-self: flex-start;
+  padding-right: 100px;
+}
+
 .space-y-0 > :not(template) ~ :not(template) {
   --space-y-reverse: 0;
   margin-top: calc(0px * calc(1 - var(--space-y-reverse)));

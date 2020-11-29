@@ -4,13 +4,13 @@
 {% block content %}
 <section class="series_detail row">
 	<header>
-		<h1>{{page.glob.l10n.booksbyseries}} "{{ series.name }}":</h1>
+		<h2>{{page.glob.l10n.booksbyseries}} "{{ series.name }}":</h2>
 	</header>
-	<ul data-role="listview">
+	<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
 		{% for book in books %}
 			{% include "title_entry.html" %}
 		{% endfor %}	
-	</ul>
+	</div>
 </section>
 
 {% endblock %}

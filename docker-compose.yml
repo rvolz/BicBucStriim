@@ -6,6 +6,7 @@ services:
     image: php:5-apache-gd
     working_dir: /var/www
     command: php -d date.timezone=Europe/Berlin -S 0.0.0.0:8081
+    user: 1000:1000
     environment:
       docker: "true"
     ports:
