@@ -21,7 +21,7 @@ class TestOfCalibreIcu extends UnitTestCase
 
     function tearDown()
     {
-        $this->calibre = NULL;
+        $this->calibre = null;
     }
 
     function testAuthorsSliceSearch()

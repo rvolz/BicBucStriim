@@ -10,7 +10,9 @@
     "serve": "cross-env NODE_ENV=development concurrently \"postcss resources/style/tailwind.css -o style/tailwind.css --watch\"",
     "development": "cross-env NODE_ENV=development postcss resources/style/tailwind.css -o style/tailwind.css",
     "production": "cross-env NODE_ENV=production postcss resources/style/tailwind.css -o style/tailwind.css",
-    "start": "yarn run serve"
+    "start": "yarn run serve",
+    "genl10n": "node scripts/genl10n.js assets/l10n/messages.yml lib/BicBucStriim",
+    "package": "node scripts/package.js"
   },
   "dependencies": {
     "@tailwindcss/forms": "^0.2.1",
@@ -23,6 +25,8 @@
     "cross-env": "^7.0.2",
     "cssnano": "^4.1.10",
     "live-server": "^1.2.1",
-    "postcss-cli": "^7.1.1"
+    "postcss-cli": "^7.1.1",
+    "read-yaml": "^1.1.0",
+    "adm-zip": "^0.5.1"
   }
 }

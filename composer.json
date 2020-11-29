@@ -52,6 +52,8 @@
     ],
     "test": [
       "phpunit"
-    ]
+    ],
+	  "genl10n": "yarn genl10n",
+	  "package": "yarn package"
   }
 }

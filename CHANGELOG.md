@@ -7,13 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 - Added tailwindcss framework, replacing the outdated jQuery Mobile
+- JS dependencies for build
 
 ### Changed
+- ChangeLog to CHANGELOG.md
 
 ### Removed
 - dependency jQuery Mobile framework
 - dependency jQuery
 - dependency Modernizer
+- Ruby dependencies for build
 
 ## [1.5.0] - 2018-11-16 
 ### Changed
@@ -197,5 +200,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - new: optional download protection (password)
 ### Changed 
 - updated dependencies (Slim 162, Redbean PHP 3.2.1)
-
-

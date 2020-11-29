@@ -25,7 +25,7 @@ class TestOfMetadataEpub extends UnitTestCase {
 	}
 
 	function tearDown() {
-		$this->calibre = NULL;
+		$this->calibre = null;
 		system("rm -rf ".self::DATA);
 	}
 

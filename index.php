@@ -1175,7 +1175,7 @@ function title($id)
         }
     } else
         $show_idlinks = false;
-    $kindle_format = ($globalSettings[KINDLE] == 1) ? $app->calibre->titleGetKindleFormat($id) : NULL;
+    $kindle_format = ($globalSettings[KINDLE] == 1) ? $app->calibre->titleGetKindleFormat($id) : null;
     $app->getLog()->debug('titleDetails custom columns: ' . count($details['custom']));
     $app->render('title_detail.html',
         array('page' => mkPage(getMessageString('book_details'), 2, 2),
@@ -1751,7 +1751,7 @@ function opdsRoot()
     global $app;
 
     $gen = mkOpdsGenerator($app);
-    $cat = $gen->rootCatalog(NULL);
+    $cat = $gen->rootCatalog(null);
     mkOpdsResponse($app, $cat, OpdsGenerator::OPDS_MIME_NAV);
 }
 
@@ -1776,7 +1776,7 @@ function opdsNewest()
     }
     $books = array_map('checkThumbnailOpds', $books1);
     $gen = mkOpdsGenerator($app);
-    $cat = $gen->newestCatalog(NULL, $books, false);
+    $cat = $gen->newestCatalog(null, $books, false);
     mkOpdsResponse($app, $cat, OpdsGenerator::OPDS_MIME_ACQ);
 }
 
@@ -1807,7 +1807,7 @@ function opdsByTitle($index = 0)
     $books1 = $app->calibre->titleDetailsFilteredOpds($tl['entries']);
     $books = array_map('checkThumbnailOpds', $books1);
     $gen = mkOpdsGenerator($app);
-    $cat = $gen->titlesCatalog(NULL, $books, false,
+    $cat = $gen->titlesCatalog(null, $books, false,
         $tl['page'], getNextSearchPage($tl), getLastSearchPage($tl));
     mkOpdsResponse($app, $cat, OpdsGenerator::OPDS_MIME_ACQ);
 }
@@ -1821,7 +1821,7 @@ function opdsByAuthorInitial()
 
     $initials = $app->calibre->authorsInitials();
     $gen = mkOpdsGenerator($app);
-    $cat = $gen->authorsRootCatalog(NULL, $initials);
+    $cat = $gen->authorsRootCatalog(null, $initials);
     mkOpdsResponse($app, $cat, OpdsGenerator::OPDS_MIME_NAV);
 }
 
@@ -1841,7 +1841,7 @@ function opdsByAuthorNamesForInitial($initial)
 
     $authors = $app->calibre->authorsNamesForInitial($initial);
     $gen = mkOpdsGenerator($app);
-    $cat = $gen->authorsNamesForInitialCatalog(NULL, $authors, $initial);
+    $cat = $gen->authorsNamesForInitialCatalog(null, $authors, $initial);
     mkOpdsResponse($app, $cat, OpdsGenerator::OPDS_MIME_NAV);
 }
 
@@ -1868,7 +1868,7 @@ function opdsByAuthor($initial, $id, $page)
     $books = array_map('checkThumbnailOpds', $books1);
     $app->getLog()->debug('opdsByAuthor 2 ' . var_export($books, true));
     $gen = mkOpdsGenerator($app);
-    $cat = $gen->booksForAuthorCatalog(NULL, $books, $initial, $tl['author'], false,
+    $cat = $gen->booksForAuthorCatalog(null, $books, $initial, $tl['author'], false,
         $tl['page'], getNextSearchPage($tl), getLastSearchPage($tl));
     mkOpdsResponse($app, $cat, OpdsGenerator::OPDS_MIME_ACQ);
 }
@@ -1882,7 +1882,7 @@ function opdsByTagInitial()
 
     $initials = $app->calibre->tagsInitials();
     $gen = mkOpdsGenerator($app);
-    $cat = $gen->tagsRootCatalog(NULL, $initials);
+    $cat = $gen->tagsRootCatalog(null, $initials);
     mkOpdsResponse($app, $cat, OpdsGenerator::OPDS_MIME_NAV);
 }
 
@@ -1902,7 +1902,7 @@ function opdsByTagNamesForInitial($initial)
 
     $tags = $app->calibre->tagsNamesForInitial($initial);
     $gen = mkOpdsGenerator($app);
-    $cat = $gen->tagsNamesForInitialCatalog(NULL, $tags, $initial);
+    $cat = $gen->tagsNamesForInitialCatalog(null, $tags, $initial);
     mkOpdsResponse($app, $cat, OpdsGenerator::OPDS_MIME_NAV);
 }
 
@@ -1927,7 +1927,7 @@ function opdsByTag($initial, $id, $page)
     $books1 = $app->calibre->titleDetailsFilteredOpds($tl['entries']);
     $books = array_map('checkThumbnailOpds', $books1);
     $gen = mkOpdsGenerator($app);
-    $cat = $gen->booksForTagCatalog(NULL, $books, $initial, $tl['tag'], false,
+    $cat = $gen->booksForTagCatalog(null, $books, $initial, $tl['tag'], false,
         $tl['page'], getNextSearchPage($tl), getLastSearchPage($tl));
     mkOpdsResponse($app, $cat, OpdsGenerator::OPDS_MIME_ACQ);
 }
@@ -1941,7 +1941,7 @@ function opdsBySeriesInitial()
 
     $initials = $app->calibre->seriesInitials();
     $gen = mkOpdsGenerator($app);
-    $cat = $gen->seriesRootCatalog(NULL, $initials);
+    $cat = $gen->seriesRootCatalog(null, $initials);
     mkOpdsResponse($app, $cat, OpdsGenerator::OPDS_MIME_NAV);
 }
 
@@ -1961,7 +1961,7 @@ function opdsBySeriesNamesForInitial($initial)
 
     $tags = $app->calibre->seriesNamesForInitial($initial);
     $gen = mkOpdsGenerator($app);
-    $cat = $gen->seriesNamesForInitialCatalog(NULL, $tags, $initial);
+    $cat = $gen->seriesNamesForInitialCatalog(null, $tags, $initial);
     mkOpdsResponse($app, $cat, OpdsGenerator::OPDS_MIME_NAV);
 }
 
@@ -1986,7 +1986,7 @@ function opdsBySeries($initial, $id, $page)
     $books1 = $app->calibre->titleDetailsFilteredOpds($tl['entries']);
     $books = array_map('checkThumbnailOpds', $books1);
     $gen = mkOpdsGenerator($app);
-    $cat = $gen->booksForSeriesCatalog(NULL, $books, $initial, $tl['series'], false,
+    $cat = $gen->booksForSeriesCatalog(null, $books, $initial, $tl['series'], false,
         $tl['page'], getNextSearchPage($tl), getLastSearchPage($tl));
     mkOpdsResponse($app, $cat, OpdsGenerator::OPDS_MIME_ACQ);
 }
@@ -1999,7 +1999,7 @@ function opdsSearchDescriptor()
     global $app;
 
     $gen = mkOpdsGenerator($app);
-    $cat = $gen->searchDescriptor(NULL, '/opds/searchlist/0/');
+    $cat = $gen->searchDescriptor(null, '/opds/searchlist/0/');
     mkOpdsResponse($app, $cat, OpdsGenerator::OPENSEARCH_MIME);
 }
 
@@ -2031,7 +2031,7 @@ function opdsBySearch($index = 0)
     $books1 = $app->calibre->titleDetailsFilteredOpds($tl['entries']);
     $books = array_map('checkThumbnailOpds', $books1);
     $gen = mkOpdsGenerator($app);
-    $cat = $gen->searchCatalog(NULL, $books, false,
+    $cat = $gen->searchCatalog(null, $books, false,
         $tl['page'], getNextSearchPage($tl), getLastSearchPage($tl), $search,
         $tl['total'], $globalSettings[PAGE_SIZE]);
     mkOpdsResponse($app, $cat, OpdsGenerator::OPDS_MIME_ACQ);
@@ -2241,7 +2241,7 @@ function getNextSearchPage($tl)
     if ($tl['page'] < $tl['pages'] - 1)
         $nextPage = $tl['page'] + 1;
     else
-        $nextPage = NULL;
+        $nextPage = null;
     return $nextPage;
 }
 
@@ -2371,7 +2371,7 @@ function readfile_chunked($filename)
 # Check for valid email address format
 function isEMailValid($mail)
 {
-    return (filter_var($mail, FILTER_VALIDATE_EMAIL) !== FALSE);
+    return (filter_var($mail, FILTER_VALIDATE_EMAIL) !== false);
 }
 
 
