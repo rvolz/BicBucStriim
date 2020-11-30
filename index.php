@@ -34,7 +34,7 @@ $fallbackLang = 'en';
 # Application Name
 $appname = 'BicBucStriim';
 # App version
-$appversion = '1.5.0';
+$appversion = '1.5.1';
 
 # Init app and routes
 $app = new \Slim\Slim(array(
@@ -64,6 +64,7 @@ function confprod()
     $app->getLog()->setLevel(\Slim\Log::WARN);
     $app->getLog()->info($appname . ' ' . $appversion . ': Running in production mode.');
     $app->getLog()->info('Running on PHP: ' . PHP_VERSION);
+    error_reporting(E_ALL ^ (E_DEPRECATED | E_USER_DEPRECATED ));
 }
 
 /**
