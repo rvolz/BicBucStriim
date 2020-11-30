@@ -55,8 +55,13 @@ class PasswordVerifier implements VerifierInterface
      */
     public function verify($plaintext, $hashvalue, array $extra = array())
     {
-        if (is_string($this->algo)) {
-            return hash($this->algo, $plaintext) === $hashvalue;
+        // FIXME: workaround for https://github.com/auraphp/Aura.Auth/issues/102 and https://github.com/rvolz/BicBucStriim/issues/348
+        if (PHP_VERSION_ID < 70400) {
+            if (is_string($this->algo)) {
+                return hash($this->algo, $plaintext) === $hashvalue;
+            } else {
+                return password_verify($plaintext, $hashvalue);
+            }
         } else {
             return password_verify($plaintext, $hashvalue);
         }
