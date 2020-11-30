@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - JS dependencies for build
 ### Changed
 - ChangeLog to CHANGELOG.md
+- Added workaround for PHP 7.4 and Aura Auth, see #348
 ### Removed
 - Ruby dependencies for build
 

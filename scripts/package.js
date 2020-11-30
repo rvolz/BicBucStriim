@@ -29,7 +29,7 @@ zip.addLocalFile("index.php");
 zip.addLocalFile("installcheck.php");
 zip.addLocalFile("favicon.ico");
 zip.addLocalFile("bbs-icon.png");
-zip.addLocalFile("ChangeLog");
+zip.addLocalFile("CHANGELOG.md");
 zip.addLocalFile(".htaccess");
 zip.addLocalFile("NOTICE");
 zip.addLocalFile("LICENSE");

@@ -10,3 +10,4 @@ composer.phar
 *.iml
 .kobalt
 node_modules
+*.log
