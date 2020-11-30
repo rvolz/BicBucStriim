@@ -63,6 +63,7 @@ function confprod()
     $app->getLog()->setEnabled(true);
     $app->getLog()->setLevel(\Slim\Log::WARN);
     $app->getLog()->info($appname . ' ' . $appversion . ': Running in production mode.');
+    $app->getLog()->info('Running on PHP: ' . PHP_VERSION);
 }
 
 /**
@@ -80,6 +81,7 @@ function confdev()
     $app->getLog()->setEnabled(true);
     $app->getLog()->setLevel(\Slim\Log::DEBUG);
     $app->getLog()->info($appname . ' ' . $appversion . ': Running in development mode.');
+    $app->getLog()->info('Running on PHP: ' . PHP_VERSION);
 }
 
 /**
@@ -99,6 +101,7 @@ function confdebug()
     $app->getLog()->setWriter(new \Slim\Extras\Log\DateTimeFileWriter(array('path' => './data', 'name_format' => 'Y-m-d')));
     $app->getLog()->info($appname . ' ' . $appversion . ': Running in debug mode.');
     error_reporting(E_ALL | E_STRICT);
+    $app->getLog()->info('Running on PHP: ' . PHP_VERSION);
 }
 
 # Init app globals
