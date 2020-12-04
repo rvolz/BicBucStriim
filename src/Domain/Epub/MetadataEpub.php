@@ -8,9 +8,11 @@
  *
  */
 
-namespace App\Domain\BicBucStriim;
+namespace App\Domain\Epub;
 
-require_once 'epub.php';
+use Exception;
+use Locale;
+
 
 /**
  * Update the metadata of an EPUB file. Creates temporary copies
@@ -19,18 +21,19 @@ require_once 'epub.php';
 class MetadataEpub
 {
     // Prefix for the temporyry EPUB files
-    protected $prefix = "bbs_epub_";
+    protected string $prefix = "bbs_epub_";
     // The actual EPUB converter
-    protected $converter;
+    protected EPub $converter;
 
     /**
      * Constructor that copies the original file to a temporary location,
      * the system's 'tmp' directory, and initializes the metadata update
      * process.
-     * @param string    path to file for update
-     * @param string    optional, directory for temporary files;
-     *                    if not defined the systems TEMP directory
-     *                    will be used (see sys_get_temp_dir())
+     * @param string $file path to file for update
+     * @param string|null $tmpdir optional, directory for temporary files;
+     *                      if not defined the systems TEMP directory
+     *                      will be used (see sys_get_temp_dir())
+     * @throws Exception
      */
     public function __construct($file, $tmpdir = null)
     {
@@ -42,7 +45,7 @@ class MetadataEpub
         $status = copy($file, $new_epub);
         if (!$status)
             throw new Exception('Couldn\'t copy epub file');
-        $this->converter = new Epub($new_epub);
+        $this->converter = new EPub($new_epub);
     }
 
     /**
@@ -52,14 +55,14 @@ class MetadataEpub
     public function __destruct()
     {
         $fname = $this->converter->file();
-        if (!is_null($fname) && file_exists($fname)) ;
-        unlink($fname);
+        if (!is_null($fname) && file_exists($fname))
+            unlink($fname);
     }
 
     /**
      * Return the path to the updated file
      */
-    public function getUpdatedFile()
+    public function getUpdatedFile(): string
     {
         return $this->converter->file();
     }
@@ -116,4 +119,3 @@ class MetadataEpub
     }
 }
 
-?>

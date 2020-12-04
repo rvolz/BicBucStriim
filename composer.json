@@ -1,10 +1,13 @@
 {
     "require": {
         "php": ">=7.4.0",
+        "ext-dom": "*",
         "ext-json": "*",
         "ext-pdo": "*",
         "ext-gd": "*",
+        "ext-intl": "*",
         "ext-xmlwriter": "*",
+        "ext-zip": "*",
         "slim/slim": "^4.6.0",
         "php-di/php-di": "^6.3.0",
         "slim/twig-view": "^3.0",
@@ -22,7 +25,8 @@
     "require-dev": {
         "simpletest/simpletest": "^v1.2.0",
         "phpunit/phpunit": "^8.5.7",
-        "nategood/httpful": "^0.2.19"
+        "nategood/httpful": "^0.2.19",
+        "phpstan/phpstan": "^0.12.58"
     },
     "scripts": {
         "genl10n": "yarn genl10n",
