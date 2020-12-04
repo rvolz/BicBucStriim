@@ -3,9 +3,8 @@ declare(strict_types=1);
 
 namespace App\Application\Actions\Statics;
 
-
 use App\Domain\Calibre\CoverNotFoundException;
-use BicBucStriim\AppConstants;
+use App\Domain\BicBucStriim\AppConstants;
 use Psr\Http\Message\ResponseInterface as Response;
 use GuzzleHttp\Psr7\Stream;
 
@@ -37,6 +36,6 @@ class ViewThumbnailAction extends StaticsAction
         }
         $fh = fopen($thumbnail, 'rb');
         $stream = new Stream($fh);
-        $this->respondWithArtefact($stream, calcEtag($thumbnail), 'image/png;base64');
+        return $this->respondWithArtefact($stream, $this->calcEtag($thumbnail), 'image/png;base64');
     }
 }

@@ -3,8 +3,6 @@ declare(strict_types=1);
 
 namespace App\Application\Actions\Statics;
 
-
-
 use App\Application\Actions\Action;
 use App\Domain\BicBucStriim\BicBucStriimRepository;
 use App\Domain\BicBucStriim\Configuration;
@@ -63,6 +61,17 @@ abstract class StaticsAction extends Action
         $this->user = $user;
         $this->config = $config;
         $this->cache = new CacheProvider();
+    }
+
+    /**
+     * Calculate an ETag for a file resource.
+     * @param string $fname path to file resource
+     * @return string MD5 Hash
+     */
+    function calcEtag(string $fname): string
+    {
+        $mtime = filemtime($fname);
+        return md5("{$fname}-{$mtime}");
     }
 
     /**

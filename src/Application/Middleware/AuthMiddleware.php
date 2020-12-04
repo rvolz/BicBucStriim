@@ -47,10 +47,10 @@ class AuthMiddleware  implements Middleware
         $auth_factory = new AuthFactory($cookie);
         $auth = $auth_factory->newInstance();
         $pdo_adapter = $this->createPdoAuthenticator($auth_factory);
-        if (is_null($pdo_adapter)) {
+        /*if (is_null($pdo_adapter)) {
             $response = new Response();
             return $response->withStatus(500, 'Cannot authenticate, user db error.');
-        }
+        }*/
         $this->try_resume($auth_factory, $pdo_adapter, $auth);
         if ($auth->isValid()) {
             $ud = $auth->getUserData();
@@ -144,7 +144,7 @@ class AuthMiddleware  implements Middleware
         $b64auth = $request->getHeader('Authorization');
         if (!empty($b64auth)) {
             $auth_array1 = preg_split('/ /', $b64auth[0]);
-            if (!isset($auth_array1) || strcasecmp('Basic', $auth_array1[0]) != 0)
+            if (strcasecmp('Basic', $auth_array1[0]) != 0)
                 return null;
             if (sizeof($auth_array1) != 2 || !isset($auth_array1[1]))
                 return null;

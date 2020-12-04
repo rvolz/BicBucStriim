@@ -26,7 +26,7 @@ class ViewCoverAction extends StaticsAction
             $cover = $this->calibre->titleCover($id);
             $fh = fopen($cover, 'rb');
             $stream = new Stream($fh);
-            $this->respondWithArtefact($stream, calcEtag($cover), 'image/jpeg;base64');
+            return $this->respondWithArtefact($stream, $this->calcEtag($cover), 'image/jpeg;base64');
         } else {
             // TODO send default cover if there is none?
             throw new CoverNotFoundException();

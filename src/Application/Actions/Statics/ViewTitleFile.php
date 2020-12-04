@@ -4,9 +4,10 @@
 namespace App\Application\Actions\Statics;
 
 
-use App\Domain\BicBucStriim\MetadataEpub;
+use App\Domain\BicBucStriim\AppConstants;
 use App\Domain\Calibre\TitleNotFoundException;
 use App\Domain\Calibre\Utilities;
+use App\Domain\Epub\MetadataEpub;
 use GuzzleHttp\Psr7\LazyOpenStream;
 use Psr\Http\Message\ResponseInterface as Response;
 
@@ -30,9 +31,9 @@ class ViewTitleFile extends StaticsAction
         $real_bookpath = $this->calibre->titleFile($id, $file);
         $contentType = Utilities::titleMimeType($real_bookpath);
         $this->logger->info("book download by " . $this->user->getUsername() . " for " . $real_bookpath .
-                " with metadata update = " . $this->config[METADATA_UPDATE]);
+                " with metadata update = " . $this->config[AppConstants::METADATA_UPDATE]);
 
-        if ($contentType == Utilities::MIME_EPUB && $this->config[METADATA_UPDATE]) {
+        if ($contentType == Utilities::MIME_EPUB && $this->config[AppConstants::METADATA_UPDATE]) {
             if ($details['book']->has_cover == 1)
                 $cover = $this->calibre->titleCover($id);
             else
@@ -48,6 +49,6 @@ class ViewTitleFile extends StaticsAction
         // uses Guzzle LazyStream for files
         // see https://www.slimframework.com/docs/v4/objects/response.html#the-response-body
         $stream = new LazyOpenStream($bookpath, 'rb');
-        $this->respondWithDownload($stream, $file, $contentType);
+        return $this->respondWithDownload($stream, $file, $contentType);
     }
 }
