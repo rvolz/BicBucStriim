@@ -40,7 +40,7 @@ interface BicBucStriimRepository
     /**
      * Find a specific configuration value by name
      * @param string $name configuration parameter name
-     * @return            config paramter or null
+     * @return mixed  config paramter or null
      */
     public function config(string $name);
 
@@ -78,7 +78,7 @@ interface BicBucStriimRepository
      * @return OODBBean user account or null if the user exists or one of the parameters is empty
      * @throws Exception if the DB operation failed
      */
-    public function addUser(string $username, string $password): OODBBean;
+    public function addUser(string $username, string $password): ?OODBBean;
 
     /**
      * Delete a user account from the database.
@@ -104,7 +104,7 @@ interface BicBucStriimRepository
      * Find all ID templates in the settings DB
      * @return array id templates
      */
-    public function idTemplates();
+    public function idTemplates(): array;
 
     /**
      * Find a specific ID template in the settings DB
@@ -198,33 +198,32 @@ interface BicBucStriimRepository
     /**
      * Get the thumbnail for a book was already generated.
      * @param int    id    Calibre book ID
-     * @return        The path to the file
+     * @return string      The path to the file
      */
-    public function getExistingTitleThumbnail($id);
+    public function getExistingTitleThumbnail(int $id): string;
 
     /**
      * Checks if the thumbnail for a book was already generated.
      * @param int    id    Calibre book ID
-     * @return        true if the thumbnail file exists, else false
+     * @return bool        true if the thumbnail file exists, else false
      */
-    public function isTitleThumbnailAvailable($id);
+    public function isTitleThumbnailAvailable(int $id): bool;
 
     /**
-     * Returns the path to a thumbnail of a book's cover image or NULL.
+     * Returns the path to a thumbnail of a book's cover image.
      *
      * If a thumbnail doesn't exist the function tries to make one from the cover.
      * The thumbnail dimension generated is 160*160, which is more than what
-     * jQuery Mobile requires (80*80). However, if we send the 80*80 resolution the
-     * thumbnails look very pixely.
      *
      * The function expects the input file to be a JPEG.
      *
      * @param int        id        book id
      * @param string    cover    path to cover image
      * @param bool    clipped    true = clip the thumbnail, else stuff it
-     * @return string, thumbnail path or NULL
+     * @return string, thumbnail path
+     * @throws NoThumbnailException if the thumbnail could not be created
      */
-    public function titleThumbnail($id, $cover, $clipped);
+    public function titleThumbnail($id, $cover, $clipped): string;
 
     /**
      * Delete existing thumbnail files

@@ -15,7 +15,8 @@ return function (ContainerBuilder $containerBuilder) {
             'addContentLengthHeader' => false, // Allow the web server to send the content-length header
             // Renderer settings
             'renderer' => [
-                'template_path' => __DIR__ . '/../templates/',
+                'template_path' => __DIR__ . '/../app/templates/',
+                'cache_path' => __DIR__ . '/../var/cache',
             ],
             // Monolog settings
             'logger' => [

@@ -75,7 +75,7 @@ class BicBucStriim implements BicBucStriimRepository
     public function createDataDb($dataPath = 'data/data.db')
     {
         $schema = file(dirname($dataPath) . '/schema.sql');
-        $this->mydb = new PDO('sqlite:' . $dataPath, NULL, NULL, array());
+        $this->mydb = new PDO('sqlite:' . $dataPath, null, null, array());
         $this->mydb->setAttribute(1002, 'SET NAMES utf8');
         $this->mydb->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $this->mydb->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
@@ -84,7 +84,7 @@ class BicBucStriim implements BicBucStriimRepository
                 $this->mydb->exec($schema[$i]);
         }
         $mdp = password_hash('admin', PASSWORD_BCRYPT);
-        $this->mydb->exec('insert into user (username, password, role) values ("admin", "' . $mdp . '",1)');
+        $this->mydb->exec(sprintf("insert into user (username, password, role) values (\"admin\", \"%s\",1)", $mdp));
         $this->mydb->exec('insert into config (name, val) values ("db_version", "3")');
         $this->mydb = null;
     }
@@ -182,13 +182,13 @@ class BicBucStriim implements BicBucStriimRepository
             return $user;
     }
 
-    public function userByName(string $username)
+    public function userByName(string $username): ?OODBBean
     {
         $user = R::findOne('user', ' username = :name', array(':name' => $username));
         return $user;
     }
 
-    public function addUser(string $username, string $password)
+    public function addUser(string $username, string $password): ?OODBBean
     {
         if (empty($username) || empty($password))
             return null;
@@ -398,11 +398,17 @@ class BicBucStriim implements BicBucStriimRepository
         return $this->thumb_dir . '/' . $thumb_name;
     }
 
-    public function getExistingTitleThumbnail($id)
+    /**
+     * @inheritDoc
+     */
+    public function getExistingTitleThumbnail($id): string
     {
         return $this->mk_thumb_path($id);
     }
 
+    /**
+     * @inheritDoc
+     */
     public function isTitleThumbnailAvailable($id): bool
     {
         $thumb_name = 'thumb_' . $id . '.png';
@@ -410,23 +416,19 @@ class BicBucStriim implements BicBucStriimRepository
         return file_exists($thumb_path);
     }
 
+    /**
+     * @inheritDoc
+     */
     public function titleThumbnail($id, $cover, $clipped): string
     {
-        $thumb_name = 'thumb_' . $id . '.png';
-        $thumb_path = $this->thumb_dir . '/' . $thumb_name;
-        if (!file_exists($thumb_path)) {
-            if (is_null($cover))
-                $thumb_path = NULL;
-            else {
-                if ($clipped)
-                    $created = $this->thumbnailClipped($cover, false, self::THUMB_RES, self::THUMB_RES, $thumb_path);
-                else
-                    $created = $this->thumbnailStuffed($cover, false, self::THUMB_RES, self::THUMB_RES, $thumb_path);
-                if (!$created)
-                    $thumb_path = NULL;
-            }
-        }
-        return $thumb_path;
+        if ($clipped)
+            $created = $this->thumbnailClipped($cover, false, self::THUMB_RES, self::THUMB_RES, $thumb_path);
+        else
+            $created = $this->thumbnailStuffed($cover, false, self::THUMB_RES, self::THUMB_RES, $thumb_path);
+        if (!$created)
+            throw new NoThumbnailException();
+        else
+            return $thumb_path;
     }
 
     public function clearThumbnails(): bool

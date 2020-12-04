@@ -1,36 +1,14 @@
 <?php
 
-$app->group('/static', function () {
+use App\Application\Actions\Statics\ViewCoverAction;
+
+
+$app->group('/static', function (Group $group) {
     /**
      * Return the cover for the book with ID. Calibre generates only JPEGs, so we always return a JPEG.
      * If there is no cover, return 404. An ETag for client caching is calculated.
      */
-    $this->get('/covers/{id}/', function (Psr\Http\Message\ServerRequestInterface $request, $response, $args) {
-        $id = $args['id'];
-        // parameter checking
-        if (!is_numeric($id)) {
-            $this->logger->warn('cover: invalid title id ' . $id);
-            return $response->withStatus(400)->write('Bad parameter');
-        }
-        $book = $this->calibre->title($id);
-        if (is_null($book)) {
-            $this->logger->debug('cover: book not found: ' . $id);
-            return $response->withStatus(404)->write('Book for cover not found');
-        }
-        if ($book->has_cover) {
-            $cover = $this->calibre->titleCover($id);
-            $responseE = $this->cache->withEtag($response, calcEtag($cover));
-            $fh = fopen($cover, 'rb');
-            $stream = new \Slim\Http\Stream($fh); // create a stream instance for the response body
-            return $responseE->withStatus(200)
-                ->withHeader('Content-Type', 'image/jpeg;base64')
-                ->withHeader('Content-Transfer-Encoding', 'binary')
-                ->withHeader('Content-Length', filesize($cover))
-                ->withBody($stream); // all stream contents will be sent to the response
-        } else {
-            return $response->withStatus(404)->write('No cover');
-        }
-    });
+    $group->get('/covers/{id}/', ViewCoverAction::class);
 
     // TODO HEAD impl covers?
     //$this->head('/cover/{id}/', check_thumbnail($request, $response, $args));

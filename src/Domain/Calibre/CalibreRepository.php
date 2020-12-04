@@ -209,9 +209,22 @@ interface CalibreRepository
      */
     function titlesSlice($lang, $index = 0, $length = 100, $filter, $search = NULL);
 
-    function title($id);
+    /**
+     * Find only one book
+     * @param int $id
+     * @return object
+     * @throws TitleNotFoundException
+     */
+    function title(int $id): object;
 
-    function titleCover($id);
+    /**
+     * Returns the path to the cover image of a book
+     * @param int $id
+     * @return string
+     * @throws TitleNotFoundException if the book wasn't found
+     * @throws CoverNotFoundException if the cover file wasn't found
+     */
+    function titleCover(int $id): string;
 
     /**
      * Try to find the language of a book. Returns an emty string, if there is none.

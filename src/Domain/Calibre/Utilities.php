@@ -16,19 +16,23 @@ class Utilities
      * eg "Aliette de Bodard" -> "Aliette De Bodard".
      * The directory name uses the capitalized form, the book path stored in the DB uses the original
      * form.
-     * @param  string $cd Calibre library directory
-     * @param  string $bp book path, as stored in the DB
-     * @param  string $file file name
+     * @param string $cd Calibre library directory
+     * @param string $bp book path, as stored in the DB
+     * @param string $file file name
      * @return string       the filesystem path to the book file
      */
-    static function bookPath($cd, $bp, $file)
+    static function bookPath(string $cd, string $bp, string $file): ?string
     {
         try {
             $path = $cd . '/' . $bp . '/' . $file;
-            stat($path);
+            if (!stat($path)) {
+                $p = explode("/", $bp);
+                $path = $cd . '/' . ucwords($p[0]) . '/' . $p[1] . '/' . $file;
+                if (!stat($path))
+                    return null;
+            }
         } catch (Exception $e) {
-            $p = explode("/", $bp);
-            $path = $cd . '/' . ucwords($p[0]) . '/' . $p[1] . '/' . $file;
+            return null;
         }
         return $path;
     }

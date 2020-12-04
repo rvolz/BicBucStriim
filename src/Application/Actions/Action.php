@@ -15,22 +15,22 @@ abstract class Action
     /**
      * @var LoggerInterface
      */
-    protected $logger;
+    protected LoggerInterface $logger;
 
     /**
      * @var Request
      */
-    protected $request;
+    protected Request $request;
 
     /**
      * @var Response
      */
-    protected $response;
+    protected Response $response;
 
     /**
      * @var array
      */
-    protected $args;
+    protected array $args;
 
     /**
      * @param LoggerInterface $logger
@@ -121,4 +121,6 @@ abstract class Action
             ->withHeader('Content-Type', 'application/json')
             ->withStatus($payload->getStatusCode());
     }
+
+
 }

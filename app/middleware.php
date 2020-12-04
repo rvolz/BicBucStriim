@@ -8,25 +8,39 @@ use App\Application\Middleware\OwnConfigMiddleware;
 use App\Application\Middleware\NegotiationMiddleware;
 use App\Application\Middleware\RequestLogMiddleware;
 
+use App\Domain\BicBucStriim\BicBucStriimRepository;
+use App\Domain\BicBucStriim\Configuration;
+use App\Domain\Calibre\CalibreRepository;
+use \App\Domain\BicBucStriim\L10n;
+use App\Domain\User\UserLanguage;
+use Psr\Log\LoggerInterface;
 use Slim\App;
+use Slim\HttpCache\Cache;
 
 return function (App $app) {
+    /* @var LoggerInterface $logger */
     $logger = $app->getContainer()->get('logger');
+    /* @var Configuration $config */
     $config = $app->getContainer()->get('config');
+    /* @var array $settings */
     $settings = $app->getContainer()->get('settings');
+    /* @var BicBucStriimRepository $bbs */
     $bbs = $app->getContainer()->get('bbs');
+    /* @var CalibreRepository $calibre */
     $calibre = $app->getContainer()->get('calibre');
+    /* @var L10n $l10n */
     $l10n = $app->getContainer()->get('l10n');
 
+    $app->getBasePath();
     $app->add(SessionMiddleware::class); // TODO conflict with aura?
-    $app->add(new CalibreConfigMiddleware($logger, $calibre, $config));
+    // TODO Still necessary?
+    // $app->add(new CalibreConfigMiddleware($logger, $calibre, $config));
     $app->add(new OwnConfigMiddleware($logger, $bbs, $config));
     // NOTE supply argument trusted proxies, if necessary?
     //$app->add(new \RKA\Middleware\ProxyDetection());
     // NOTE only JSON and OPDS requests will be accepted
-    $app->add(new NegotiationMiddleware($logger, $settings['bbs']['langs'], $l10n));
+    $app->add(new NegotiationMiddleware($logger, new UserLanguage(), $l10n));
     $app->add(new RequestLogMiddleware($logger));
-    // TODO enable caching
-    //$app->add(new \Slim\HttpCache\Cache('public', 86400));
+    $app->add(new Cache('public', 86400));
     $app->add(Slim\Views\TwigMiddleware::createFromContainer($app));
 };

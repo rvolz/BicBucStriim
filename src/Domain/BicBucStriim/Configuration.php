@@ -13,14 +13,14 @@ class Configuration implements ArrayAccess
     /**
      * @var BicBucStriimRepository
      */
-    protected $bbs;
+    protected BicBucStriimRepository $bbs;
 
     /**
      * @var LoggerInterface
      */
-    protected $logger;
+    protected LoggerInterface $logger;
 
-    protected $config = array(
+    protected array $config = array(
         AppConstants::CALIBRE_DIR => '',
         AppConstants::DB_VERSION => AppConstants::DB_SCHEMA_VERSION,
         AppConstants::KINDLE => 0,
@@ -100,7 +100,7 @@ class Configuration implements ArrayAccess
      * The return value will be casted to boolean if non-boolean was returned.
      * @since 5.0.0
      */
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return isset($this->config[$offset]);
     }

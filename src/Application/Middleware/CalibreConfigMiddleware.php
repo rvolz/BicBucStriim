@@ -23,9 +23,9 @@ class CalibreConfigMiddleware
      */
     protected LoggerInterface $logger;
     /**
-     * @var CalibreRepository
+     * @var ?CalibreRepository
      */
-    protected CalibreRepository $calibre;
+    protected ?CalibreRepository $calibre;
     /**
      * @var Configuration
      */
@@ -35,10 +35,10 @@ class CalibreConfigMiddleware
      * Create the instance.
      *
      * @param LoggerInterface $logger Logger
-     * @param CalibreRepository $calibre Calibre instance
+     * @param CalibreRepository|null $calibre Calibre instance
      * @param Configuration $config App configuration
      */
-    public function __construct(LoggerInterface $logger, CalibreRepository $calibre, Configuration $config)
+    public function __construct(LoggerInterface $logger, ?CalibreRepository $calibre, Configuration $config)
     {
         $this->logger = $logger;
         $this->calibre = $calibre;
@@ -55,6 +55,7 @@ class CalibreConfigMiddleware
      */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next): ResponseInterface
     {
+        // TODO check if we have to subtract a base path here
         $path = $request->getUri()->getPath();
         // TODO Move exception path configuration to settings
         if (substr_compare($path, '/login', -1, 6) ||

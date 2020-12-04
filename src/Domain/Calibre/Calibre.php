@@ -635,20 +635,29 @@ class Calibre implements CalibreRepository
     }
 
 
-    # Find only one book
-    function title($id)
+    /**
+     * @inheritDoc
+     */
+    function title(int $id): object
     {
-        return $this->findOne(Book::class, 'SELECT * FROM books WHERE id=:id', array('id' => $id));
+        $book = $this->findOne(Book::class, 'SELECT * FROM books WHERE id=:id', array('id' => $id));
+        if (is_null($book))
+            throw new TitleNotFoundException();
+        else
+            return $book;
     }
 
-    # Returns the path to the cover image of a book or NULL.
-    function titleCover($id)
+    /**
+     * @inheritDoc
+     */
+    function titleCover(int $id): string
     {
         $book = $this->title($id);
-        if (is_null($book))
-            return NULL;
+        $cover_path = Utilities::bookPath($this->calibre_dir, $book->path, 'cover.jpg');
+        if (is_null($cover_path))
+            throw new CoverNotFoundException();
         else
-            return Utilities::bookPath($this->calibre_dir, $book->path, 'cover.jpg');
+            return $cover_path;
     }
 
 

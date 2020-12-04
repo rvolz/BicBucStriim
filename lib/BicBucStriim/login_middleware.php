@@ -78,7 +78,7 @@ class LoginMiddleware extends \Slim\Middleware {
     }
 
     /**
-     * Static resources must not be protected. Return true id the requested resource 
+     * Statics resources must not be protected. Return true id the requested resource
      * belongs to a static resource path, else false.
      */
     protected function is_static_resource($resource) {

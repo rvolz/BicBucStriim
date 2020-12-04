@@ -2,6 +2,7 @@
 
 use App\Application\Handlers\HttpErrorHandler;
 use App\Application\Handlers\ShutdownHandler;
+use App\Domain\BicBucStriim\AppConstants;
 use DI\ContainerBuilder;
 use Slim\Factory\AppFactory;
 use Slim\Factory\ServerRequestCreatorFactory;
@@ -83,9 +84,9 @@ $errorMiddleware->setDefaultErrorHandler($errorHandler);
 // TODO Output env: prod, debug, dev
 $logger = $app->getContainer()->get('logger');
 $logger->info(
-    $app->getContainer()->get(\BicBucStriim\AppConstants::DISPLAY_APP_NAME) .
+    $app->getContainer()->get('config')[AppConstants::DISPLAY_APP_NAME] .
     ' ' .
-    $app->getContainer()->get('settings')['version']);
+    $app->getContainer()->get('settings')['bbs']['version']);
 $logger->info('Running on PHP: ' . PHP_VERSION);
 $response = $app->handle($request);
 $responseEmitter = new ResponseEmitter();
