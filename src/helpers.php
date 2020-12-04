@@ -9,6 +9,7 @@ use App\Domain\Opds\OpdsGenerator;
 use \Psr\Container\ContainerInterface;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * Calculate an ETag for a file resource
@@ -107,12 +108,12 @@ function getFilter(ContainerInterface $container): CalibreFilter
     $tag = null;
     $user = $container['user'];
     if (isset($user)) {
-        $container['logger']->debug('getFilter: ' . var_export($user, true));
+        $container[LoggerInterface::class]->debug('getFilter: ' . var_export($user, true));
         if (!empty($user['languages']))
             $lang = $container['calibre']->getLanguageId($user->languages);
         if (!empty($user['tags']))
             $tag = $container['calibre']->getTagId($user->tags);
-        $container['logger']->debug('getFilter: Using language ' . $lang . ', tag ' . $tag);
+        $container[LoggerInterface::class]->debug('getFilter: Using language ' . $lang . ', tag ' . $tag);
     }
     return new CalibreFilter($lang, $tag);
 }

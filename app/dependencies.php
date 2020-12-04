@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 use App\Domain\BicBucStriim\BicBucStriim;
 use App\Domain\BicBucStriim\AppConstants;
+use App\Domain\BicBucStriim\BicBucStriimRepository;
 use App\Domain\BicBucStriim\Configuration;
+use \App\Domain\BicBucStriim\L10n;
 use App\Domain\Calibre\Calibre;
+use App\Domain\Calibre\CalibreRepository;
 use App\Infrastructure\Mail\Mailer;
-//use Slim\HttpCache\CacheProvider;
+use Psr\Log\LoggerInterface;
 use Slim\Views\Twig;
 use DI\ContainerBuilder;
 use Psr\Container\ContainerInterface;
@@ -16,7 +19,7 @@ return function (ContainerBuilder $containerBuilder) {
     $containerBuilder->addDefinitions([
 
         // monolog
-        'logger' => function (ContainerInterface $c) {
+        LoggerInterface::class => function (ContainerInterface $c) {
             $settings = $c->get('settings')['logger'];
             $logger = new Monolog\Logger($settings['name']);
             $logger->pushProcessor(new Monolog\Processor\UidProcessor());
@@ -34,9 +37,9 @@ return function (ContainerBuilder $containerBuilder) {
         },
 
         // BicBucStriim
-        'bbs' => function (ContainerInterface $c) {
+        BicBucStriimRepository::class => function (ContainerInterface $c) {
             $settings = $c->get('settings')['bbs'];
-            $logger = $c->get('logger');
+            $logger = $c->get(LoggerInterface::class);
             $dbd = $settings['dataDb'];
             $public = $settings['public'];
             $logger->debug("using bbs db $dbd and public path $public");
@@ -49,14 +52,14 @@ return function (ContainerBuilder $containerBuilder) {
         },
 
         // Application configuration
-        'config' => function (ContainerInterface $c) {
-            return new Configuration($c->get('logger'), $c->get('bbs'));
+        Configuration::class => function (ContainerInterface $c) {
+            return new Configuration($c->get(LoggerInterface::class), $c->get(BicBucStriimRepository::class));
         },
 
         // Calibre
-        'calibre' => function (ContainerInterface $c) {
-            $cdir = $c->get('config')[AppConstants::CALIBRE_DIR];
-            $logger = $c->get('logger');
+        CalibreRepository::class => function (ContainerInterface $c) {
+            $cdir = $c->get(Configuration::class)[AppConstants::CALIBRE_DIR];
+            $logger = $c->get(LoggerInterface::class);
             if (!empty($cdir)) {
                 try {
                     $calibre = new Calibre($cdir . '/metadata.db');
@@ -79,8 +82,8 @@ return function (ContainerBuilder $containerBuilder) {
         },
 
         // l10n
-        'l10n' => function (ContainerInterface $c) {
-            return new \App\Domain\BicBucStriim\L10n();
+        L10n::class => function (ContainerInterface $c) {
+            return new L10n();
         }
     ]);
 };

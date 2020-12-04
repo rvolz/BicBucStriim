@@ -7,7 +7,7 @@ namespace App\Application\Actions\Statics;
 use App\Domain\Calibre\CoverNotFoundException;
 use BicBucStriim\AppConstants;
 use Psr\Http\Message\ResponseInterface as Response;
-use Slim\Psr7\Stream;
+use GuzzleHttp\Psr7\Stream;
 
 /**
  * Return a PNG thumbnail of the book's cover. An ETag for client caching is calculated.

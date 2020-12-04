@@ -2,22 +2,27 @@
 
 namespace App\Application\Middleware;
 
+use App\Domain\User\User;
 use Aura\Auth;
 use Aura\Auth\AuthFactory;
 use Aura\Auth\Exception;
 use ErrorException;
 use PDO;
+use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
+use Psr\Http\Server\MiddlewareInterface as Middleware;
 use Psr\Log\LoggerInterface;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use Psr\Container\ContainerInterface;
+use GuzzleHttp\Psr7\Response;
 
-class AuthMiddleware
+class AuthMiddleware  implements Middleware
 {
 
-    private $logger;
-    private $pdo;
-    private $container;
+    private LoggerInterface $logger;
+    private PDO $pdo;
+    private ContainerInterface $container;
 
     /**
      * Set the LoggerInterface instance.
@@ -33,21 +38,17 @@ class AuthMiddleware
         $this->container = $container;
     }
 
-     /**
-     *
-     * @param  ServerRequestInterface $request PSR7 request
-     * @param  ResponseInterface $response PSR7 response
-     * @param  callable $next Next middleware
-     *
-     * @return ResponseInterface
+    /**
+     * {@inheritdoc}
      */
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next): ResponseInterface
+    public function process(Request $request, RequestHandler $handler): ResponseInterface
     {
         $cookie = $request->getCookieParams();
         $auth_factory = new AuthFactory($cookie);
         $auth = $auth_factory->newInstance();
         $pdo_adapter = $this->createPdoAuthenticator($auth_factory);
         if (is_null($pdo_adapter)) {
+            $response = new Response();
             return $response->withStatus(500, 'Cannot authenticate, user db error.');
         }
         $this->try_resume($auth_factory, $pdo_adapter, $auth);
@@ -56,23 +57,27 @@ class AuthMiddleware
             if (!is_array($ud) || !array_key_exists('role', $ud) || !array_key_exists('id', $ud)) {
                 $this->logger->error('Login error: invalid user data received. Killing session ...');
                 $this->forceLogout($auth_factory, $pdo_adapter, $auth);
+                $response = new Response();
                 return $response->withStatus(401, 'Invalid authorization data, please login again');
             }
             $this->logger->debug("Authentication valid, resuming for user " . $auth->getUserName());
-            $this->container['user'] = $ud;
-            return $next($request, $response);
+            $this->container->set(User::class, $ud);
+            return $handler->handle($request);
         } else {
             $this->logger->debug("Authentication required, status is ".$auth->getStatus());
             $auth_data = $this->checkRequest4Auth($request);
             if (is_null($auth_data)) {
+                $response = new Response();
                 return $response->withStatus(401, 'Authentication required');
             }
             $this->logger->debug("Authentication data found");
             $ud = $this->try_login($auth_factory, $pdo_adapter, $auth, $auth_data);
             if (is_null($ud)) {
+                $response = new Response();
                 return $response->withStatus(401, 'Authentication required');
             } else {
-                $this->container['user'] = $ud;
+                $this->container->set(User::class, $ud);
+                return $handler->handle($request);
             }
         }
     }
@@ -83,7 +88,8 @@ class AuthMiddleware
      * @param AuthFactory $auth_factory
      * @return Auth\Adapter\PdoAdapter
      */
-    protected function createPdoAuthenticator(AuthFactory $auth_factory) {
+    protected function createPdoAuthenticator(AuthFactory $auth_factory): Auth\Adapter\PdoAdapter
+    {
         $hash = new PasswordVerifier(PASSWORD_BCRYPT);
         $cols = array(
             'username', // "AS username" is added by the adapter
@@ -104,7 +110,8 @@ class AuthMiddleware
      * @param ServerRequestInterface $request
      * @return array|null
      */
-    public function checkRequest4Auth(ServerRequestInterface $request) {
+    public function checkRequest4Auth(ServerRequestInterface $request): ?array
+    {
         $auth_data = $this->checkPhpAuth($request);
         if (is_null($auth_data)) {
             $auth_data = $this->checkHttpAuth($request);
@@ -117,7 +124,8 @@ class AuthMiddleware
      * @param ServerRequestInterface $request PSR7 request
      * @return array with username and pasword, or null
      */
-    protected function checkPhpAuth(ServerRequestInterface $request) {
+    protected function checkPhpAuth(ServerRequestInterface $request): ?array
+    {
         $authUser = $request->getHeader('PHP_AUTH_USER');
         $authPass = $request->getHeader('PHP_AUTH_PW');
         if (!empty($authUser) && !empty($authPass))
@@ -131,7 +139,8 @@ class AuthMiddleware
      * @param ServerRequestInterface $request PSR7 request
      * @return array with username and pasword, or null
      */
-    protected function checkHttpAuth(ServerRequestInterface $request) {
+    protected function checkHttpAuth(ServerRequestInterface $request): ?array
+    {
         $b64auth = $request->getHeader('Authorization');
         if (!empty($b64auth)) {
             $auth_array1 = preg_split('/ /', $b64auth[0]);
@@ -191,7 +200,8 @@ class AuthMiddleware
      * @param array $auth_data
      * @return array|null
      */
-    public function try_login(AuthFactory $auth_factory, Auth\Adapter\PdoAdapter $pdo_adapter, Auth\Auth $auth, array $auth_data) {
+    public function try_login(AuthFactory $auth_factory, Auth\Adapter\PdoAdapter $pdo_adapter, Auth\Auth $auth, array $auth_data): ?array
+    {
         try {
             $login_service =  $auth_factory->newLoginService($pdo_adapter);
             $login_service->login($auth, array('username' => $auth_data[0], 'password' => $auth_data[1]));

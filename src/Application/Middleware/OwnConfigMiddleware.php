@@ -7,10 +7,13 @@ use App\Domain\BicBucStriim\AppConstants;
 use App\Domain\BicBucStriim\BicBucStriimRepository;
 use App\Domain\BicBucStriim\Configuration;
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Server\MiddlewareInterface as Middleware;
+use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
 use Psr\Log\LoggerInterface;
+use GuzzleHttp\Psr7\Response;
 
-class OwnConfigMiddleware
+class OwnConfigMiddleware  implements Middleware
 {
     /**
      * @var LoggerInterface
@@ -55,22 +58,19 @@ class OwnConfigMiddleware
     }
 
     /**
-     *
-     * @param  ServerRequestInterface $request PSR7 request
-     * @param  ResponseInterface $response PSR7 response
-     * @param  callable $next Next middleware
-     *
-     * @return ResponseInterface
+     * {@inheritdoc}
      */
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next): ResponseInterface
+    public function process(Request $request, RequestHandler $handler): ResponseInterface
     {
         $config_status = $this->check_config_db($this->bbs, $this->config->getConfig());
         if ($config_status == 0) {
+            $response = new Response();
             return $response->withStatus(500, 'No or bad configuration database.');
         } elseif ($config_status == 2) {
+            $response = new Response();
             return $response->withStatus(500, 'Different db schema version detected. Please upgrade');
         } else {
-            return $next($request, $response);
+            return $handler->handle($request);
         }
     }
 }

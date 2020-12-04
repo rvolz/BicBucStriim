@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Application\Middleware\SessionMiddleware;
+use App\Application\Middleware\AuthMiddleware;
 use App\Application\Middleware\CalibreConfigMiddleware;
 use App\Application\Middleware\OwnConfigMiddleware;
 use App\Application\Middleware\NegotiationMiddleware;
@@ -19,22 +19,21 @@ use Slim\HttpCache\Cache;
 
 return function (App $app) {
     /* @var LoggerInterface $logger */
-    $logger = $app->getContainer()->get('logger');
+    $logger = $app->getContainer()->get(LoggerInterface::class);
     /* @var Configuration $config */
-    $config = $app->getContainer()->get('config');
+    $config = $app->getContainer()->get(Configuration::class);
     /* @var array $settings */
     $settings = $app->getContainer()->get('settings');
     /* @var BicBucStriimRepository $bbs */
-    $bbs = $app->getContainer()->get('bbs');
+    $bbs = $app->getContainer()->get(BicBucStriimRepository::class);
     /* @var CalibreRepository $calibre */
-    $calibre = $app->getContainer()->get('calibre');
+    $calibre = $app->getContainer()->get(CalibreRepository::class);
     /* @var L10n $l10n */
-    $l10n = $app->getContainer()->get('l10n');
+    $l10n = $app->getContainer()->get(L10n::class);
 
     $app->getBasePath();
-    $app->add(SessionMiddleware::class); // TODO conflict with aura?
     // TODO Still necessary?
-    // $app->add(new CalibreConfigMiddleware($logger, $calibre, $config));
+    $app->add(new CalibreConfigMiddleware($logger, $calibre, $config));
     $app->add(new OwnConfigMiddleware($logger, $bbs, $config));
     // NOTE supply argument trusted proxies, if necessary?
     //$app->add(new \RKA\Middleware\ProxyDetection());
@@ -43,4 +42,5 @@ return function (App $app) {
     $app->add(new RequestLogMiddleware($logger));
     $app->add(new Cache('public', 86400));
     $app->add(Slim\Views\TwigMiddleware::createFromContainer($app));
+    $app->add(new AuthMiddleware($logger, $bbs->getDb(), $app->getContainer()));
 };

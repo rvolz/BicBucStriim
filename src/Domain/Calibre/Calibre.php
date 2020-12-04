@@ -686,10 +686,9 @@ class Calibre implements CalibreRepository
         return $lang_codes;
     }
 
-    function titleDetails($lang, $id)
+    function titleDetails($lang, $id): ?array
     {
         $book = $this->title($id);
-        if (is_null($book)) return NULL;
         $author_ids = $this->findPrepared(BookAuthorLink::class, 'SELECT * FROM books_authors_link WHERE book=:id',
             array('id' => $id));
         $authors = array();
@@ -879,7 +878,7 @@ class Calibre implements CalibreRepository
         }
     }
 
-    function titleGetFormats($bookid)
+    function titleGetFormats($bookid): array
     {
         return $this->findPrepared(Data::class, 'SELECT * FROM data WHERE book=:id', array('id' => $bookid));
     }

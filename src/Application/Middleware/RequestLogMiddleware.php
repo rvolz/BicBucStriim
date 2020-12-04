@@ -3,11 +3,13 @@ declare(strict_types=1);
 
 namespace App\Application\Middleware;
 
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
+use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Server\MiddlewareInterface as Middleware;
+use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
 
-class RequestLogMiddleware
+class RequestLogMiddleware implements Middleware
 {
 
     /**
@@ -26,17 +28,12 @@ class RequestLogMiddleware
     }
 
     /**
-     *
-     * @param  ServerRequestInterface $request PSR7 request
-     * @param  ResponseInterface $response PSR7 response
-     * @param  callable $next Next middleware
-     *
-     * @return ResponseInterface
+     * {@inheritdoc}
      */
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next): ResponseInterface
+    public function process(Request $request, RequestHandler $handler): Response
     {
         $this->logger->debug('Request target: ' . $request->getRequestTarget());
-        $response = $next($request, $response);
+        $response = $handler->handle($request);
         $this->logger->debug('Response code: ' . $response->getStatusCode());
         return $response;
     }

@@ -245,6 +245,7 @@ interface CalibreRepository
      * @param string $lang the user's language code
      * @param int $id the Calibre book ID
      * @return array            the book, its authors, series, tags, formats, languages, ids and comment.
+     * @throws TitleNotFoundException if the is is not found
      */
     function titleDetails($lang, $id);
 

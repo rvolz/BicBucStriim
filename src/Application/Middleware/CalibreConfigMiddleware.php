@@ -7,8 +7,11 @@ use App\Domain\BicBucStriim\AppConstants;
 use App\Domain\BicBucStriim\Configuration;
 use App\Domain\Calibre\CalibreRepository;
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Server\MiddlewareInterface as Middleware;
+use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
 use Psr\Log\LoggerInterface;
+use GuzzleHttp\Psr7\Response;
 
 /**
  * Class CalibreConfigMiddleware
@@ -16,7 +19,7 @@ use Psr\Log\LoggerInterface;
  *
  * Aborts requests that need Calibre if no library is defined.
  */
-class CalibreConfigMiddleware
+class CalibreConfigMiddleware implements Middleware
 {
     /**
      * @var LoggerInterface
@@ -46,33 +49,28 @@ class CalibreConfigMiddleware
     }
 
     /**
-     *
-     * @param  ServerRequestInterface $request PSR7 request
-     * @param  ResponseInterface $response PSR7 response
-     * @param  callable $next Next middleware
-     *
-     * @return ResponseInterface
+     * {@inheritdoc}
      */
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next): ResponseInterface
+    public function process(Request $request, RequestHandler $handler): ResponseInterface
     {
         // TODO check if we have to subtract a base path here
         $path = $request->getUri()->getPath();
         // TODO Move exception path configuration to settings
-        if (substr_compare($path, '/login', -1, 6) ||
-            substr_compare($path, '/admin', -1, 6)) {
+        if (substr_compare($path, '/login', -1, 6) == 0 ||
+            substr_compare($path, '/admin', -1, 6) == 0) {
             // No Calibre needed in these parts
-            return $next($request, $response);
+            return $handler->handle($request);
         } else {
             if (empty($this->config[AppConstants::CALIBRE_DIR])) {
                 $this->logger->warning("calibre_config_middleware: No Calibre library path configured: $path");
-                //$data = array('code' => AppConstants::ERROR_NO_CALIBRE_PATH, 'reason' => 'No Calibre library path configured.');
-                return $response->withStatus(500, 'No Calibre library path configured.'); //->withJson($data);
+                $response = new Response();
+                return $response->withStatus(400, 'No Calibre library path configured. Please configure first.'); //->withJson($data);
             } elseif (is_null($this->calibre)) {
                 $this->logger->error("calibre_config_middleware: Error while opening Calibre DB: $path");
-                //$data = array('code' => AppConstants::ERROR_BAD_CALIBRE_DB, 'reason' => 'Error while opening Calibre DB');
+                $response = new Response();
                 return $response->withStatus(500, 'Error while opening Calibre DB.'); //->withJson($data);
             } else {
-                return $next($request, $response);
+                return $handler->handle($request);
             }
         }
     }

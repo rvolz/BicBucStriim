@@ -6,7 +6,7 @@ namespace App\Application\Actions\Statics;
 
 use App\Domain\Calibre\CoverNotFoundException;
 use Psr\Http\Message\ResponseInterface as Response;
-use Slim\Psr7\Stream;
+use GuzzleHttp\Psr7\Stream;
 
 /**
  * Return the cover for the book with ID. Calibre generates only JPEGs, so we always return a JPEG.

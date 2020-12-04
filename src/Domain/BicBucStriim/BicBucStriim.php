@@ -95,6 +95,10 @@ class BicBucStriim implements BicBucStriimRepository
         return (!is_null($this->mydb));
     }
 
+    public function getDb(): ?PDO
+    {
+        return $this->mydb;
+    }
 
     var array $globalSettings = array();
 

@@ -4,6 +4,7 @@ namespace App\Domain\BicBucStriim;
 
 use App\Domain\User\User;
 use Exception;
+use PDO;
 use RedBeanPHP\OODBBean;
 
 interface BicBucStriimRepository
@@ -24,6 +25,12 @@ interface BicBucStriimRepository
      * @return boolean	true if open, else false
      */
     public function dbOk(): bool;
+
+    /**
+     * Return the PDO object for the internal DB
+     * @return PDO|null
+     */
+    public function getDb(): ?PDO;
 
     /**
      * Intialize the global settings array

@@ -7,10 +7,14 @@ use App\Domain\BicBucStriim\L10n;
 use App\Domain\User\UserLanguage;
 use \Aura\Accept\AcceptFactory;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Server\MiddlewareInterface as Middleware;
+use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
 use Psr\Log\LoggerInterface;
 
-class NegotiationMiddleware
+class NegotiationMiddleware  implements Middleware
 {
 
     /**
@@ -40,14 +44,9 @@ class NegotiationMiddleware
     }
 
     /**
-     *
-     * @param  ServerRequestInterface $request PSR7 request
-     * @param  ResponseInterface $response PSR7 response
-     * @param  callable $next Next middleware
-     *
-     * @return ResponseInterface
+     * {@inheritdoc}
      */
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next): ResponseInterface
+    public function process(Request $request, RequestHandler $handler): Response
     {
         $accept_factory = new AcceptFactory($request->getHeaders());
         $accept = $accept_factory->newInstance();
@@ -76,6 +75,6 @@ class NegotiationMiddleware
         }
         */
 
-        return $next($request, $response);
+        return $handler->handle($request);
     }
 }
