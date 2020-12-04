@@ -19,7 +19,7 @@ require_once 'calibre.php';
 require_once 'opds_generator.php';
 require_once 'own_config_middleware.php';
 require_once 'calibre_config_middleware.php';
-require_once 'login_middleware.php';
+require_once 'AuthMiddleware.php';
 require_once 'caching_middleware.php';
 require_once 'mailer.php';
 require_once 'metadata_epub.php';
