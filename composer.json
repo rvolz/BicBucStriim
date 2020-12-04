@@ -14,7 +14,7 @@
         "aura/auth": "^4.0.2",
         "ircmaxell/password-compat": "^v1.0.4",
         "aura/accept": "^2.2",
-        "akrabat/proxy-detection-middleware": "^0.4.0",
+        "akrabat/proxy-detection-middleware": "^0.4.0"
     },
     "require-dev": {
         "simpletest/simpletest": "^v1.2.0",
@@ -24,7 +24,42 @@
     "scripts": {
         "genl10n": "yarn genl10n",
         "package": "yarn package",
-        "test": "phpunit"
+        "test": "phpunit",
+        "prep-work": [
+            "rm -rf ./work",
+            "mkdir -p ./work/www",
+            "cp -r app work/www",
+            "cp -r data work/www",
+            "cp -r img work/www/public",
+            "cp -r js work/www/public",
+            "cp  -r public work/www",
+            "cp -r scripts work/www/public",
+            "cp -r src work/www",
+            "cp -r vendor work/www",
+            "mkdir ./work/lib",
+            "cp -r tests/fixtures/lib2/ ./work/lib",
+            "mkdir ./work/logs",
+            "mkdir ./work/cache"
+        ],
+        "clean-work": "rm -rf work",
+        "copy-src": [
+            "cp -r app work/www",
+            "cp -r src work/www",
+            "cp -r public work/www"
+        ],
+        "copy-res": [
+            "cp -r img work/www/public",
+            "cp -r js work/www/public",
+            "cp -r scripts work/www/public"
+        ],
+        "start": [
+            "@prep-work",
+            "docker-compose start"
+        ],
+        "stop": [
+            "docker-compose stop",
+            "@clean-work"
+        ]
     },
     "autoload": {
         "psr-4": {
