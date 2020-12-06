@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Application\Actions\Statics;
 
 use App\Application\Actions\Action;
+use App\Application\Actions\Action;
 use App\Domain\BicBucStriim\BicBucStriimRepository;
 use App\Domain\BicBucStriim\Configuration;
 use App\Domain\Calibre\CalibreRepository;
@@ -25,22 +26,7 @@ abstract class StaticsAction extends Action
      * @var CacheProvider HTTP-Caching codes
      */
     protected CacheProvider $cache;
-    /**
-     * @var BicBucStriimRepository
-     */
-    protected BicBucStriimRepository $bbs;
-    /**
-     * @var CalibreRepository
-     */
-    protected CalibreRepository $calibre;
-    /**
-     * @var User
-     */
-    protected User $user;
-    /**
-     * @var Configuration
-     */
-    protected Configuration $config;
+
 
     /**
      * @param LoggerInterface $logger
@@ -55,11 +41,7 @@ abstract class StaticsAction extends Action
                                 Configuration $config,
                                 User $user)
     {
-        parent::__construct($logger);
-        $this->bbs = $bbs;
-        $this->calibre = $calibre;
-        $this->user = $user;
-        $this->config = $config;
+        parent::__construct($logger, $bbs, $calibre, $config, $user);
         $this->cache = new CacheProvider();
     }
 

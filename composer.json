@@ -20,7 +20,8 @@
         "akrabat/proxy-detection-middleware": "^0.4.0",
         "slim/http-cache": "^1.0",
         "guzzlehttp/psr7": "^1.7",
-        "http-interop/http-factory-guzzle": "^1.0"
+        "http-interop/http-factory-guzzle": "^1.0",
+        "middlewares/trailing-slash": "^2.0"
     },
     "require-dev": {
         "simpletest/simpletest": "^v1.2.0",
@@ -34,13 +35,13 @@
         "test": "phpunit",
         "prep-work": [
             "rm -rf ./work",
-            "mkdir -p ./work/www",
+            "mkdir -p ./work/www/public/img",
             "cp -r app work/www",
             "cp -r data work/www",
-            "cp -r img work/www/public",
-            "cp -r js work/www/public",
+            "cp -r img work/www/public/img/",
+            "cp -r js work/www/public/",
+            "cp -r style work/www/public/",
             "cp  -r public work/www",
-            "cp -r scripts work/www/public",
             "cp -r src work/www",
             "cp -r vendor work/www",
             "mkdir ./work/lib",
@@ -55,9 +56,9 @@
             "cp -r public work/www"
         ],
         "copy-res": [
-            "cp -r img work/www/public",
-            "cp -r js work/www/public",
-            "cp -r scripts work/www/public"
+            "cp -r img work/www/public/img/",
+            "cp -r js work/www/public/",
+            "cp -r style work/www/public/"
         ],
         "start": [
             "@prep-work",

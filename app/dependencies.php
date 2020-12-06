@@ -9,6 +9,7 @@ use App\Domain\BicBucStriim\Configuration;
 use \App\Domain\BicBucStriim\L10n;
 use App\Domain\Calibre\Calibre;
 use App\Domain\Calibre\CalibreRepository;
+use App\Domain\User\User;
 use App\Infrastructure\Mail\Mailer;
 use Psr\Log\LoggerInterface;
 use Slim\Views\Twig;
@@ -28,7 +29,7 @@ return function (ContainerBuilder $containerBuilder) {
         },
 
         // Twig
-        'view' => function (ContainerInterface $c) {
+        Twig::class => function (ContainerInterface $c) {
             // TODO provide dir var/cache
             $settings = $c->get('settings');
             $templates = $settings['renderer']['template_path'];
@@ -84,7 +85,12 @@ return function (ContainerBuilder $containerBuilder) {
         // l10n
         L10n::class => function (ContainerInterface $c) {
             return new L10n();
-        }
+        },
+
+        // User
+        User::class => function (ContainerInterface $c) {
+            return User::emptyUser();
+        },
     ]);
 };
 

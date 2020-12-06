@@ -4,10 +4,12 @@ declare(strict_types=1);
 namespace App\Domain\User;
 class User
 {
+    const InvalidID = -1;
+
     /**
-     * @var int|null
+     * @var int
      */
-    private $id;
+    private $id = self::InvalidID;
 
     /**
      * @var string
@@ -37,15 +39,15 @@ class User
     /**
      * @var int
      */
-    private $role;
+    private $role = -1;
 
     /**
-     * @param int|null $id
+     * @param int $id
      * @param string $username
      * @param string $password
-     * @param string $email
-     * @param string $languages
-     * @param string $tags
+     * @param string|null $email
+     * @param string|null $languages
+     * @param string|null $tags
      * @param int $role
      */
     public function __construct(int $id, string $username, string $password, ?string $email, ?string $languages, ?string $tags, int $role)
@@ -162,5 +164,23 @@ class User
         $this->role = $role;
     }
 
+    public function isValid(): bool
+    {
+        return !($this->id == self::InvalidID);
+    }
 
+    public static function emptyUser(): User {
+        return new User(User::InvalidID, '', '', null, null, null ,-1);
+    }
+
+    public static function fromArray(array $ud, array $ud2): User {
+        return new User(
+            (int)$ud['id'],
+            $ud2[0],
+            $ud2[1],
+            $ud['email'] == null ? '' : $ud['email'],
+            $ud['languages'] == null ? '' : $ud['languages'],
+            $ud['tags'] == null ? '' : $ud['tags'],
+            (int)$ud['role']);
+    }
 }

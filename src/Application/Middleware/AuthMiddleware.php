@@ -47,37 +47,59 @@ class AuthMiddleware  implements Middleware
         $auth_factory = new AuthFactory($cookie);
         $auth = $auth_factory->newInstance();
         $pdo_adapter = $this->createPdoAuthenticator($auth_factory);
-        /*if (is_null($pdo_adapter)) {
-            $response = new Response();
-            return $response->withStatus(500, 'Cannot authenticate, user db error.');
-        }*/
         $this->try_resume($auth_factory, $pdo_adapter, $auth);
         if ($auth->isValid()) {
             $ud = $auth->getUserData();
             if (!is_array($ud) || !array_key_exists('role', $ud) || !array_key_exists('id', $ud)) {
                 $this->logger->error('Login error: invalid user data received. Killing session ...');
-                $this->forceLogout($auth_factory, $pdo_adapter, $auth);
+                $this->logout($auth_factory, $pdo_adapter, $auth, true);
                 $response = new Response();
                 return $response->withStatus(401, 'Invalid authorization data, please login again');
             }
             $this->logger->debug("Authentication valid, resuming for user " . $auth->getUserName());
-            $this->container->set(User::class, $ud);
+            $this->container->set(User::class, User::fromArray($ud, array($auth->getUserName(),'')));
             return $handler->handle($request);
         } else {
-            $this->logger->debug("Authentication required, status is ".$auth->getStatus());
-            $auth_data = $this->checkRequest4Auth($request);
-            if (is_null($auth_data)) {
-                $response = new Response();
-                return $response->withStatus(401, 'Authentication required');
-            }
-            $this->logger->debug("Authentication data found");
-            $ud = $this->try_login($auth_factory, $pdo_adapter, $auth, $auth_data);
-            if (is_null($ud)) {
-                $response = new Response();
-                return $response->withStatus(401, 'Authentication required');
-            } else {
-                $this->container->set(User::class, $ud);
+            // TODO check if we have to subtract a base path here
+            $path = $request->getUri()->getPath();
+            if (substr_compare($path, '/login', 0, 6) == 0) {
+                if ($request->getMethod() == 'POST') {
+                    $form_data = $request->getParsedBody();
+                    if (isset($form_data['username']) && isset($form_data['password'])) {
+                        $auth_data = array($form_data['username'], $form_data['password']);
+                    } else {
+                        $auth_data = array('', '');
+                    }
+                    $ud = $this->try_login($auth_factory, $pdo_adapter, $auth, $auth_data);
+                    if (is_null($ud)) {
+                        $this->container->set(User::class, User::emptyUser());
+                    } else {
+                        $this->container->set(User::class, User::fromArray($ud, $auth_data));
+                    }
+                    return $handler->handle($request);
+                } else {
+                    return $handler->handle($request);
+                }
+            } elseif (substr_compare($path, '/logout', 0, 7) == 0) {
+                $this->logout($auth_factory, $pdo_adapter, $auth, false);
+                $this->container->set(User::class, User::emptyUser());
                 return $handler->handle($request);
+            } else {
+                $this->logger->debug("Authentication required, status is ".$auth->getStatus());
+                $auth_data = $this->checkRequest4Auth($request);
+                if (is_null($auth_data)) {
+                    $response = new Response();
+                    return $response->withStatus(401, 'Authentication required');
+                }
+                $this->logger->debug("Authentication data found in headers");
+                $ud = $this->try_login($auth_factory, $pdo_adapter, $auth, $auth_data);
+                if (is_null($ud)) {
+                    $response = new Response();
+                    return $response->withStatus(401, 'Authentication required');
+                } else {
+                    $this->container->set(User::class, User::fromArray($ud, $auth_data));
+                    return $handler->handle($request);
+                }
             }
         }
     }
@@ -169,25 +191,29 @@ class AuthMiddleware  implements Middleware
     public function try_resume(AuthFactory $auth_factory, Auth\Adapter\PdoAdapter $pdo_adapter, Auth\Auth $auth): void
     {
         try {
-            $resume_service = $auth_factory->newResumeService($pdo_adapter);
+            $resume_service = $auth_factory->newResumeService($pdo_adapter, BBS_IDLE_TIME);
             $resume_service->resume($auth);
         } catch (Exception $e) {
-            $this->logger->warning('Authentication error, session could not be resumed: ' . var_export(get_class($e), true));
+            $this->logger->warning('Authentication error, session could not be resumed: ' . get_class($e) . ', ' .var_export($e->getMessage()));
             // Session should be killed by resume service, so nothing else to do
         }
     }
 
     /**
-     * Force a logout
+     * Perform a logout
      * @param AuthFactory $auth_factory
      * @param Auth\Adapter\PdoAdapter $pdo_adapter
      * @param Auth\Auth $auth
+     * @param bool $force forecd logout if true, else normal logout
      */
-    public function forceLogout(AuthFactory $auth_factory, Auth\Adapter\PdoAdapter $pdo_adapter, Auth\Auth $auth): void
+    public function logout(AuthFactory $auth_factory, Auth\Adapter\PdoAdapter $pdo_adapter, Auth\Auth $auth, bool $force = false): void
     {
         try {
             $logout_service = $auth_factory->newLogoutService($pdo_adapter);
-            $logout_service->forceLogout($auth);
+            if ($force)
+                $logout_service->forceLogout($auth);
+            else
+                $logout_service->logout($auth);
         } catch (ErrorException $e) {
             $this->logger->error('Authentication error, error while killing session: ' . var_export(get_class($e), true));
         }

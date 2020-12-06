@@ -41,6 +41,7 @@ return function (App $app) {
     $app->add(new NegotiationMiddleware($logger, new UserLanguage(), $l10n));
     $app->add(new RequestLogMiddleware($logger));
     $app->add(new Cache('public', 86400));
-    $app->add(Slim\Views\TwigMiddleware::createFromContainer($app));
+    $app->add(Slim\Views\TwigMiddleware::createFromContainer($app, \Slim\Views\Twig::class));
     $app->add(new AuthMiddleware($logger, $bbs->getDb(), $app->getContainer()));
+    $app->add(new Middlewares\TrailingSlash(true));
 };

@@ -56,8 +56,8 @@ class CalibreConfigMiddleware implements Middleware
         // TODO check if we have to subtract a base path here
         $path = $request->getUri()->getPath();
         // TODO Move exception path configuration to settings
-        if (substr_compare($path, '/login', -1, 6) == 0 ||
-            substr_compare($path, '/admin', -1, 6) == 0) {
+        if (substr_compare($path, '/login', 0, 6) == 0 ||
+            substr_compare($path, '/admin', 0, 6) == 0) {
             // No Calibre needed in these parts
             return $handler->handle($request);
         } else {

@@ -3,7 +3,7 @@ version: '3'
 services:
   bbs-apache:
     image: php:7-apache
-    working_dir: /var/www
+    working_dir: /var/www/html
     command: php -d date.timezone=Europe/Berlin -S 0.0.0.0:8081 -t public
     user: 1000:1000
     environment:
@@ -11,9 +11,9 @@ services:
     ports:
       - 8081:8081
     volumes:
-      - ./work/www:/var/www
+      - ./work/www:/var/www/html
       - ./work/lib:/mnt
-      - ./work/logs:/var/www/logs
+      - ./work/logs:/var/logs
       - ./work/cache:/var/cache
   bbs-fpm:
     image: php:7-fpm

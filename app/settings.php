@@ -8,7 +8,11 @@ return function (ContainerBuilder $containerBuilder) {
     // Global Settings Object
     $containerBuilder->addDefinitions([
         'settings' => [
+            // mode
             'debug' => true,
+
+            // If not installed at root, enter the path to the installation here
+            'basePath' => '',
 
             // Display call stack in orignal slim error when debug is off
             'displayErrorDetails' => true, // TODO set to false in production

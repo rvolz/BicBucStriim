@@ -9,6 +9,15 @@ use Psr\Log\LoggerInterface;
 use Slim\Factory\AppFactory;
 use Slim\Factory\ServerRequestCreatorFactory;
 use Slim\ResponseEmitter;
+require __DIR__ . '/../src/Application/version.php';
+
+require __DIR__ . '/bbs-config.php';
+if (!defined('BBS_BASE_PATH')) {
+    define('BBS_BASE_PATH', '');
+}
+if (!defined('BBS_IDLE_TIME')) {
+    define('BBS_IDLE_TIME', 3600);
+}
 
 if (PHP_SAPI == 'cli-server') {
     // To help the built-in PHP dev server, check if the request was actually for
@@ -20,8 +29,6 @@ if (PHP_SAPI == 'cli-server') {
     }
 }
 require __DIR__ . '/../vendor/autoload.php';
-// TODO enable for production?
-//session_start();
 
 // Instantiate PHP-DI ContainerBuilder
 $containerBuilder = new ContainerBuilder();
@@ -55,10 +62,6 @@ $middleware($app);
 $routes = require __DIR__ . '/../app/routes.php';
 $routes($app);
 
-// Route helpers
-// require __DIR__ . '/../app/helpers.php';
-
-
 /** @var bool $displayErrorDetails */
 $displayErrorDetails = $container->get('settings')['displayErrorDetails'];
 
@@ -88,8 +91,13 @@ $logger = $app->getContainer()->get(LoggerInterface::class);
 $logger->info(
     $app->getContainer()->get(Configuration::class)[AppConstants::DISPLAY_APP_NAME] .
     ' ' .
-    $app->getContainer()->get('settings')['bbs']['version']);
+    APP_VERSION);
 $logger->info('Running on PHP: ' . PHP_VERSION);
+
+/** @var string $basePath */
+$basePath = BBS_BASE_PATH;
+$app->setBasePath($basePath);
+
 $response = $app->handle($request);
 $responseEmitter = new ResponseEmitter();
 $responseEmitter->emit($response);
