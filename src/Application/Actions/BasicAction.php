@@ -42,4 +42,28 @@ abstract class BasicAction extends Action
         $this->user = $user;
         $this->config = $config;
     }
+
+
+    /**
+     * Check for admin permissions. Currently this is only the user
+     * <em>admin</em>, ID 1.
+     * @return boolean  true if admin user, else false
+     */
+    function is_admin(): bool
+    {
+        if ($this->is_authenticated()) {
+            return $this->user->isAdmin();
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Check if the current user was authenticated
+     * @return boolean  true if authenticated, else false
+     */
+    function is_authenticated(): bool
+    {
+        return $this->user->isValid();
+    }
 }

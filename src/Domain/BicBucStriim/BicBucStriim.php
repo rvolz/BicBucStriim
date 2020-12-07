@@ -177,7 +177,7 @@ class BicBucStriim implements BicBucStriimRepository
         return R::findAll('user');
     }
 
-    public function user($userid): ?OODBBean
+    public function user(string $userid): ?object
     {
         $user = R::load('user', $userid);
         if (!$user->id)
@@ -186,13 +186,12 @@ class BicBucStriim implements BicBucStriimRepository
             return $user;
     }
 
-    public function userByName(string $username): ?OODBBean
+    public function userByName(string $username): ?object
     {
-        $user = R::findOne('user', ' username = :name', array(':name' => $username));
-        return $user;
+        return R::findOne('user', ' username = :name', array(':name' => $username));
     }
 
-    public function addUser(string $username, string $password): ?OODBBean
+    public function addUser(string $username, string $password): ?object
     {
         if (empty($username) || empty($password))
             return null;
@@ -210,7 +209,7 @@ class BicBucStriim implements BicBucStriimRepository
         return $user;
     }
 
-    public function deleteUser($userid): bool
+    public function deleteUser(int $userid): bool
     {
         if ($userid == 1)
             return false;
@@ -225,7 +224,7 @@ class BicBucStriim implements BicBucStriimRepository
         }
     }
 
-    public function changeUser($userid, $password, $languages, $tags, $role)
+    public function changeUser(int $userid, string $password, string $languages, string $tags, string $role): ?object
     {
         $user = $this->user($userid);
         if (is_null($user))
@@ -256,12 +255,12 @@ class BicBucStriim implements BicBucStriimRepository
         return R::findAll('idtemplate', ' order by name');
     }
 
-    public function idTemplate($name)
+    public function idTemplate(string $name): ?object
     {
         return R::findOne('idtemplate', ' name = :name', array(':name' => $name));
     }
 
-    public function addIdTemplate($name, $value, $label)
+    public function addIdTemplate(string $name, string $value, string $label): object
     {
         $template = R::dispense('idtemplate');
         $template->name = $name;
@@ -271,7 +270,7 @@ class BicBucStriim implements BicBucStriimRepository
         return $template;
     }
 
-    public function deleteIdTemplate($name): bool
+    public function deleteIdTemplate(string $name): bool
     {
         $template = $this->idtemplate($name);
         if (!is_null($template)) {

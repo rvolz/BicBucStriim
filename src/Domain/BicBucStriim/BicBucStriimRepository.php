@@ -65,47 +65,47 @@ interface BicBucStriimRepository
 
     /**
      * Find a specific user in the settings DB
-     * @param $userid
-     * @return OODBBean data or NULL if not found
+     * @param string $userid
+     * @return ?object data or NULL if not found
      */
-    public function user($userid): ?OODBBean;
+    public function user(string $userid): ?object;
 
     /**
      * Find a user by user name in the settings DB
-     * @param $username string user name
-     * @return OODBBean user data or NULL if not found
+     * @param string $username user name
+     * @return ?object user data or NULL if not found
      */
-    public function userByName(string $username): ?OODBBean;
+    public function userByName(string $username): ?object;
 
     /**
      * Add a new user account.
      * The username must be unique. Name and password must not be empty.
-     * @param $username string login name for the account, must be unique
-     * @param $password string clear text password
-     * @return OODBBean user account or null if the user exists or one of the parameters is empty
+     * @param string $username login name for the account, must be unique
+     * @param string $password  clear text password
+     * @return ?object user account or null if the user exists or one of the parameters is empty
      * @throws Exception if the DB operation failed
      */
-    public function addUser(string $username, string $password): ?OODBBean;
+    public function addUser(string $username, string $password): ?object;
 
     /**
      * Delete a user account from the database.
      * The admin account (ID 1) can't be deleted.
-     * @param $userid integer
-     * @return true if a user was deleted else false
+     * @param int $userid
+     * @return bool true if a user was deleted else false
      */
-    public function deleteUser($userid);
+    public function deleteUser(int $userid): bool;
 
     /**
      * Update an existing user account.
      * The username cannot be changed and the password must not be empty.
-     * @param integer    userid        integer
-     * @param string    password    new clear text password or old encrypted password
-     * @param string    languages    comma-delimited set of language identifiers
-     * @param string    tags        string comma-delimited set of tags
-     * @param string    role        "1" for admin "0" for normal user
-     * @return updated user account or null if there was an error
+     * @param int $userid integer
+     * @param string $password new clear text password or old encrypted password
+     * @param string $languages comma-delimited set of language identifiers
+     * @param string $tags string comma-delimited set of tags
+     * @param string $role "1" for admin "0" for normal user
+     * @return object   updated user account or null if there was an error
      */
-    public function changeUser($userid, $password, $languages, $tags, $role);
+    public function changeUser(int $userid, string $password, string $languages, string $tags, string $role): ?object;
 
     /**
      * Find all ID templates in the settings DB
@@ -115,26 +115,26 @@ interface BicBucStriimRepository
 
     /**
      * Find a specific ID template in the settings DB
-     * @param string name    template name
-     * @return                IdTemplate or null
+     * @param string $name template name
+     * @return ?object               IdTemplate or null
      */
-    public function idTemplate($name);
+    public function idTemplate(string $name): ?object;
 
     /**
      * Add a new ID template
-     * @param string name        unique template name
-     * @param string value        URL template
-     * @param string label        display label
-     * @return template record or null if there was an error
+     * @param string $name unique template name
+     * @param string $value URL template
+     * @param string $label display label
+     * @return object template record or null if there was an error
      */
-    public function addIdTemplate($name, $value, $label);
+    public function addIdTemplate(string $name, string $value, string $label): object;
 
     /**
      * Delete an ID template from the database
-     * @param string name    template namne
-     * @return true if template was deleted else false
+     * @param string $name template namne
+     * @return bool true if template was deleted else false
      */
-    public function deleteIdTemplate($name);
+    public function deleteIdTemplate(string $name): bool;
 
     /**
      * Update an existing ID template. The name cannot be changed.

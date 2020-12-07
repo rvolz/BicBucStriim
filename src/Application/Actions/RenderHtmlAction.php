@@ -32,15 +32,11 @@ abstract class RenderHtmlAction extends BasicAction
      * @var Twig
      */
     protected Twig $twig;
-    /**
-     * @var CalibreRepository
-     */
-    protected CalibreRepository $calibre;
+
 
     /**
      * @param LoggerInterface $logger
      * @param BicBucStriimRepository $bbs
-     * @param CalibreRepository $calibre
      * @param Configuration $config
      * @param User $user
      * @param Twig $twig
@@ -48,15 +44,14 @@ abstract class RenderHtmlAction extends BasicAction
      */
     public function __construct(LoggerInterface $logger,
                                 BicBucStriimRepository $bbs,
-                                CalibreRepository $calibre,
                                 Configuration $config,
                                 User $user,
                                 Twig $twig,
                                 L10n $l10n)
     {
         parent::__construct($logger, $bbs, $config, $user);
-        $this->calibre = $calibre;
         $this->twig = $twig;
+        $this->l10n = $l10n;
     }
 
     protected function checkThumbnail($book)

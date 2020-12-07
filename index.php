@@ -673,97 +673,99 @@ function admin_modify_user($id)
 function admin_change_json()
 {
     global $app, $globalSettings;
-    $app->getLog()->debug('admin_change: started');
-    # Check access permission
-    if (!is_admin()) {
-        $app->getLog()->warn('admin_change: no admin permission');
-        $app->render('admin_configuration.html', array(
-            'page' => mkPage(getMessageString('admin')),
-            'messages' => array(getMessageString('invalid_password')),
-            'isadmin' => false));
-        return;
-    }
-    $nconfigs = array();
-    $req_configs = $app->request()->post();
-    $errors = array();
-    $messages = array();
-    $app->getLog()->debug('admin_change: ' . var_export($req_configs, true));
+    {
+        $app->getLog()->debug('admin_change: started');
+        # Check access permission
+        if (!is_admin()) {
+            $app->getLog()->warn('admin_change: no admin permission');
+            $app->render('admin_configuration.html', array(
+                'page' => mkPage(getMessageString('admin')),
+                'messages' => array(getMessageString('invalid_password')),
+                'isadmin' => false));
+            return;
+        }
+        $nconfigs = array();
+        $req_configs = $app->request()->post();
+        $errors = array();
+        $messages = array();
+        $app->getLog()->debug('admin_change: ' . var_export($req_configs, true));
 
-    ## Check for consistency - calibre directory
-    # Calibre dir is still empty and no change in sight --> error
-    if (!has_valid_calibre_dir() && empty($req_configs[CALIBRE_DIR]))
-        array_push($errors, 1);
-    # Calibre dir changed, check it for existence, delete thumbnails of old calibre library
-    elseif (array_key_exists(CALIBRE_DIR, $req_configs)) {
-        $req_calibre_dir = $req_configs[CALIBRE_DIR];
-        if ($req_calibre_dir != $globalSettings[CALIBRE_DIR]) {
-            if (!Calibre::checkForCalibre($req_calibre_dir)) {
-                array_push($errors, 1);
-            } elseif ($app->bbs->clearThumbnails())
-                $app->getLog()->info('admin_change: Lib changed, deleted existing thumbnails.');
+        ## Check for consistency - calibre directory
+        # Calibre dir is still empty and no change in sight --> error
+        if (!has_valid_calibre_dir() && empty($req_configs[CALIBRE_DIR]))
+            array_push($errors, 1);
+        # Calibre dir changed, check it for existence, delete thumbnails of old calibre library
+        elseif (array_key_exists(CALIBRE_DIR, $req_configs)) {
+            $req_calibre_dir = $req_configs[CALIBRE_DIR];
+            if ($req_calibre_dir != $globalSettings[CALIBRE_DIR]) {
+                if (!Calibre::checkForCalibre($req_calibre_dir)) {
+                    array_push($errors, 1);
+                } elseif ($app->bbs->clearThumbnails())
+                    $app->getLog()->info('admin_change: Lib changed, deleted existing thumbnails.');
+                else {
+                    $app->getLog()->info('admin_change: Lib changed, deletion of existing thumbnails failed.');
+                }
+            }
+        }
+        ## More consistency checks - kindle feature
+        # Switch off Kindle feature, if no valid email address supplied
+        if ($req_configs[KINDLE] == "1") {
+            if (empty($req_configs[KINDLE_FROM_EMAIL])) {
+                array_push($errors, 5);
+            } elseif (!isEMailValid($req_configs[KINDLE_FROM_EMAIL])) {
+                array_push($errors, 5);
+            }
+        }
+
+        ## Check for a change in the thumbnail generation method
+        if ($req_configs[THUMB_GEN_CLIPPED] != $globalSettings[THUMB_GEN_CLIPPED]) {
+            $app->getLog()->info('admin_change: Thumbnail generation method changed. Existing Thumbnails will be deleted.');
+            # Delete old thumbnails if necessary
+            if ($app->bbs->clearThumbnails())
+                $app->getLog()->info('admin_change: Deleted exisiting thumbnails.');
             else {
-                $app->getLog()->info('admin_change: Lib changed, deletion of existing thumbnails failed.');
+                $app->getLog()->info('admin_change: Deletion of exisiting thumbnails failed.');
             }
         }
-    }
-    ## More consistency checks - kindle feature
-    # Switch off Kindle feature, if no valid email address supplied
-    if ($req_configs[KINDLE] == "1") {
-        if (empty($req_configs[KINDLE_FROM_EMAIL])) {
-            array_push($errors, 5);
-        } elseif (!isEMailValid($req_configs[KINDLE_FROM_EMAIL])) {
-            array_push($errors, 5);
-        }
-    }
 
-    ## Check for a change in the thumbnail generation method
-    if ($req_configs[THUMB_GEN_CLIPPED] != $globalSettings[THUMB_GEN_CLIPPED]) {
-        $app->getLog()->info('admin_change: Thumbnail generation method changed. Existing Thumbnails will be deleted.');
-        # Delete old thumbnails if necessary
-        if ($app->bbs->clearThumbnails())
-            $app->getLog()->info('admin_change: Deleted exisiting thumbnails.');
-        else {
-            $app->getLog()->info('admin_change: Deletion of exisiting thumbnails failed.');
-        }
-    }
-
-    ## Check for a change in page size, min 1, max 100
-    if ($req_configs[PAGE_SIZE] != $globalSettings[PAGE_SIZE]) {
-        if ($req_configs[PAGE_SIZE] < 1 || $req_configs[PAGE_SIZE] > 100) {
-            $app->getLog()->warn('admin_change: Invalid page size requested: ' . $req_configs[PAGE_SIZE]);
-            array_push($errors, 4);
-        }
-    }
-
-    # Don't save just return the error status
-    if (count($errors) > 0) {
-        $app->getLog()->error('admin_change: ended with error ' . var_export($errors, true));
-        $app->render('admin_configuration.html', array(
-            'page' => mkPage(getMessageString('admin')),
-            'isadmin' => true,
-            'errors' => $errors));
-    } else {
-        ## Apply changes
-        foreach ($req_configs as $key => $value) {
-            if (!isset($globalSettings[$key]) || $value != $globalSettings[$key]) {
-                $nconfigs[$key] = $value;
-                $globalSettings[$key] = $value;
-                $app->getLog()->debug('admin_change: ' . $key . ' changed: ' . $value);
+        ## Check for a change in page size, min 1, max 100
+        if ($req_configs[PAGE_SIZE] != $globalSettings[PAGE_SIZE]) {
+            if ($req_configs[PAGE_SIZE] < 1 || $req_configs[PAGE_SIZE] > 100) {
+                $app->getLog()->warn('admin_change: Invalid page size requested: ' . $req_configs[PAGE_SIZE]);
+                array_push($errors, 4);
             }
         }
-        # Save changes
-        if (count($nconfigs) > 0) {
-            $app->bbs->saveConfigs($nconfigs);
-            $app->getLog()->debug('admin_change: changes saved');
+
+        # Don't save just return the error status
+        if (count($errors) > 0) {
+            $app->getLog()->error('admin_change: ended with error ' . var_export($errors, true));
+            $app->render('admin_configuration.html', array(
+                'page' => mkPage(getMessageString('admin')),
+                'isadmin' => true,
+                'errors' => $errors));
+        } else {
+            ## Apply changes
+            foreach ($req_configs as $key => $value) {
+                if (!isset($globalSettings[$key]) || $value != $globalSettings[$key]) {
+                    $nconfigs[$key] = $value;
+                    $globalSettings[$key] = $value;
+                    $app->getLog()->debug('admin_change: ' . $key . ' changed: ' . $value);
+                }
+            }
+            # Save changes
+            if (count($nconfigs) > 0) {
+                $app->bbs->saveConfigs($nconfigs);
+                $app->getLog()->debug('admin_change: changes saved');
+            }
+            $app->getLog()->debug('admin_change: ended');
+            $app->render('admin_configuration.html', array(
+                'page' => mkPage(getMessageString('admin'), 0, 2),
+                'messages' => array(getMessageString('changes_saved')),
+                'mailers' => mkMailers(),
+                'ttss' => mkTitleTimeSortOptions(),
+                'isadmin' => true,
+            ));
         }
-        $app->getLog()->debug('admin_change: ended');
-        $app->render('admin_configuration.html', array(
-            'page' => mkPage(getMessageString('admin'), 0, 2),
-            'messages' => array(getMessageString('changes_saved')),
-            'mailers' => mkMailers(),
-            'ttss' => mkTitleTimeSortOptions(),
-            'isadmin' => true,
-        ));
     }
 }
 
