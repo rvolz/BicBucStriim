@@ -89,12 +89,12 @@ class Calibre implements CalibreRepository
         }
     }
 
-    function libraryOk()
+    function libraryOk(): bool
     {
-        return (!is_null($this->calibre));
+        return !is_null($this->calibre);
     }
 
-    function libraryStats($filter)
+    function libraryStats(object $filter): array
     {
         $stats = array();
         $countParams = $this->mkCountParams(null, $filter, null);
@@ -135,7 +135,7 @@ class Calibre implements CalibreRepository
      * @return array found items
      */
     protected
-    function findPrepared($class, $sql, $params)
+    function findPrepared(string $class, string $sql, array $params): array
     {
         $stmt = $this->calibre->prepare($sql);
         $stmt->execute($params);
@@ -147,13 +147,12 @@ class Calibre implements CalibreRepository
 
     /**
      * Return a single object or NULL if not found
-     * @param  string $class Calibre Item class
-     * @param  string $sql SQL statement
+     * @param string $class Calibre Item class
+     * @param string $sql SQL statement
      * @param array $params array of query parameters
-     * @return object                instance of class $class or NULL
+     * @return ?object instance of class $class or NULL
      */
-    protected
-    function findOne($class, $sql, $params = array())
+    protected function findOne(string $class, string $sql, $params = array()): ?object
     {
         $result = $this->findPrepared($class, $sql, $params);
         if ($result == NULL || $result == FALSE)
@@ -396,7 +395,7 @@ class Calibre implements CalibreRepository
         return $count;
     }
 
-    function count($sql, $params)
+    function count(string $sql, array $params):int
     {
         $stmt = $this->calibre->prepare($sql);
         $stmt->execute($params);
@@ -416,11 +415,11 @@ class Calibre implements CalibreRepository
             return $result;
     }
 
-    public function getTagId($tagName)
+    public function getTagId(string $tagName): int
     {
         $result = $this->calibre->query('SELECT id FROM tags WHERE name = "' . $tagName . '"')->fetchColumn();
-        if ($result == NULL || $result == FALSE)
-            return NULL;
+        if ($result == null || $result == false)
+            return 0;
         else
             return $result;
     }

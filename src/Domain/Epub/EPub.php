@@ -37,7 +37,7 @@ class EPub {
             throw new Exception('Failed to access epub container data');
         }
         $xml = new DOMDocument();
-        $xml->registerNodeClass('DOMElement','EPubDOMElement');
+        $xml->registerNodeClass('DOMElement',EPubDOMElement::class);
         $xml->loadXML($data);
         $xpath = new EPubDOMXPath($xml);
         $nodes = $xpath->query('//n:rootfiles/n:rootfile[@media-type="application/oebps-package+xml"]');

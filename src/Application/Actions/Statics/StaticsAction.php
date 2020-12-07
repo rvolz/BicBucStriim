@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace App\Application\Actions\Statics;
 
 use App\Application\Actions\Action;
-use App\Application\Actions\Action;
 use App\Domain\BicBucStriim\BicBucStriimRepository;
 use App\Domain\BicBucStriim\Configuration;
 use App\Domain\Calibre\CalibreRepository;

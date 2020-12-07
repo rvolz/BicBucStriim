@@ -13,7 +13,7 @@ use Slim\App;
 use Slim\Interfaces\RouteCollectorProxyInterface as Group;
 
 return function (App $app) {
-    $app->get('/', ViewLast30Action::class);
+    $app->get('/', ViewLast30Action::class)->setName('start');
     $app->get('/login/', ViewLoginAction::class);
     $app->post('/login/', DoLoginAction::class);
     $app->get('/logout/', ViewLogoutAction::class);

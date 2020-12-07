@@ -24,10 +24,12 @@
         "middlewares/trailing-slash": "^2.0"
     },
     "require-dev": {
+        "ext-simplexml": "*",
         "simpletest/simpletest": "^v1.2.0",
         "phpunit/phpunit": "^8.5.7",
         "nategood/httpful": "^0.2.19",
-        "phpstan/phpstan": "^0.12.58"
+        "phpstan/phpstan": "^0.12.58",
+        "slim/psr7": "^1.3"
     },
     "scripts": {
         "genl10n": "yarn genl10n",

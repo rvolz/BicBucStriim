@@ -8,7 +8,7 @@ interface CalibreRepository
      * Is the Calibre library open?
      * @return boolean    true if open, else false
      */
-    function libraryOk();
+    function libraryOk(): bool;
 
     /**
      * Return an array with library statistics for titles, authors etc.
@@ -16,7 +16,7 @@ interface CalibreRepository
      * @param object $filter a QueryFilter
      * @return array            array of numbers fir titles, authers etc.
      */
-    function libraryStats($filter);
+    function libraryStats(object $filter): array;
 
     /**
      * Return the number (int) of rows for a SQL COUNT Statement, e.g.
@@ -26,7 +26,7 @@ interface CalibreRepository
      * @param array $params query parameters
      * @return int                    number of result rows
      */
-    function count($sql, $params);
+    function count(string $sql, array $params): int;
 
     /**
      * Return the ID for a language code from the Calibre languages table
@@ -37,10 +37,10 @@ interface CalibreRepository
 
     /**
      * Return the ID for a tag  from the Calibre tags table
-     * @param string    tagName     textual tag name
-     * @return          integer     ID or null
+     * @param string $tagName textual tag name
+     * @return integer ID (>=1)  or 0 (not found)
      */
-    public function getTagId($tagName);
+    public function getTagId(string $tagName): int;
 
     /**
      * Return the most recent books, sorted by modification date.
