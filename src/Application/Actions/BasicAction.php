@@ -49,7 +49,7 @@ abstract class BasicAction extends Action
      * <em>admin</em>, ID 1.
      * @return boolean  true if admin user, else false
      */
-    function is_admin(): bool
+    protected function is_admin(): bool
     {
         if ($this->is_authenticated()) {
             return $this->user->isAdmin();
@@ -62,9 +62,18 @@ abstract class BasicAction extends Action
      * Check if the current user was authenticated
      * @return boolean  true if authenticated, else false
      */
-    function is_authenticated(): bool
+    protected function is_authenticated(): bool
     {
         return $this->user->isValid();
     }
 
+    /**
+     * Checks if a thumbnail image is available for a book
+     * @param $book
+     * @return bool
+     */
+    protected function checkThumbnail($book): bool
+    {
+        return $this->bbs->isTitleThumbnailAvailable($book->id);
+    }
 }

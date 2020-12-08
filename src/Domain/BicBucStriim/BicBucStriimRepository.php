@@ -149,9 +149,9 @@ interface BicBucStriimRepository
      * Find a Calibre item.
      * @param int    calibreType
      * @param int    calibreId
-     * @return        OODBBean
+     * @return ?object
      */
-    public function getCalibreThing($calibreType, $calibreId);
+    public function getCalibreThing($calibreType, $calibreId): ?object;
 
     /**
      * Add a new reference to a Calibre item.

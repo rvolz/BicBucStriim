@@ -54,12 +54,6 @@ abstract class RenderHtmlAction extends BasicAction
         $this->l10n = $l10n;
     }
 
-    protected function checkThumbnail($book)
-    {
-        $book->thumbnail = $this->bbs->isTitleThumbnailAvailable($book->id);
-        return $book;
-    }
-
     /**
      * Create a response by rendering the template.
      * @param string $templateName

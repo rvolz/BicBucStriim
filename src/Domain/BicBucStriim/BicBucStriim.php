@@ -297,7 +297,7 @@ class BicBucStriim implements BicBucStriimRepository
         }
     }
 
-    public function getCalibreThing($calibreType, $calibreId): OODBBean
+    public function getCalibreThing($calibreType, $calibreId): ?object
     {
         return R::findOne('calibrething',
             ' ctype = :type and cid = :id',

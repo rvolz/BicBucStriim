@@ -15,17 +15,17 @@ services:
       - ./work/lib:/mnt
       - ./work/logs:/var/logs
       - ./work/cache:/var/cache
-  bbs-fpm:
-    image: php:7-fpm
-    working_dir: /var/www
-    command: php -d date.timezone=Europe/Berlin -S 0.0.0.0:8091 -t public
-    user: 1000:1000
-    environment:
-      docker: "true"
-    ports:
-      - 8091:8091
-    volumes:
-      - ./work/www:/var/www
-      - ./work/lib:/mnt
-      - ./work/logs:/var/www/logs
-      - ./work/cache:/var/cache
+#  bbs-fpm:
+#    image: php:7-fpm
+#    working_dir: /var/www
+#    command: php -d date.timezone=Europe/Berlin -S 0.0.0.0:8091 -t public
+#    user: 1000:1000
+#    environment:
+#      docker: "true"
+#    ports:
+#      - 8091:8091
+#    volumes:
+#      - ./work/www:/var/www
+#      - ./work/lib:/mnt
+#      - ./work/logs:/var/www/logs
+#      - ./work/cache:/var/cache

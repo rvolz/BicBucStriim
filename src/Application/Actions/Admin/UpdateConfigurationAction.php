@@ -127,7 +127,7 @@ class UpdateConfigurationAction extends AdminAction
      */
     protected function has_global_setting(string $key): bool
     {
-        return (isset($this->config[$key]) && !empty($$this->config[$key]));
+        return (isset($this->config[$key]) && !empty($this->config[$key]));
     }
 
 
