@@ -27,6 +27,8 @@ use App\Application\Actions\Start\ViewLast30Action;
 use App\Application\Actions\Statics\ViewCoverAction;
 use App\Application\Actions\Statics\ViewThumbnailAction;
 use App\Application\Actions\Statics\ViewTitleFile;
+use App\Application\Actions\Tags\ViewTagAction;
+use App\Application\Actions\Tags\ViewTagsAction;
 use Slim\App;
 use Slim\Interfaces\RouteCollectorProxyInterface as Group;
 
@@ -69,5 +71,8 @@ return function (App $app) {
         // TODO HEAD request for thumbnails?
         $group->get('/files/{id}/{file}/', ViewTitleFile::class);
     });
-
+    $app->group('/tags', function (Group $group) {
+        $group->get('/', ViewTagsAction::class);
+        $group->get('/{id}/', ViewTagAction::class);
+    });
 };

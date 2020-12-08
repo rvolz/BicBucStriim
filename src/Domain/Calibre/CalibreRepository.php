@@ -148,9 +148,9 @@ interface CalibreRepository
      * @return array           array with elements: tag data, current page,
      *                               no. of pages, $length entries
      */
-    function tagDetailsSlice($lang, $id, $index = 0, $length = 100, $filter);
+    function tagDetailsSlice(string $lang, int $id, $index = 0, $length = 100, $filter): array;
 
-    function tagsSlice($index = 0, $length = 100, $search = NULL);
+    function tagsSlice($index = 0, $length = 100, $search = null);
 
     /**
      * Find the initials of all tags and their count

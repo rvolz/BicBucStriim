@@ -585,12 +585,12 @@ class Calibre implements CalibreRepository
         return array('tag' => $tag, 'books' => $books);
     }
 
-    function tagDetailsSlice($lang, $id, $index = 0, $length = 100, $filter)
+    function tagDetailsSlice(string $lang, int $id, $index = 0, $length = 100, $filter): array
     {
         $tag = $this->findOne(Tag::class, 'SELECT * FROM tags WHERE id=:id', array('id' => $id));
         if (is_null($tag))
-            return NULL;
-        $slice = $this->findSliceFiltered(CalibreSearchType::TagBook, $index, $length, $filter, NULL, $id);
+            return array();
+        $slice = $this->findSliceFiltered(CalibreSearchType::TagBook, $index, $length, $filter, null, $id);
         $this->addBookDetails($lang, $slice['entries']);
         return array('tag' => $tag) + $slice;
     }
@@ -598,9 +598,9 @@ class Calibre implements CalibreRepository
     # Search a list of tags defined by the parameters $index and $length.
     # If $search is defined it is used to filter the tag names, ignoring case.
     # Return an array with elements: current page, no. of pages, $length entries
-    function tagsSlice($index = 0, $length = 100, $search = NULL)
+    function tagsSlice($index = 0, $length = 100, $search = null)
     {
-        return $this->findSliceFiltered(CalibreSearchType::Tag, $index, $length, new CalibreFilter(), $search, NULL);
+        return $this->findSliceFiltered(CalibreSearchType::Tag, $index, $length, new CalibreFilter(), $search, null);
     }
 
     function tagsInitials()
