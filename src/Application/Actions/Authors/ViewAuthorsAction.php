@@ -3,6 +3,7 @@
 namespace App\Application\Actions\Authors;
 
 use App\Domain\BicBucStriim\AppConstants;
+use App\Domain\Calibre\Author;
 use Psr\Http\Message\ResponseInterface as Response;
 use Slim\Exception\HttpBadRequestException;
 

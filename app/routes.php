@@ -2,18 +2,27 @@
 declare(strict_types=1);
 
 // Register routes
+use App\Application\Actions\Admin\ChangeUserAction;
 use App\Application\Actions\Admin\DeleteIdTemplatesAction;
 use App\Application\Actions\Admin\UpdateConfigurationAction;
 use App\Application\Actions\Admin\UpdateIdTemplatesAction;
 use App\Application\Actions\Admin\ViewAdminAction;
 use App\Application\Actions\Admin\ViewConfigurationAction;
 use App\Application\Actions\Admin\ViewIdTemplatesAction;
+use App\Application\Actions\Admin\ViewUserAction;
+use App\Application\Actions\Admin\ViewUsersAction;
+use App\Application\Actions\Admin\ViewVersionCheckAction;
 use App\Application\Actions\Authors\CreateAuthorLinkAction;
+use App\Application\Actions\Authors\CreateAuthorThumbnailAction;
+use App\Application\Actions\Authors\DeleteAuthorLinkAction;
+use App\Application\Actions\Authors\DeleteAuthorThumbnailAction;
 use App\Application\Actions\Authors\ViewAuthorAction;
 use App\Application\Actions\Authors\ViewAuthorsAction;
 use App\Application\Actions\Login\DoLoginAction;
 use App\Application\Actions\Login\ViewLoginAction;
 use App\Application\Actions\Login\ViewLogoutAction;
+use App\Application\Actions\Series\ViewASeriesAction;
+use App\Application\Actions\Series\ViewSeriesAction;
 use App\Application\Actions\Start\ViewLast30Action;
 use App\Application\Actions\Statics\ViewCoverAction;
 use App\Application\Actions\Statics\ViewThumbnailAction;
@@ -35,19 +44,23 @@ return function (App $app) {
         $group->delete('/idtemplates/{id}/', DeleteIdTemplatesAction::class);
         $group->get('/mail/', ViewConfigurationAction::class);
         $group->post('/mail/', UpdateConfigurationAction::class);
-        $group->get('/users/', \App\Application\Actions\Admin\ViewUsersAction::class);
-        $group->get('/users/{id}/', \App\Application\Actions\Admin\ViewUserAction::class);
-        $group->put('/users/{id}/', \App\Application\Actions\Admin\ChangeUserAction::class);
+        $group->get('/users/', ViewUsersAction::class);
+        $group->get('/users/{id}/', ViewUserAction::class);
+        $group->put('/users/{id}/', ChangeUserAction::class);
         $group->delete('/users/{id}/', DeleteIdTemplatesAction::class);
-        $group->get('/version/', \App\Application\Actions\Admin\ViewVersionCheckAction::class);
+        $group->get('/version/', ViewVersionCheckAction::class);
     });
     $app->group('/authors', function (Group $group) {
         $group->get('/', ViewAuthorsAction::class);
         $group->get('/{id}/', ViewAuthorAction::class);
-        $group->post('/{id}/thumbnail/', \App\Application\Actions\Authors\CreateAuthorThumbnailAction::class);
-        $group->delete('/{id}/thumbnail/', \App\Application\Actions\Authors\DeleteAuthorThumbnailAction::class);
+        $group->post('/{id}/thumbnail/', CreateAuthorThumbnailAction::class);
+        $group->delete('/{id}/thumbnail/', DeleteAuthorThumbnailAction::class);
         $group->post('/{id}/link/', CreateAuthorLinkAction::class);
-        $group->delete('/{id}/link/{link}/', \App\Application\Actions\Authors\DeleteAuthorLinkAction::class);
+        $group->delete('/{id}/link/{link}/', DeleteAuthorLinkAction::class);
+    });
+    $app->group('/series', function (Group $group) {
+        $group->get('/', ViewSeriesAction::class);
+        $group->get('/{id}/', ViewASeriesAction::class);
     });
     $app->group('/static', function (Group $group) {
         $group->get('/covers/{id}/', ViewCoverAction::class);

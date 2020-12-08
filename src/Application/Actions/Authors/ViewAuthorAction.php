@@ -15,16 +15,44 @@ class ViewAuthorAction extends AuthorsAction
      */
     protected function action(): Response
     {
-        $id = (int) $this->resolveArg('id');
-        $details = $this->calibre->authorDetails($id);
-        if (is_null($details)) {
-            $msg = sprintf("ViewAuthorAction: no author data found for id %d",$id);
+        $id = (int)$this->resolveArg('id');
+        $index = 0;
+        if ($this->hasQueryParam('index'))
+            $index = (int)$this->resolveQueryParam('index');
+        // parameter checking
+        if ($index < 0) {
+            $this->logger->warning('ViewAuthorAction: invalid page id ' . $index);
+            throw new HttpBadRequestException($this->request);
+        }
+
+        $filter = $this->getFilter();
+        $tl = $this->calibre->authorDetailsSlice(
+            $this->l10n->user_lang,
+            $id,
+            $index,
+            $this->config[AppConstants::PAGE_SIZE],
+            $filter);
+        if (empty($tl)) {
+            $msg = sprintf("ViewAuthorAction: no series data found for id %d", $id);
             $this->logger->error($msg);
             throw new DomainRecordNotFoundException($msg);
         }
-        $this->respondWithPage('author_detail.html', array(
+
+        $books = array_map(array($this, 'checkThumbnail'), $tl['entries']);
+
+        $series = $this->calibre->authorSeries($id, $books);
+
+        $author = $tl['author'];
+        $author->thumbnail = $this->bbs->getAuthorThumbnail($id);
+        $author->links = $this->bbs->authorLinks($id);
+        return $this->respondWithPage('author_detail.html', array(
             'page' => $this->mkPage($this->getMessageString('author_details'), 3, 2),
-            'author' => $details['author'],
-            'books' => $details['books']));
+            'url' => 'authors/' . $id . '/',
+            'author' => $tl['author'],
+            'books' => $books,
+            'series' => $series,
+            'curpage' => $tl['page'],
+            'pages' => $tl['pages'],
+            'isadmin' => $this->is_admin()));
     }
 }

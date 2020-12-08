@@ -24,9 +24,9 @@
 			<li data-role="list-divider"> {{ author.initial }}</li>
 		{% else %}
 			<li>
-				<a href="{{page.rot}}/authors/{{ author.id }}/0/">
+				<a href="{{page.rot}}/authors/{{ author.id }}/">
 					{% if author.thumbnail %}
-					<img src="{{page.rot}}/{{author.thumbnail.url}}"/>
+					<img src="{{page.rot}}/{{author.thumbnail.url}}/"/>
 					{% else %}
 					<img src="{{page.rot}}/img/writer.png"/>
 					{% endif %}

@@ -9,7 +9,7 @@ use Psr\Log\LoggerInterface;
 use Slim\Factory\AppFactory;
 use Slim\Factory\ServerRequestCreatorFactory;
 use Slim\ResponseEmitter;
-require __DIR__ . '/../src/Application/version.php';
+require __DIR__ . '/../src/Application/Version.php';
 
 require __DIR__ . '/bbs-config.php';
 if (!defined('BBS_BASE_PATH')) {

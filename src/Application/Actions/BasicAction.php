@@ -68,12 +68,14 @@ abstract class BasicAction extends Action
     }
 
     /**
-     * Checks if a thumbnail image is available for a book
+     * Checks if a thumbnail image is available for a book, adds it and returns the book
      * @param $book
-     * @return bool
+     * @return object
      */
-    protected function checkThumbnail($book): bool
+    protected function checkThumbnail($book): object
     {
-        return $this->bbs->isTitleThumbnailAvailable($book->id);
+        $book->thumbnail = $this->bbs->isTitleThumbnailAvailable($book->id);
+        return $book;
+
     }
 }

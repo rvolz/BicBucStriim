@@ -58,7 +58,7 @@
             "cp -r public work/www"
         ],
         "copy-res": [
-            "cp -r img work/www/public/img/",
+            "cp -r img work/www/public/",
             "cp -r js work/www/public/",
             "cp -r style work/www/public/"
         ],

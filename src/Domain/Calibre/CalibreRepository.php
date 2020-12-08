@@ -108,6 +108,13 @@ interface CalibreRepository
     function authorsNamesForInitial($initial);
 
     /**
+     * Gets a unique list of all series from the author.
+     * @param integer $id author id
+     * @param array array of all books from the author
+     */
+    function authorSeries($id, $books);
+
+    /**
      * Find all ID types in the Calibre identifiers table
      * @return array id type names
      */

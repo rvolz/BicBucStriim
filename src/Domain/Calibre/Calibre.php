@@ -530,6 +530,27 @@ class Calibre implements CalibreRepository
             array('initial' => $initial));
     }
 
+    /**
+     * @inheritDoc
+     */
+    function authorSeries($id, $books)
+    {
+        $allSeriesIds = array();
+        foreach ($books as $book) {
+            $series_ids = $this->findPrepared(BookSeriesLink::class, 'SELECT * FROM books_series_link WHERE book=:id', array('id'=>$book->id));
+            foreach ($series_ids as $sid) {
+                array_push($allSeriesIds, $sid->series);
+            }
+        }
+        $uniqueSeriesIds = array_unique($allSeriesIds);
+        $series = array();
+        foreach ($uniqueSeriesIds as $sid) {
+            $this_series = $this->findOne(Series::class, 'SELECT * FROM series WHERE id=:id', array('id' => $sid));
+            array_push($series, $this_series);
+        }
+        return $series;
+    }
+
     function idTypes()
     {
         $stmt = $this->calibre->query('SELECT DISTINCT type FROM identifiers');
@@ -912,7 +933,7 @@ class Calibre implements CalibreRepository
     {
         $series = $this->findOne(Series::class, 'SELECT * FROM series WHERE id=:id', array('id' => $id));
         if (is_null($series))
-            return NULL;
+            return array();
         $slice = $this->findSliceFiltered(CalibreSearchType::SeriesBook, $index, $length, $filter, NULL, $id);
         $this->addBookDetails($lang, $slice['entries']);
         return array('series' => $series) + $slice;

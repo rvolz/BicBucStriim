@@ -38,7 +38,7 @@
 			<div class="ui-block-a">
 				<h3>{{ author.name }}</h3>
 				{% if author.thumbnail %}
-				<img id="author-thumbnail-pic" src="{{page.rot}}/{{author.thumbnail.url}}"/>
+				<img id="author-thumbnail-pic" src="{{page.rot}}/{{author.thumbnail.url}}/"/>
 				{% endif %}
 			</div>
 			<div id="author-links" class="ui-block-b">
@@ -57,7 +57,7 @@
 					<ul id="author-series-list" data-role="listview" data-inset="true" >
 						{% for this_series in series %}
 						<li class="series-link link-{{link.id}}">
-							<a data-role="button" data-icon="info" href="{{page.rot}}/series/{{this_series.id}}/0/">{{ this_series.name }}</a>
+							<a data-role="button" data-icon="info" href="{{page.rot}}/series/{{this_series.id}}/">{{ this_series.name }}</a>
 						</li>
 						{% endfor %}
 					</ul>
