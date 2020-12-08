@@ -41,7 +41,7 @@ class ViewTagAction extends \App\Application\Actions\CalibreHtmlAction
         }
 
         $books = array_map(array($this, 'checkThumbnail'), $tl['entries']);
-        $this->respondWithPage('tag_detail.html', array(
+        return $this->respondWithPage('tag_detail.html', array(
             'page' => $this->mkPage($this->getMessageString('tag_details'), 4, 2),
             'url' => 'tags/' . $id .'/',
             'tag' => $tl['tag'],

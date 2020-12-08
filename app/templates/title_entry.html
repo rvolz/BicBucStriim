@@ -1,9 +1,9 @@
 <li>
 	<a href="{{page.rot}}/titles/{{book.id}}/">
 		{% if book.thumbnail%}
-		<img src="{{page.rot}}/data/titles/thumb_{{ book.id }}.png" />
+		<img src="{{page.rot}}/static/titlethumbs/{{ book.id }}/" />
 		{% else %}
-		<img src="{{page.rot}}/titles/{{ book.id }}/thumbnail/" />
+		<img src="{{page.rot}}/static/titlethumbs/{{ book.id }}/" />
 		{% endif %}
 		
 		<h3>

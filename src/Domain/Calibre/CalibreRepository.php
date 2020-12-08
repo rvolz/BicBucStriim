@@ -254,7 +254,7 @@ interface CalibreRepository
      * @return array            the book, its authors, series, tags, formats, languages, ids and comment.
      * @throws TitleNotFoundException if the is is not found
      */
-    function titleDetails($lang, $id);
+    function titleDetails($lang, $id): array;
 
     /**
      * Find a single book, its tags and languages. Mainly used for restriction checks.

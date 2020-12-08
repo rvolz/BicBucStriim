@@ -11,7 +11,7 @@
 
 <link rel="related" href="{{page.rot}}/opds/"
 	type="application/atom+xml;profile=opds-catalog" title="OPDS index">
-<link rel="alternate" href="{{page.rot}}/opds/titleslist/0/" 
+<link rel="alternate" href="{{page.rot}}/opds/titles/"
 	type="application/atom+xml;profile=opds-catalog" title="OPDS catalog: by titles">
 {% endblock %}
 
@@ -47,8 +47,8 @@
         <h3>{{page.glob.l10n.titles_sort}}</h3>
 
         <div data-role="controlgroup" data-type="horizontal">
-            <a href="{{page.rot}}/titleslist/0/?sort=byReverseDate" class="ui-btn ui-btn-corner-all">{{page.glob.l10n.date}}</a>
-            <a href="{{page.rot}}/titleslist/0/?sort=byTitle"
+            <a href="{{page.rot}}/titles/?sort=byReverseDate" class="ui-btn ui-btn-corner-all">{{page.glob.l10n.date}}</a>
+            <a href="{{page.rot}}/titles/?sort=byTitle"
                class="ui-btn ui-btn-corner-all">{{page.glob.l10n.title}}</a>
         </div>
     </div>

@@ -626,28 +626,28 @@ class Calibre implements CalibreRepository
             array('initial' => $initial));
     }
 
-    function pubdateOrderedTitlesSlice($lang, $index = 0, $length = 100, $filter, $search = NULL)
+    function pubdateOrderedTitlesSlice($lang, $index = 0, $length = 100, $filter, $search = null)
     {
         $books = $this->findSliceFiltered(CalibreSearchType::PubDateOrderedBook, $index, $length, $filter, $search);
         $this->addBookDetails($lang, $books['entries']);
         return $books;
     }
 
-    function lastmodifiedOrderedTitlesSlice($lang, $index = 0, $length = 100, $filter, $search = NULL)
+    function lastmodifiedOrderedTitlesSlice($lang, $index = 0, $length = 100, $filter, $search = null)
     {
         $books = $this->findSliceFiltered(CalibreSearchType::LastModifiedOrderedBook, $index, $length, $filter, $search);
         $this->addBookDetails($lang, $books['entries']);
         return $books;
     }
 
-    function timestampOrderedTitlesSlice($lang, $index = 0, $length = 100, $filter, $search = NULL)
+    function timestampOrderedTitlesSlice($lang, $index = 0, $length = 100, $filter, $search = null)
     {
         $books = $this->findSliceFiltered(CalibreSearchType::TimestampOrderedBook, $index, $length, $filter, $search);
         $this->addBookDetails($lang, $books['entries']);
         return $books;
     }
 
-    function titlesSlice($lang, $index = 0, $length = 100, $filter, $search = NULL)
+    function titlesSlice($lang, $index = 0, $length = 100, $filter, $search = null)
     {
         $books = $this->findSliceFiltered(CalibreSearchType::Book, $index, $length, $filter, $search);
         $this->addBookDetails($lang, $books['entries']);
@@ -706,7 +706,7 @@ class Calibre implements CalibreRepository
         return $lang_codes;
     }
 
-    function titleDetails($lang, $id): ?array
+    function titleDetails($lang, $id): array
     {
         $book = $this->title($id);
         $author_ids = $this->findPrepared(BookAuthorLink::class, 'SELECT * FROM books_authors_link WHERE book=:id',

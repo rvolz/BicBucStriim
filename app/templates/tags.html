@@ -11,7 +11,7 @@
 
 <link rel="related" href="{{page.rot}}/opds/"
 	type="application/atom+xml;profile=opds-catalog" title="OPDS index">
-<link rel="alternate" href="{{page.rot}}/opds/tagslist/" 
+<link rel="alternate" href="{{page.rot}}/opds/tags/"
 	type="application/atom+xml;profile=opds-catalog" title="OPDS catalog: by tags">
 {% endblock %}
 
@@ -24,7 +24,7 @@
 			<li data-role="list-divider"> {{ tag.initial }}</li>
 		{% else %}
 			<li>
-				<a href="{{page.rot}}/tags/{{ tag.id }}/0/">{{ tag.name }}
+				<a href="{{page.rot}}/tags/{{ tag.id }}/">{{ tag.name }}
 				<span class="ui-li-count">{{ tag.anzahl }}</span></a>
 			</li>
 		{% endif %}

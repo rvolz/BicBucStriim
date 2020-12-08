@@ -2,7 +2,8 @@ version: '3'
 
 services:
   bbs-apache:
-    image: php:7-apache
+    build: docker
+    #image: php:7-apache
     working_dir: /var/www/html
     command: php -d date.timezone=Europe/Berlin -S 0.0.0.0:8081 -t public
     user: 1000:1000

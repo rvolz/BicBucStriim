@@ -40,7 +40,7 @@
             "mkdir -p ./work/www/public/img",
             "cp -r app work/www",
             "cp -r data work/www",
-            "cp -r img work/www/public/img/",
+            "cp -r img work/www/public/",
             "cp -r js work/www/public/",
             "cp -r style work/www/public/",
             "cp  -r public work/www",

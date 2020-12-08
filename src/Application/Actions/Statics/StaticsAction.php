@@ -3,9 +3,10 @@ declare(strict_types=1);
 
 namespace App\Application\Actions\Statics;
 
-use App\Application\Actions\Action;
+use App\Application\Actions\CalibreHtmlAction;
 use App\Domain\BicBucStriim\BicBucStriimRepository;
 use App\Domain\BicBucStriim\Configuration;
+use App\Domain\BicBucStriim\L10n;
 use App\Domain\Calibre\CalibreRepository;
 use App\Domain\User\User;
 use Psr\Log\LoggerInterface;
@@ -13,12 +14,13 @@ use Slim\HttpCache\CacheProvider;
 use GuzzleHttp\Psr7\Stream;
 use GuzzleHttp\Psr7\LazyOpenStream;
 use Psr\Http\Message\ResponseInterface as Response;
+use Slim\Views\Twig;
 
 /**
  * Class StaticsAction covers static resources like book files, images.
  * @package App\Application\Actions\Statics
  */
-abstract class StaticsAction extends Action
+abstract class StaticsAction extends CalibreHtmlAction
 {
 
     /**
@@ -33,14 +35,18 @@ abstract class StaticsAction extends Action
      * @param CalibreRepository $calibre
      * @param Configuration $config
      * @param User $user
+     * @param Twig $twig
+     * @param L10n $l10n
      */
     public function __construct(LoggerInterface $logger,
                                 BicBucStriimRepository $bbs,
                                 CalibreRepository $calibre,
                                 Configuration $config,
-                                User $user)
+                                User $user,
+                                Twig $twig,
+                                L10n $l10n)
     {
-        parent::__construct($logger, $bbs, $calibre, $config, $user);
+        parent::__construct($logger, $bbs, $calibre, $config, $user, $twig, $l10n);
         $this->cache = new CacheProvider();
     }
 
@@ -64,8 +70,9 @@ abstract class StaticsAction extends Action
      */
     public function respondWithArtefact(Stream $stream, string $etag, string $type): Response {
         $responseE = $this->cache->withEtag($this->response, $etag);
+        $responseC = $this->cache->allowCache($responseE, 'private', time()+60, true);
 
-        return $responseE
+        return $responseC
             ->withHeader('Content-Type', $type)
             ->withHeader('Content-Transfer-Encoding', 'binary')
             ->withHeader('Content-Length', $stream->getSize())

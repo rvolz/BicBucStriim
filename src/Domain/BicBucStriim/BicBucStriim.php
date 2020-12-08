@@ -14,7 +14,7 @@ use Exception;
 use PDO;
 use RedBeanPHP\OODBBean;
 use RedBeanPHP\R;
-use Utilities;
+use App\Domain\Calibre\Utilities;
 
 class BicBucStriim implements BicBucStriimRepository
 {
@@ -424,14 +424,21 @@ class BicBucStriim implements BicBucStriimRepository
      */
     public function titleThumbnail($id, $cover, $clipped): string
     {
-        if ($clipped)
-            $created = $this->thumbnailClipped($cover, false, self::THUMB_RES, self::THUMB_RES, $thumb_path);
-        else
-            $created = $this->thumbnailStuffed($cover, false, self::THUMB_RES, self::THUMB_RES, $thumb_path);
-        if (!$created)
-            throw new NoThumbnailException();
-        else
-            return $thumb_path;
+        $thumb_name = 'thumb_'.$id.'.png';
+        $thumb_path = $this->thumb_dir.'/'.$thumb_name;
+        if (!file_exists($thumb_path)) {
+            if (is_null($cover))
+                $thumb_path = null;
+            else {
+                if ($clipped)
+                    $created = $this->thumbnailClipped($cover, false, self::THUMB_RES, self::THUMB_RES, $thumb_path);
+                else
+                    $created = $this->thumbnailStuffed($cover, false, self::THUMB_RES, self::THUMB_RES, $thumb_path);
+                if (!$created)
+                    throw new NoThumbnailException();
+            }
+        }
+        return $thumb_path;
     }
 
     public function clearThumbnails(): bool

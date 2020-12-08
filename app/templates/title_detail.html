@@ -32,7 +32,7 @@
 						<a data-role="button" 
 							{% if page.glob.glob_dl_toggle == true %} disabled="true" {% endif %} 
 							data-ajax="false" 
-							href="{{page.rot}}/titles/{{book.id}}/file/{{format.name|url_encode()}}.{{format.format|lower}}">
+							href="{{page.rot}}/static/files/{book.id}/{{format.name|url_encode()}}.{{format.format|lower}}">
 								{{ format.format }} | {{format.uncompressed_size|hfsize}}
 						</a>
 				{% endfor %}
@@ -66,21 +66,21 @@
 	{% endif %}
 	<aside class="title_detail_image">
 		{% if book.has_cover %}		
-		<img src="{{page.rot}}/titles/{{ book.id }}/cover/" />
+		<img src="{{page.rot}}/static/covers/{{ book.id }}/" />
 		{% endif %}		
 	</aside>
 	<section class="title_details">
 		<div id="authors" data-role="collapsible" data-collapsed="false">
 				<h2>{{page.glob.l10n.authors}}</h2>
 				{% for author in authors %}
-				<a data-role="button" data-icon="info" href="{{page.rot}}/authors/{{author.id}}/0/">{{ author.name }}</a>
+				<a data-role="button" data-icon="info" href="{{page.rot}}/authors/{{author.id}}/">{{ author.name }}</a>
 				{% endfor %} 
 		</div>
 		{% if series != NULL %}
 		<div id="series" data-role="collapsible">
 				<h2>{{page.glob.l10n.series}}</h2>
 				{% for this_series in series %}
-				<a data-role="button" data-icon="info" href="{{page.rot}}/series/{{this_series.id}}/0/">{{ this_series.name }} ({{book.series_index}})</a>
+				<a data-role="button" data-icon="info" href="{{page.rot}}/series/{{this_series.id}}/">{{ this_series.name }} ({{book.series_index}})</a>
 				{% endfor %} 
 		</div>		
 		{% endif %}
@@ -88,7 +88,7 @@
 			<h2>{{page.glob.l10n.tags}}</h2>			
 			<p>
 				{% for tag in tags %}
-				<a data-role="button" data-mini="true" data-inline="true" href="{{page.rot}}/tags/{{tag.id}}/0/">{{ tag.name }}</a>
+				<a data-role="button" data-mini="true" data-inline="true" href="{{page.rot}}/tags/{{tag.id}}/">{{ tag.name }}</a>
 				{% endfor %}
 			</p>
 		</div>

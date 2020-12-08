@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace App\Application\Actions\Statics;
 
 
-use App\Domain\Calibre\CoverNotFoundException;
+use App\Domain\DomainException\DomainRecordNotFoundException;
 use Psr\Http\Message\ResponseInterface as Response;
 use GuzzleHttp\Psr7\Stream;
 
@@ -29,7 +29,7 @@ class ViewCoverAction extends StaticsAction
             return $this->respondWithArtefact($stream, $this->calcEtag($cover), 'image/jpeg;base64');
         } else {
             // TODO send default cover if there is none?
-            throw new CoverNotFoundException();
+            throw new DomainRecordNotFoundException();
         }
     }
 }

@@ -24,11 +24,14 @@ use App\Application\Actions\Login\ViewLogoutAction;
 use App\Application\Actions\Series\ViewASeriesAction;
 use App\Application\Actions\Series\ViewSeriesAction;
 use App\Application\Actions\Start\ViewLast30Action;
+use App\Application\Actions\Statics\ViewAuthorThumbnailAction;
 use App\Application\Actions\Statics\ViewCoverAction;
-use App\Application\Actions\Statics\ViewThumbnailAction;
+use App\Application\Actions\Statics\ViewTitleThumbnailAction;
 use App\Application\Actions\Statics\ViewTitleFile;
 use App\Application\Actions\Tags\ViewTagAction;
 use App\Application\Actions\Tags\ViewTagsAction;
+use App\Application\Actions\Titles\ViewTitleAction;
+use App\Application\Actions\Titles\ViewTitlesAction;
 use Slim\App;
 use Slim\Interfaces\RouteCollectorProxyInterface as Group;
 
@@ -65,14 +68,20 @@ return function (App $app) {
         $group->get('/{id}/', ViewASeriesAction::class);
     });
     $app->group('/static', function (Group $group) {
+        $group->get('/authorthumbs/{id}/', ViewAuthorThumbnailAction::class);
+        // TODO HEAD request for thumbnails?
         $group->get('/covers/{id}/', ViewCoverAction::class);
         // TODO HEAD request for covers?
-        $group->get('/thumbnails/{id}/', ViewThumbnailAction::class);
-        // TODO HEAD request for thumbnails?
         $group->get('/files/{id}/{file}/', ViewTitleFile::class);
+        $group->get('/titlethumbs/{id}/', ViewTitleThumbnailAction::class);
+        // TODO HEAD request for thumbnails?
     });
     $app->group('/tags', function (Group $group) {
         $group->get('/', ViewTagsAction::class);
         $group->get('/{id}/', ViewTagAction::class);
+    });
+    $app->group('/titles', function (Group $group) {
+        $group->get('/', ViewTitlesAction::class);
+        $group->get('/{id}/', ViewTitleAction::class);
     });
 };
