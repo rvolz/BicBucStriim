@@ -33,6 +33,11 @@ abstract class Action
     protected array $args;
 
     /**
+     * @var array
+     */
+    protected array $qargs;
+
+    /**
      * @param LoggerInterface $logger
      */
     public function __construct(LoggerInterface $logger)
@@ -53,6 +58,7 @@ abstract class Action
         $this->request = $request;
         $this->response = $response;
         $this->args = $args;
+        $this->qargs = $this->request->getQueryParams();
 
         try {
             return $this->action();
@@ -122,5 +128,38 @@ abstract class Action
             ->withStatus($payload->getStatusCode());
     }
 
+    /**
+     * Cause a temporary redirect.
+     * @param string $location the url for the location header
+     * @return Response
+     */
+    protected function respondWithRedirect(string $location): Response
+    {
+        return $this->response
+            ->withHeader('Location', $location)
+            ->withStatus(302);
+    }
+
+    /**
+     * @param  string $name
+     * @return mixed
+     */
+    protected function resolveQueryParam(string $name)
+    {
+        if (!isset($this->qargs[$name])) {
+            return null;
+        } else {
+            return $this->qargs[$name];
+        }
+    }
+
+    /**
+     * @param  string $name
+     * @return bool
+     */
+    protected function hasQueryParam(string $name): bool
+    {
+        return isset($this->qargs[$name]);
+    }
 
 }

@@ -43,7 +43,7 @@ class UpdateIdTemplatesAction extends AdminAction
                     'msg' => $this->getMessageString('admin_modified')
                 ));
         } else {
-            $ap = new ActionPayload(200, array(
+            $ap = new ActionPayload(500, array(
                 'msg' => $this->getMessageString('admin_modify_error')
             ));
         }

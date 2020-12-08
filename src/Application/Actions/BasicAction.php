@@ -66,4 +66,5 @@ abstract class BasicAction extends Action
     {
         return $this->user->isValid();
     }
+
 }

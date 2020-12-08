@@ -8,6 +8,9 @@ use App\Application\Actions\Admin\UpdateIdTemplatesAction;
 use App\Application\Actions\Admin\ViewAdminAction;
 use App\Application\Actions\Admin\ViewConfigurationAction;
 use App\Application\Actions\Admin\ViewIdTemplatesAction;
+use App\Application\Actions\Authors\CreateAuthorLinkAction;
+use App\Application\Actions\Authors\ViewAuthorAction;
+use App\Application\Actions\Authors\ViewAuthorsAction;
 use App\Application\Actions\Login\DoLoginAction;
 use App\Application\Actions\Login\ViewLoginAction;
 use App\Application\Actions\Login\ViewLogoutAction;
@@ -36,6 +39,15 @@ return function (App $app) {
         $group->get('/users/{id}/', \App\Application\Actions\Admin\ViewUserAction::class);
         $group->put('/users/{id}/', \App\Application\Actions\Admin\ChangeUserAction::class);
         $group->delete('/users/{id}/', DeleteIdTemplatesAction::class);
+        $group->get('/version/', \App\Application\Actions\Admin\ViewVersionCheckAction::class);
+    });
+    $app->group('/authors', function (Group $group) {
+        $group->get('/', ViewAuthorsAction::class);
+        $group->get('/{id}/', ViewAuthorAction::class);
+        $group->post('/{id}/thumbnail/', \App\Application\Actions\Authors\CreateAuthorThumbnailAction::class);
+        $group->delete('/{id}/thumbnail/', \App\Application\Actions\Authors\DeleteAuthorThumbnailAction::class);
+        $group->post('/{id}/link/', CreateAuthorLinkAction::class);
+        $group->delete('/{id}/link/{link}/', \App\Application\Actions\Authors\DeleteAuthorLinkAction::class);
     });
     $app->group('/static', function (Group $group) {
         $group->get('/covers/{id}/', ViewCoverAction::class);
