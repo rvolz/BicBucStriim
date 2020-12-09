@@ -21,6 +21,8 @@ use App\Application\Actions\Authors\ViewAuthorsAction;
 use App\Application\Actions\Login\DoLoginAction;
 use App\Application\Actions\Login\ViewLoginAction;
 use App\Application\Actions\Login\ViewLogoutAction;
+use App\Application\Actions\Search\UpdateSearchAction;
+use App\Application\Actions\Search\ViewSearchAction;
 use App\Application\Actions\Series\ViewASeriesAction;
 use App\Application\Actions\Series\ViewSeriesAction;
 use App\Application\Actions\Start\ViewLast30Action;
@@ -40,6 +42,7 @@ return function (App $app) {
     $app->get('/login/', ViewLoginAction::class);
     $app->post('/login/', DoLoginAction::class);
     $app->get('/logout/', ViewLogoutAction::class);
+    $app->get('/search/', ViewSearchAction::class);
     $app->group('/admin', function (Group $group) {
         $group->get('/', ViewAdminAction::class);
         $group->get('/configuration/', ViewConfigurationAction::class);
