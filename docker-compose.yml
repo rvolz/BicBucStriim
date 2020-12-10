@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+  bbs-apache:
+    build: docker
+    #image: php:7-apache
+    working_dir: /var/www/html
+    command: "php -d date.timezone=Europe/Berlin -S 0.0.0.0:8081 -t public"
+    user: 1000:1000
+    environment:
+      docker: "true"
+    ports:
+      - 8081:8081
+    volumes:
+      - ./work/www:/var/www/html
+      - ./work/lib:/mnt
+#  bbs-fpm:
+#    image: php:7-fpm
+#    working_dir: /var/www
+#    command: php -d date.timezone=Europe/Berlin -S 0.0.0.0:8091 -t public
+#    user: 1000:1000
+#    environment:
+#      docker: "true"
+#    ports:
+#      - 8091:8091
+#    volumes:
+#      - ./work/www:/var/www
+#      - ./work/lib:/mnt
+#      - ./work/logs:/var/www/logs
+#      - ./work/cache:/var/cache

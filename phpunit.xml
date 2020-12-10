@@ -1,0 +1,16 @@
+<phpunit bootstrap="vendor/autoload.php">
+    <testsuites>
+        <testsuite name="API">
+            <directory>./tests/Functional</directory>
+            <exclude>./tests/Functional/TitlesTest.php</exclude>
+        </testsuite>
+        <testsuite name="Unit">
+            <directory>./tests/Application</directory>
+        </testsuite>
+    </testsuites>
+    <filter>
+        <whitelist>
+            <directory suffix=".php">./src</directory>
+        </whitelist>
+    </filter>
+</phpunit>

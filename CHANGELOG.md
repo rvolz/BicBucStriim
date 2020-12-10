@@ -4,10 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [2.0.0-alpha.1]
 ### Added
 - JS dependencies for build
 ### Changed
+- Restructured PHP backend due to a lot of dependency changes and PHP 7.4+
 - ChangeLog to CHANGELOG.md
 - Added workaround for PHP 7.4 and Aura Auth, see #348
 ### Removed

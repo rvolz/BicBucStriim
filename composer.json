@@ -1,19 +1,87 @@
 {
     "require": {
-        "dflydev/markdown": "1.0.2",
-        "slim/slim": "2.4.3",
-        "slim/views": "0.1.2",
+        "php": ">=7.4.0",
+        "ext-dom": "*",
+        "ext-json": "*",
+        "ext-pdo": "*",
+        "ext-gd": "*",
+        "ext-intl": "*",
+        "ext-xmlwriter": "*",
+        "ext-zip": "*",
+        "slim/slim": "^4.6.0",
+        "php-di/php-di": "^6.3.0",
+        "slim/twig-view": "^3.0",
         "swiftmailer/swiftmailer": "5.0.1",
-        "twig/twig": "1.16.0",
-        "aura/auth": "2.x-dev",
-        "aura/session": "2.0.1",
-        "ircmaxell/password-compat": "v1.0.4"
+        "gabordemooij/redbean": "^v5.6.2",
+        "monolog/monolog": "^2.1.1",
+        "aura/auth": "^4.0.2",
+        "ircmaxell/password-compat": "^v1.0.4",
+        "aura/accept": "^2.2",
+        "akrabat/proxy-detection-middleware": "^0.4.0",
+        "slim/http-cache": "^1.0",
+        "guzzlehttp/psr7": "^1.7",
+        "http-interop/http-factory-guzzle": "^1.0",
+        "middlewares/trailing-slash": "^2.0"
     },
     "require-dev": {
-        "simpletest/simpletest": "^1.1"
+        "ext-simplexml": "*",
+        "simpletest/simpletest": "^v1.2.0",
+        "phpunit/phpunit": "^8.5.7",
+        "nategood/httpful": "^0.2.19",
+        "phpstan/phpstan": "^0.12.58",
+        "slim/psr7": "^1.3"
     },
     "scripts": {
         "genl10n": "yarn genl10n",
-        "package": "yarn package"
+        "package": "yarn package",
+        "test": "phpunit",
+        "prep-work": [
+            "rm -rf ./work",
+            "mkdir -p ./work/www/public/img",
+            "cp -r app work/www",
+            "cp -r data work/www",
+            "cp -r img work/www/public/",
+            "cp -r js work/www/public/",
+            "cp -r style work/www/public/",
+            "cp  -r public work/www",
+            "cp -r src work/www",
+            "cp -r vendor work/www",
+            "mkdir ./work/lib",
+            "cp -r tests/fixtures/lib2/ ./work/lib",
+            "mkdir -p ./work/www/var/logs",
+            "mkdir -p ./work/www/var/cache"
+        ],
+        "clean-work": "rm -rf work",
+        "copy-src": [
+            "cp -r app work/www",
+            "cp -r src work/www",
+            "cp -r public work/www"
+        ],
+        "copy-res": [
+            "cp -r img work/www/public/",
+            "cp -r js work/www/public/",
+            "cp -r style work/www/public/"
+        ],
+        "start": [
+            "@prep-work",
+            "docker-compose start"
+        ],
+        "stop": [
+            "docker-compose stop",
+            "@clean-work"
+        ]
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "config": {
+        "process-timeout": 0
     }
 }
