@@ -29,6 +29,9 @@ use App\Application\Actions\Search\ViewOpdsSearchAction;
 use App\Application\Actions\Search\ViewOpdsSearchDescriptorAction;
 use App\Application\Actions\Search\ViewSearchAction;
 use App\Application\Actions\Series\ViewASeriesAction;
+use App\Application\Actions\Series\ViewOpdsSeriesAction;
+use App\Application\Actions\Series\ViewOpdsSeriesByInitial;
+use App\Application\Actions\Series\ViewOpdsSeriesNames4Initials;
 use App\Application\Actions\Series\ViewSeriesAction;
 use App\Application\Actions\Start\ViewLast30Action;
 use App\Application\Actions\Start\ViewOpdsNewestAction;
@@ -37,6 +40,9 @@ use App\Application\Actions\Statics\ViewAuthorThumbnailAction;
 use App\Application\Actions\Statics\ViewCoverAction;
 use App\Application\Actions\Statics\ViewTitleThumbnailAction;
 use App\Application\Actions\Statics\ViewTitleFile;
+use App\Application\Actions\Tags\ViewOpdsTag;
+use App\Application\Actions\Tags\ViewOpdsTagNames4Initial;
+use App\Application\Actions\Tags\ViewOpdsTagsByInitial;
 use App\Application\Actions\Tags\ViewTagAction;
 use App\Application\Actions\Tags\ViewTagsAction;
 use App\Application\Actions\Titles\ViewTitleAction;
@@ -80,8 +86,14 @@ return function (App $app) {
         $group->get('/authors/{initial}/', ViewOpdsByAuthorInitialsAction::class);
         $group->get('/authors/{initial}/{id}/', ViewOpdsByAuthorNamesForInitialAction::class);
         $group->get('/search/', ViewOpdsSearchAction::class);
+        // TODO route doesn't work due to trailing slash requirements
         $group->get('/opensearch.xml', ViewOpdsSearchDescriptorAction::class);
-
+        $group->get('/tags/', ViewOpdsTagsByInitial::class);
+        $group->get('/tags/{initial}/', ViewOpdsTagNames4Initial::class);
+        $group->get('/tags/{initial}/{id}/', ViewOpdsTag::class);
+        $group->get('/series/', ViewOpdsSeriesByInitial::class);
+        $group->get('/series/{initial}/', ViewOpdsSeriesNames4Initials::class);
+        $group->get('/series/{initial}/{id}/', ViewOpdsSeriesAction::class);
     });
     $app->group('/series', function (Group $group) {
         $group->get('/', ViewSeriesAction::class);
