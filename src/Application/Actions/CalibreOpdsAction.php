@@ -37,7 +37,7 @@ abstract class CalibreOpdsAction extends BasicAction
         $this->calibre = $calibre;
         $this->l10n = $l10n;
         $this->gen = new OpdsGenerator(
-            $this->bbs,
+            '',         // TODO add basepath
             APP_VERSION,
             $this->config[AppConstants::CALIBRE_DIR],
             date(DATE_ATOM, $this->calibre->getModTime()),
@@ -47,10 +47,10 @@ abstract class CalibreOpdsAction extends BasicAction
 
     /**
      * Add thumbnail data to the OPDS book
-     * @param object $record
-     * @return object
+     * @param array $record
+     * @return array
      */
-    protected function checkThumbnailOpds(object $record): object
+    protected function checkThumbnailOpds(array $record): array
     {
         $record['book']->thumbnail = $this->bbs->isTitleThumbnailAvailable($record['book']->id);
         return $record;

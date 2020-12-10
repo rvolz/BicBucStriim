@@ -73,9 +73,10 @@ abstract class StaticsAction extends CalibreHtmlAction
         return $responseC
             ->withHeader('Content-Type', $type)
             ->withHeader('Content-Transfer-Encoding', 'binary')
-            ->withHeader('Content-Length', $stream->getSize())
             ->withBody($stream)
             ->withStatus(200);
+            // will be done by middleware
+            //->withHeader('Content-Length', $stream->getSize())
     }
 
     /**
@@ -91,8 +92,9 @@ abstract class StaticsAction extends CalibreHtmlAction
             ->withHeader('Content-Disposition',  "attachment; filename=\"${$filename}\"")
             ->withHeader('Content-Description', 'File Transfer')
             ->withHeader('Content-Transfer-Encoding', 'binary')
-            ->withHeader('Content-Length', $stream->getSize())
             ->withBody($stream)
             ->withStatus(200);
+            // will be done by middleware
+            // ->withHeader('Content-Length', $stream->getSize())
     }
 }

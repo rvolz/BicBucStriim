@@ -55,7 +55,7 @@ class OpdsGenerator
      * @param string|null $of output URI or NULL for string output
      * @return string  if $output is a URI NULL, else the XML is returned as a string.
      */
-    function rootCatalog(string $of = null)
+    function rootCatalog(string $of = null): ?string
     {
         $this->openStream($of);
         $this->header('opds_root_title',
@@ -80,12 +80,14 @@ class OpdsGenerator
 
     /**
      * Generate an acquisition catalog for the newest books
-     * @param  string $of   output URI or NULL for string output
-     * @param  array $entries an array of Book
-     * @param  bool $protected true = we need password authentication before a download
+     * @param ?string $of output URI or NULL for string output
+     * @param array $entries an array of Book
+     * @param bool $protected true = we need password authentication before a download
+     * @return string|null
      */
-    function newestCatalog(string $of, array $entries, bool $protected)
+    function newestCatalog(?string $of, array $entries, bool $protected): ?string
     {
+        // TODO delete the of argument, unnecessary
         $this->openStream($of);
         $this->header('opds_by_newest1',
             'opds_by_newest2',
@@ -103,29 +105,30 @@ class OpdsGenerator
 
     /**
      * Generate a paginated acquisition catalog for the all books
-     * @param  string|null $of  output URI or NULL for string output
-     * @param  array $entries an array of Book
-     * @param  boolean $protected true = we need password authentication before a download
-     * @param  int $page number of page to show, minimum 0
-     * @param  int $next number of the next page to show, or NULL
-     * @param  int $last number of the last page
+     * @param string|null $of output URI or NULL for string output
+     * @param array $entries an array of Book
+     * @param boolean $protected true = we need password authentication before a download
+     * @param int $page number of page to show, minimum 0
+     * @param int $next number of the next page to show, or NULL
+     * @param int $last number of the last page
+     * @return string|null
      */
-    function titlesCatalog(string $of, array $entries, bool $protected, int $page, int $next, int $last)
+    function titlesCatalog(?string $of, array $entries, bool $protected, int $page, int $next, int $last): ?string
     {
         $this->openStream($of);
         $this->header('opds_by_title1',
             'opds_by_title2',
             '/opds/titles/');
         $this->searchLink();
-        $this->acquisitionCatalogLink($this->bbs_root . '/opds/titleslist/' . $page . '/', 'self');
+        $this->acquisitionCatalogLink($this->bbs_root . '/opds/titles/?index=' . $page, 'self');
         $this->navigationCatalogLink($this->bbs_root . '/opds/', 'start');
         $this->navigationCatalogLink($this->bbs_root . '/opds/', 'up');
-        $this->acquisitionCatalogLink($this->bbs_root . '/opds/titleslist/0/', 'first');
+        $this->acquisitionCatalogLink($this->bbs_root . '/opds/titles/', 'first');
         if ($page > 0)
-            $this->acquisitionCatalogLink($this->bbs_root . '/opds/titleslist/' . ($page - 1) . '/', 'previous');
-        if (!is_null($next))
-            $this->acquisitionCatalogLink($this->bbs_root . '/opds/titleslist/' . $next . '/', 'next');
-        $this->acquisitionCatalogLink($this->bbs_root . '/opds/titleslist/' . $last . '/', 'last');
+            $this->acquisitionCatalogLink($this->bbs_root . '/opds/titles/?index=' . ($page - 1), 'previous');
+        if ($next > 0)
+            $this->acquisitionCatalogLink($this->bbs_root . '/opds/titles/?index=' . $next, 'next');
+        $this->acquisitionCatalogLink($this->bbs_root . '/opds/titles/?index=' . $last, 'last');
         # Content
         foreach ($entries as $entry)
             $this->partialAcquisitionEntry($entry, $protected);
@@ -135,21 +138,22 @@ class OpdsGenerator
 
     /**
      * Generate a list of initials of author names
-     * @param  string $of output URI or NULL for string output
-     * @param  array $entries an array of Items
+     * @param ?string $of output URI or NULL for string output
+     * @param array $entries an array of Items
+     * @return string|null
      */
-    function authorsRootCatalog(string $of, array $entries)
+    function authorsRootCatalog(?string $of, array $entries): ?string
     {
         $this->openStream($of);
         $this->header('opds_by_author1',
             'opds_by_author3',
-            '/opds/authorslist/');
-        $this->navigationCatalogLink($this->bbs_root . '/opds/authorslist/', 'self');
+            '/opds/authors/');
+        $this->navigationCatalogLink($this->bbs_root . '/opds/authors/', 'self');
         $this->navigationCatalogLink($this->bbs_root . '/opds/', 'start');
         $this->navigationCatalogLink($this->bbs_root . '/opds/', 'up');
         # Content
         foreach ($entries as $entry) {
-            $url = '/authorslist/' . $entry->initial . '/';
+            $url = '/authors/' . $entry->initial . '/';
             $this->navigationEntry($entry->initial, $url, $this->l10n->message('opds_authors') . $entry->ctr, $url,
                 self::OPDS_MIME_NAV);
         }
@@ -159,26 +163,27 @@ class OpdsGenerator
 
     /**
      * generate a list of author entries with book counts
-     * @param  string $of  output URI or NULL for string output
-     * @param  array $entries an array of Authors
-     * @param  string $initial the initial character
+     * @param ?string $of output URI or NULL for string output
+     * @param array $entries an array of Authors
+     * @param string $initial the initial character
+     * @return string|null
      */
-    function authorsNamesForInitialCatalog(string $of, array $entries, string $initial)
+    function authorsNamesForInitialCatalog(?string $of, array $entries, string $initial): ?string
     {
         $this->openStream($of);
-        $url = '/authorslist/' . $initial . '/';
+        $url = '/authors/' . $initial . '/';
         $this->header('opds_by_author4',
             'opds_by_author5',
             $url,
             '"' . $initial . '"');
         $this->navigationCatalogLink($this->bbs_root . '/opds' . $url, 'self');
         $this->navigationCatalogLink($this->bbs_root . '/opds/', 'start');
-        $this->navigationCatalogLink($this->bbs_root . '/opds/authorslist/', 'up');
+        $this->navigationCatalogLink($this->bbs_root . '/opds/authors/', 'up');
         # TODO next/prev
 
         # Content
         foreach ($entries as $entry) {
-            $url2 = $url . $entry->id . '/0/';
+            $url2 = $url . $entry->id . '/?index=0';
             $this->navigationEntry($entry->name, $url2, $this->l10n->message('opds_books') . $entry->anzahl, $url2,
                 self::OPDS_MIME_NAV);
         }
@@ -188,7 +193,7 @@ class OpdsGenerator
 
     /**
      * generate a list of book entries for an author
-     * @param string $of output URI or NULL for string output
+     * @param ?string $of output URI or NULL for string output
      * @param array $entries an array of Books
      * @param string $initial the initial character
      * @param object $author the author
@@ -198,30 +203,30 @@ class OpdsGenerator
      * @param int $last number of the last page
      * @return string|null
      */
-    function booksForAuthorCatalog(string $of,
+    function booksForAuthorCatalog(?string $of,
                                    array $entries,
                                    string $initial,
                                    object $author,
                                    bool $protected,
                                    int $page,
                                    int $next,
-                                   int $last)
+                                   int $last): ?string
     {
         $this->openStream($of);
-        $url = '/authorslist/' . $initial . '/' . $author->id . '/';
+        $url = '/authors/' . $initial . '/' . $author->id . '/';
         $this->header('opds_by_author6',
             '',
             $url,
             '"' . $author->name . '"');
         $this->acquisitionCatalogLink($this->bbs_root . '/opds' . $url, 'self');
         $this->navigationCatalogLink($this->bbs_root . '/opds/', 'start');
-        $this->navigationCatalogLink($this->bbs_root . '/opds/authorslist/' . $initial . '/', 'up');
-        $this->acquisitionCatalogLink($this->bbs_root . '/opds/authorslist/' . $initial . '/' . $author->id . '/0/', 'first');
+        $this->navigationCatalogLink($this->bbs_root . '/opds/authors/' . $initial . '/', 'up');
+        $this->acquisitionCatalogLink($this->bbs_root . '/opds/authors/' . $initial . '/' . $author->id . '/0/', 'first');
         if ($page > 0)
-            $this->acquisitionCatalogLink($this->bbs_root . '/opds/authorslist/' . $initial . '/' . $author->id . '/' . ($page - 1) . '/', 'previous');
-        if (!is_null($next))
-            $this->acquisitionCatalogLink($this->bbs_root . '/opds/authorslist/' . $initial . '/' . $author->id . '/' . $next . '/', 'next');
-        $this->acquisitionCatalogLink($this->bbs_root . '/opds/authorslist/' . $initial . '/' . $author->id . '/' . $last . '/', 'last');
+            $this->acquisitionCatalogLink($this->bbs_root . '/opds/authors/' . $initial . '/' . $author->id . '/?index=' . ($page - 1), 'previous');
+        if ($next > 0)
+            $this->acquisitionCatalogLink($this->bbs_root . '/opds/authors/' . $initial . '/' . $author->id . '/?index=' . $next, 'next');
+        $this->acquisitionCatalogLink($this->bbs_root . '/opds/authors/' . $initial . '/' . $author->id . '/?index=' . $last, 'last');
         # Content
         foreach ($entries as $entry) {
             //$url2 = $url . $entry['book']->id . '/';
@@ -233,21 +238,22 @@ class OpdsGenerator
 
     /**
      * Generate a list of initials of tag names
-     * @param  string $of output URI or NULL for string output
-     * @param  array $entries an array of Items
+     * @param ?string $of output URI or NULL for string output
+     * @param array $entries an array of Items
+     * @return string|null
      */
-    function tagsRootCatalog(string $of, array $entries)
+    function tagsRootCatalog(?string $of, array $entries): ?string
     {
         $this->openStream($of);
         $this->header('opds_by_tag1',
             'opds_by_tag3',
             '/opds/tagslist/');
-        $this->navigationCatalogLink($this->bbs_root . '/opds/tagslist/', 'self');
+        $this->navigationCatalogLink($this->bbs_root . '/opds/tags/', 'self');
         $this->navigationCatalogLink($this->bbs_root . '/opds/', 'start');
         $this->navigationCatalogLink($this->bbs_root . '/opds/', 'up');
         # Content
         foreach ($entries as $entry) {
-            $url = '/tagslist/' . $entry->initial . '/';
+            $url = '/tags/' . $entry->initial . '/';
             $this->navigationEntry($entry->initial, $url, $this->l10n->message('opds_tags') . $entry->ctr, $url,
                 self::OPDS_MIME_NAV);
         }
@@ -257,26 +263,27 @@ class OpdsGenerator
 
     /**
      * generate a list of tag entries with book counts
-     * @param  string $of output URI or NULL for string output
-     * @param  array $entries an array of Tags
-     * @param  string $initial the initial character
+     * @param ?string $of output URI or NULL for string output
+     * @param array $entries an array of Tags
+     * @param string $initial the initial character
+     * @return string|null
      */
-    function tagsNamesForInitialCatalog(string $of, array $entries, string $initial)
+    function tagsNamesForInitialCatalog(?string $of, array $entries, string $initial): ?string
     {
         $this->openStream($of);
-        $url = '/tagslist/' . $initial . '/';
+        $url = '/tags/' . $initial . '/';
         $this->header('opds_by_tag4',
             'opds_by_tag5',
             $url,
             '"' . $initial . '"');
         $this->navigationCatalogLink($this->bbs_root . '/opds' . $url, 'self');
         $this->navigationCatalogLink($this->bbs_root . '/opds/', 'start');
-        $this->navigationCatalogLink($this->bbs_root . '/opds/tagslist/', 'up');
+        $this->navigationCatalogLink($this->bbs_root . '/opds/tags/', 'up');
         # TODO next/prev
 
         # Content
         foreach ($entries as $entry) {
-            $url2 = $url . $entry->id . '/0/';
+            $url2 = $url . $entry->id . '/?index=0';
             $this->navigationEntry($entry->name, $url2, $this->l10n->message('opds_books') . $entry->anzahl, $url2,
                 self::OPDS_MIME_NAV);
         }
@@ -286,33 +293,34 @@ class OpdsGenerator
 
     /**
      * generate a list of book entries for a tag
-     * @param  string $of output URI or NULL for string output
-     * @param  array $entries an array of Books
-     * @param  string $initial the initial character
-     * @param  object $tag the tag
-     * @param  bool $protected download protection y/n?
-     * @param  int $page number of page to show, minimum 0
-     * @param  int $next number of the next page to show, or NULL
-     * @param  int $last number of the last page
+     * @param ?string $of output URI or NULL for string output
+     * @param array $entries an array of Books
+     * @param string $initial the initial character
+     * @param object $tag the tag
+     * @param bool $protected download protection y/n?
+     * @param int $page number of page to show, minimum 0
+     * @param int $next number of the next page to show, or NULL
+     * @param int $last number of the last page
+     * @return string|null
      */
-    function booksForTagCatalog(string $of, array $entries, string $initial, object $tag,
-                                bool $protected, int $page, int $next, int $last)
+    function booksForTagCatalog(?string $of, array $entries, string $initial, object $tag,
+                                bool $protected, int $page, int $next, int $last): ?string
     {
         $this->openStream($of);
-        $url = '/tagslist/' . $initial . '/' . $tag->id . '/';
+        $url = '/tags/' . $initial . '/' . $tag->id . '/';
         $this->header('opds_by_tag6',
             '',
             $url,
             '"' . $tag->name . '"');
         $this->acquisitionCatalogLink($this->bbs_root . '/opds' . $url, 'self');
         $this->navigationCatalogLink($this->bbs_root . '/opds/', 'start');
-        $this->navigationCatalogLink($this->bbs_root . '/opds/tagslist/' . $initial . '/', 'up');
-        $this->acquisitionCatalogLink($this->bbs_root . '/opds/tagslist/' . $initial . '/' . $tag->id . '/0/', 'first');
+        $this->navigationCatalogLink($this->bbs_root . '/opds/tags/' . $initial . '/', 'up');
+        $this->acquisitionCatalogLink($this->bbs_root . '/opds/tags/' . $initial . '/' . $tag->id . '/', 'first');
         if ($page > 0)
-            $this->acquisitionCatalogLink($this->bbs_root . '/opds/tagslist/' . $initial . '/' . $tag->id . '/' . ($page - 1) . '/', 'previous');
-        if (!is_null($next))
-            $this->acquisitionCatalogLink($this->bbs_root . '/opds/tagslist/' . $initial . '/' . $tag->id . '/' . $next . '/', 'next');
-        $this->acquisitionCatalogLink($this->bbs_root . '/opds/tagslist/' . $initial . '/' . $tag->id . '/' . $last . '/', 'last');
+            $this->acquisitionCatalogLink($this->bbs_root . '/opds/tags/' . $initial . '/' . $tag->id . '/?index=' . ($page - 1) , 'previous');
+        if ($next > 0)
+            $this->acquisitionCatalogLink($this->bbs_root . '/opds/tags/' . $initial . '/' . $tag->id . '/?index=' . $next, 'next');
+        $this->acquisitionCatalogLink($this->bbs_root . '/opds/tags/' . $initial . '/' . $tag->id . '/?index=' . $last, 'last');
         # Content
         foreach ($entries as $entry) {
             //$url2 = $url . $entry['book']->id . '/';
@@ -324,24 +332,25 @@ class OpdsGenerator
 
     /**
      * Generate a list of initials of series names
-     * @param  string $of output URI or NULL for string output
-     * @param  array $entries an array of Items
+     * @param ?string $of output URI or NULL for string output
+     * @param array $entries an array of Items
+     * @return string|null
      */
-    function seriesRootCatalog(string $of, array $entries)
+    function seriesRootCatalog(?string $of, array $entries): ?string
     {
         $this->openStream($of);
         $this->header('opds_by_series1',
             'opds_by_series3',
-            '/opds/serieslist/');
-        $this->navigationCatalogLink($this->bbs_root . '/opds/serieslist/', 'self');
+            '/opds/series/');
+        $this->navigationCatalogLink($this->bbs_root . '/opds/series/', 'self');
         $this->navigationCatalogLink($this->bbs_root . '/opds/', 'start');
         $this->navigationCatalogLink($this->bbs_root . '/opds/', 'up');
-        $url = '/serieslist/all/';
+        $url = '/series/all/';
         $this->navigationEntry("All", $url, "All Series", $url,
             self::OPDS_MIME_NAV);
         # Content
         foreach ($entries as $entry) {
-            $url = '/serieslist/' . $entry->initial . '/';
+            $url = '/series/' . $entry->initial . '/';
             $this->navigationEntry($entry->initial, $url, $this->l10n->message('opds_series') . $entry->ctr, $url,
                 self::OPDS_MIME_NAV);
         }
@@ -351,26 +360,27 @@ class OpdsGenerator
 
     /**
      * generate a list of series entries with book counts
-     * @param  string $of output URI or NULL for string output
-     * @param  array $entries an array of Series
-     * @param  string $initial the initial character
+     * @param ?string $of output URI or NULL for string output
+     * @param array $entries an array of Series
+     * @param string $initial the initial character
+     * @return string|null
      */
-    function seriesNamesForInitialCatalog(string $of, array $entries, string $initial)
+    function seriesNamesForInitialCatalog(?string $of, array $entries, string $initial): ?string
     {
         $this->openStream($of);
-        $url = '/serieslist/' . $initial . '/';
+        $url = '/series/' . $initial . '/';
         $this->header('opds_by_series4',
             'opds_by_series5',
             $url,
             '"' . $initial . '"');
         $this->navigationCatalogLink($this->bbs_root . '/opds' . $url, 'self');
         $this->navigationCatalogLink($this->bbs_root . '/opds/', 'start');
-        $this->navigationCatalogLink($this->bbs_root . '/opds/serieslist/', 'up');
+        $this->navigationCatalogLink($this->bbs_root . '/opds/series/', 'up');
         # TODO next/prev
 
         # Content
         foreach ($entries as $entry) {
-            $url2 = $url . $entry->id . '/0/';
+            $url2 = $url . $entry->id . '/';
             $this->navigationEntry($entry->name, $url2, $this->l10n->message('opds_books') . $entry->anzahl, $url2,
                 self::OPDS_MIME_NAV);
         }
@@ -380,33 +390,34 @@ class OpdsGenerator
 
     /**
      * generate a list of book entries for a series
-     * @param  string $of output URI or NULL for string output
-     * @param  array $entries an array of Books
-     * @param  string $initial the initial character
-     * @param  object $series the series
-     * @param  bool $protected download protection y/n?
-     * @param  int $page number of page to show, minimum 0
-     * @param  int $next number of the next page to show, or NULL
-     * @param  int $last number of the last page
+     * @param ?string $of output URI or NULL for string output
+     * @param array $entries an array of Books
+     * @param string $initial the initial character
+     * @param object $series the series
+     * @param bool $protected download protection y/n?
+     * @param int $page number of page to show, minimum 0
+     * @param int $next number of the next page to show, or NULL
+     * @param int $last number of the last page
+     * @return string|null
      */
-    function booksForSeriesCatalog(string $of, array $entries, string $initial, object $series,
-                                   bool $protected, int $page, int $next, int $last)
+    function booksForSeriesCatalog(?string $of, array $entries, string $initial, object $series,
+                                   bool $protected, int $page, int $next, int $last): ?string
     {
         $this->openStream($of);
-        $url = '/serieslist/' . $initial . '/' . $series->id . '/';
+        $url = '/series/' . $initial . '/' . $series->id . '/';
         $this->header('opds_by_series6',
             '',
             $url,
             '"' . $series->name . '"');
         $this->acquisitionCatalogLink($this->bbs_root . '/opds' . $url, 'self');
         $this->navigationCatalogLink($this->bbs_root . '/opds/', 'start');
-        $this->navigationCatalogLink($this->bbs_root . '/opds/serieslist/' . $initial . '/', 'up');
-        $this->acquisitionCatalogLink($this->bbs_root . '/opds/serieslist/' . $initial . '/' . $series->id . '/0/', 'first');
+        $this->navigationCatalogLink($this->bbs_root . '/opds/series/' . $initial . '/', 'up');
+        $this->acquisitionCatalogLink($this->bbs_root . '/opds/series/' . $initial . '/' . $series->id . '/0/', 'first');
         if ($page > 0)
-            $this->acquisitionCatalogLink($this->bbs_root . '/opds/serieslist/' . $initial . '/' . $series->id . '/' . ($page - 1) . '/', 'previous');
-        if (!is_null($next))
-            $this->acquisitionCatalogLink($this->bbs_root . '/opds/serieslist/' . $initial . '/' . $series->id . '/' . $next . '/', 'next');
-        $this->acquisitionCatalogLink($this->bbs_root . '/opds/serieslist/' . $initial . '/' . $series->id . '/' . $last . '/', 'last');
+            $this->acquisitionCatalogLink($this->bbs_root . '/opds/series/' . $initial . '/' . $series->id . '/?index=' . ($page - 1), 'previous');
+        if ($next > 0)
+            $this->acquisitionCatalogLink($this->bbs_root . '/opds/series/' . $initial . '/' . $series->id . '/?index=' . $next, 'next');
+        $this->acquisitionCatalogLink($this->bbs_root . '/opds/series/' . $initial . '/' . $series->id . '/?index=' . $last, 'last');
         # Content
         foreach ($entries as $entry) {
             //$url2 = $url . $entry['book']->id . '/';
@@ -418,11 +429,11 @@ class OpdsGenerator
 
     /**
      * Create an OpenSearch descriptor
-     * @param string $of output URI or NULL for string output
+     * @param ?string $of output URI or NULL for string output
      * @param string $fragment path fragment for search operation
      * @return string stream         the OpenSearch descriptor
      */
-    function searchDescriptor(string $of, string $fragment): string
+    function searchDescriptor(?string $of, string $fragment): string
     {
         $this->openStream($of);
         $this->xmlw->startDocument('1.0', 'UTF-8');
@@ -474,7 +485,7 @@ class OpdsGenerator
 
     /**
      * Generate a paginated acquisition catalog for books as search results
-     * @param string $of output URI or NULL for string output
+     * @param ?string $of output URI or NULL for string output
      * @param array $entries an array of Book
      * @param boolean $protected true = we need password authentication before a download
      * @param int $page number of page to show, minimum 0
@@ -485,7 +496,7 @@ class OpdsGenerator
      * @param int $page_size number of entries per search page
      * @return string stream          the search result feed
      */
-    function searchCatalog(string $of,
+    function searchCatalog(?string $of,
                            array $entries,
                            bool $protected,
                            int $page,
@@ -493,23 +504,23 @@ class OpdsGenerator
                            int $last,
                            string $search,
                            int $total,
-                           int $page_size)
+                           int $page_size): ?string
     {
         $this->openStream($of);
         $this->header('opds_by_search1',
             'opds_by_search2',
-            '/opds/searchlist/' . $page . ':' . urlencode($search),
+            '/opds/search/' . $page . ':' . urlencode($search),
             ': ' . $search);
-        $this->acquisitionCatalogLink($this->bbs_root . '/opds/searchlist/' . $page . '/', 'self');
+        $this->acquisitionCatalogLink($this->bbs_root . '/opds/search/?index=' . $page, 'self');
         $this->navigationCatalogLink($this->bbs_root . '/opds/', 'start');
         $this->navigationCatalogLink($this->bbs_root . '/opds/', 'up');
 
-        $this->acquisitionCatalogLink($this->bbs_root . '/opds/searchlist/0/', 'first');
+        $this->acquisitionCatalogLink($this->bbs_root . '/opds/search/', 'first');
         if ($page > 0)
-            $this->acquisitionCatalogLink($this->bbs_root . '/opds/searchlist/' . ($page - 1) . '/', 'previous');
-        if (!is_null($next))
-            $this->acquisitionCatalogLink($this->bbs_root . '/opds/searchlist/' . $next . '/', 'next');
-        $this->acquisitionCatalogLink($this->bbs_root . '/opds/searchlist/' . $last . '/', 'last');
+            $this->acquisitionCatalogLink($this->bbs_root . '/opds/search/?index=' . ($page - 1), 'previous');
+        if ($next > 0)
+            $this->acquisitionCatalogLink($this->bbs_root . '/opds/search/?index=' . $next, 'next');
+        $this->acquisitionCatalogLink($this->bbs_root . '/opds/search/?index=' . $last, 'last');
         # response elements
         $this->xmlw->writeElement('opensearch:totalResults', $total);
         $this->xmlw->writeElement('opensearch:startIndex', $page * $page_size);
@@ -537,7 +548,7 @@ class OpdsGenerator
      */
     function partialAcquisitionEntry(array $entry, bool $protected = true)
     {
-        $titleLink = $this->bbs_root . '/opds/titles/' . $entry['book']->id;
+        $titleLink = $this->bbs_root . '/opds/titles/' . $entry['book']->id .'/';
         $this->xmlw->startElement('entry');
         $this->xmlw->writeElement('id', 'urn:bicbucstriim:' . $titleLink);
         $this->xmlw->writeElement('title', $entry['book']->title);
@@ -553,12 +564,14 @@ class OpdsGenerator
         $this->xmlw->startElement("dc:language");
         $this->xmlw->text($entry['language']);
         $this->xmlw->endElement();
-        if (isset($entry['book']->thumbnail) && $entry['book']->thumbnail)
-            $tlink = $this->bbs_root . '/thumbnails/titles/thumb_' . $entry['book']->id . '.png';
-        else
-            $tlink = $this->bbs_root . '/thumbnails/titles/default_book.png';
-        $this->thumbnailLink($tlink);
-        $this->imageLink($titleLink . '/cover/');
+        if (isset($entry['book']->thumbnail) && $entry['book']->thumbnail) {
+            $tlink = $this->bbs_root . '/static/titlethumbs/' . $entry['book']->id . '/';
+            $this->thumbnailLink($tlink);
+        }
+        //else
+        //    $tlink = $this->bbs_root . '/img/default_book.png'; // TODO default book thumb?
+        $clink = $this->bbs_root . '/static/covers/' . $entry['book']->id . '/';
+        $this->imageLink($clink);
         foreach ($entry['formats'] as $format) {
             $fname = $format->name;
             $ext = strtolower($format->format);
@@ -761,14 +774,14 @@ class OpdsGenerator
     /**
      * Close the XML stream and output the result
      * @param string|null $of Proper URI or NULL
-     * @return string  The XML string or NULL if output is sent to the URI
+     * @return ?string  The XML string or NULL if output is sent to the URI
      */
-    function closeStream(string $of = null)
+    function closeStream(string $of = null): ?string
     {
         if (is_null($of))
             return $this->xmlw->outputMemory(TRUE);
         else
-            return NULL;
+            return null;
     }
 
 }

@@ -62,4 +62,34 @@ abstract class BasicAction extends Action
         return $book;
 
     }
+
+
+    /**
+     * Calculate the next page number for search results
+     * @param array $tl search result
+     * @return int      page index or NULL
+     */
+    protected function getNextSearchPage(array $tl): int
+    {
+        if ($tl['page'] < $tl['pages'] - 1)
+            $nextPage = $tl['page'] + 1;
+        else
+            $nextPage = 0;
+        return $nextPage;
+    }
+
+    /**
+     * Calculate the last page number for search results
+     * @param array $tl search result
+     * @return int      page index
+     */
+    protected function getLastSearchPage(array $tl): int
+    {
+        if ($tl['pages'] == 0)
+            $lastPage = 0;
+        else
+            $lastPage = $tl['pages'] - 1;
+        return $lastPage;
+    }
+
 }

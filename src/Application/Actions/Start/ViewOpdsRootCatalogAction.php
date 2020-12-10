@@ -5,6 +5,7 @@ namespace App\Application\Actions\Start;
 
 
 use App\Application\Actions\CalibreOpdsAction;
+use App\Domain\Opds\OpdsGenerator;
 use Psr\Http\Message\ResponseInterface as Response;
 
 class ViewOpdsRootCatalogAction extends CalibreOpdsAction

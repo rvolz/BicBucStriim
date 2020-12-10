@@ -18,14 +18,21 @@ use App\Application\Actions\Authors\DeleteAuthorLinkAction;
 use App\Application\Actions\Authors\DeleteAuthorThumbnailAction;
 use App\Application\Actions\Authors\ViewAuthorAction;
 use App\Application\Actions\Authors\ViewAuthorsAction;
+use App\Application\Actions\Authors\ViewOpdsByAuthorAction;
+use App\Application\Actions\Authors\ViewOpdsByAuthorInitialsAction;
+use App\Application\Actions\Authors\ViewOpdsByAuthorNamesForInitialAction;
 use App\Application\Actions\Login\DoLoginAction;
 use App\Application\Actions\Login\ViewLoginAction;
 use App\Application\Actions\Login\ViewLogoutAction;
 use App\Application\Actions\Search\UpdateSearchAction;
+use App\Application\Actions\Search\ViewOpdsSearchAction;
+use App\Application\Actions\Search\ViewOpdsSearchDescriptorAction;
 use App\Application\Actions\Search\ViewSearchAction;
 use App\Application\Actions\Series\ViewASeriesAction;
 use App\Application\Actions\Series\ViewSeriesAction;
 use App\Application\Actions\Start\ViewLast30Action;
+use App\Application\Actions\Start\ViewOpdsNewestAction;
+use App\Application\Actions\Start\ViewOpdsRootCatalogAction;
 use App\Application\Actions\Statics\ViewAuthorThumbnailAction;
 use App\Application\Actions\Statics\ViewCoverAction;
 use App\Application\Actions\Statics\ViewTitleThumbnailAction;
@@ -65,6 +72,16 @@ return function (App $app) {
         $group->delete('/{id}/thumbnail/', DeleteAuthorThumbnailAction::class);
         $group->post('/{id}/link/', CreateAuthorLinkAction::class);
         $group->delete('/{id}/link/{link}/', DeleteAuthorLinkAction::class);
+    });
+    $app->group('/opds', function (Group $group) {
+        $group->get('/', ViewOpdsRootCatalogAction::class);
+        $group->get('/newest/', ViewOpdsNewestAction::class);
+        $group->get('/authors/', ViewOpdsByAuthorAction::class);
+        $group->get('/authors/{initial}/', ViewOpdsByAuthorInitialsAction::class);
+        $group->get('/authors/{initial}/{id}/', ViewOpdsByAuthorNamesForInitialAction::class);
+        $group->get('/search/', ViewOpdsSearchAction::class);
+        $group->get('/opensearch.xml', ViewOpdsSearchDescriptorAction::class);
+
     });
     $app->group('/series', function (Group $group) {
         $group->get('/', ViewSeriesAction::class);
