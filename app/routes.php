@@ -24,7 +24,6 @@ use App\Application\Actions\Authors\ViewOpdsByAuthorNamesForInitialAction;
 use App\Application\Actions\Login\DoLoginAction;
 use App\Application\Actions\Login\ViewLoginAction;
 use App\Application\Actions\Login\ViewLogoutAction;
-use App\Application\Actions\Search\UpdateSearchAction;
 use App\Application\Actions\Search\ViewOpdsSearchAction;
 use App\Application\Actions\Search\ViewOpdsSearchDescriptorAction;
 use App\Application\Actions\Search\ViewSearchAction;
@@ -45,6 +44,7 @@ use App\Application\Actions\Tags\ViewOpdsTagNames4Initial;
 use App\Application\Actions\Tags\ViewOpdsTagsByInitial;
 use App\Application\Actions\Tags\ViewTagAction;
 use App\Application\Actions\Tags\ViewTagsAction;
+use App\Application\Actions\Titles\ViewOpdsTitlesAction;
 use App\Application\Actions\Titles\ViewTitleAction;
 use App\Application\Actions\Titles\ViewTitlesAction;
 use Slim\App;
@@ -94,6 +94,7 @@ return function (App $app) {
         $group->get('/series/', ViewOpdsSeriesByInitial::class);
         $group->get('/series/{initial}/', ViewOpdsSeriesNames4Initials::class);
         $group->get('/series/{initial}/{id}/', ViewOpdsSeriesAction::class);
+        $group->get('/titles/', ViewOpdsTitlesAction::class);
     });
     $app->group('/series', function (Group $group) {
         $group->get('/', ViewSeriesAction::class);

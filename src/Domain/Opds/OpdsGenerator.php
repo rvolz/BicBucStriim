@@ -573,11 +573,12 @@ class OpdsGenerator
         $clink = $this->bbs_root . '/static/covers/' . $entry['book']->id . '/';
         $this->imageLink($clink);
         foreach ($entry['formats'] as $format) {
-            $fname = $format->name;
+            $fname = urlencode($format->name);
             $ext = strtolower($format->format);
-            $bp = Utilities::bookPath($this->calibre_dir, $entry['book']->path, $fname . '.' . $ext);
+            $bp = Utilities::bookPath($this->calibre_dir, $entry['book']->path, $format->name . '.' . $ext);
             $mt = Utilities::titleMimeType($bp);
-            $this->directDownloadLink($titleLink . '/format/' . $format->format . '/', $mt);
+            $bl = "/{$fname}.{$ext}/";
+            $this->directDownloadLink($this->bbs_root . '/static/files/' . $entry['book']->id . $bl, $mt);
         }
         foreach ($entry['tags'] as $category) {
             $this->xmlw->startElement('category');
