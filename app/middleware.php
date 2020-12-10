@@ -16,6 +16,7 @@ use App\Domain\User\UserLanguage;
 use Psr\Log\LoggerInterface;
 use Slim\App;
 use Slim\HttpCache\Cache;
+use Slim\Views\Twig;
 
 return function (App $app) {
     /* @var LoggerInterface $logger */
@@ -32,7 +33,7 @@ return function (App $app) {
     $l10n = $app->getContainer()->get(L10n::class);
 
     $app->getBasePath();
-    // TODO Still necessary?
+
     $app->add(new CalibreConfigMiddleware($logger, $calibre, $config));
     $app->add(new OwnConfigMiddleware($logger, $bbs, $config));
     // NOTE supply argument trusted proxies, if necessary?
@@ -41,7 +42,7 @@ return function (App $app) {
     $app->add(new NegotiationMiddleware($logger, new UserLanguage(), $l10n));
     $app->add(new RequestLogMiddleware($logger));
     $app->add(new Cache('public', 86400));
-    $app->add(Slim\Views\TwigMiddleware::createFromContainer($app, \Slim\Views\Twig::class));
+    $app->add(Slim\Views\TwigMiddleware::createFromContainer($app, Twig::class));
     $app->add(new AuthMiddleware($logger, $bbs->getDb(), $app->getContainer()));
     $app->add(new Middlewares\TrailingSlash(true));
 };

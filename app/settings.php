@@ -25,7 +25,7 @@ return function (ContainerBuilder $containerBuilder) {
             // Monolog settings
             'logger' => [
                 'name' => 'BicBucStriim',
-                'path' => isset($_ENV['docker']) ? 'php://stdout' : __DIR__ . '/../logs/app.log',
+                'path' => getenv('docker') ? 'php://stdout' : __DIR__ . '/../var/logs/app.log',
                 'level' => Logger::DEBUG,
             ],
             // BicBucStriim settings

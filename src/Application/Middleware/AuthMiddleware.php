@@ -1,12 +1,12 @@
 <?php
-
+declare(strict_types=1);
 namespace App\Application\Middleware;
+
 
 use App\Domain\User\User;
 use Aura\Auth;
 use Aura\Auth\AuthFactory;
 use Aura\Auth\Exception;
-use ErrorException;
 use PDO;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
@@ -16,6 +16,7 @@ use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use Psr\Container\ContainerInterface;
 use GuzzleHttp\Psr7\Response;
+use Slim\Exception\HttpUnauthorizedException;
 
 class AuthMiddleware  implements Middleware
 {
@@ -40,6 +41,7 @@ class AuthMiddleware  implements Middleware
 
     /**
      * {@inheritdoc}
+     * @throws HttpUnauthorizedException
      */
     public function process(Request $request, RequestHandler $handler): ResponseInterface
     {
@@ -48,20 +50,27 @@ class AuthMiddleware  implements Middleware
         $auth = $auth_factory->newInstance();
         $pdo_adapter = $this->createPdoAuthenticator($auth_factory);
         $this->try_resume($auth_factory, $pdo_adapter, $auth);
+        // TODO check if we have to subtract a base path here
+        $path = $request->getUri()->getPath();
         if ($auth->isValid()) {
             $ud = $auth->getUserData();
             if (!is_array($ud) || !array_key_exists('role', $ud) || !array_key_exists('id', $ud)) {
                 $this->logger->error('Login error: invalid user data received. Killing session ...');
                 $this->logout($auth_factory, $pdo_adapter, $auth, true);
-                $response = new Response();
-                return $response->withStatus(401, 'Invalid authorization data, please login again');
+                return $this->answer401($request,'Invalid authorization data, please login again');
             }
             $this->logger->debug("Authentication valid, resuming for user " . $auth->getUserName());
+            if (substr_compare($path, '/logout', 0, 7) == 0) {
+                $this->logout($auth_factory, $pdo_adapter, $auth, false);
+                $this->container->set(User::class, User::emptyUser());
+                $request = $request->withAttribute('user', User::emptyUser());
+                return $handler->handle($request);
+            }
+            // TODO find another method for setting or a different interface
             $this->container->set(User::class, User::fromArray($ud, array($auth->getUserName(),'')));
+            $request = $request->withAttribute('user', User::fromArray($ud, array($auth->getUserName(),'')));
             return $handler->handle($request);
         } else {
-            // TODO check if we have to subtract a base path here
-            $path = $request->getUri()->getPath();
             if (substr_compare($path, '/login', 0, 6) == 0) {
                 if ($request->getMethod() == 'POST') {
                     $form_data = $request->getParsedBody();
@@ -75,33 +84,51 @@ class AuthMiddleware  implements Middleware
                         $this->container->set(User::class, User::emptyUser());
                     } else {
                         $this->container->set(User::class, User::fromArray($ud, $auth_data));
+                        $request = $request->withAttribute('user', User::fromArray($ud, array($auth->getUserName(),'')));
                     }
                     return $handler->handle($request);
                 } else {
                     return $handler->handle($request);
                 }
-            } elseif (substr_compare($path, '/logout', 0, 7) == 0) {
-                $this->logout($auth_factory, $pdo_adapter, $auth, false);
-                $this->container->set(User::class, User::emptyUser());
-                return $handler->handle($request);
             } else {
                 $this->logger->debug("Authentication required, status is ".$auth->getStatus());
                 $auth_data = $this->checkRequest4Auth($request);
-                if (is_null($auth_data)) {
-                    $response = new Response();
-                    return $response->withStatus(401, 'Authentication required');
-                }
+                if (is_null($auth_data))
+                    return $this->answer401($request,'Authentication required');
                 $this->logger->debug("Authentication data found in headers");
                 $ud = $this->try_login($auth_factory, $pdo_adapter, $auth, $auth_data);
                 if (is_null($ud)) {
-                    $response = new Response();
-                    return $response->withStatus(401, 'Authentication required');
+                    return $this->answer401($request, 'Authentication required.');
                 } else {
                     $this->container->set(User::class, User::fromArray($ud, $auth_data));
+                    $request = $request->withAttribute('user', User::fromArray($ud, array($auth->getUserName(),'')));
                     return $handler->handle($request);
                 }
             }
         }
+    }
+
+
+    /**
+     * Send a 401 (Unauthorized) answer depending on the access type:
+     * - API: send a 401 via the exception
+     * - HTML: send a redirect to the login form
+     * @param ServerRequestInterface $r
+     * @param string $msg
+     * @return Response
+     * @throws HttpUnauthorizedException
+     */
+    protected function answer401(Request $r, string $msg): ResponseInterface
+    {
+        if ($this->isApiRequest($r)) {
+            $this->logger->debug("AuthMiddleware::answer401: unauthorized API request");
+            //$response =  $response->withStatus(401, 'Authentication required');
+            throw new HttpUnauthorizedException($r,$msg);
+        } else {
+            $this->logger->debug("AuthMiddleware::answer401: unauthorized HTML request");
+            return new Response(302, ['Location' => '/login/'], null, '1.1', $msg);
+        }
+
     }
 
 
@@ -122,7 +149,7 @@ class AuthMiddleware  implements Middleware
             'tags',
             'role'
         );
-        return $auth_factory->newPdoAdapter($this->pdo, $hash, $cols, 'user', null);
+        return $auth_factory->newPdoAdapter($this->pdo, $hash, $cols, 'user');
     }
 
 
@@ -182,6 +209,25 @@ class AuthMiddleware  implements Middleware
     }
 
     /**
+     * Find out if the request is an API call, OPDS or JSON. Uses the X-Requested-With or
+     * the Content-Type headers to decide that.
+     * @param ServerRequestInterface $r
+     * @return bool
+     */
+    protected function isApiRequest(Request $r): bool
+    {
+        // jQuery Mobile uses Xhr to communicate so we can't use this
+        // TODO enable XHR check
+        //if ($r->getHeaderLine('X-Requested-With') === 'XMLHttpRequest')
+        //    return true;
+        $ct = $r->getHeaderLine('Content-Type');
+        foreach (['application/xml', 'application/atom+xml', 'application/json'] as $item) {
+            if (strstr($ct, $item))
+                return true;
+        }
+        return false;
+    }
+    /**
      * Try to resume an existing session. If the session timed out, the resume service
      * forces an automatic logout
      * @param AuthFactory $auth_factory
@@ -204,18 +250,18 @@ class AuthMiddleware  implements Middleware
      * @param AuthFactory $auth_factory
      * @param Auth\Adapter\PdoAdapter $pdo_adapter
      * @param Auth\Auth $auth
-     * @param bool $force forecd logout if true, else normal logout
+     * @param bool $force foreed logout if true, else normal logout
      */
     public function logout(AuthFactory $auth_factory, Auth\Adapter\PdoAdapter $pdo_adapter, Auth\Auth $auth, bool $force = false): void
     {
-        try {
-            $logout_service = $auth_factory->newLogoutService($pdo_adapter);
-            if ($force)
-                $logout_service->forceLogout($auth);
-            else
-                $logout_service->logout($auth);
-        } catch (ErrorException $e) {
-            $this->logger->error('Authentication error, error while killing session: ' . var_export(get_class($e), true));
+        $logout_service = $auth_factory->newLogoutService($pdo_adapter);
+        if ($force) {
+            $this->logger->debug("%s: %s, forcing logout", [__FILE__, __FUNCTION__]);
+            $logout_service->forceLogout($auth);
+        }
+        else {
+            $this->logger->debug("%s: %s, logout", [__FILE__, __FUNCTION__]);
+            $logout_service->logout($auth);
         }
     }
 

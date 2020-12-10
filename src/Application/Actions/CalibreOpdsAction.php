@@ -8,16 +8,11 @@ use App\Domain\BicBucStriim\AppConstants;
 use App\Domain\BicBucStriim\BicBucStriimRepository;
 use App\Domain\BicBucStriim\Configuration;
 use App\Domain\BicBucStriim\L10n;
-use App\Domain\Calibre\Calibre;
 use App\Domain\Calibre\CalibreFilter;
 use App\Domain\Calibre\CalibreRepository;
-use App\Domain\DomainException\DomainRecordNotFoundException;
 use App\Domain\Opds\OpdsGenerator;
-use App\Domain\User\User;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Log\LoggerInterface;
-use Slim\Exception\HttpBadRequestException;
-use Slim\Views\Twig;
 
 abstract class CalibreOpdsAction extends BasicAction
 {
@@ -30,17 +25,15 @@ abstract class CalibreOpdsAction extends BasicAction
      * @param BicBucStriimRepository $bbs
      * @param CalibreRepository $calibre
      * @param Configuration $config
-     * @param User $user
      * @param L10n $l10n
      */
     public function __construct(LoggerInterface $logger,
                                 BicBucStriimRepository $bbs,
                                 CalibreRepository $calibre,
                                 Configuration $config,
-                                User $user,
                                 L10n $l10n)
     {
-        parent::__construct($logger, $bbs, $config, $user);
+        parent::__construct($logger, $bbs, $config);
         $this->calibre = $calibre;
         $this->l10n = $l10n;
         $this->gen = new OpdsGenerator(
@@ -87,10 +80,10 @@ abstract class CalibreOpdsAction extends BasicAction
      * looks for an alterantive in English. If that also fails an error message
      * is returned.
      *
-     * @param  string $id message id
+     * @param string $id message id
      * @return string     localized message string
      */
-    protected function getMessageString($id)
+    protected function getMessageString(string $id): string
     {
         return $this->l10n->message($id);
     }
@@ -101,7 +94,7 @@ abstract class CalibreOpdsAction extends BasicAction
      * @param string $type OPDS catalog type
      * @return Response
      */
-    protected function respondWithOpds($payload, $type): Response
+    protected function respondWithOpds(string $payload, string $type): Response
     {
         $this->response->getBody()->write($payload);
         return $this->response

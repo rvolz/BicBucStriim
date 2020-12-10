@@ -14,7 +14,6 @@ class ViewLoginAction extends LoginAction
      */
     protected function action(): Response
     {
-        $this->logger->alert("ViewLogin reached");
         return $this->respondWithPage('login.html', array(
             'page' => $this->mkPage($this->getMessageString('login'))
         ));

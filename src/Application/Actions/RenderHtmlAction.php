@@ -38,18 +38,16 @@ abstract class RenderHtmlAction extends BasicAction
      * @param LoggerInterface $logger
      * @param BicBucStriimRepository $bbs
      * @param Configuration $config
-     * @param User $user
      * @param Twig $twig
      * @param L10n $l10n
      */
     public function __construct(LoggerInterface $logger,
                                 BicBucStriimRepository $bbs,
                                 Configuration $config,
-                                User $user,
                                 Twig $twig,
                                 L10n $l10n)
     {
-        parent::__construct($logger, $bbs, $config, $user);
+        parent::__construct($logger, $bbs, $config);
         $this->twig = $twig;
         $this->l10n = $l10n;
     }
@@ -104,7 +102,7 @@ abstract class RenderHtmlAction extends BasicAction
      * @param  string $id message id
      * @return string     localized message string
      */
-    protected function getMessageString($id)
+    protected function getMessageString($id): string
     {
         return $this->l10n->message($id);
     }

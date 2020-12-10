@@ -22,20 +22,15 @@ class ViewTitleThumbnailAction extends StaticsAction
     {
         $id = (int) $this->resolveArg('id');
         if ($this->bbs->isTitleThumbnailAvailable($id)) {
-            $this->logger->debug('ava1');
             $thumbnail = $this->bbs->getExistingTitleThumbnail($id);
-            $this->logger->debug('ava2');
         } else {
-            $this->logger->debug('ava3');
             $book = $this->calibre->title($id);
-            $this->logger->debug('ava4');
             if ($book->has_cover) {
                 $this->logger->debug('has cover');
                 $clipped = $this->config[AppConstants::THUMB_GEN_CLIPPED];
                 $cover = $this->calibre->titleCover($id);
                 $thumbnail = $this->bbs->titleThumbnail($id, $cover, $clipped);
             } else {
-                $this->logger->debug('ava5');
                 // TODO send default thumbnail if there is none?
                 throw new DomainRecordNotFoundException();
             }

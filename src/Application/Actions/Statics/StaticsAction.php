@@ -34,7 +34,6 @@ abstract class StaticsAction extends CalibreHtmlAction
      * @param BicBucStriimRepository $bbs
      * @param CalibreRepository $calibre
      * @param Configuration $config
-     * @param User $user
      * @param Twig $twig
      * @param L10n $l10n
      */
@@ -42,11 +41,10 @@ abstract class StaticsAction extends CalibreHtmlAction
                                 BicBucStriimRepository $bbs,
                                 CalibreRepository $calibre,
                                 Configuration $config,
-                                User $user,
                                 Twig $twig,
                                 L10n $l10n)
     {
-        parent::__construct($logger, $bbs, $calibre, $config, $user, $twig, $l10n);
+        parent::__construct($logger, $bbs, $calibre, $config, $twig, $l10n);
         $this->cache = new CacheProvider();
     }
 

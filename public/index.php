@@ -94,7 +94,6 @@ $logger->info(
     APP_VERSION);
 $logger->info('Running on PHP: ' . PHP_VERSION);
 
-/** @var string $basePath */
 $basePath = BBS_BASE_PATH;
 $app->setBasePath($basePath);
 

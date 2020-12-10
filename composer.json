@@ -48,8 +48,8 @@
             "cp -r vendor work/www",
             "mkdir ./work/lib",
             "cp -r tests/fixtures/lib2/ ./work/lib",
-            "mkdir ./work/logs",
-            "mkdir ./work/cache"
+            "mkdir -p ./work/www/var/logs",
+            "mkdir -p ./work/www/var/cache"
         ],
         "clean-work": "rm -rf work",
         "copy-src": [

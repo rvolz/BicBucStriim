@@ -7,11 +7,14 @@ use App\Domain\BicBucStriim\AppConstants;
 use App\Domain\BicBucStriim\Configuration;
 use App\Domain\Calibre\CalibreRepository;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\MiddlewareInterface as Middleware;
 use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
 use Psr\Log\LoggerInterface;
 use GuzzleHttp\Psr7\Response;
+use Slim\Exception\HttpBadRequestException;
+use Slim\Exception\HttpInternalServerErrorException;
 
 /**
  * Class CalibreConfigMiddleware
@@ -50,6 +53,8 @@ class CalibreConfigMiddleware implements Middleware
 
     /**
      * {@inheritdoc}
+     * @throws HttpBadRequestException
+     * @throws HttpInternalServerErrorException
      */
     public function process(Request $request, RequestHandler $handler): ResponseInterface
     {
@@ -63,16 +68,62 @@ class CalibreConfigMiddleware implements Middleware
         } else {
             if (empty($this->config[AppConstants::CALIBRE_DIR])) {
                 $this->logger->warning("calibre_config_middleware: No Calibre library path configured: $path");
-                $response = new Response();
-                return $response->withStatus(400, 'No Calibre library path configured. Please configure first.'); //->withJson($data);
+                return $this->answer($request, 400, 'No Calibre library path configured. Please configure first.');
             } elseif (is_null($this->calibre)) {
                 $this->logger->error("calibre_config_middleware: Error while opening Calibre DB: $path");
-                $response = new Response();
-                return $response->withStatus(500, 'Error while opening Calibre DB.'); //->withJson($data);
+                return $$this->answer($request, 500, 'Error while opening Calibre DB.'); //->withJson($data);
             } else {
                 return $handler->handle($request);
             }
         }
+    }
+
+    /**
+     * Send a 401 (Unauthorized) answer depending on the access type:
+     * - API: send a 401 via the exception
+     * - HTML: send a redirect to the login form
+     * @param ServerRequestInterface $r
+     * @param int $code
+     * @param string $msg
+     * @return Response
+     * @throws HttpBadRequestException
+     * @throws HttpInternalServerErrorException
+     */
+    protected function answer(Request $r, int $code, string $msg): ResponseInterface
+    {
+        if ($code == 400) {
+            if ($this->isApiRequest($r)) {
+                $this->logger->debug("CalibreConfigMiddleware::answer: api request %s", [$msg]);
+
+                throw new HttpBadRequestException($r,$msg);
+            } else {
+                $this->logger->debug("AuthMiddleware::answer: HTML request %s", [$msg]);
+                return new Response(302, ['Location' => '/admin/configuration/'], null, '1.1', $msg);
+            }
+        } else {
+            $this->logger->debug("CalibreConfigMiddleware::answer: api request %s", [$msg]);
+            throw new HttpInternalServerErrorException($r,$msg);
+        }
+
+    }
+    /**
+     * Find out if the request is an API call, OPDS or JSON. Uses the X-Requested-With or
+     * the Content-Type headers to decide that.
+     * @param ServerRequestInterface $r
+     * @return bool
+     */
+    protected function isApiRequest(Request $r): bool
+    {
+        // jQuery Mobile uses Xhr to communicate so we can't use this
+        // TODO enable XHR check
+        //if ($r->getHeaderLine('X-Requested-With') === 'XMLHttpRequest')
+        //    return true;
+        $ct = $r->getHeaderLine('Content-Type');
+        foreach (['application/xml', 'application/atom+xml', 'application/json'] as $item) {
+            if (strstr($ct, $item))
+                return true;
+        }
+        return false;
     }
 }
 

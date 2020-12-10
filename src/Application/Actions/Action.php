@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Application\Actions;
 
 use App\Domain\DomainException\DomainRecordNotFoundException;
+use App\Domain\User\User;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Log\LoggerInterface;
@@ -12,30 +13,12 @@ use Slim\Exception\HttpNotFoundException;
 
 abstract class Action
 {
-    /**
-     * @var LoggerInterface
-     */
     protected LoggerInterface $logger;
-
-    /**
-     * @var Request
-     */
     protected Request $request;
-
-    /**
-     * @var Response
-     */
     protected Response $response;
-
-    /**
-     * @var array
-     */
     protected array $args;
-
-    /**
-     * @var array
-     */
     protected array $qargs;
+    protected User $user;
 
     /**
      * @param LoggerInterface $logger
@@ -46,19 +29,20 @@ abstract class Action
     }
 
     /**
-     * @param Request  $request
+     * @param Request $request
      * @param Response $response
-     * @param array    $args
+     * @param array $args
      * @return Response
      * @throws HttpNotFoundException
      * @throws HttpBadRequestException
      */
-    public function __invoke(Request $request, Response $response, $args): Response
+    public function __invoke(Request $request, Response $response, array $args): Response
     {
         $this->request = $request;
         $this->response = $response;
         $this->args = $args;
         $this->qargs = $this->request->getQueryParams();
+        $this->user = $request->getAttribute('user', User::emptyUser());
 
         try {
             return $this->action();
@@ -104,7 +88,8 @@ abstract class Action
     }
 
     /**
-     * @param  array|object|null $data
+     * @param array|object|null $data
+     * @param int $statusCode
      * @return Response
      */
     protected function respondWithData($data = null, int $statusCode = 200): Response

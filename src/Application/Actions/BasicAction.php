@@ -6,40 +6,24 @@ namespace App\Application\Actions;
 
 use App\Domain\BicBucStriim\BicBucStriimRepository;
 use App\Domain\BicBucStriim\Configuration;
-use App\Domain\Calibre\CalibreRepository;
-use App\Domain\User\User;
 use Psr\Log\LoggerInterface;
-use Slim\HttpCache\CacheProvider;
 
 abstract class BasicAction extends Action
 {
-    /**
-     * @var BicBucStriimRepository
-     */
     protected BicBucStriimRepository $bbs;
-    /**
-     * @var User
-     */
-    protected User $user;
-    /**
-     * @var Configuration
-     */
     protected Configuration $config;
 
     /**
      * @param LoggerInterface $logger
      * @param BicBucStriimRepository $bbs
      * @param Configuration $config
-     * @param User $user
      */
     public function __construct(LoggerInterface $logger,
                                 BicBucStriimRepository $bbs,
-                                Configuration $config,
-                                User $user)
+                                Configuration $config)
     {
         parent::__construct($logger);
         $this->bbs = $bbs;
-        $this->user = $user;
         $this->config = $config;
     }
 
@@ -69,10 +53,10 @@ abstract class BasicAction extends Action
 
     /**
      * Checks if a thumbnail image is available for a book, adds it and returns the book
-     * @param $book
+     * @param object $book
      * @return object
      */
-    protected function checkThumbnail($book): object
+    protected function checkThumbnail(object $book): object
     {
         $book->thumbnail = $this->bbs->isTitleThumbnailAvailable($book->id);
         return $book;

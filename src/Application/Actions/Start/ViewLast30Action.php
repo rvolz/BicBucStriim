@@ -7,12 +7,14 @@ namespace App\Application\Actions\Start;
 use App\Application\Actions\CalibreHtmlAction;
 use App\Domain\BicBucStriim\AppConstants;
 use Psr\Http\Message\ResponseInterface as Response;
+use Slim\Exception\HttpInternalServerErrorException;
 
 class ViewLast30Action extends CalibreHtmlAction
 {
 
     /**
      * @inheritDoc
+     * @throws HttpInternalServerErrorException
      */
     protected function action(): Response
     {
