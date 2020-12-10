@@ -8,7 +8,9 @@ BicBucStriim is a simple PHP application that runs in a PHP environment provided
 
 For a very long time BicBucStriim supported older PHP versions up to PHP 7.2. The current development version (2.0.0-alpha.1) in this repository breaks with that and requires **PHP 7.4 and higher**. This is mostly due to the requirements of updated dependencies. If you can't update your environment accordingly, you should use the older app versions, the last one being 1.5.0.
 
-The purpose of version 2.0.0-alpha.1 is primarily testing. You should not use it to mange your book collection. It contains an updated and restructured backend for PHP 7.4+. The UI will be updated in the following version.   
+The purpose of version 2.0.0-alpha.1 is primarily testing. You should not use it to mange your book collection. It contains an updated and restructured backend for PHP 7.4+. The UI will be updated in the following version.
+
+
 
 ## Features & Issues
 
