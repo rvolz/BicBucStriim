@@ -11,6 +11,12 @@ interface CalibreRepository
     function libraryOk(): bool;
 
     /**
+     * Return the modification time of Calibre's metadata.db as Unix epoch.
+     * @return int
+     */
+    function getModTime(): int;
+
+    /**
      * Return an array with library statistics for titles, authors etc.
      *
      * @param object $filter a QueryFilter

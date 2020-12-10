@@ -77,7 +77,7 @@ class Calibre implements CalibreRepository
             $this->calibre_dir = dirname($rp);
             $this->thumb_dir = $thumbDir;
             if (file_exists($rp) && is_readable($rp)) {
-                $this->calibre_last_modified = filemtime($rp);
+                $this->calibre_last_modified = filemtime($rp) ? filemtime($rp) : 0;
                 $this->calibre = new PDO('sqlite:' . $rp, NULL, NULL, array());
                 $this->calibre->setAttribute(1002, 'SET NAMES utf8');
                 $this->calibre->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -92,6 +92,10 @@ class Calibre implements CalibreRepository
     function libraryOk(): bool
     {
         return !is_null($this->calibre);
+    }
+
+    public function getModTime(): int {
+        return $this->calibre_last_modified;
     }
 
     function libraryStats(object $filter): array

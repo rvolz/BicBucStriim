@@ -104,7 +104,7 @@ abstract class RenderHtmlAction extends BasicAction
      * @param  string $id message id
      * @return string     localized message string
      */
-    function getMessageString($id)
+    protected function getMessageString($id)
     {
         return $this->l10n->message($id);
     }
@@ -114,7 +114,7 @@ abstract class RenderHtmlAction extends BasicAction
      * language and tag settings.
      * @return CalibreFilter
      */
-    function getFilter(): CalibreFilter
+    protected function getFilter(): CalibreFilter
     {
         $lang = null;
         $tag = null;

@@ -33,7 +33,7 @@ class ViewAuthorAction extends AuthorsAction
             $this->config[AppConstants::PAGE_SIZE],
             $filter);
         if (empty($tl)) {
-            $msg = sprintf("ViewAuthorAction: no series data found for id %d", $id);
+            $msg = sprintf("ViewAuthorAction: no title data found for id %d", $id);
             $this->logger->error($msg);
             throw new DomainRecordNotFoundException($msg);
         }
