@@ -14,12 +14,15 @@ return function (ContainerBuilder $containerBuilder) {
             // If not installed at root, enter the path to the installation here
             'basePath' => '',
 
+            // path to the 'public' directory
+            'publicPath' => __DIR__ . '/../public/',
+
             // Display call stack in orignal slim error when debug is off
             'displayErrorDetails' => true, // TODO set to false in production
             'addContentLengthHeader' => false, // Allow the web server to send the content-length header
             // Renderer settings
             'renderer' => [
-                'template_path' => __DIR__ . '/../app/templates/',
+                'template_path' => __DIR__ . '/../templates/',
                 'cache_path' => __DIR__ . '/../var/cache',
             ],
             // Monolog settings

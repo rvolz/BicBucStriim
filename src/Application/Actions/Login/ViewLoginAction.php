@@ -14,7 +14,7 @@ class ViewLoginAction extends LoginAction
      */
     protected function action(): Response
     {
-        return $this->respondWithPage('login.html', array(
+        return $this->respondWithPage('login.twig', array(
             'page' => $this->mkPage($this->getMessageString('login'))
         ));
     }

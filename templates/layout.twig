@@ -1,0 +1,86 @@
+<!doctype html>
+<html class="no-js" lang="{{ page.glob.lang }}">
+<head>
+    <meta charset="utf-8">
+    <title>{{ page.title }}</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    {% block headerlinks %}{% endblock %}
+    <link rel="icon" href="{{ page.rot }}/favicon.ico" type="image/x-icon">
+    <link rel="apple-touch-icon" href="{{ page.rot }}/bbs-icon.png">
+    <link rel="stylesheet" href="{{ page.rot }}/style/style.css">
+    <script src="{{page.rot}}/js/modernizr-3.11.2.min.js"></script>
+    <script src="{{page.rot}}/js/turbolinks-5.2.0.min.js" defer></script>
+    <script src="{{page.rot}}/js/alpine-2.7.3.min.js" defer></script>
+    <script src="{{page.rot}}/js/main.js" defer></script>
+</head>
+<body>
+<div>
+    <nav class=top">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <img class="h-8 w-8" src="{{page.rot}}/bbs-icon.png" alt="BicBucStriim icon">
+                    </div>
+                    <div class="md:block">
+                        <div class="ml-10 flex items-baseline space-x-4">
+                            <a href="{{page.rot}}/" class="px-3 py-2 rounded-md text-sm font-medium text-white bg-gray-900">{{page.glob.l10n.home}}</a>
+                            <a href="{{page.rot}}/titles/" class="px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-700">{{page.glob.l10n.titles}}</a>
+                            <a href="{{page.rot}}/author/" class="px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-700">{{page.glob.l10n.authors}}</a>
+                            <a href="{{page.rot}}/tags/" class="px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-700">{{page.glob.l10n.tags}}</a>
+                            <a href="{{page.rot}}/series/" class="px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-700">{{page.glob.l10n.series}}</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-4 flex items-center md:ml-6">
+                        <button href="" class="bg-gray-800 p-1 rounded-full text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
+                            <span class="sr-only">Search</span>
+                            <!-- Heroicon name: search -->
+                            <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                        </button>
+                        <button class="bg-gray-800 p-1 rounded-full text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
+                            <span class="sr-only">Change settings</span>
+                            <!-- Heroicon name: adjustments -->
+                            <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+                            </svg>
+                        </button>
+                        <button class="bg-gray-800 p-1 rounded-full text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
+                            <span class="sr-only">Logout</span>
+                            <!-- Heroicon name: logout -->
+                            <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </nav>
+
+    <header class="bg-white shadow">
+        <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+            <h1 class="text-3xl font-bold leading-tight text-gray-900">
+                {{ page.title }}
+            </h1>
+        </div>
+    </header>
+    <main>
+        <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+            <div class="px-4 py-6 sm:px-0">
+                <div class="border-4 border-dashed border-gray-200 rounded-lg h-96">
+                    {% block content %}{% endblock %}
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <p><a href="https://github.com/rvolz/BicBucStriim">BicBucStriim {{page.version}}</a>  &copy; 2012-{{"now"|date('Y')}} Rainer Volz</p>
+    </footer>
+</div>
+</body>
+</html>

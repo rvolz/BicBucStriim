@@ -11,6 +11,7 @@ use App\Domain\Calibre\Calibre;
 use App\Domain\Calibre\CalibreRepository;
 use App\Domain\User\User;
 use App\Infrastructure\Mail\Mailer;
+use Fullpipe\TwigWebpackExtension\WebpackExtension;
 use Psr\Log\LoggerInterface;
 use Slim\Views\Twig;
 use DI\ContainerBuilder;
@@ -30,11 +31,11 @@ return function (ContainerBuilder $containerBuilder) {
 
         // Twig
         Twig::class => function (ContainerInterface $c) {
-            // TODO provide dir var/cache
             $settings = $c->get('settings');
             $templates = $settings['renderer']['template_path'];
             $cache = $settings['renderer']['cache_path'];
-            return Twig::create($templates, ['cache' => $cache]);
+            $twig = Twig::create($templates, ['cache' => $cache]);
+            return $twig;
         },
 
         // BicBucStriim

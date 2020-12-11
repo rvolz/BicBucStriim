@@ -36,14 +36,18 @@
         "package": "yarn package",
         "test": "phpunit",
         "prep-work": [
+            "rm -rf ./dist",
             "rm -rf ./work",
+            "yarn run development",
             "mkdir -p ./work/www/public/img",
+            "mkdir -p ./work/www/templates",
             "cp -r app work/www",
             "cp -r data work/www",
-            "cp -r img work/www/public/",
-            "cp -r js work/www/public/",
-            "cp -r style work/www/public/",
             "cp  -r public work/www",
+            "cp -r assets/img work/www/public",
+            "cp -r assets/js work/www/public",
+            "cp -r ./dist/style ./work/www/public",
+            "find ./templates -name '*.twig' -exec cp --parents \\{\\}  ./work/www/ \\;",
             "cp -r src work/www",
             "cp -r vendor work/www",
             "mkdir ./work/lib",
@@ -51,16 +55,22 @@
             "mkdir -p ./work/www/var/logs",
             "mkdir -p ./work/www/var/cache"
         ],
-        "clean-work": "rm -rf work",
+        "clean-work": [
+            "rm -rf ./work",
+            "rm -rf ./dist"
+        ],
         "copy-src": [
             "cp -r app work/www",
             "cp -r src work/www",
             "cp -r public work/www"
         ],
         "copy-res": [
-            "cp -r img work/www/public/",
-            "cp -r js work/www/public/",
-            "cp -r style work/www/public/"
+            "yarn run development",
+            "cp -r ./dist/style ./work/www/public",
+            "cp -r ./assets/img ./work/www/public",
+            "cp -r assets/js work/www/public",
+            "find ./templates -name '*.twig' -exec cp --parents \\{\\}  ./work/www/ \\;",
+            "rm -rf ./work/www/var/cache/*"
         ],
         "start": [
             "@prep-work",

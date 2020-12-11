@@ -6,7 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
+- alpine 2.7.3 JS dependency
+- Turbolinks 5.2.0 JS dependency
+- tailwindcss 2.0 CSS dependency
 ### Changed
+- updated Modernizr JS dependency to 3.11 from HTML5 Boilerplate
 ### Removed
 - jQuery Mobile toolkit
 
