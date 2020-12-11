@@ -32,7 +32,7 @@
 						<a data-role="button" 
 							{% if page.glob.glob_dl_toggle == true %} disabled="true" {% endif %} 
 							data-ajax="false" 
-							href="{{page.rot}}/static/files/{book.id}/{{format.name|url_encode()}}.{{format.format|lower}}">
+							href="{{page.rot}}/static/files/{{book.id}}/{{format.name|url_encode()}}.{{format.format|lower}}">
 								{{ format.format }} | {{format.uncompressed_size|hfsize}}
 						</a>
 				{% endfor %}
