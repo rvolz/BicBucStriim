@@ -8,7 +8,9 @@
 		
 		<h3>
 			{% if series %}{{book.series_index}} - {% endif %}
-			{{ book.sort }} ({{ book.pubdate|date("Y") }})
+			{{ book.sort }}
+			{% set pb = book.pubdate|date("Y") %}
+			{%if pb != "0101" %} {{ pb }} {% endif %}}
 		</h3>
 		<p>{{book.author_sort}} {{book.addInfo}}</p>
 	</a>
