@@ -1,0 +1,377 @@
+<!doctype html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="utf-8">
+    <title>Installation check, BicBucStriim</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <script src="{{ page.rot }}/js/modernizr-3.11.2.min.js"></script>
+    <script src="{{ page.rot }}/js/alpine-2.7.3.min.js" defer></script>
+    <script src="{{ page.rot }}/js/main.js" defer></script>
+</head>
+<body>
+    <header>
+        <h1>Installation check, BicBucStrrim {{ page.version }}</h1>
+    </header>
+    <section>
+        <h2>Explanation</h2>
+        <p>
+            This page executes various checks regarding the environment and the installation
+            directory of BicBucStriim. It checks for typical problems that users had in the
+            past. The checks signal the outcome with a traffic light scheme:
+        </p>
+        <table>
+            <tr>
+                <td><img src="img/bbs-light-green.png" width="32"/></td>
+                <td>Everything ok.</td>
+            </tr>
+            <tr>
+                <td><img src="img/bbs-light-yellow.png" width="32"/></td>
+                <td>There could be a problem, click on the info button to see if it concerns you.</td>
+            </tr>
+            <tr>
+                <td><img src="img/bbs-light-red.png" width="32"/></td>
+                <td>A problem was discovered, please click on the info button to find out more.</td>
+            </tr>
+        </table>
+    </section>
+    <section>
+        <h2>Calibre library check</h2>
+        <p>
+            Enter the path to your Calibre library to check accessibility. A Calibre
+            library directory contains the file <em>metadata.db</em> plus various subdirectories
+            for authors and books.
+        </p>
+        <p>
+            The test tries to find <em>metadata.db</em> in the directory you enter,
+            and will check if that directory is readable for the application.
+         </p>
+        <p>
+            If the test fails (red light), check:
+        </p>
+        <ul>
+            <li>that the directory really exists</li>
+            <li>that it contains the files mentioned above</li>
+            <li>
+                that it is readable for the application
+                (see also the <em>open_basedir</em> check below)
+            </li>
+        </ul>
+        <table>
+            <tr>
+                <td class="80column">
+                    {% if cd.status == 0 %}
+                        &nbsp;
+                    {% elseif cd.status == 1  %}
+                        <img src="img/bbs-light-green.png"/>
+                    {% else %}
+                        <img src="img/bbs-light-red.png"/>
+                    {% endif %}
+                </td>
+                <td>
+                    <form action="installcheck.php" method="post" id="calibrecheckform">
+                        <fieldset data-role="fieldcontain">
+                            <label for="calibre_dir">Calibre directory</label>
+                            <input name="calibre_dir" id="calibre_dir" type="text"
+                                   value="{{ calibre_dir }}" placeholder="Example: /volume1/books"/>
+                        </fieldset>
+                        <button type="submit">Check</button>
+                    </form>
+                </td>
+            </tr>
+            {% if cd.status == 2 %}
+            <tr>
+                <td colspan="2">
+                    <ul>
+                        <li>Directory exists? {% if cd.dir_exists %}Yes{% else %}No{% endif %}</li>
+                        <li>Directory is readable? {% if cd.dir_is_readable %}Yes{% else %}No{% endif %}</li>
+                        <li>Directory is executable? {% if cd.dir_is_executable %}Yes{% else %}No{% endif %}</li>
+                        <li>Real path of database is: {{ cd.realpath }}</li>
+                        <li>Database opened? {% if cd.library_ok %}Yes{% else %}No{% endif %}</li>
+                    </ul>
+                </td>
+            </tr>
+            {% endif %}
+        </table>
+    </section>
+    <section>
+        <h2>Environment checks</h2>
+        <table>
+            <thead>
+                <tr>
+                    <td>Status</td>
+                    <td>Check</td>
+                    <td>Result</td>
+                    <td>Explanation</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        {% if php.php == true %}
+                            <img src="img/bbs-light-green.png"/>
+                        {% else %}
+                            <img src="img/bbs-light-red.png"/>
+                        {% endif %}
+                    </td>
+                    <td>PHP version 7.4+?</td>
+                    <td>
+                        {% if php == true %}
+                            Yes, found version {{ php.phpv }}.
+                        {% else %}
+                            No, found version {{ php.phpv }}.
+                        {% endif %}
+                    </td>
+                    <td>
+                        BicBucStriim 2 requires PHP 7.4 or higher.
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        {% if sqlite.hsql != false %}
+                            <img src="img/bbs-light-green.png"/>
+                        {% else %}
+                            <img src="img/bbs-light-red.png"/>
+                        {% endif %}
+                    </td>
+                    <td>Is Sqlite3 installed?</td>
+                    <td>
+                        {% if sqlite.hsql != false %}
+                            Yes.
+                        {% else %}
+                            No.
+                        {% endif %}
+                    </td>
+                    <td>
+                        The Sqlite3 database library is required to read the Calibre library data.
+                        Please install the Sqlite3 support if the check failed. See modules below.
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        {% if sqlite.hfts5 != false %}
+                            <img src="img/bbs-light-green.png"/>
+                        {% else %}
+                            <img src="img/bbs-light-red.png"/>
+                        {% endif %}
+                    </td>
+                    <td>Does Sqlite include FTS5?</td>
+                    <td>
+                        {% if sqlite.hfts5 != false %}
+                            Yes.
+                        {% else %}
+                            No.
+                        {% endif %}
+                    </td>
+                    <td>
+                        Since Calibre 5 SQLite needs to include the FTS5 extension for full-text searches.
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        {% if hgd2 == true %}
+                            <img src="img/bbs-light-green.png"/>
+                        {% else %}
+                            <img src="img/bbs-light-red.png"/>
+                        {% endif %}
+                    </td>
+                    <td>Is GD version 2 (or higher) installed?</td>
+                    <td>
+                        {% if hgd2 == true %}
+                            Yes, found version {{ hgd2v }}.
+                        {% elseif hgd2v == "" %}
+                            No.
+                        {% else %}
+                            No, found {{ hgd2v }}.
+                        {% endif %}
+                    </td>
+                    <td>
+                        <p>
+                            The GD image library is necessary for thumbnail generation.
+                            Please install or update the module if the check failed. See modules.
+                        </p>
+                    </td>
+                </tr>
+                {% for module, loaded in modules %}
+                    <tr>
+                        <td>
+                            {% if loaded == true %}
+                                <img src="img/bbs-light-green.png"/>
+                            {% else %}
+                                <img src="img/bbs-light-red.png"/>
+                            {% endif %}
+                        </td>
+                        <td>PHP module {{ module }} availeable?</td>
+                        <td>
+                            {% if loaded == true %}
+                                Yes
+                            {% else %}
+                                No
+                            {% endif %}
+                        </td>
+                        <td></td>
+                    </tr>
+                {% endfor %}
+                <tr>
+                    <td>
+                        {% if is_a == true %}
+                            <img src="img/bbs-light-green.png"/>
+                        {% else %}
+                            <img src="img/bbs-light-yellow.png"/>
+                        {% endif %}
+                    </td>
+                    <td>Apache web server?</td>
+                    <td>{% if is_a == true %}Yes, {{ srv }}.{% else %}No.{% endif %}</td>
+                    <td>
+                        BicBucStriim works with Apache and other web servers. However, the
+                        included <em>.htaccess</em> configuration file is for Apache only. If you are
+                        using a different web server please make sure that features like
+                        <em>URL rewriting</em> are enabled.
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        {% if htaccess == true %}
+                            <img src="img/bbs-light-green.png"/>
+                        {% elseif is_a == true %}
+                            <img src="img/bbs-light-red.png"/>
+                        {% else %}
+                            <img src="img/bbs-light-yellow.png"/>
+                        {% endif %}
+                    </td>
+                    <td>Does <em>.htaccess</em> exist?</td>
+                    <td>
+                        {% if htaccess == true %}
+                            Yes.
+                        {% elseif is_a == true %}
+                            No.
+                        {% else %}
+                            No Apache, please ensure URL rewriting manually.
+                        {% endif %}
+                    </td>
+                    <td>
+                        BicBucStriim contains a <em>.htaccess</em> file that enables <em>URL rewriting</em>
+                        on Apache servers automatically. If the check failed this is probably due to
+                        an unpack problem. Sometime unzippers don't unpack hidden files (i.e. files
+                        whose names start with a dot) properly. Try a different unzip application.
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        {% if mre == true %}
+                            <img src="img/bbs-light-green.png"/>
+                        {% elseif is_a == true %}
+                            <img src="img/bbs-light-red.png"/>
+                        {% else %}
+                            <img src="img/bbs-light-yellow.png"/>
+                        {% endif %}
+                    </td>
+                    <td>Is URL rewriting enabled?</td>
+                    <td>
+                        {% if mre == true %}
+                            Yes.
+                        {% elseif is_a == true %}
+                            No.
+                        {% else %}
+                            No Apache, please verify manually.
+                        {% endif %}
+                    </td>
+                    <td>
+                        <p>
+                            BicBucStriim contains a <em>.htaccess</em> file that enables <em>URL rewriting</em>
+                            on Apache servers automatically. If this is an Apache web server and the check failed,
+                            please change the URL rewriting (mod_rewrite) settings of your server/device.
+                        </p>
+                        <p>
+                            If this is no Apache web server, you have to verify manually that URL
+                            rewriting is enabled.
+                        </p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        {% if opd == "" %}
+                            <img src="img/bbs-light-green.png"/>
+                        {% else %}
+                            <img src="img/bbs-light-yellow.png"/>
+                        {% endif %}
+                    </td>
+                    <td>Is the <em>open_basedir</em> restriction in effect?</td>
+                    <td>
+                        {% if opd == "" %}
+                            No.
+                        {% else %}
+                            Yes, open_basedir = {{ opd }}
+                        {% endif %}
+                    </td>
+                    <td>
+                        <p>
+                            The PHP <em>open_basedir</em> setting is a security measure that restricts file access for
+                            PHP applications to a list of specified directories mentioned in the variable. Many
+                            NAS devices use this setting.
+                        </p>
+                        <p>
+                            If your Calibre library is located outside your web server root, this directory should be included in
+                            the open_basedir list. To include it, just append the name of your
+                            Calibre directory to this list, e.g. <code>...:/volume1/books</code> (don't forget the colon in front).
+                        </p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        {% if dwrit == true %}
+                            <img src="img/bbs-light-green.png"/>
+                        {% else %}
+                            <img src="img/bbs-light-red.png"/>
+                        {% endif %}
+                    </td>
+                    <td>Is the <em>data</em> directory writeable?</td>
+                    <td>
+                        <p>
+                            {% if dwrit == true %}
+                                Yes.
+                            {% else %}
+                                No.
+                            {% endif %}
+                        </p>
+                    </td>
+                    <td>
+                        <p>
+                            The <em>bbs/data</em> directory contains the configuration database and thumbnails.
+                            If it doesn't exist or is not writeable the application can't store anything. If the
+                            check failed, please create the directory and/or change the access rights.
+                        </p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        {% if mwrit == true %}
+                            <img src="img/bbs-light-green.png"/>
+                        {% else %}
+                            <img src="img/bbs-light-red.png"/>
+                        {% endif %}
+                    </td>
+                    <td>Is <em>data/data.db</em> writeable?</td>
+                    <td>
+                        <p>
+                            {% if dwrit == true %}
+                                Yes.
+                            {% else %}
+                                No.
+                            {% endif %}
+                        </p>
+                    </td>
+                    <td>
+                        <p>
+                            The file <em>data/data.db</em> is part of the BicBucStriim package and stores your configuration data.
+                            If the check failed, please verify that it exists and is writeable.
+                        </p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+    <footer>
+        {#  include "footer.twig" #}
+    </footer>
+</body>
+</html>
