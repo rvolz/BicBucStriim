@@ -11,7 +11,7 @@ class InstUtils {
     /**
      * Try to find the GD version number.
      *
-     * @param $module_info string formatted by phpinfo(8)
+     * @param string $module_info  formatted by phpinfo(8)
      * @return string  version number, "0" if not found
      */
     static public function find_gd_version(string $module_info): string
