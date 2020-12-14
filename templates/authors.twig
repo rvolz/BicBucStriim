@@ -1,0 +1,19 @@
+{% extends 'layout.twig' %}
+
+{% block headerlinks %}
+    <link rel="related" href="{{page.rot}}/opds/" type="application/atom+xml;profile=opds-catalog" title="OPDS index">
+    <link rel="alternate" href="{{page.rot}}/opds/authors/" type="application/atom+xml;profile=opds-catalog" title="OPDS catalog: by authors">
+{% endblock %}
+
+{% block content %}
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
+        {% for author in authors %}
+            {% if author.initial != "" %}
+                <li data-role="list-divider"> {{ author.initial }}</li>
+            {% else %}
+                {% include "author_entry.twig" %}
+            {% endif %}
+      {% endfor %}
+    </div>
+{% endblock %}
+

@@ -354,6 +354,14 @@ interface CalibreRepository
      */
     function seriesDetailsSlice($lang, $id, $index = 0, $length = 100, $filter);
 
+
+    /**
+     * Find series info for a book
+     * @param int $id book id
+     * @return object|null series or null if no series available
+     */
+    public function series4Book(int $id): ?object;
+
     /**
      * Search a list of books defined by the parameters $index and $length.
      * If $search is defined it is used to filter the book title, ignoring case.

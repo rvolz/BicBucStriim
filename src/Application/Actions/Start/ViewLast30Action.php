@@ -22,7 +22,7 @@ class ViewLast30Action extends CalibreHtmlAction
         $books1 = $this->calibre->last30Books($this->l10n->user_lang, $this->config[AppConstants::PAGE_SIZE], $filter);
         $books = array_map(array($this,'checkThumbnail'), $books1);
         $stats = $this->calibre->libraryStats($filter);
-        return $this->respondWithPage('index_last30.html', array(
+        return $this->respondWithPage('index_last30.twig', array(
             'page' => $this->mkPage($this->getMessageString('dl30'), 1, 1),
             'books' => $books,
             'stats' => $stats));

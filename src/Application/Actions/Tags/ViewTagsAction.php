@@ -32,7 +32,7 @@ class ViewTagsAction extends TagsAction
         } else
             $tl = $this->calibre->tagsSlice($index, $this->config[AppConstants::PAGE_SIZE]);
 
-        return $this->respondWithPage('tags.html', array(
+        return $this->respondWithPage('tags.twig', array(
             'page' => $this->mkPage($this->getMessageString('tags'), 4, 1),
             'url' => 'tags',
             'tags' => $tl['entries'],

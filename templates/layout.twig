@@ -26,7 +26,7 @@
                         <div class="ml-10 flex items-baseline space-x-4">
                             <a href="{{page.rot}}/" class="px-3 py-2 rounded-md text-sm font-medium text-white bg-gray-900">{{page.glob.l10n.home}}</a>
                             <a href="{{page.rot}}/titles/" class="px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-700">{{page.glob.l10n.titles}}</a>
-                            <a href="{{page.rot}}/author/" class="px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-700">{{page.glob.l10n.authors}}</a>
+                            <a href="{{page.rot}}/authors/" class="px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-700">{{page.glob.l10n.authors}}</a>
                             <a href="{{page.rot}}/tags/" class="px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-700">{{page.glob.l10n.tags}}</a>
                             <a href="{{page.rot}}/series/" class="px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-700">{{page.glob.l10n.series}}</a>
                         </div>
@@ -79,7 +79,9 @@
         </div>
     </main>
     <footer>
-        <p><a href="https://github.com/rvolz/BicBucStriim">BicBucStriim {{page.version}}</a>  &copy; 2012-{{"now"|date('Y')}} Rainer Volz</p>
+        <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+            <p><a href="https://github.com/rvolz/BicBucStriim">BicBucStriim {{page.version}}</a>  &copy; 2012-{{"now"|date('Y')}} Rainer Volz</p>
+        </div>
     </footer>
 </div>
 </body>

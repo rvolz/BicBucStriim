@@ -1,0 +1,34 @@
+{% extends 'layout.twig' %}
+
+{% block headerlinks %}
+    <link rel="related" href="{{page.rot}}/opds/" type="application/atom+xml;profile=opds-catalog" title="OPDS index">
+    <link rel="alternate" href="{{page.rot}}/opds/tags/" type="application/atom+xml;profile=opds-catalog" title="OPDS catalog: by tags">
+{% endblock %}
+
+{% block content %}
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
+        {% for tag in tags %}
+            {% if tag.initial != "" %}
+                <li data-role="list-divider"> {{ tag.initial }}</li>
+            {% else %}
+                {% include "tag_entry.twig" %}
+            {% endif %}
+        {% endfor %}
+    </div>
+{% endblock %}
+
+
+{% block leftpanel %}
+<section data-role="panel" data-display="overlay" data-position="left" id="tags_options_panel">
+    <h2>{{page.glob.l10n.pagination_search}}</h2>
+
+    <form action="{{page.rot}}/search/"
+          method="get" class="ui-bar-a">
+        <div data-role="fieldcontain" class="ui-hide-label">
+            <label for="search">{{page.glob.l10n.pagination_search_lbl}}</label>
+            <input type="search" name="search" id="search" value="{{search}}"
+                   placeholder="{{page.glob.l10n.pagination_search_ph}}" autofocus=""true"/>
+        </div>
+    </form>
+</section>
+{% endblock %}

@@ -500,6 +500,14 @@ class CalibreTest extends TestCase
         $this->assertEquals(1, count($result['books']));
     }
 
+    function testSeries4Book()
+    {
+        $result = $this->calibre->series4Book(3);
+        $this->assertEquals(0, $this->calibre->last_error);
+        $this->assertNotNull($result);
+        $this->assertEquals('Serie Grimmelshausen', $result->name);
+    }
+
     function testSeriesInitials()
     {
         $result = $this->calibre->seriesInitials();

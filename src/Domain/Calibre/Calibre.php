@@ -441,10 +441,11 @@ class Calibre implements CalibreRepository
      * book->formats contains the list of available formats as a comma-separated string
      * book->language contains the book's language, only available if the PHP extension 'intl' is installed
      * book->addInfo contains a formatted string with language and formats, e.g. "(English; MOBI,PDF,EPUB)"
+     * book->series contains the series info if available else null
      * @param string $lang the target language code for the display
      * @param array $books array of books
      */
-    protected function addBookDetails($lang, $books)
+    protected function addBookDetails(string $lang, array $books)
     {
         foreach ((array)$books as $book) {
             $fmts = $this->titleGetFormats($book->id);
@@ -453,6 +454,10 @@ class Calibre implements CalibreRepository
                 array_push($fmtnames, $format->format);
             }
             $book->formats = join(',', $fmtnames);
+        }
+        foreach ((array)$books as $book) {
+            $series = $this->series4Book($book->id);
+            $book->series = $series;
         }
         if (extension_loaded('intl')) {
             foreach ($books as $book) {
@@ -941,6 +946,18 @@ class Calibre implements CalibreRepository
         $slice = $this->findSliceFiltered(CalibreSearchType::SeriesBook, $index, $length, $filter, NULL, $id);
         $this->addBookDetails($lang, $slice['entries']);
         return array('series' => $series) + $slice;
+    }
+
+    public function series4Book(int $id): ?object
+    {
+        $seriesLink =  $this->findOne(BookSeriesLink::class, 'SELECT * FROM books_series_link WHERE book=:id', array('id' => $id));
+        if (is_null($seriesLink))
+            return null;
+        $series =  $this->findOne(Series::class, 'SELECT * FROM series WHERE id=:id', array('id' => $seriesLink->id));
+        if (is_null($series))
+            return null;
+        else
+            return $series;
     }
 
     function seriesSlice($index = 0, $length = 100, $search = NULL)

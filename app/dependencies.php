@@ -10,8 +10,6 @@ use \App\Domain\BicBucStriim\L10n;
 use App\Domain\Calibre\Calibre;
 use App\Domain\Calibre\CalibreRepository;
 use App\Domain\User\User;
-use App\Infrastructure\Mail\Mailer;
-use Fullpipe\TwigWebpackExtension\WebpackExtension;
 use Psr\Log\LoggerInterface;
 use Slim\Views\Twig;
 use DI\ContainerBuilder;
@@ -34,8 +32,7 @@ return function (ContainerBuilder $containerBuilder) {
             $settings = $c->get('settings');
             $templates = $settings['renderer']['template_path'];
             $cache = $settings['renderer']['cache_path'];
-            $twig = Twig::create($templates, ['cache' => $cache]);
-            return $twig;
+            return Twig::create($templates, ['cache' => $cache]);
         },
 
         // BicBucStriim
@@ -61,7 +58,9 @@ return function (ContainerBuilder $containerBuilder) {
         // Calibre
         CalibreRepository::class => function (ContainerInterface $c) {
             $cdir = $c->get(Configuration::class)[AppConstants::CALIBRE_DIR];
+            // $cdir = $c->get('settings')['calibre']['libraryPath'];
             $logger = $c->get(LoggerInterface::class);
+            $logger->info("Calibre library dir: {$cdir}");
             if (!empty($cdir)) {
                 try {
                     $calibre = new Calibre($cdir . '/metadata.db');
@@ -72,7 +71,7 @@ return function (ContainerBuilder $containerBuilder) {
                 if ($calibre->libraryOk()) {
                     $logger->debug('Calibre library ok');
                 } else {
-                    $calibre = null;
+                    //$calibre = Calibre:;
                     $logger->error(getcwd());
                     $logger->error("Unable to open Calibre library at " . realpath($cdir));
                 }

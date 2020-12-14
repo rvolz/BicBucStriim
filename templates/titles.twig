@@ -1,0 +1,18 @@
+{% extends 'layout.twig' %}
+
+{% block headerlinks %}
+	<link rel="related" href="{{page.rot}}/opds/" type="application/atom+xml;profile=opds-catalog" title="OPDS index">
+	<link rel="alternate" href="{{page.rot}}/opds/titles/" type="application/atom+xml;profile=opds-catalog" title="OPDS catalog: by titles">
+{% endblock %}
+
+{% block content %}
+	<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
+		{% for book in books %}
+			{% if book.initial != "" %}
+				<li data-role="list-divider"> {{ book.initial }}</li>
+			{% else %}
+				{% include "title_entry.twig" %}
+			{% endif %}
+	  {% endfor %}
+	</div>
+{% endblock %}

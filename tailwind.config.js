@@ -5,10 +5,19 @@ module.exports = {
   ],
   darkMode: false, // or 'media' or 'class'
   theme: {
-    extend: {},
+    extend: {
+      extend: {
+        card: theme => ({
+          maxWidth: '20rem'
+        })
+      },
+    },
   },
   variants: {
     extend: {},
   },
-  plugins: [],
+  plugins: [
+      require('@tailwindcss/forms'),
+      require('./assets/style/plugins/simple-card')
+  ],
 }

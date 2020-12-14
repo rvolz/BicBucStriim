@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@tailwindcss/forms": "^0.2.1",
     "autoprefixer": "^10.1.0",
     "tailwindcss": "^2.0.1"
   },

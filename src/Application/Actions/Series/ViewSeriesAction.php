@@ -30,7 +30,7 @@ class ViewSeriesAction extends SeriesAction
         } else
             $tl = $this->calibre->seriesSlice($index, $this->config[AppConstants::PAGE_SIZE]);
 
-        return $this->respondWithPage('series.html', array(
+        return $this->respondWithPage('series.twig', array(
             'page' => $this->mkPage($this->getMessageString('series'), 5, 1),
             'url' => 'series',
             'series' => $tl['entries'],

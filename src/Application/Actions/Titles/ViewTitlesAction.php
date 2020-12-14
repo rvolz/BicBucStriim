@@ -57,7 +57,7 @@ class ViewTitlesAction extends TitlesAction
         } else
             $tl = $this->calibre->titlesSlice($lang, $index, $pg_size, $filter, $search);
         $books = array_map(array($this, 'checkThumbnail'), $tl['entries']);
-        return $this->respondWithPage('titles.html', array(
+        return $this->respondWithPage('titles.twig', array(
             'page' => $this->mkPage($this->getMessageString('titles'), 2, 1),
             'url' => 'titles',
             'books' => $books,

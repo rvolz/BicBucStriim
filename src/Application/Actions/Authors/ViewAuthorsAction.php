@@ -34,7 +34,7 @@ class ViewAuthorsAction extends AuthorsAction
         foreach ($tl['entries'] as $author) {
             $author->thumbnail = $this->bbs->getAuthorThumbnail($author->id);
         }
-        return $this->respondWithPage('authors.html', array(
+        return $this->respondWithPage('authors.twig', array(
             'page' => $this->mkPage($this->getMessageString('authors'), 3, 1),
             'url' => 'authors',
             'authors' => $tl['entries'],

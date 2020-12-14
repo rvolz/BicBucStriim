@@ -47,7 +47,7 @@
             "cp -r assets/img work/www/public",
             "cp -r assets/js work/www/public",
             "cp -r ./dist/style ./work/www/public",
-            "find ./templates -name '*.twig' -exec cp --parents \\{\\}  ./work/www/ \\;",
+            "cp -r ./templates ./work/www",
             "cp -r src work/www",
             "cp -r vendor work/www",
             "mkdir ./work/lib",
@@ -69,7 +69,7 @@
             "cp -r ./dist/style ./work/www/public",
             "cp -r ./assets/img ./work/www/public",
             "cp -r assets/js work/www/public",
-            "find ./templates -name '*.twig' -exec cp --parents \\{\\}  ./work/www/ \\;",
+            "cp -r ./templates ./work/www",
             "rm -rf ./work/www/var/cache/*"
         ],
         "start": [

@@ -10,10 +10,21 @@ use Slim\Factory\AppFactory;
 use Slim\Factory\ServerRequestCreatorFactory;
 use Slim\ResponseEmitter;
 require __DIR__ . '/../src/Application/Version.php';
-
+if (!defined('APP_VERSION')) {
+    define('APP_VERSION', 'unknown');
+}
 require __DIR__ . '/bbs-config.php';
 if (!defined('BBS_BASE_PATH')) {
     define('BBS_BASE_PATH', '');
+}
+if (!defined('BBS_CALIBRE_PATH')) {
+    define('BBS_CALIBRE_PATH', '');
+}
+if (!defined('BBS_LOG_LEVEL')) {
+    define('BBS_LOG_LEVEL', 'info');
+}
+if (!defined('BBS_DEBUG_MODE')) {
+    define('BBS_DEBUG_MODE', false);
 }
 if (!defined('BBS_IDLE_TIME')) {
     define('BBS_IDLE_TIME', 3600);
@@ -33,13 +44,13 @@ require __DIR__ . '/../vendor/autoload.php';
 // Instantiate PHP-DI ContainerBuilder
 $containerBuilder = new ContainerBuilder();
 
-if (false) { // Should be set to true in production
-    $containerBuilder->enableCompilation(__DIR__ . '/../var/cache');
-}
+//if (BBS_DEBUG_MODE) {
+//    $containerBuilder->enableCompilation(__DIR__ . '/../var/cache');
+//}
 
 // Set up settings
 $settings = require __DIR__ . '/../app/settings.php';
-$settings($containerBuilder);
+$settings($containerBuilder, BBS_DEBUG_MODE, BBS_BASE_PATH, APP_VERSION, BBS_CALIBRE_PATH);
 
 
 // Set up dependencies
@@ -80,22 +91,21 @@ register_shutdown_function($shutdownHandler);
 // Add Routing Middleware
 $app->addRoutingMiddleware();
 
-// Add Error Middleware TODO configure for different envs
-#$errorMiddleware = $app->addErrorMiddleware($displayErrorDetails, false, false);
-$errorMiddleware = $app->addErrorMiddleware($displayErrorDetails, true, true);
+// Add error handling middleware
+$errorMiddleware = $app->addErrorMiddleware($displayErrorDetails, BBS_DEBUG_MODE, BBS_DEBUG_MODE);
 $errorMiddleware->setDefaultErrorHandler($errorHandler);
 
 // Run App & Emit Response
-// TODO Output env: prod, debug, dev
 $logger = $app->getContainer()->get(LoggerInterface::class);
 $logger->info(
     $app->getContainer()->get(Configuration::class)[AppConstants::DISPLAY_APP_NAME] .
     ' ' .
     APP_VERSION);
 $logger->info('Running on PHP: ' . PHP_VERSION);
+if (BBS_DEBUG_MODE)
+    $logger->info('DEBUG mode is enabled');
 
-$basePath = BBS_BASE_PATH;
-$app->setBasePath($basePath);
+$app->setBasePath(BBS_BASE_PATH);
 
 $response = $app->handle($request);
 $responseEmitter = new ResponseEmitter();

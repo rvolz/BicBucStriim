@@ -1,0 +1,22 @@
+<a href="{{page.rot}}/authors/{{ author.id }}/">
+    <div class="card">
+        {% if author.thumbnail %}
+            <img class="card-image" src="{{page.rot}}/static/authorthumbs/{{ author.thumbnail.url }}/" alt="" width="384" height="512">
+        {% else %}
+            <div class="card-image">
+                {# Heroicons: user #}
+                <svg class="h-12 w-12" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+            </div>
+        {% endif %}
+        <div class="card-content">
+            <p class="text-lg font-semibold truncate">
+                {{ author.sort }}
+            </p>
+            <p class="font-medium text-cyan-600 truncate">
+                {{author.anzahl}}
+            </p>
+        </div>
+    </div>
+</a>
