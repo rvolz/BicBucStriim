@@ -33,7 +33,7 @@ return $response->withHeader('Location', $url);
              */
         } else {
             // TODO add error message
-            return $this->respondWithPage('login.html', array(
+            return $this->respondWithPage('login.twig', array(
                 'page' => $this->mkPage($this->getMessageString('login'))));
         }
     }

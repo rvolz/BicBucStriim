@@ -20,7 +20,7 @@ class UpdateConfigurationAction extends AdminAction
         # Check access permission
         if (!$this->is_admin()) {
             $this->logger->warning('admin_change: no admin permission');
-            return $this->respondWithPage('admin_configuration.html', array(
+            return $this->respondWithPage('admin_configuration.twig', array(
                 'page' => $this->mkPage($this->getMessageString('admin')),
                 'messages' => array($this->getMessageString('invalid_password')),
                 'isadmin' => false));
@@ -80,7 +80,7 @@ class UpdateConfigurationAction extends AdminAction
         # Don't save just return the error status
         if (count($errors) > 0) {
             $this->logger->error('admin_change: ended with error ' . var_export($errors, true));
-            return $this->respondWithPage('admin_configuration.html', array(
+            return $this->respondWithPage('admin_configuration.twig', array(
                 'page' => $this->mkPage($this->getMessageString('admin')),
                 'isadmin' => true,
                 'errors' => $errors));

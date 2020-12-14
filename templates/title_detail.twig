@@ -3,11 +3,13 @@
 {% block content %}
 <section class="title_detail">	
 	<header>
-			<h1>{{ book.title }}</h1> 												
-			<p>					
-				{{ book.pubdate | date("Y") }}	{{ language }}
-			</p>
-			<p class="ui-state-error">{{ flash.error }}</p>	
+		<h1>{{ book.title }}</h1>
+		<p>
+			{% set pb = book.pubdate|date("Y") %}
+			{% if pb != "0101" %} ({{ pb }}) {% endif %}
+			{{ language }}
+		</p>
+		<p class="ui-state-error">{{ flash.error }}</p>
 	</header>		
 	<div data-role="collapsible">
 		<h2>{{page.glob.l10n.download}}</h2>
@@ -27,12 +29,12 @@
 			</p>
 			<div data-role="controlgroup" data-type="horizontal" class="downButtons">
 				{% for format in formats %}				
-						<a data-role="button" 
-							{% if page.glob.glob_dl_toggle == true %} disabled="true" {% endif %} 
-							data-ajax="false" 
-							href="{{page.rot}}/static/files/{{book.id}}/{{format.name|url_encode()}}.{{format.format|lower}}">
-								{{ format.format }} | {{format.uncompressed_size|hfsize}}
-						</a>
+					<a data-role="button"
+						{% if page.glob.glob_dl_toggle == true %} disabled="true" {% endif %}
+						data-ajax="false"
+						href="{{page.rot}}/static/files/{{book.id}}/{{format.name|url_encode()}}.{{format.format|lower}}">
+							{{ format.format }} | {{format.uncompressed_size|hfsize}}
+					</a>
 				{% endfor %}
 				{% if kindle_format %}
 					<input id="kindleButton" type="button" data-inline="true" data-icon="forward" value="{{page.glob.l10n.send_to_kindle}}" />

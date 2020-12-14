@@ -5,13 +5,16 @@ module.exports = {
   ],
   darkMode: false, // or 'media' or 'class'
   theme: {
+    container: {
+      center: true,
+      padding: '2rem',
+    },
     extend: {
-      extend: {
         card: theme => ({
           maxWidth: '20rem'
         }),
         // generated with https://tailwind.ink/ for brand color #8494AD aka .bg-manatee-500
-        colors: {
+        colors: theme => ({
           steel: {
             '50':  '#f5f9fa',
             '100': '#eaf4f8',
@@ -132,12 +135,16 @@ module.exports = {
             '800': '#333e52',
             '900': '#293241',
           },
-        },
-      },
+        }),
+        backgroundColor: theme => ({
+          ...theme('colors'),
+
+        }),
     },
   },
   variants: {
-    extend: {},
+    extend: {
+    },
   },
   plugins: [
       require('@tailwindcss/forms'),
