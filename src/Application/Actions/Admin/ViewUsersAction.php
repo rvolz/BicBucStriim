@@ -17,7 +17,7 @@ class ViewUsersAction extends AdminAction
     protected function action(): Response
     {
         $users = $this->bbs->users();
-        return $this->respondWithPage('admin_users.html', array(
+        return $this->respondWithPage('admin_users.twig', array(
             'page' => $this->mkPage($this->getMessageString('admin_users'), 0, 2),
             'users' => $users,
             'isadmin' => $this->is_admin()));

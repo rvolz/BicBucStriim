@@ -45,7 +45,7 @@ class ViewAuthorAction extends AuthorsAction
         $author = $tl['author'];
         $author->thumbnail = $this->bbs->getAuthorThumbnail($id);
         $author->links = $this->bbs->authorLinks($id);
-        return $this->respondWithPage('author_detail.html', array(
+        return $this->respondWithPage('author_detail.twig', array(
             'page' => $this->mkPage($this->getMessageString('author_details'), 3, 2),
             'url' => 'authors/' . $id . '/',
             'author' => $tl['author'],

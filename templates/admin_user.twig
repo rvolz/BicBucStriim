@@ -1,26 +1,25 @@
-{% extends 'main.html' %}
+{% extends 'layout.twig' %}
 
-{% block pid %}id="padmin_user" data-ajax="false"{%endblock%}
 {% block content %}
 
 <h1>{{ page.glob.langa.admin_users }}</h1>
-{% include "flash_messages.html" %}
+{% include "flash_messages.twig" %}
 
 <p>{{page.glob.langa.admin_users_legend2}}</p>
 <form action="{{page.rot}}/admin/users/{{user.id}}" method="put" id="userform" 
 	data-user="{{user.id}}" data-proot="{{page.rot}}">
-	<fieldset data-role="fieldcontain">
+	<fieldset>
 		<label for="edituser_name">{{page.glob.langa.admin_username}}</label>
 		<input name="edituser_name" id="edituser_name" type="text" 
 			value="{{user.username}}" placeholder="{{page.glob.langa.admin_username}}" disabled="true" required="true" />
 	</fieldset>	
-	<fieldset data-role="fieldcontain">
+	<fieldset>
 		<label for="edituser_password">{{page.glob.langa.admin_userpw}}</label>
 		<input name="edituser_password" id="edituser_password" type="password" 
 			value="{{user.password}}" placeholder="{{page.glob.langa.admin_userpw}}" required="true" />
 		<p>{{page.glob.langa.admin_userpw_expl}}</p>					
 	</fieldset>	
-	<fieldset data-role="fieldcontain">
+	<fieldset>
 		<label for="edituser_languages">{{page.glob.langa.language}}</label>
 		<select name="edituser_languages" id="edituser_languages" value="{{user.languages}}">
 		{% for language in languages %}
@@ -29,7 +28,7 @@
 		</select>
 		<p>{{page.glob.langa.admin_userlangs_expl}}</p>					
 	</fieldset>
-	<fieldset data-role="fieldcontain"> 
+	<fieldset>
 		<label for="edituser_tags">{{page.glob.langa.tag}}</label>
 		<select name="edituser_tags" id="edituser_tags" value="{{user.tags}}">
 		{% for tag in tags %}
@@ -38,7 +37,7 @@
 		</select>
 		<p>{{page.glob.langa.admin_usertags_expl}}</p>
 	</fieldset>	
-	<fieldset data-role="fieldcontain">
+	<fieldset>
 		<label for="edituser_role">{{page.glob.langa.admin_role}}</label>
 		<select name="edituser_role" id="edituser_role" value="{{user.role}}">
 			<option value="normal" {% if user.role == 0 %}selected="true"{% endif %}>{{page.glob.langa.admin_role_user}}</option>

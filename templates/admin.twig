@@ -1,10 +1,7 @@
-{% extends 'main.html' %}
-
-{% block pid %}id="padmin"{%endblock%}
+{% extends 'layout.twig' %}
 
 {% block content %}
-
-<ul data-role="listview">
+<ul>
 	<li>
 		<a href="{{page.rot}}/admin/configuration/">
 			<h2>{{page.glob.l10n.admin}}</h2>
@@ -32,5 +29,4 @@
 		</a>
 	</li>
 </ul>
-
 {% endblock %}

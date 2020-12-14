@@ -41,7 +41,7 @@ class ViewVersionCheckAction extends AdminAction
                 $versionAnswer = sprintf($this->getMessageString('admin_no_new_version'), APP_VERSION);
             }
         }
-        return $this->respondWithPage('admin_version.html', array(
+        return $this->respondWithPage('admin_version.twig', array(
             'page' => $this->mkPage($this->getMessageString('admin_check_version'), 0, 2),
             'versionClass' => $versionClass,
             'versionAnswer' => $versionAnswer,

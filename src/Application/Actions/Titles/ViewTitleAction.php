@@ -41,7 +41,7 @@ class ViewTitleAction extends TitlesAction
         $kindle_format = ($this->config[AppConstants::KINDLE] == 1) ? $this->calibre->titleGetKindleFormat($id) : null;
 
         $this->addFsFilter();
-        return $this->respondWithPage('title_detail.html',
+        return $this->respondWithPage('title_detail.twig',
             array('page' => $this->mkPage($this->getMessageString('book_details'), 2, 2),
                 'book' => $details['book'],
                 'authors' => $details['authors'],

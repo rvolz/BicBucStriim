@@ -24,7 +24,7 @@ class UpdateMailAction extends AdminAction
             AppConstants::SMTP_PORT => $mail_data['smtpport'],
             AppConstants::SMTP_ENCRYPTION => $mail_data['smtpenc']);
         $this->bbs->saveConfigs($mail_config);
-        return $this->respondWithPage('admin_mail.html', array(
+        return $this->respondWithPage('admin_mail.twig', array(
             'page' => $this->mkPage($this->getMessageString('admin_smtp'), 0, 2),
             'mail' => $mail_data,
             'encryptions' => $this->mkEncryptions(),

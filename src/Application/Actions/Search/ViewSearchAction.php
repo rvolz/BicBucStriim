@@ -32,7 +32,7 @@ class ViewSearchAction extends SearchAction
         $tlt_books = array_map(array($this,'checkThumbnail'), $tlt['entries']);
         $tls = $this->calibre->seriesSlice(0, $pg_size, trim($search));
         $tls_books = array_map(array($this,'checkThumbnail'), $tls['entries']);
-        return $this->respondWithPage('global_search.html', array(
+        return $this->respondWithPage('global_search.twig', array(
             'page' => $this->mkPage($this->getMessageString('pagination_search'), 0),
             'books' => $tlb_books,
             'books_total' => $tlb['total'] == -1 ? 0 : $tlb['total'],

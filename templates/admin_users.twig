@@ -1,21 +1,20 @@
-{% extends 'main.html' %}
+{% extends 'layout.twig' %}
 
-{% block pid %}id="padmin_users" data-ajax="true"{%endblock%}
 {% block content %}
 
 <header>
 	<h1>{{ page.glob.l10n.admin_users }}</h1>
 </header>
-{% include "flash_messages.html" %}
+{% include "flash_messages.twig" %}
 
 <h2>{{page.glob.l10n.admin_users_legend1}}</h2>
 <form action="{{page.rot}}/admin/users/" method="post" id="newuserform" class="ui-form-a" data-proot="{{page.rot}}" >
-	<fieldset data-role="fieldcontain">
+	<fieldset>
 		<label for="newuser_name">{{page.glob.l10n.admin_username}}</label>
 		<input name="newuser_name" id="newuser_name" type="text" 
 			value="" placeholder="{{page.glob.l10n.admin_username}}"/>
 	</fieldset>	
-	<fieldset data-role="fieldcontain">
+	<fieldset>
 		<label for="newuser_password">{{page.glob.l10n.admin_userpw}}</label>
 		<input name="newuser_password" id="newuser_password" type="password" 
 			value="" placeholder="{{page.glob.l10n.admin_userpw}}"/>

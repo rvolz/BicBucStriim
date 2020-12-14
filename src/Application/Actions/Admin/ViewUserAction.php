@@ -47,7 +47,7 @@ class ViewUserAction extends CalibreHtmlAction
         $nt->key = '';
         array_unshift($tags, $nt);
         $this->logger->debug('admin_get_user: ' . var_export($user, true));
-        $this->respondWithPage('admin_user.html', array(
+        $this->respondWithPage('admin_user.twig', array(
             'page' => $this->mkPage($this->getMessageString('admin_users'), 0, 3),
             'user' => $user,
             'languages' => $languages,

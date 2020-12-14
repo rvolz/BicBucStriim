@@ -46,7 +46,7 @@ class ViewIdTemplatesAction extends CalibreHtmlAction
             array_push($idtemplates, $ni);
         }
         $this->logger->debug('admin_get_idtemplates ' . var_export($idtemplates, true));
-        return $this->respondWithPage('admin_idtemplates.html', array(
+        return $this->respondWithPage('admin_idtemplates.twig', array(
             'page' => $this->mkPage($this->getMessageString('admin_idtemplates'), 0, 2),
             'templates' => $idtemplates,
             'isadmin' => $this->is_admin()));

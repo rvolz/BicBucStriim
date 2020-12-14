@@ -99,7 +99,7 @@ class UpdateConfigurationAction extends AdminAction
                 $this->logger->debug('admin_change: changes saved');
             }
             $this->logger->debug('admin_change: ended');
-            return $this->respondWithPage('admin_configuration.html', array(
+            return $this->respondWithPage('admin_configuration.twig', array(
                 'page' => $this->mkPage($this->getMessageString('admin'), 0, 2),
                 'messages' => array($this->getMessageString('changes_saved')),
                 //'mailers' => $this->mkMailers(),

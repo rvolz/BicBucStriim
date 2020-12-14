@@ -23,7 +23,7 @@ class ViewMailAction extends AdminAction
             'smtpport' => $this->config[AppConstants::SMTP_PORT],
             'smtpenc' => $this->config[AppConstants::SMTP_ENCRYPTION]
         );
-        return $this->respondWithPage('admin_mail.html', array(
+        return $this->respondWithPage('admin_mail.twig', array(
             'page' => $this->mkPage($this->getMessageString('admin_mail'), 0, 2),
             'mail' => $mail,
             'encryptions' => $this->mkEncryptions(),

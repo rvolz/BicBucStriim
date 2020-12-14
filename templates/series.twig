@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block content %}
-	<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
+	<div class="listview">
 		{% for this_series in series %}
 			{% if series.initial != "" %}
 				<li data-role="list-divider"> {{ this_series.initial }}</li>

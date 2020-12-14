@@ -14,7 +14,7 @@ class ViewLogoutAction extends LoginAction
      */
     protected function action(): Response
     {
-        return $this->respondWithPage('logout.html', array(
+        return $this->respondWithPage('logout.twig', array(
             'page' => $this->mkPage($this->getMessageString('login'))
         ));
     }

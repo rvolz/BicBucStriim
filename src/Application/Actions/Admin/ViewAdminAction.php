@@ -14,7 +14,7 @@ class ViewAdminAction extends AdminAction
      */
     protected function action(): Response
     {
-        return $this->respondWithPage('admin.html', array(
+        return $this->respondWithPage('admin.twig', array(
             'page' => $this->mkPage($this->getMessageString('admin'), 0, 1),
             'isadmin' => $this->is_admin()));
     }

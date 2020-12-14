@@ -1,41 +1,40 @@
-{% extends 'main.html' %}
+{% extends 'layout.twig' %}
 
-{% block pid %}id="padmin_mail" data-ajax="false"{%endblock%}
 {% block content %}
 
 <h1>{{ page.glob.l10n.admin_mail }}</h1>
-{% include "flash_messages.html" %}
+{% include "flash_messages.twig" %}
 
 <p>{{page.glob.l10n.admin_mail_legend}}</p>
 <form action="{{page.rot}}/admin/mail/" method="put" id="mailform" data-proot="{{page.rot}}">
-	<fieldset data-role="fieldcontain">
+	<fieldset>
 		<label for="username">{{page.glob.l10n.admin_username}}</label>
 		<input name="username" id="username" type="text" 
 			value="{{mail.username}}" placeholder="{{page.glob.l10n.admin_username}}" 
 			required="true" />
 	</fieldset>	
 	<p>{{page.glob.l10n.admin_smtpusername_expl}}</p>					
-	<fieldset data-role="fieldcontain">
+	<fieldset>
 		<label for="password">{{page.glob.l10n.admin_userpw}}</label>
 		<input name="password" id="password" type="password" 
 			value="{{mail.password}}" placeholder="{{page.glob.l10n.admin_userpw}}" 
 			required="true" />
 		<p>{{page.glob.l10n.admin_smtpuserpw_expl}}</p>					
 	</fieldset>	
-	<fieldset data-role="fieldcontain">
+	<fieldset>
 		<label for="smtpserver">{{page.glob.l10n.admin_smtpserver}}</label>
 		<input name="smtpserver" id="smtpserver" type="text" 
 			value="{{mail.smtpserver}}" placeholder="{{page.glob.l10n.admin_smtpserver}}" required="true" />		
 		<p>{{page.glob.l10n.admin_smtpserver_expl}}</p>					
 	</fieldset>
-	<fieldset data-role="fieldcontain"> 
+	<fieldset>
 		<label for="smtpport">{{page.glob.l10n.admin_smtpport}}</label>
 		<input name="smtpport" id="smtpport" type="number" 
 			value="{{mail.smtpport}}" placeholder="{{page.glob.l10n.admin_smtpport}}" 
 			required="true" />		
 		<p>{{page.glob.l10n.admin_smtpport_expl}}</p>					
 	</fieldset>	
-	<fieldset data-role="fieldcontain">
+	<fieldset>
 		<label for="smtpenc">{{page.glob.l10n.admin_smtpenc}}</label>
 		<select name="smtpenc" id="smtpenc" value="{{mail.smtpenc}}">
 		{% for encryption in encryptions %}
