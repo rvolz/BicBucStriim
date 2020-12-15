@@ -8,13 +8,25 @@
 {% endblock %}
 
 {% block content %}
-<h2>{{page.glob.l10n.intro}}</h2>
-<ul>
-    <li>{{stats.titles}} {{page.glob.l10n.titles}}</li>
-    <li>{{stats.authors}} {{page.glob.l10n.authors}}</li>
-    <li>{{stats.tags}} {{page.glob.l10n.tags}}</li>
-    <li>{{stats.series}} {{page.glob.l10n.series}}</li>
-</ul>
+    <h2>{{page.glob.l10n.intro}}</h2>
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-1">
+        <div class="stats-cell">
+            <p class="stats-header">{{page.glob.l10n.titles}}</p>
+            <p class="stats-value">{{stats.titles}}</p>
+        </div>
+        <div  class="stats-cell">
+            <p class="stats-header">{{page.glob.l10n.authors}}</p>
+            <p class="stats-value">{{stats.authors}}</p>
+        </div>
+        <div class="stats-cell">
+            <p class="stats-header">{{page.glob.l10n.tags}}</p>
+            <p class="stats-value">{{stats.tags}}</p>
+        </div>
+        <div class="stats-cell">
+            <p class="stats-header">{{page.glob.l10n.series}}</p>
+            <p class="stats-value">{{stats.series}}</p>
+        </div>
+    </div>
 
 <h2>{{page.glob.l10n.dl30}}</h2>
 <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6">

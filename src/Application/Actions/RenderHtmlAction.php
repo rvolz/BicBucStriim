@@ -70,10 +70,7 @@ abstract class RenderHtmlAction extends BasicAction
     # Utility function to fill the page array
     protected function mkPage($subtitle = '', $menu = 0, $level = 0)
     {
-        if ($subtitle == '')
-            $title = $this->config[AppConstants::DISPLAY_APP_NAME];
-        else
-            $title = $this->config[AppConstants::DISPLAY_APP_NAME] . ': ' . $subtitle;
+        $title = $this->config[AppConstants::DISPLAY_APP_NAME];
 
         // TODO mkRootUrl
         // $rot = mkRootUrl();

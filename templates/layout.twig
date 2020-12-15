@@ -17,10 +17,10 @@
     <div class="wrapper">
         <header>
             <h1 class="text-left text-md leading-tight text-gray-900">
-                {{ page.title }}
+                {{ page.h1 }}
             </h1>
             <div class="md:block">
-                <div class="ml-4 flex items-end md:ml-6">
+                <div class="ml-4 flex m-4 items-end md:ml-6">
                     <a href="{{ page.rot }}/search/" class="top-link" title="{{ page.glob.l10n.pagination_search }}" title="{{ page.glob.l10n.pagination_search }}">
                         <span class="sr-only">{{ page.glob.l10n.pagination_search }}</span>
                         {# Heroicon name: search #}
@@ -45,7 +45,7 @@
                 </div>
             </div>
         </header>
-        <nav>
+        <nav class="py-1 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16">
                 <div class="flex items-center">
                     <div class="flex-shrink-0">
@@ -65,7 +65,7 @@
         </nav>
 
         <main>
-            <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+            <div class=" mx-auto py-6 sm:px-6 lg:px-8">
                 <div class="px-4 py-6 sm:px-0">
                     <div class="border-4 border-dashed border-gray-200 rounded-lg">
                         {% block content %}{% endblock %}
@@ -74,9 +74,7 @@
             </div>
         </main>
         <footer>
-            <div class="max-w-2xl mx-auto py-2 sm:px-6 lg:px-8">
-                <p><a href="https://github.com/rvolz/BicBucStriim">BicBucStriim {{page.version}}</a>  &copy; 2012-{{"now"|date('Y')}} Rainer Volz</p>
-            </div>
+            <p><a href="https://github.com/rvolz/BicBucStriim">BicBucStriim {{page.version}}</a> ― &copy; 2012-{{"now"|date('Y')}} Rainer Volz</p>
         </footer>
     </div>
 </body>

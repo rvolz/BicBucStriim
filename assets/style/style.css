@@ -9,12 +9,30 @@ div.wrapper {
     @apply md:container
 }
 
+.stats-cell {
+    @apply py-4 px-4 bg-manatee-200 border rounded border-chocolate-400
+}
+.stats-header {
+    @apply text-blush-400 text-xl
+}
+.stats-value {
+    @apply text-blush-600 text-4xl font-bold text-center
+}
+
 header {
-   @apply flex items-center justify-between h-1/2
+    @apply flex items-center justify-between h-1/2 py-1 sm:px-6 lg:px-8 bg-chocolate-200
+}
+
+nav {
+    @apply py-1 sm:px-6 lg:px-8 bg-tangerine-200
+}
+
+footer {
+    @apply py-1 sm:px-6 lg:px-8 bg-tangerine-200
 }
 
 .top-link {
-    @apply bg-manatee-900 p-1 rounded-full text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white
+    @apply bg-tangerine-600 p-1 rounded-full text-black hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white
 }
 
 div.listview-titles {
