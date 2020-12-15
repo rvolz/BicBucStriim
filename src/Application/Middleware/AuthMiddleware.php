@@ -24,7 +24,7 @@ class AuthMiddleware  implements Middleware
     private LoggerInterface $logger;
     private PDO $pdo;
     private ContainerInterface $container;
-
+    private int $idleTime;
     /**
      * Set the LoggerInterface instance.
      *
@@ -37,6 +37,7 @@ class AuthMiddleware  implements Middleware
         $this->logger = $logger;
         $this->pdo = $pdo;
         $this->container = $container;
+        $this->idleTime = $this->container->get('settings')['idleTime'];
     }
 
     /**
@@ -237,7 +238,7 @@ class AuthMiddleware  implements Middleware
     public function try_resume(AuthFactory $auth_factory, Auth\Adapter\PdoAdapter $pdo_adapter, Auth\Auth $auth): void
     {
         try {
-            $resume_service = $auth_factory->newResumeService($pdo_adapter, BBS_IDLE_TIME);
+            $resume_service = $auth_factory->newResumeService($pdo_adapter, $this->idleTime);
             $resume_service->resume($auth);
         } catch (Exception $e) {
             $this->logger->warning('Authentication error, session could not be resumed: ' . get_class($e) . ', ' .var_export($e->getMessage()));

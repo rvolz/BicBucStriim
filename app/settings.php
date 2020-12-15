@@ -3,16 +3,47 @@ declare(strict_types=1);
 
 use DI\ContainerBuilder;
 use Monolog\Logger;
+require __DIR__ . '/../src/Application/Version.php';
 
-return function (ContainerBuilder $containerBuilder, bool $debugMode, string $basePath, string $version, string $calibrePath) {
+return function (ContainerBuilder $containerBuilder) {
+    /** @var bool $docker; */
+    $docker = isset($_ENV['docker']) ? $_ENV['docker'] : false;
+    $debugMode = isset($_ENV['BBS_DEBUG_MODE']) ? $_ENV['BBS_DEBUG_MODE'] : false;
+    $basePath = isset($_ENV['BBS_BASE_PATH']) ? $_ENV['BBS_BASE_PATH'] : '';
+    $logLevel = isset($_ENV['BBS_LOG_LEVEL']) ? $_ENV['BBS_LOG_LEVEL'] : 'info';
+    switch ($logLevel) {
+        case 'debug':
+            $realLogLevel = Logger::DEBUG;
+            break;
+        case 'info':
+            $realLogLevel = Logger::INFO;
+            break;
+        case 'warning':
+            $realLogLevel = Logger::WARNING;
+            break;
+        case 'error':
+            $realLogLevel = Logger::ERROR;
+            break;
+        default:
+            $realLogLevel = Logger::INFO;
+    }
+    if ($debugMode)
+        $realLogLevel = Logger::DEBUG;
+    /** @var int $idleTime; */
+    $idleTime = (int) $_ENV['BBS_IDLE_TIME'];
+
     // Global Settings Object
     $containerBuilder->addDefinitions([
+
         'settings' => [
             // mode
             'debug' => $debugMode,
 
             // If not installed at root, enter the path to the installation here
             'basePath' => $basePath,
+
+            // mode
+            'idleTime' => !empty($idleTime)  ? $idleTime : 3600,
 
             // path to the 'public' directory
             'publicPath' => __DIR__ . '/../public/',
@@ -32,22 +63,17 @@ return function (ContainerBuilder $containerBuilder, bool $debugMode, string $ba
             // Monolog settings
             'logger' => [
                 'name' => 'BicBucStriim',
-                'path' => getenv('docker') ? 'php://stdout' : __DIR__ . '/../var/logs/app.log',
-                'level' => Logger::DEBUG, // TODO change according to bbs-config.php
+                'path' => $docker ? 'php://stdout' : __DIR__ . '/../var/logs/app.log',
+                'level' => $realLogLevel,
             ],
 
             // BicBucStriim settings
             'bbs' => [
                 'dataDb' => __DIR__ . '/../data/data.db',
                 'public' => __DIR__ . '/../public',
-                'version' => $version,
+                'version' => APP_VERSION,
                 'langs' => array('de', 'en', 'es', 'fr', 'gl', 'hu', 'it', 'nl', 'pl'),
-            ],
-
-            // Calibre settings
-            'calibre' => [
-               'libraryPath' => $calibrePath,
-            ],
+            ]
         ],
     ]);
 };

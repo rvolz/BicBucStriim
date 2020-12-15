@@ -1,34 +1,24 @@
 <?php
 
+require __DIR__ . '/../vendor/autoload.php';
 use App\Application\Handlers\HttpErrorHandler;
 use App\Application\Handlers\ShutdownHandler;
 use App\Domain\BicBucStriim\AppConstants;
 use App\Domain\BicBucStriim\Configuration;
 use DI\ContainerBuilder;
+use Dotenv\Dotenv;
 use Psr\Log\LoggerInterface;
 use Slim\Factory\AppFactory;
 use Slim\Factory\ServerRequestCreatorFactory;
 use Slim\ResponseEmitter;
-require __DIR__ . '/../src/Application/Version.php';
-if (!defined('APP_VERSION')) {
-    define('APP_VERSION', 'unknown');
-}
-require __DIR__ . '/bbs-config.php';
-if (!defined('BBS_BASE_PATH')) {
-    define('BBS_BASE_PATH', '');
-}
-if (!defined('BBS_CALIBRE_PATH')) {
-    define('BBS_CALIBRE_PATH', '');
-}
-if (!defined('BBS_LOG_LEVEL')) {
-    define('BBS_LOG_LEVEL', 'info');
-}
-if (!defined('BBS_DEBUG_MODE')) {
-    define('BBS_DEBUG_MODE', false);
-}
-if (!defined('BBS_IDLE_TIME')) {
-    define('BBS_IDLE_TIME', 3600);
-}
+
+// Load a .env file if available in the public directory.
+// Note: existing environment variables will not be overwritten by this call
+$dotenv = Dotenv::createImmutable(__DIR__);
+$dotenv->ifPresent('docker')->isBoolean();
+$dotenv->ifPresent('BBS_DEBUG_MODE')->isBoolean();
+$dotenv->ifPresent('BBS_IDLE_TIME')->isInteger();
+$dotenv->load();
 
 if (PHP_SAPI == 'cli-server') {
     // To help the built-in PHP dev server, check if the request was actually for
@@ -39,19 +29,18 @@ if (PHP_SAPI == 'cli-server') {
         return false;
     }
 }
-require __DIR__ . '/../vendor/autoload.php';
 
 // Instantiate PHP-DI ContainerBuilder
 $containerBuilder = new ContainerBuilder();
 
-//if (BBS_DEBUG_MODE) {
-//    $containerBuilder->enableCompilation(__DIR__ . '/../var/cache');
-//}
-
 // Set up settings
 $settings = require __DIR__ . '/../app/settings.php';
-$settings($containerBuilder, BBS_DEBUG_MODE, BBS_BASE_PATH, APP_VERSION, BBS_CALIBRE_PATH);
+$settings($containerBuilder);
 
+/** @var bool $debugMode */
+$debugMode = $_ENV['BBS_DEBUG_MODE'];
+if (!$debugMode)
+    $containerBuilder->enableCompilation(__DIR__ . '/../var/cache');
 
 // Set up dependencies
 $dependencies = require __DIR__ . '/../app/dependencies.php';
@@ -59,6 +48,13 @@ $dependencies($containerBuilder);
 
 // Build PHP-DI Container instance
 $container = $containerBuilder->build();
+
+/** @var bool $displayErrorDetails */
+$displayErrorDetails = $container->get('settings')['displayErrorDetails'];
+/** @var string $appVersion */
+$appVersion = $container->get('settings')['bbs']['version'];
+/** @var string $basePath */
+$basePath = $container->get('settings')['basePath'];
 
 // Instantiate the app
 AppFactory::setContainer($container);
@@ -72,9 +68,6 @@ $middleware($app);
 // Register routes
 $routes = require __DIR__ . '/../app/routes.php';
 $routes($app);
-
-/** @var bool $displayErrorDetails */
-$displayErrorDetails = $container->get('settings')['displayErrorDetails'];
 
 // Create Request object from globals
 $serverRequestCreator = ServerRequestCreatorFactory::create();
@@ -92,7 +85,7 @@ register_shutdown_function($shutdownHandler);
 $app->addRoutingMiddleware();
 
 // Add error handling middleware
-$errorMiddleware = $app->addErrorMiddleware($displayErrorDetails, BBS_DEBUG_MODE, BBS_DEBUG_MODE);
+$errorMiddleware = $app->addErrorMiddleware($displayErrorDetails, $debugMode, $debugMode);
 $errorMiddleware->setDefaultErrorHandler($errorHandler);
 
 // Run App & Emit Response
@@ -100,12 +93,12 @@ $logger = $app->getContainer()->get(LoggerInterface::class);
 $logger->info(
     $app->getContainer()->get(Configuration::class)[AppConstants::DISPLAY_APP_NAME] .
     ' ' .
-    APP_VERSION);
+    $appVersion);
 $logger->info('Running on PHP: ' . PHP_VERSION);
-if (BBS_DEBUG_MODE)
+if ($debugMode)
     $logger->info('DEBUG mode is enabled');
 
-$app->setBasePath(BBS_BASE_PATH);
+$app->setBasePath($basePath);
 
 $response = $app->handle($request);
 $responseEmitter = new ResponseEmitter();

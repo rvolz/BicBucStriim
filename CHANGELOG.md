@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - suppress output of undefined publishing year in title list, fixes #293
 - updated Modernizr JS dependency to 3.11 from HTML5 Boilerplate
 - updated installation check, new checks for PHP 7.4, modules and SQLite FTS5
+- added .env support for settings
 ### Removed
 - jQuery Mobile toolkit
 

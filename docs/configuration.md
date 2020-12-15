@@ -1,19 +1,45 @@
-# Configuration
+# Basic Configuration
 
 The behaviour of the app is partly controlled by the infrastructure it relies on. These are PHP and
 the web server. Some configurations cannot be modified by the app. These are explained in this section.
 
+Most configuration settings mentioned here can be specified in two ways:
+
+1. as environment variables (preferred)
+2. in a `.env` file, if you can't use environment variables
+
+To use (2) copy the file `public/.env.example` to `public/.env` and modify the variables there.
+
 ## Base path
 
 By default the app is configured to live in the root path `/` of your webserver. If this is not the case with your
-installation you will have to change the _base path_ configuration. Uncomment and change the definition of 
-`BBS_BASE_PATH` in the file `bbs-config.php` to your path , e.g.:
+installation you will have to change the _base path_ configuration. Use the environment variable `BBS_BASE_PATH` 
+to define your path.
 
-```php
-// define('BBS_BASE_PATH', '');
-define('BBS_BASE_PATH', '/bbs/');
+If you wanted to install the app in the path `/bbs` you would define this as: 
+
+```shell
+BBS_BASE_PATH="/bbs"
 ```
 
+## Log level
+
+The app uses the *info* level to log messages. If you wanted to reduce the amount of log messages further you could
+use the log levels *warning* or *error*. Specify this with the environment variable `BBS_LOG_LEVEL`:
+
+```shell
+BBS_LOG_LEVEL="warning"
+```
+
+## Debug mode
+
+If errors appear and you can't figure out why, you could enable *debug mode* by using the environment variable:
+
+```shell
+BBS_DEBUG_MODE=true
+```
+This will provide more context, it sets the log level to *debug* and turns on the error display. This generates a 
+lot of information. So you should turn debug mode off when you are finished.
 
 ## PHP
 
@@ -50,11 +76,12 @@ If you have the necessary access rights you could also modify the system `php.in
 single-purpose containers or VMs, it is discouraged in all other cases because it could impact the behaviour of other
 PHP applications running on the system.
 
-Alternative (2) would be to modify the app's default. Uncomment and change the definition of `BBS_IDLE_TIME` in the file 
-`bbs-config.php` to the value defined in `session.gc_maxlifetime`:
+Alternative (2) would be to modify the app's default. Change the environment variable `BBS_IDLE_TIME` to the value 
+defined in `session.gc_maxlifetime`.
 
-```php
-// define('BBS_IDLE_TIME', 3600);
-define('BBS_IDLE_TIME', 1440);
+Example to use 1440 seconds (the default in many PHP distributions): 
+
+```shell
+BBS_IDLE_TIME=1440
 ```
 
