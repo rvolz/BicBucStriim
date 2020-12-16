@@ -1,1 +1,0 @@
-Turbolinks.start()
