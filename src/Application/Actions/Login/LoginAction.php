@@ -11,6 +11,7 @@ use App\Domain\BicBucStriim\Configuration;
 use App\Domain\BicBucStriim\L10n;
 use App\Domain\User\User;
 use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
 use Slim\Views\Twig;
 use Twig\Error\LoaderError;
@@ -83,8 +84,8 @@ abstract class LoginAction extends BasicAction
             $title = $this->config[AppConstants::DISPLAY_APP_NAME] . ': ' . $subtitle;
 
         // TODO mkRootUrl
-        // $rot = mkRootUrl();
-        $rot = 'http://localhost:8081';
+        $rot = $this->mkRootUrl($this->request, '');
+        //$rot = 'http://localhost:8081';
         $auth = true;
         $adm = $this->user->getRole() == 1;
         $page = array('title' => $title,
@@ -113,5 +114,25 @@ abstract class LoginAction extends BasicAction
     {
         return $this->l10n->message($id);
     }
+
+    /**
+     * @param ServerRequestInterface $request
+     * @param string $basePath from Slim App::getBasePath() https://discourse.slimframework.com/t/slim-4-get-base-url/3406
+     * @param bool $relativeUrls
+     * @return string root URL
+     *
+     * @deprecated deprecated, is this method still required?
+     */
+    function mkRootUrl(ServerRequestInterface $request, string $basePath, $relativeUrls = true): string
+    {
+        $uri = $request->getUri();
+        if ($relativeUrls) {
+            $root = rtrim($basePath, "/");
+        } else {
+            $root = rtrim($basePath . $uri->getPath(), "/");
+        }
+        return $root;
+    }
+
 
 }
