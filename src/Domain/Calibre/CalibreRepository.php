@@ -87,15 +87,18 @@ interface CalibreRepository
 
     /**
      * Search a list of authors defined by the parameters $index and $length.
-     * If $search is defined it is used to filter the names, ignoring case.
+     * If $search is defined it is used to filter the names, ignoring case. It searches the name field, not the sort field.
+     * If $translit is true the $search is compared to transliterated names, to make it easier to search for
+     * names with non-ascii characters.
      *
      * @param integer $index page index
      * @param integer $length page length
-     * @param string $search search string
+     * @param ?string $search search string
+     * @param bool $translit if true uses transliteration for search.
      * @return array                with elements: current page,
      *                      no. of pages, $length entries
      */
-    function authorsSlice($index = 0, $length = 100, $search = NULL);
+    function authorsSlice($index = 0, $length = 100, $search = null, $translit = false);
 
     /**
      * Find the initials of all authors and their count
@@ -213,14 +216,17 @@ interface CalibreRepository
     /**
      * Search a list of books defined by the parameters $index and $length.
      * If $search is defined it is used to filter the book title, ignoring case.
+     * If $translit is true the $search is compared to transliterated names, to make it easier to search for
+     * titles with non-ascii characters.
      * @param string $lang target language code
      * @param int $index page index, default 0
      * @param int $length page length, default 100
      * @param object $filter CalibreFilter
-     * @param string $search search phrase, default null
+     * @param ?string $search search phrase, default null
+     * @param bool $translit if true uses transliteration for search.
      * @return  array          an array with elements: current page, no. of pages, $length entries
      */
-    function titlesSlice($lang, $index = 0, $length = 100, $filter, $search = NULL);
+    function titlesSlice($lang, $index, $length, $filter, $search = null, $translit = false);
 
     /**
      * Find only one book
@@ -358,13 +364,16 @@ interface CalibreRepository
      * Search a list of books defined by the parameters $index and $length.
      * If $search is defined it is used to filter the book title, ignoring case.
      * Return an array with elements: current page, no. of pages, $length entries
+     * If $translit is true the $search is compared to transliterated names, to make it easier to search for
+     * titles with non-ascii characters.
      *
      * @param integer $index =0     page indes
      * @param integer $length =100  page length
      * @param string $search =NULL search criteria for series name
+     * @param bool $translit =false if true uses transliteration for search
      * @return array                see findSlice
      */
-    function seriesSlice($index = 0, $length = 100, $search = NULL);
+    function seriesSlice($index = 0, $length = 100, $search = null, $translit = false);
 
     /**
      * Find the initials of all series and their number

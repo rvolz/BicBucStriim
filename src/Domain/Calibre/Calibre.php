@@ -31,6 +31,7 @@ use App\Domain\Calibre\TagBook;
 use App\Domain\Calibre\Utilities;
 use \PDO;
 use \Locale;
+use AnyAscii;
 
 class Calibre implements CalibreRepository
 {
@@ -42,13 +43,13 @@ class Calibre implements CalibreRepository
     public $last_error = 0;
 
     # calibre sqlite db
-    protected $calibre = NULL;
+    protected ?PDO $calibre = null;
     # calibre library dir
-    public $calibre_dir = '';
+    public string $calibre_dir = '';
     # calibre library file, last modified date
     public $calibre_last_modified;
     # dir for generated thumbs
-    protected $thumb_dir = '';
+    protected string $thumb_dir = '';
 
     /**
      * Check if the Calibre DB is readable
@@ -83,6 +84,7 @@ class Calibre implements CalibreRepository
                 $this->calibre->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
                 $this->calibre->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
                 $this->last_error = $this->calibre->errorCode();
+                $this->calibre->sqliteCreateFunction('transliterated', array($this, 'mkTransliteration'), 1);
             } else {
                 $this->calibre = NULL;
             }
@@ -215,11 +217,12 @@ class Calibre implements CalibreRepository
      * Return an array with elements: current page, no. of pages, $length entries
      *
      * @param  integer          searchType      index of search type to use, see CalibreSearchType
-     * @param  integer          index=0         page index
-     * @param  integer          length=100      length of page
+     * @param  integer          index           page index
+     * @param  integer          length          length of page
      * @param  CalibreFilter    filter          filter expression
-     * @param  string           search=NULL     search pattern for sort/name fields
-     * @param  integer          id=NULL         optional author/tag/series ID     *
+     * @param  string           search=null     search pattern for sort/name fields
+     * @param  integer          id=null         optional author/tag/series ID
+     * @param  bool             translit=false  set to true to use transliteration
      * @return array                            an array with current page (key 'page'),
      *                                          number of pages (key 'pages'),
      *                                          an array of $class instances (key 'entries') or NULL
@@ -227,8 +230,7 @@ class Calibre implements CalibreRepository
      * Changed thanks to QNAP who insist on publishing outdated libraries in their firmware
      * TODO revert back to real SQL, not the outdated-QNAP stlyle
      */
-    protected
-    function findSliceFiltered($searchType, $index = 0, $length = 100, $filter, $search = NULL, $id = NULL)
+    protected function findSliceFiltered($searchType, $index, $length, $filter, $search = null, $id = null, $translit = false)
     {
         if ($index < 0 || $length < 1 || $searchType < CalibreSearchType::Author || $searchType > CalibreSearchType::LastModifiedOrderedBook)
             return array('page' => 0, 'pages' => 0, 'entries' => NULL);
@@ -240,11 +242,15 @@ class Calibre implements CalibreRepository
         switch ($searchType) {
             case CalibreSearchType::Author:
                 $class = Author::class;
-                $count = $this->mkAuthorsCount($queryFilter, $searching);
+                $count = $this->mkAuthorsCount($queryFilter, $searching, $translit);
                 if (is_null($search)) {
                     $query = 'SELECT a.id, a.name, a.sort, (SELECT COUNT(*) FROM books_authors_link b WHERE b.author=a.id) AS anzahl FROM authors AS a ORDER BY a.sort';
                 } else {
-                    $query = 'SELECT a.id, a.name, a.sort, (SELECT COUNT(*) FROM books_authors_link b WHERE b.author=a.id) AS anzahl FROM authors AS a WHERE lower(a.name) LIKE :search_l OR lower(a.name) LIKE :search_t ORDER BY a.sort';
+                    if ($translit)
+                        $where = 'lower(transliterated(a.name)) LIKE :search_l OR lower(transliterated(a.name)) LIKE :search_t';
+                    else
+                        $where = 'lower(a.name) LIKE :search_l OR lower(a.name) LIKE :search_t';
+                    $query = "SELECT a.id, a.name, a.sort, (SELECT COUNT(*) FROM books_authors_link b WHERE b.author=a.id) AS anzahl FROM authors AS a WHERE {$where} ORDER BY a.sort";
                 }
                 break;
             case CalibreSearchType::AuthorBook:
@@ -259,16 +265,20 @@ class Calibre implements CalibreRepository
                 break;
             case CalibreSearchType::Book:
                 $class = Book::class;
-                $count = $this->mkBooksCount($queryFilter, $searching);
-                $query = $this->mkBooksQuery($searchType, true, $queryFilter, $searching);
+                $count = $this->mkBooksCount($queryFilter, $searching, $translit);
+                $query = $this->mkBooksQuery($searchType, true, $queryFilter, $searching, $translit);
                 break;
             case CalibreSearchType::Series:
                 $class = Series::class;
-                $count = $this->mkSeriesCount($queryFilter, $searching);
+                $count = $this->mkSeriesCount($queryFilter, $searching, $translit);
                 if (is_null($search)) {
                     $query = 'SELECT series.id, series.name, (SELECT COUNT(*) FROM books_series_link AS bsl WHERE series.id = bsl.series ) AS anzahl FROM series ORDER BY series.name';
                 } else {
-                    $query = 'SELECT series.id, series.name, (SELECT COUNT(*) FROM books_series_link AS bsl WHERE series.id = bsl.series ) AS anzahl FROM series WHERE lower(series.name) LIKE :search_l OR lower(series.name) LIKE :search_t ORDER BY series.name';
+                    if ($translit)
+                        $where = 'lower(transliterated(series.name)) LIKE :search_l OR lower(transliterated(series.name)) LIKE :search_t';
+                    else
+                        $where = 'lower(series.name) LIKE :search_l OR lower(series.name) LIKE :search_t';
+                    $query = "SELECT series.id, series.name, (SELECT COUNT(*) FROM books_series_link AS bsl WHERE series.id = bsl.series ) AS anzahl FROM series WHERE {$where} ORDER BY series.name";
                 }
                 break;
             case CalibreSearchType::SeriesBook:
@@ -283,11 +293,15 @@ class Calibre implements CalibreRepository
                 break;
             case CalibreSearchType::Tag:
                 $class = Tag::class;
-                $count = $this->mkTagsCount($queryFilter, $searching);
+                $count = $this->mkTagsCount($queryFilter, $searching, $translit);
                 if (is_null($search)) {
                     $query = 'SELECT tags.id, tags.name, (SELECT COUNT(*) FROM books_tags_link AS btl WHERE tags.id = btl.tag) AS anzahl FROM tags ORDER BY tags.name';
                 } else {
-                    $query = 'SELECT tags.id, tags.name, (SELECT COUNT(*) FROM books_tags_link AS btl WHERE tags.id = btl.tag) AS anzahl FROM tags WHERE lower(tags.name) LIKE :search_l OR lower(tags.name) LIKE :search_t ORDER BY tags.name';
+                    if ($translit)
+                        $where = 'lower(transliterated(tags.name)) LIKE :search_l OR lower(transliterated(tags.name)) LIKE :search_t';
+                    else
+                        $where = 'lower(tags.name) LIKE :search_l OR lower(tags.name) LIKE :search_t';
+                    $query = "SELECT tags.id, tags.name, (SELECT COUNT(*) FROM books_tags_link AS btl WHERE tags.id = btl.tag) AS anzahl FROM tags WHERE {$where} ORDER BY tags.name";
                 }
                 break;
             case CalibreSearchType::TagBook:
@@ -327,10 +341,11 @@ class Calibre implements CalibreRepository
      * @param CalibreSearchType $searchType
      * @param boolean $sortAscending ASC, result should be sorted ASC or DESC?
      * @param CalibreFilter $queryFilter
-     * @param bool $search false, a query with a search filter?
+     * @param ?string $search optional search string
+     * @param bool $translit if true use transliteration for search term
      * @return string                               SQL query
      */
-    private function mkBooksQuery($searchType, $sortAscending, $queryFilter, $search = false)
+    private function mkBooksQuery($searchType, $sortAscending, $queryFilter, $search = null, $translit = false)
     {
         switch ($searchType) {
             case CalibreSearchType::Book:
@@ -352,51 +367,76 @@ class Calibre implements CalibreRepository
             $sortModifier = " DESC";
         }
         if ($search) {
-            $query = 'SELECT * FROM ' . $queryFilter . ' WHERE lower(title) LIKE :search_l OR lower(title) LIKE :search_t ORDER BY ' . $sortField . ' ' . $sortModifier;
+            if ($translit)
+                $where = 'lower(transliterated(title)) LIKE :search_l OR lower(transliterated(title)) LIKE :search_t';
+            else
+                $where = 'lower(title) LIKE :search_l OR lower(title) LIKE :search_t';
+            $query = 'SELECT * FROM ' . $queryFilter . " WHERE ${where} ORDER BY " . $sortField . ' ' . $sortModifier;
         } else {
             $query = 'SELECT * FROM ' . $queryFilter . ' ORDER BY ' . $sortField . ' ' . $sortModifier;
         }
         return $query;
     }
 
-    private function mkBooksCount($queryFilter, $search = false)
+    private function mkBooksCount($queryFilter, $search = false, $translit = false)
     {
         if (!$search) {
             $count = 'SELECT count(*) FROM ' . $queryFilter;
         } else {
-            $count = 'SELECT count(*) FROM ' . $queryFilter . ' WHERE lower(title) LIKE :search_l OR lower(title) LIKE :search_t';
+            if ($translit)
+                $where = 'lower(transliterated(title)) LIKE :search_l OR lower(transliterated(title)) LIKE :search_t';
+            else
+                $where = 'lower(title) LIKE :search_l OR lower(title) LIKE :search_t';
+            $count = "SELECT count(*) FROM {$queryFilter} WHERE {$where}";
         }
         return $count;
     }
 
-    private function mkAuthorsCount($queryFilter, $search = false)
+    private function mkAuthorsCount($queryFilter, $search = null, $translit = false)
     {
         if (!$search) {
             $count = 'SELECT count(*) FROM authors';
         } else {
-            $count = 'SELECT count(*) FROM authors WHERE lower(name) LIKE :search_l OR lower(name) LIKE :search_t';
+            if ($translit)
+                $where = 'lower(transliterated(name)) LIKE :search_l OR lower(transliterated(name)) LIKE :search_t';
+            else
+                $where = 'lower(name) LIKE :search_l OR lower(name) LIKE :search_t';
+            $count = "SELECT count(*) FROM authors WHERE {$where}";
         }
         return $count;
     }
 
-    private function mkTagsCount($queryFilter, $search = false)
+    private function mkTagsCount($queryFilter, $search = null, $translit = false)
     {
         if (!$search) {
             $count = 'SELECT count(*) FROM tags';
         } else {
-            $count = 'SELECT count(*) FROM tags WHERE lower(tags.name) LIKE :search_l OR lower(tags.name) LIKE :search_t';
+            if ($translit)
+                $where = 'lower(transliterated(tags.name)) LIKE :search_l OR lower(transliterated(tags.name)) LIKE :search_t';
+            else
+                $where = 'lower(tags.name) LIKE :search_l OR lower(tags.name) LIKE :search_t';
+            $count = "SELECT count(*) FROM tags WHERE {$where}";
         }
         return $count;
     }
 
-    private function mkSeriesCount($queryFilter, $search = false)
+    private function mkSeriesCount($queryFilter, $search = false, $translit = false)
     {
         if (!$search) {
             $count = 'SELECT count(*) FROM series';
         } else {
-            $count = 'SELECT count(*) FROM series WHERE lower(name) LIKE :search_l OR lower(name) LIKE :search_t';
+            if ($translit)
+                $where = 'lower(transliterated(name)) LIKE :search_l OR lower(transliterated(name)) LIKE :search_t';
+            else
+                $where = 'lower(name) LIKE :search_l OR lower(name) LIKE :search_t';
+            $count = "SELECT count(*) FROM series WHERE {$where}";
         }
         return $count;
+    }
+
+    public function mkTransliteration(string $name): string
+    {
+        return AnyAscii::transliterate($name);
     }
 
     function count(string $sql, array $params):int
@@ -506,9 +546,9 @@ class Calibre implements CalibreRepository
         return array('author' => $author) + $slice;
     }
 
-    function authorsSlice($index = 0, $length = 100, $search = NULL)
+    function authorsSlice($index = 0, $length = 100, $search = null, $translit=false): array
     {
-        return $this->findSliceFiltered(CalibreSearchType::Author, $index, $length, new CalibreFilter(), $search, NULL);
+        return $this->findSliceFiltered(CalibreSearchType::Author, $index, $length, new CalibreFilter(), $search, null, $translit);
     }
 
     function authorsInitials()
@@ -602,9 +642,9 @@ class Calibre implements CalibreRepository
     # Search a list of tags defined by the parameters $index and $length.
     # If $search is defined it is used to filter the tag names, ignoring case.
     # Return an array with elements: current page, no. of pages, $length entries
-    function tagsSlice($index = 0, $length = 100, $search = null)
+    function tagsSlice($index = 0, $length = 100, $search = null, $translit = false)
     {
-        return $this->findSliceFiltered(CalibreSearchType::Tag, $index, $length, new CalibreFilter(), $search, null);
+        return $this->findSliceFiltered(CalibreSearchType::Tag, $index, $length, new CalibreFilter(), $search, null, $translit);
     }
 
     function tagsInitials()
@@ -651,9 +691,9 @@ class Calibre implements CalibreRepository
         return $books;
     }
 
-    function titlesSlice($lang, $index = 0, $length = 100, $filter, $search = null)
+    function titlesSlice($lang, $index=0, $length=100, $filter, $search = null,  $translit = false)
     {
-        $books = $this->findSliceFiltered(CalibreSearchType::Book, $index, $length, $filter, $search);
+        $books = $this->findSliceFiltered(CalibreSearchType::Book, $index, $length, $filter, $search, null, $translit);
         $this->addBookDetails($lang, $books['entries']);
         return $books;
     }
@@ -943,9 +983,9 @@ class Calibre implements CalibreRepository
         return array('series' => $series) + $slice;
     }
 
-    function seriesSlice($index = 0, $length = 100, $search = NULL)
+    function seriesSlice($index = 0, $length = 100, $search = null, $translit = false)
     {
-        return $this->findSliceFiltered(CalibreSearchType::Series, $index, $length, new CalibreFilter(), $search, NULL);
+        return $this->findSliceFiltered(CalibreSearchType::Series, $index, $length, new CalibreFilter(), $search, null, $translit);
     }
 
     function seriesInitials()

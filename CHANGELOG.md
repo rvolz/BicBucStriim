@@ -5,9 +5,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- Added the possibility to search with ASCII transliteration for titles, authors, tags and series with names 
+  containing non-ASCII characters, closes #333 
 ### Changed
 - Suppress output of undefined publishing year in title list, fixes #293
-- Change author search to use the *name* field for both counts and results, fixes #337 
+- Change author search to use the *name* field for both counts and results, fixes #337
 
 ## [2.0.0-alpha.1] - 2020-12-10
 ### Added

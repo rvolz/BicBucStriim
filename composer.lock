@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "68803e34618cbcf9d25b7a174002b743",
+    "content-hash": "8b8905cb1deb021ee7d102a40f9135d4",
     "packages": [
         {
             "name": "akrabat/proxy-detection-middleware",
@@ -58,6 +58,57 @@
                 "source": "https://github.com/akrabat/proxy-detection-middleware/tree/master"
             },
             "time": "2018-09-11T10:28:26+00:00"
+        },
+        {
+            "name": "anyascii/anyascii",
+            "version": "v0.1.7",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/anyascii/php.git",
+                "reference": "7c19471b120805f9d24e2d2c3238bc87ae15dd67"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/anyascii/php/zipball/7c19471b120805f9d24e2d2c3238bc87ae15dd67",
+                "reference": "7c19471b120805f9d24e2d2c3238bc87ae15dd67",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "AnyAscii": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "ISC"
+            ],
+            "authors": [
+                {
+                    "name": "Hunter WB",
+                    "homepage": "http://hunterwb.com"
+                }
+            ],
+            "description": "Unicode to ASCII transliteration",
+            "homepage": "https://anyascii.com",
+            "keywords": [
+                "ascii",
+                "emoji",
+                "romanization",
+                "slug",
+                "transliteration",
+                "unicode",
+                "unidecode",
+                "utf8"
+            ],
+            "support": {
+                "issues": "https://github.com/anyascii/php/issues",
+                "source": "https://github.com/anyascii/php/tree/v0.1.7"
+            },
+            "time": "2020-10-16T02:38:18+00:00"
         },
         {
             "name": "aura/accept",
