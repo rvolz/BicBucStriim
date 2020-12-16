@@ -374,7 +374,7 @@ class Calibre implements CalibreRepository
         if (!$search) {
             $count = 'SELECT count(*) FROM authors';
         } else {
-            $count = 'SELECT count(*) FROM authors WHERE lower(sort) LIKE :search_l OR lower(sort) LIKE :search_t';
+            $count = 'SELECT count(*) FROM authors WHERE lower(name) LIKE :search_l OR lower(name) LIKE :search_t';
         }
         return $count;
     }

@@ -132,6 +132,9 @@ class CalibreTest extends TestCase
         $this->assertEquals(2, count($result1['entries']));
         $result3 = $this->calibre->authorsSlice(2, 2, 'I');
         $this->assertEquals(1, count($result3['entries']));
+        $result4 = $this->calibre->authorsSlice(0, 2, 'Paul Heyse');
+        $this->assertCount(1, $result4['entries']);
+        $this->assertEquals("Paul Heyse", $result4['entries'][0]->name);
     }
 
     function testAuthorDetailsSlice()
