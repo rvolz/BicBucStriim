@@ -50,11 +50,11 @@
         </header>
         <nav class="bg-manatee-200 py-1">
             <div class="flex items-center justify-center"
-                 x-data="{ selected: 0 }"
-                 x-init="$watch('selected', () => {visit(selected)})"
+                 x-data="{ selectedArea: 0 }"
+                 x-init="$watch('selectedArea', () => {visit4Area(selectedArea)})"
             >
                 <script type="application/javascript">
-                    async function visit(val) {
+                    async function visit4Area(val) {
                         switch(val) {
                             case '1': Turbolinks.visit('/titles/', { action: "replace" }); break;
                             case '2': Turbolinks.visit('/authors/', { action: "replace" }); break;
@@ -64,34 +64,69 @@
                         }
                     }
                 </script>
-                <select name="topic" id="topic-select" class="input" x-model="selected">
+                {# TODO l10n text for area label  #}
+                <label class="sr-only" for="topic-select">Area</label>
+                <select name="topic" id="topic-select" class="input" x-model="selectedArea">
                     <option value="0"> Select an area ... </option>
                     <option value="1">{{page.glob.l10n.titles}}</option>
                     <option value="2">{{page.glob.l10n.authors}}</option>
                     <option value="3">{{page.glob.l10n.series}}</option>
                     <option value="4">{{page.glob.l10n.tags}}</option>
                 </select>
-                <input type="search" name="filter" id="filter-input" value="" placeholder="Filter ..." class="input">
+                {# TODO l10n text for filter label and placeholder #}
+                <label class="sr-only" for="filter-input">Filter</label>
+                <input
+                        type="search"
+                        name="filter"
+                        id="filter-input"
+                        value=""
+                        placeholder="Filter ..."
+                        class="input"
+                        {% if page.menu < 2 or menu > 5 %} disabled {% endif %}
+                >
             </div>
-            <div class="flex items-center justify-around  h-8">
-                <button type="submit" class="top-link">
+            <div class="flex items-center justify-around h-8"
+                 x-data="{ selectedSort: 1 }"
+                 x-init="$watch('selectedSort', () => {visit(selectedSort)})"
+            >
+                <script type="application/javascript">
+                    async function visit4Sort(val) {
+                        url = "{{page.rot}}/{{url}}/?index={{curpage}}{% if search is not empty %}&search={{search}}{% endif %}"
+                        switch(val) {
+                            case '1': Turbolinks.visit(url+'?sort=byTitle', { action: "replace" }); break;
+                            case '2': Turbolinks.visit(url+'?sort=byReverseDate', { action: "replace" }); break;
+                            default: return;
+                        }
+                    }
+                </script>
+                <a class="top-link" href="#">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7"></path></svg>
-                </button>
-                <button type="submit" class="top-link">
+                </a>
+                <a
+                        class="{% if curpage is not null and curpage > 0 %}top-link{% else %}top-link-disabled{% endif %}"
+                        href="{% if curpage is not null and curpage > 0 %}{{page.rot}}/{{url}}/?index={{curpage - 1}}{% if search is not empty %}&search={{search}}{% endif %}{% if sort is not empty  %}&sort={{sort}}{% endif %}{% else %}#{% endif %}"
+                        title="{{page.glob.l10n.pagination_prev}}"
+                >
+                    <span class="sr-only">{{page.glob.l10n.pagination_prev}}</span>
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
-                </button>
-                <select name="sort" id="sort-select" class="input">
-                    <option value="1">Alpha</option>
-                    <option value="2">{{ page.glob.l10n.admin_tts_by_pubdate }}</option>
-                    <option value="3">{{ page.glob.l10n.admin_tts_by_timestamp }}</option>
-                    <option value="4">{{ page.glob.l10n.admin_tts_by_lastmodified }}</option>
+                </a>
+                {# TODO l10n text for sort label  #}
+                <label class="sr-only" for="sort-select">Sort</label>
+                <select name="sort" id="sort-select" class="input" x-model="selectedSort" {% if page.menu != 2 %}disabled {% endif %}>
+                    <option value="1">{{ page.glob.l10n.title }}</option>
+                    <option value="2">{{ page.glob.l10n.date }}</option>
                 </select>
-                <button type="submit" class="top-link">
+                <a
+                        class="{% if curpage is not null and curpage+1 < pages %}top-link{% else %}top-link-disabled{% endif %}"
+                        href="{% if curpage is not null and curpage+1 < pages %}{{page.rot}}/{{url}}/?index={{curpage + 1}}{% if search is not empty %}&search={{search}}{% endif %}{% if sort is not empty  %}&sort={{sort}}{% endif %}{% else %}#{% endif %}"
+                        title="{{page.glob.l10n.pagination_next}}"
+                >
+                    <span class="sr-only">{{page.glob.l10n.pagination_next}}</span>
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-                </button>
-                <button type="submit" class="top-link">
+                </a>
+                <a class="top-link" href="#">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7"></path></svg>
-                </button>
+                </a>
             </div>
         </nav>
 
