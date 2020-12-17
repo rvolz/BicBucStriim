@@ -6,10 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
+- Added the possibility to search with ASCII transliteration for titles, authors, tags and series with names 
+  containing non-ASCII characters, closes #333 
 - alpine 2.7.3 JS dependency
 - Turbolinks 5.2.0 JS dependency
 - tailwindcss 2.0 CSS dependency
 ### Changed
+- Suppress output of undefined publishing year in title list, fixes #293
+- Change author search to use the *name* field for both counts and results, fixes #337
 - suppress output of undefined publishing year in title list, fixes #293
 - updated Modernizr JS dependency to 3.11 from HTML5 Boilerplate
 - updated installation check, new checks for PHP 7.4, modules and SQLite FTS5
