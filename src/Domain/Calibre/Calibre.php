@@ -1059,6 +1059,13 @@ class Calibre implements CalibreRepository
         return $sort;
     }
 
+    /**
+     * @param int $id
+     * @return object|null
+     */
+    public function series4Book(int $id): ?object
+    {
+        // TODO: Implement series4Book() method if necessary
+        return null;
+    }
 }
-
-?>

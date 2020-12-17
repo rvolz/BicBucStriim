@@ -13,9 +13,9 @@
     <script src="{{page.rot}}/js/alpine-2.7.3.min.js" defer></script>
     <script src="{{page.rot}}/js/main.js" defer></script>
 </head>
-<body class="body">
-    <div class="wrapper">
-        <header>
+<body class="bg-manatee-50 dark:bg-manatee-900">
+    <div class="px-1 pt-0.5 md:container md:mx-auto">
+        <header class="flex items-center justify-between bg-manatee-200">
             <h1 class="text-left">
                 {{ page.h1 }}
             </h1>
@@ -48,22 +48,22 @@
                 </a>
             </div>
         </header>
-        <nav class="py-1">
-            <script type="application/javascript">
-                async function visit(val) {
-                    switch(val) {
-                        case '1': Turbolinks.visit('/titles/', { action: "replace" }); break;
-                        case '2': Turbolinks.visit('/authors/', { action: "replace" }); break;
-                        case '3': Turbolinks.visit('/series/', { action: "replace" }); break;
-                        case '4': Turbolinks.visit('/tags/', { action: "replace" }); break;
-                        default: return;
-                    }
-                }
-            </script>
+        <nav class="bg-manatee-200 py-1">
             <div class="flex items-center justify-center"
                  x-data="{ selected: 0 }"
                  x-init="$watch('selected', () => {visit(selected)})"
             >
+                <script type="application/javascript">
+                    async function visit(val) {
+                        switch(val) {
+                            case '1': Turbolinks.visit('/titles/', { action: "replace" }); break;
+                            case '2': Turbolinks.visit('/authors/', { action: "replace" }); break;
+                            case '3': Turbolinks.visit('/series/', { action: "replace" }); break;
+                            case '4': Turbolinks.visit('/tags/', { action: "replace" }); break;
+                            default: return;
+                        }
+                    }
+                </script>
                 <select name="topic" id="topic-select" class="input" x-model="selected">
                     <option value="0"> Select an area ... </option>
                     <option value="1">{{page.glob.l10n.titles}}</option>
@@ -104,7 +104,7 @@
                 </div>
             </div>
         </main>
-        <footer>
+        <footer class="bg-manatee-200 flex items-center py-1 sm:px-6 lg:px-8">
             <p><a href="https://github.com/rvolz/BicBucStriim">BicBucStriim {{page.version}}</a> ― &copy; 2012-{{"now"|date('Y')}} Rainer Volz</p>
         </footer>
     </div>

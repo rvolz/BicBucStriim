@@ -2,50 +2,48 @@
 
 {% block content %}
 
-<h1>{{ page.glob.langa.admin_users }}</h1>
 {% include "flash_messages.twig" %}
 
-<p>{{page.glob.langa.admin_users_legend2}}</p>
-<form action="{{page.rot}}/admin/users/{{user.id}}" method="put" id="userform" 
-	data-user="{{user.id}}" data-proot="{{page.rot}}">
-	<fieldset>
-		<label for="edituser_name">{{page.glob.langa.admin_username}}</label>
+<p>{{page.glob.l10n.admin_users_legend2}}</p>
+<form action="{{page.rot}}/admin/users/{{user.id}}" method="put" id="userform">
+	<fieldset  class="config-fieldset">
+		<label for="edituser_name">{{page.glob.l10n.admin_username}}</label>
 		<input name="edituser_name" id="edituser_name" type="text" 
-			value="{{user.username}}" placeholder="{{page.glob.langa.admin_username}}" disabled="true" required="true" />
+			value="{{user.username}}" placeholder="{{page.glob.l10n.admin_username}}" disabled="true" required="true" />
 	</fieldset>	
-	<fieldset>
-		<label for="edituser_password">{{page.glob.langa.admin_userpw}}</label>
+	<fieldset class="config-fieldset">
+		<label for="edituser_password">{{page.glob.l10n.admin_userpw}}</label>
 		<input name="edituser_password" id="edituser_password" type="password" 
-			value="{{user.password}}" placeholder="{{page.glob.langa.admin_userpw}}" required="true" />
-		<p>{{page.glob.langa.admin_userpw_expl}}</p>					
+			value="{{user.password}}" placeholder="{{page.glob.l10n.admin_userpw}}" required="true" />
+		<p>{{page.glob.l10n.admin_userpw_expl}}</p>
 	</fieldset>	
-	<fieldset>
-		<label for="edituser_languages">{{page.glob.langa.language}}</label>
+	<fieldset class="config-fieldset">
+		<label for="edituser_languages">{{page.glob.l10n.language}}</label>
 		<select name="edituser_languages" id="edituser_languages" value="{{user.languages}}">
 		{% for language in languages %}
 			<option value="{{language.key}}" {%if user.languages == language.key %}selected="true"{% endif %}>{{language.lang_code}}</option>
 		{% endfor %}
 		</select>
-		<p>{{page.glob.langa.admin_userlangs_expl}}</p>					
+		<p>{{page.glob.l10n.admin_userlangs_expl}}</p>
 	</fieldset>
-	<fieldset>
-		<label for="edituser_tags">{{page.glob.langa.tag}}</label>
+	<fieldset class="config-fieldset">
+		<label for="edituser_tags">{{page.glob.l10n.tag}}</label>
 		<select name="edituser_tags" id="edituser_tags" value="{{user.tags}}">
 		{% for tag in tags %}
 			<option value="{{tag.key}}" {%if user.tags == tag.key %}selected="true"{% endif %}>{{tag.name}}</option>
 		{% endfor %}
 		</select>
-		<p>{{page.glob.langa.admin_usertags_expl}}</p>
+		<p>{{page.glob.l10n.admin_usertags_expl}}</p>
 	</fieldset>	
-	<fieldset>
-		<label for="edituser_role">{{page.glob.langa.admin_role}}</label>
+	<fieldset class="config-fieldset">
+		<label for="edituser_role">{{page.glob.l10n.admin_role}}</label>
 		<select name="edituser_role" id="edituser_role" value="{{user.role}}">
-			<option value="normal" {% if user.role == 0 %}selected="true"{% endif %}>{{page.glob.langa.admin_role_user}}</option>
-			<option value="admin" {% if user.role == 1 %}selected="true"{% endif %}>{{page.glob.langa.admin_role_admin}}</option>
+			<option value="normal" {% if user.role == 0 %}selected="true"{% endif %}>{{page.glob.l10n.admin_role_user}}</option>
+			<option value="admin" {% if user.role == 1 %}selected="true"{% endif %}>{{page.glob.l10n.admin_role_admin}}</option>
 		</select>
 	</fieldset>
-	<button  data-ajax="true" data-icon="check" type="submit">
-		{{page.glob.langa.save}}
+	<button type="submit" class="btn-config">
+		{{page.glob.l10n.save}}
 	</button>
 </form>
 {% endblock %}

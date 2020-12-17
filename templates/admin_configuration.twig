@@ -1,17 +1,16 @@
 {% extends 'layout.twig' %}
 
 {% block content %}
-<h1>{{ page.glob.l10n.admin }}</h1>
 {% include "flash_messages.twig" %}
 
 <form action="{{page.rot}}/admin/configuration/" method="post" id="adminform">
-	<fieldset>
+	<fieldset class="config-fieldset">
 		<label for="calibre_dir">{{page.glob.l10n.calibre_dir1}}</label>
 		<input name="calibre_dir" id="calibre_dir" type="text" 
 			value="{{page.glob.calibre_dir}}" placeholder="{{page.glob.l10n.calibre_dir2}}" required autofocus />
 		<p>{{page.glob.l10n.calibre_dir_expl}}</p>					
-	</fieldset>	
-	<fieldset>
+	</fieldset>
+	<fieldset class="config-fieldset">
 		<label for="must_login">{{page.glob.l10n.admin_must_login}}</label>
 		<select name="must_login" id="must_login" data-role="slider">
 			<option value="0" {% if page.glob.must_login == "0" %}selected {%endif%}>
@@ -21,9 +20,9 @@
 				{{page.glob.l10n.switch_yes}}
 			</option>
 		</select>
-		<p>{{page.glob.l10n.admin_must_login_expl}}</p>					
-	</fieldset>	
-	<fieldset>
+		<p>{{page.glob.l10n.admin_must_login_expl}}</p>
+	</fieldset>
+	<fieldset class="config-fieldset">
 		<label for="kindle">{{page.glob.l10n.kindle_enable}}</label>
 		<select name="kindle" id="kindle" data-role="slider">
 			<option value="0" {% if page.glob.kindle == "0" %}selected {%endif%}>
@@ -35,13 +34,13 @@
 		</select>
 		<p>{{page.glob.l10n.kindle_expl}}</p>
 	</fieldset>	
-	<fieldset>
+	<fieldset class="config-fieldset">
 		<label for="kindle_from_email">{{page.glob.l10n.kindle_from_email1}}</label>
 		<input name="kindle_from_email" id="kindle_from_email" type="text" 
 			value="{{page.glob.kindle_from_email}}" placeholder="{{page.glob.l10n.kindle_from_email2}}" />
 		<p>{{page.glob.l10n.kindle_expl2}}</p>
 	</fieldset>
-	<fieldset>
+	<fieldset class="config-fieldset">
 		<label for="mailer">{{page.glob.l10n.admin_mailer}}</label>
 		<select name="mailer" id="mailer" value="{{page.glob.mailer}}">
 		{% for mailer in mailers %}
@@ -50,7 +49,7 @@
 		</select>
 		<p>{{page.glob.l10n.admin_mailer_expl}} <a href="../mail/">SMTP</a></p>					
 	</fieldset>
-	<fieldset>
+	<fieldset class="config-fieldset">
         <label for="title_time_sort">{{page.glob.l10n.admin_tts}}</label>
         <select name="title_time_sort" id="title_time_sort" value="{{page.glob.title_time_sort}}">
             {% for tts in ttss %}
@@ -62,7 +61,7 @@
 
         <p>{{page.glob.l10n.admin_tts_expl}}</p>
     </fieldset>
-    <fieldset>
+    <fieldset class="config-fieldset">
 		<label for="thumb_gen_clipped">{{page.glob.l10n.thumb_gen_clipped}}</label>
 		<select name="thumb_gen_clipped" id="thumb_gen_clipped" data-role="slider">
 			<option value="0" {% if page.glob.thumb_gen_clipped == "0" %}selected {%endif%}>
@@ -74,10 +73,10 @@
 		</select>
 		<p>{{page.glob.l10n.thumb_gen_clipped_expl}}</p>
 	</fieldset>	
-	<fieldset>
+	<fieldset class="config-fieldset">
 		<label for="page_size">{{page.glob.l10n.page_size}}</label>
 		<input name="page_size" id="page_size" 
-			type="range" 
+			type="number"
 			value="{{page.glob.page_size}}"
 			min="1"
 			max="100"
@@ -85,7 +84,7 @@
 		/>
 		<p>{{page.glob.l10n.page_size_expl}}</p>
 	</fieldset>	
-	<fieldset>
+	<fieldset class="config-fieldset">
 		<label for="display_app_name">{{page.glob.l10n.display_app_name}}</label>
 		<input name="display_app_name" id="display_app_name" 
 			type="text" 
@@ -93,7 +92,7 @@
 		/>
 		<p>{{page.glob.l10n.display_app_name_expl}}</p>
 	</fieldset>	
-	<fieldset>
+	<fieldset class="config-fieldset">
 		<label for="metadata_update">{{page.glob.l10n.metadata_update}}</label>
 		<select name="metadata_update" id="metadata_update" data-role="slider">
 			<option value="0" {% if page.glob.metadata_update == "0" %}selected {%endif%}>
@@ -105,7 +104,7 @@
 		</select>
 		<p>{{page.glob.l10n.metadata_update_expl}}</p>
 	</fieldset>
-	<fieldset>
+	<fieldset class="config-fieldset">
 		<label for="relative_urls">{{page.glob.l10n.relative_urls}}</label>
 		<select name="relative_urls" id="relative_urls" data-role="slider">
 			<option value="0" {% if page.glob.relative_urls == "0" %}selected {%endif%}>
@@ -117,8 +116,7 @@
 		</select>
 		<p>{{page.glob.l10n.relative_urls_expl}}</p>
 	</fieldset>
-
-	<button type="submit">{{page.glob.l10n.save}}</button>	
+	<button type="submit" class="btn-config">{{page.glob.l10n.save}}</button>
 </form>
 
 {% endblock %}

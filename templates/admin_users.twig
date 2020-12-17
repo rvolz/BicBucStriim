@@ -2,44 +2,48 @@
 
 {% block content %}
 
-<header>
-	<h1>{{ page.glob.l10n.admin_users }}</h1>
-</header>
-{% include "flash_messages.twig" %}
+    {% include "flash_messages.twig" %}
 
-<h2>{{page.glob.l10n.admin_users_legend1}}</h2>
-<form action="{{page.rot}}/admin/users/" method="post" id="newuserform" class="ui-form-a" data-proot="{{page.rot}}" >
-	<fieldset>
-		<label for="newuser_name">{{page.glob.l10n.admin_username}}</label>
-		<input name="newuser_name" id="newuser_name" type="text" 
-			value="" placeholder="{{page.glob.l10n.admin_username}}"/>
-	</fieldset>	
-	<fieldset>
-		<label for="newuser_password">{{page.glob.l10n.admin_userpw}}</label>
-		<input name="newuser_password" id="newuser_password" type="password" 
-			value="" placeholder="{{page.glob.l10n.admin_userpw}}"/>
-	</fieldset>	
-	<button data-ajax="true" data-icon="check">
-		{{page.glob.l10n.save}}
-	</button>	
-</form>
-<h2>{{page.glob.l10n.admin_users_legend2}}</h2>
-<ul id="users" data-role="listview" data-split-icon="delete" data-inset="true">
-{% for user in users %}
-	<li data-user="{{user.id}}">
-		<a href="{{page.rot}}/admin/users/{{user.id}}">
-			<h2>{{user.username}}</h2>
-		</a>
-		<a class="user_delete" href="#" data-user="{{user.id}}">
-			{{page.glob.l10n.admin_users_delete}}
-		</a>
-	</li>
-{% endfor %}
-</ul>
-<div id="delete" data-role="popup" data-theme="e">
-	<h3>{{page.glob.l10n.admin_users_delete}}?</h3>
-	<a id="delete_user" data-proot="{{page.rot}}" data-ajax="true" data-role="button" data-icon="check" data-mini="true">
-		{{page.glob.l10n.admin_users_delete}}
-	</a>
-</div>
+    <h2>{{ page.glob.l10n.admin_users_legend1 }}</h2>
+    <form action="{{ page.rot }}/admin/users/" method="post" id="newuserform">
+        <fieldset class="config-fieldset-small">
+            <label for="newuser_name">{{ page.glob.l10n.admin_username }}</label>
+            <input name="newuser_name" id="newuser_name" type="text"
+                   value="" placeholder="{{ page.glob.l10n.admin_username }}"/>
+        </fieldset>
+        <fieldset class="config-fieldset-small">
+            <label for="newuser_password">{{ page.glob.l10n.admin_userpw }}</label>
+            <input name="newuser_password" id="newuser_password" type="password"
+                   value="" placeholder="{{ page.glob.l10n.admin_userpw }}"/>
+        </fieldset>
+        <button class="btn-config">
+            {{ page.glob.l10n.save }}
+        </button>
+    </form>
+
+    <h2>{{ page.glob.l10n.admin_users_legend2 }}</h2>
+    <ul id="users" class="w-full">
+        {% for user in users %}
+            <li class="bg-manatee-200 rounded border m-2 p-2 flex items-center justify-between">
+                <a href="{{ page.rot }}/admin/users/{{ user.id }}/" class="text-left">
+                    <h2>{{ user.username }}</h2>
+                </a>
+                <div class="ml-4 flex items-end">
+                    <a class="top-link" href="{{ page.rot }}/admin/users/{{ user.id }}/" title="{{ page.glob.l10n.admin_users_edit }}">
+                        <span class="sr-only">{{ page.glob.l10n.admin_users_edit }}</span>
+                        <svg class="w-6 h-6 align-middle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                        </svg>
+                    </a>
+                    <a class="top-link" href="#" title="{{ page.glob.l10n.admin_users_delete }}">
+                        <span class="sr-only">{{ page.glob.l10n.admin_users_delete }}</span>
+                        <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </a>
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+
 {% endblock %}
