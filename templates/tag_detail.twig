@@ -5,11 +5,8 @@
 	<header>
 		<h1>{{page.glob.l10n.booksbytag}} "{{ tag.name }}":</h1>
 	</header>
-	<ul data-role="listview">
-		{% for book in books %}
-			{% include "title_entry.html" %}
-		{% endfor %}	
-	</ul>
 </section>
-
+<section>
+	{% include "titles_listview.twig" %}
+</section>
 {% endblock %}

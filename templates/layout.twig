@@ -50,7 +50,11 @@
         </header>
         <nav class="bg-manatee-200 py-1">
             <div class="flex items-center justify-center"
+                 {% if page.menu > 1 and page.menu < 6 %}
+                 x-data="{ selectedArea: {{ page.menu - 1 }} }"
+                 {% else %}
                  x-data="{ selectedArea: 0 }"
+                 {% endif %}
                  x-init="$watch('selectedArea', () => {visit4Area(selectedArea)})"
             >
                 <script type="application/javascript">

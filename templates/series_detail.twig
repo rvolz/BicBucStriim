@@ -1,15 +1,12 @@
 {% extends 'layout.twig' %}
 
 {% block content %}
-<section class="series_detail row">
-	<header>
-		<h1>{{page.glob.l10n.booksbyseries}} "{{ series.name }}":</h1>
-	</header>
-	<ul data-role="listview">
-		{% for book in books %}
-			{% include "title_entry.html" %}
-		{% endfor %}	
-	</ul>
-</section>
-
+	<section class="series_detail row">
+		<header>
+			<h1>{{page.glob.l10n.booksbyseries}} "{{ series.name }}":</h1>
+		</header>
+	</section>
+	<section>
+		{% include "titles_listview.twig" %}
+	</section>
 {% endblock %}

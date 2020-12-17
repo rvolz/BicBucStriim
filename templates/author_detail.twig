@@ -73,11 +73,7 @@
 	</header>
 	<div id="filler">&nbsp;</div>
 	<section id="author-books">
-		<ul data-role="listview">
-			{% for book in books %}
-				{% include "title_entry.html" %}		
-			{% endfor %}	
-		</ul>
+		{% include "titles_listview.twig" %}
 	</section>
 </section>
 {% endblock %}

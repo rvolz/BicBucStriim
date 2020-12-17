@@ -1,0 +1,9 @@
+<div class="listview-titles">
+    {% for book in books %}
+        {% if book.initial != "" %}
+            <li data-role="list-divider"> {{ book.initial }}</li>
+        {% else %}
+            {% include "title_entry.twig" %}
+        {% endif %}
+    {% endfor %}
+</div>
