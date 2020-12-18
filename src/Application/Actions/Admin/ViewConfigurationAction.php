@@ -22,7 +22,8 @@ class ViewConfigurationAction extends AdminAction
     {
         return $this->respondWithPage('admin_configuration.twig', array(
             'page' => $this->mkPage($this->getMessageString('admin'), 0, 2),
-            //'mailers' => $this->mkMailers(),
+            'config' => $this->config,
+            'mailers' => $this->mkMailers(),
             'ttss' => $this->mkTitleTimeSortOptions(),
             'isadmin' => $this->is_admin()));
     }

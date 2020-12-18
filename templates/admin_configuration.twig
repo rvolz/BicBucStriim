@@ -2,33 +2,20 @@
 
 {% block content %}
 {% include "flash_messages.twig" %}
-
 <form action="{{page.rot}}/admin/configuration/" method="post" id="adminform">
 	<fieldset class="config-fieldset">
 		<label for="calibre_dir">{{page.glob.l10n.calibre_dir1}}</label>
 		<input name="calibre_dir" id="calibre_dir" type="text" 
-			value="{{page.glob.calibre_dir}}" placeholder="{{page.glob.l10n.calibre_dir2}}" required autofocus />
+			value="{{config.calibre_dir}}" placeholder="{{page.glob.l10n.calibre_dir2}}" required autofocus />
 		<p>{{page.glob.l10n.calibre_dir_expl}}</p>					
-	</fieldset>
-	<fieldset class="config-fieldset">
-		<label for="must_login">{{page.glob.l10n.admin_must_login}}</label>
-		<select name="must_login" id="must_login" data-role="slider">
-			<option value="0" {% if page.glob.must_login == "0" %}selected {%endif%}>
-				{{page.glob.l10n.switch_no}}
-			</option>
-			<option value="1" {% if page.glob.must_login == "1" %}selected {%endif%}>
-				{{page.glob.l10n.switch_yes}}
-			</option>
-		</select>
-		<p>{{page.glob.l10n.admin_must_login_expl}}</p>
 	</fieldset>
 	<fieldset class="config-fieldset">
 		<label for="kindle">{{page.glob.l10n.kindle_enable}}</label>
 		<select name="kindle" id="kindle" data-role="slider">
-			<option value="0" {% if page.glob.kindle == "0" %}selected {%endif%}>
+			<option value="0" {% if config.kindle == "0" %}selected {%endif%}>
 				{{page.glob.l10n.switch_no}}
 			</option>
-			<option value="1" {% if page.glob.kindle == "1" %}selected {%endif%}>
+			<option value="1" {% if page.glob.config.kindle == "1" %}selected {%endif%}>
 				{{page.glob.l10n.switch_yes}}
 			</option>
 		</select>
@@ -36,13 +23,14 @@
 	</fieldset>	
 	<fieldset class="config-fieldset">
 		<label for="kindle_from_email">{{page.glob.l10n.kindle_from_email1}}</label>
-		<input name="kindle_from_email" id="kindle_from_email" type="text" 
-			value="{{page.glob.kindle_from_email}}" placeholder="{{page.glob.l10n.kindle_from_email2}}" />
+		<input name="kindle_from_email" id="kindle_from_email" type="text"
+			   value="{{config.kindle_from_email}}"
+			   placeholder="{{page.glob.l10n.kindle_from_email2}}" />
 		<p>{{page.glob.l10n.kindle_expl2}}</p>
 	</fieldset>
 	<fieldset class="config-fieldset">
 		<label for="mailer">{{page.glob.l10n.admin_mailer}}</label>
-		<select name="mailer" id="mailer" value="{{page.glob.mailer}}">
+		<select name="mailer" id="mailer" value="{{config.mailer}}">
 		{% for mailer in mailers %}
 			<option value="{{mailer.key}}" {%if page.glob.mailer == mailer.key %}selected="true"{% endif %}>{{mailer.text}}</option>
 		{% endfor %}
@@ -51,9 +39,9 @@
 	</fieldset>
 	<fieldset class="config-fieldset">
         <label for="title_time_sort">{{page.glob.l10n.admin_tts}}</label>
-        <select name="title_time_sort" id="title_time_sort" value="{{page.glob.title_time_sort}}">
+        <select name="title_time_sort" id="title_time_sort" value="{{config.title_time_sort}}">
             {% for tts in ttss %}
-            <option value="{{tts.key}}" {%if page.glob.title_time_sort== tts.key %}selected="true" {% endif %}>
+            <option value="{{tts.key}}" {%if config.title_time_sort == tts.key %}selected="true" {% endif %}>
                 {{tts.text}}
             </option>
             {% endfor %}
@@ -64,10 +52,10 @@
     <fieldset class="config-fieldset">
 		<label for="thumb_gen_clipped">{{page.glob.l10n.thumb_gen_clipped}}</label>
 		<select name="thumb_gen_clipped" id="thumb_gen_clipped" data-role="slider">
-			<option value="0" {% if page.glob.thumb_gen_clipped == "0" %}selected {%endif%}>
+			<option value="0" {% if config.thumb_gen_clipped == "0" %}selected {%endif%}>
 				{{page.glob.l10n.switch_no}}
 			</option>
-			<option value="1" {% if page.glob.thumb_gen_clipped == "1" %}selected {%endif%}>
+			<option value="1" {% if config.thumb_gen_clipped == "1" %}selected {%endif%}>
 				{{page.glob.l10n.switch_yes}}
 			</option>
 		</select>
@@ -77,7 +65,7 @@
 		<label for="page_size">{{page.glob.l10n.page_size}}</label>
 		<input name="page_size" id="page_size" 
 			type="number"
-			value="{{page.glob.page_size}}"
+			value="{{config.page_size}}"
 			min="1"
 			max="100"
 			step="1"
@@ -88,17 +76,17 @@
 		<label for="display_app_name">{{page.glob.l10n.display_app_name}}</label>
 		<input name="display_app_name" id="display_app_name" 
 			type="text" 
-			value="{{page.glob.display_app_name}}"
+			value="{{config.display_app_name}}"
 		/>
 		<p>{{page.glob.l10n.display_app_name_expl}}</p>
 	</fieldset>	
 	<fieldset class="config-fieldset">
 		<label for="metadata_update">{{page.glob.l10n.metadata_update}}</label>
 		<select name="metadata_update" id="metadata_update" data-role="slider">
-			<option value="0" {% if page.glob.metadata_update == "0" %}selected {%endif%}>
+			<option value="0" {% if config.metadata_update == "0" %}selected {%endif%}>
 				{{page.glob.l10n.switch_no}}
 			</option>
-			<option value="1" {% if page.glob.metadata_update == "1" %}selected {%endif%}>
+			<option value="1" {% if config.metadata_update == "1" %}selected {%endif%}>
 				{{page.glob.l10n.switch_yes}}
 			</option>
 		</select>
@@ -107,10 +95,10 @@
 	<fieldset class="config-fieldset">
 		<label for="relative_urls">{{page.glob.l10n.relative_urls}}</label>
 		<select name="relative_urls" id="relative_urls" data-role="slider">
-			<option value="0" {% if page.glob.relative_urls == "0" %}selected {%endif%}>
+			<option value="0" {% if config.relative_urls == "0" %}selected {%endif%}>
 			{{page.glob.l10n.switch_no}}
 			</option>
-			<option value="1" {% if page.glob.relative_urls == "1" %}selected {%endif%}>
+			<option value="1" {% if config.relative_urls == "1" %}selected {%endif%}>
 			{{page.glob.l10n.switch_yes}}
 			</option>
 		</select>
