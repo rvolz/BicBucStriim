@@ -1,0 +1,9 @@
+<div class="listview">
+    {% for author in authors %}
+        {% if author.initial != "" %}
+            <li data-role="list-divider"> {{ author.initial }}</li>
+        {% else %}
+            {% include "author_entry.twig" %}
+        {% endif %}
+    {% endfor %}
+</div>

@@ -120,6 +120,14 @@
                     <option value="1">{{ page.glob.l10n.title }}</option>
                     <option value="2">{{ page.glob.l10n.date }}</option>
                 </select>
+                <span>
+                    {% if search != NULL %}
+                        {{page.glob.l10n.pagination_search}}
+                    {% else %}
+                        {{page.glob.l10n.pagination_page}}
+                    {% endif %}
+                    {% if pages > 0 %}{{ curpage+1 }}/{{ pages }}{% else %}0/0{% endif %}
+                </span>
                 <a
                         class="{% if curpage is not null and curpage+1 < pages %}top-link{% else %}top-link-disabled{% endif %}"
                         href="{% if curpage is not null and curpage+1 < pages %}{{page.rot}}/{{url}}/?index={{curpage + 1}}{% if search is not empty %}&search={{search}}{% endif %}{% if sort is not empty  %}&sort={{sort}}{% endif %}{% else %}#{% endif %}"

@@ -6,13 +6,5 @@
 {% endblock %}
 
 {% block content %}
-    <div class="listview">
-        {% for tag in tags %}
-            {% if tag.initial != "" %}
-                <li data-role="list-divider"> {{ tag.initial }}</li>
-            {% else %}
-                {% include "tag_entry.twig" %}
-            {% endif %}
-        {% endfor %}
-    </div>
+    {% include "tags_listview.twig" %}
 {% endblock %}

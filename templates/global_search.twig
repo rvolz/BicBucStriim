@@ -4,78 +4,65 @@
 {% endblock %}
 
 {% block content %}
-<div>
-    <form action="{{page.rot}}/search/"
-          method="get" class="ui-bar-a">
-        <div data-role="fieldcontain" class="ui-hide-label">
-            <label for="search">{{page.glob.l10n.pagination_search_lbl}}</label>
-            <input type="search" name="search" id="search" value="{{search}}"
-                   placeholder="{{page.glob.l10n.pagination_search_ph}}" autofocus="true"/>
-        </div>
-    </form>
-</div>
-<div data-role="collapsible-set">
-	<div data-role="collapsible">
-		<h3>{{page.glob.l10n.titles}}: {{books_total}}</h3>
-		<ul data-role="listview" data-filter="false">	
-			{% for book in books %}
-				{% include "title_entry.html" %}
-		  	{% endfor %}
-		  	{% if more_books %}
-		  		<li data-theme="a">
-		  			<a href="{{page.rot}}/titles/?search={{search}}">{{books_total}} {{page.glob.l10n.titles}} ...</a>
-				</li>
+	<section class="bg-steel-200 rounded border-r-2 border-b-2 border-hotpink-300 m-2">
+		<h2></h2>
+		<form action="{{page.rot}}/search/"
+			  method="get" class="ui-bar-a">
+			<fieldset class="config-fieldset-small">
+				<label for="search">{{page.glob.l10n.pagination_search_lbl}}</label>
+				<input type="search" name="search" id="search" value="{{search}}"
+					   placeholder="{{page.glob.l10n.pagination_search_ph}}" autofocus="true"/>
+			</fieldset>
+			<fieldset class="config-fieldset-small">
+				{# TODO new translation key for exact search #}
+				<label for="exact">Exact</label>
+				<input type="checkbox" id="exact" name="exact">
+			</fieldset>
+			<fieldset class="config-fieldset-small">
+				{# TODO new translation key for transliteration #}
+				<label for="transliteration">ASCII transliteration</label>
+				<input type="checkbox" id="transliteration" name="transliteration"
+					{% if config.ascii_transliteration == 1 %} checked {% endif %}
+				>
+			</fieldset>
+			<button type="submit" class="btn-config">
+				{{page.glob.l10n.pagination_search_lbl}}
+			</button>
+		</form>
+	</section>
+	<section>
+		<div class="collapsible">
+			{% if more_books %}
+			<h3>{{page.glob.l10n.titles}}: <a href="{{page.rot}}/titles/?search={{search}}">{{books_total}} {{page.glob.l10n.titles}} ...</a></h3>
+			{% else %}
+			<h3>{{page.glob.l10n.titles}}: {{books_total}}</h3>
 			{% endif %}
-		</ul>
-	</div>
-	<div data-role="collapsible">
-		<h3>{{page.glob.l10n.authors}}:  {{authors_total}}</h3>
-		<ul data-role="listview" data-filter="false">	
-			{% for author in authors %}
-				<li>
-				<a href="{{page.rot}}/authors/{{ author.id }}/">{{ author.sort }}
-					<span class="ui-li-count">{{author.anzahl}}</span>
-				</a>
-			</li>
-		  {% endfor %}
-		  {% if more_authors %}
-		  		<li data-theme="a">
-		  			<a href="{{page.rot}}/authors/?search={{search}}">{{authors_total}} {{page.glob.l10n.authors}}...</a>
-				</li>
+			{% include "titles_listview.twig" %}
+			{# TODO include an extra card for "more books/authors..." instead of the link #}
+		</div>
+		<div class="collapsible">
+			{% if more_authors %}
+			<h3>{{page.glob.l10n.authors}}:  <a href="{{page.rot}}/authors/?search={{search}}">{{authors_total}} {{page.glob.l10n.authors}}...</a></h3>
+			{% else %}
+			<h3>{{page.glob.l10n.authors}}:  {{authors_total}}</h3>
 			{% endif %}
-		</ul>
-	</div>
-	<div data-role="collapsible">
-		<h3>{{page.glob.l10n.tags}}:  {{tags_total}}</h3>
-		<ul data-role="listview" data-filter="false">	
-			{% for tag in tags %}
-				<li>
-					<a href="{{page.rot}}/tags/{{ tag.id }}/0/">{{ tag.name }}
-					<span class="ui-li-count">{{ tag.anzahl }}</span></a>
-				</li>
-		  {% endfor %}
-		  {% if more_tags %}
-		  		<li data-theme="a">
-		  			<a href="{{page.rot}}/tags/?search={{search}}">{{tags_total}} {{page.glob.l10n.tags}}...</a>
-				</li>
+			{% include "authors_listview.twig" %}
+		</div>
+		<div class="collapsible">
+			{% if more_tags %}
+			<h3>{{page.glob.l10n.tags}}:  <a href="{{page.rot}}/tags/?search={{search}}">{{tags_total}} {{page.glob.l10n.tags}}...</a></h3>
+			{% else %}
+				<h3>{{page.glob.l10n.tags}}:  {{tags_total}}</h3>
 			{% endif %}
-		</ul>
-	</div>
-	<div data-role="collapsible">
-		<h3>{{page.glob.l10n.series}}:  {{series_total}}</h3>
-		<ul data-role="listview" data-filter="false">	
-			{% for this_series in series %}
-				<li>
-				<a href="{{page.rot}}/series/{{ this_series.id }}/0/">{{ this_series.name }}
-				<span class="ui-li-count">{{ this_series.anzahl }}</span></a>
-			</li>
-		  {% endfor %}
-		  {% if more_series %}
-		  		<li data-theme="a">
-		  			<a href="{{page.rot}}/series/?search={{search}}">{{series_total}} {{page.glob.l10n.series}}...</a>
-				</li>
+			{% include "tags_listview.twig" %}
+		</div>
+		<div class="collapsible">
+			{% if more_series %}
+			<h3>{{page.glob.l10n.series}}:  <a href="{{page.rot}}/series/?search={{search}}">{{series_total}} {{page.glob.l10n.series}}...</a></h3>
+			{% else %}
+			<h3>{{page.glob.l10n.series}}:  {{series_total}}</h3>
 			{% endif %}
-		</ul>
-	</div>
-</div>
+			{% include "series_listview.twig" %}
+		</div>
+	</section>
 {% endblock %}

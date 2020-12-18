@@ -6,13 +6,5 @@
 {% endblock %}
 
 {% block content %}
-	<div class="listview">
-		{% for this_series in series %}
-			{% if series.initial != "" %}
-				<li data-role="list-divider"> {{ this_series.initial }}</li>
-			{% else %}
-				{% include "series_entry.twig" %}
-			{% endif %}
-		{% endfor %}
-	</div>
+	{% include "series_listview.twig" %}
 {% endblock %}
