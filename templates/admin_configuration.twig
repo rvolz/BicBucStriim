@@ -38,6 +38,19 @@
 		<p>{{page.glob.l10n.admin_mailer_expl}} <a href="../mail/">SMTP</a></p>					
 	</fieldset>
 	<fieldset class="config-fieldset">
+		{# TODO new translation keys for transliteration #}
+		<label for="search_ascii_transliteration">Use ASCII transliteration in searches</label>
+		<select name="search_ascii_transliteration" id="search_ascii_transliteration">
+			<option value="0" {% if config.search_ascii_transliteration == "0" %}selected {%endif%}>
+				{{page.glob.l10n.switch_no}}
+			</option>
+			<option value="1" {% if config.search_ascii_transliteration == "1" %}selected {%endif%}>
+				{{page.glob.l10n.switch_yes}}
+			</option>
+		</select>
+		<p></p>
+	</fieldset>
+	<fieldset class="config-fieldset">
         <label for="title_time_sort">{{page.glob.l10n.admin_tts}}</label>
         <select name="title_time_sort" id="title_time_sort" value="{{config.title_time_sort}}">
             {% for tts in ttss %}
@@ -46,7 +59,6 @@
             </option>
             {% endfor %}
         </select>
-
         <p>{{page.glob.l10n.admin_tts_expl}}</p>
     </fieldset>
     <fieldset class="config-fieldset">

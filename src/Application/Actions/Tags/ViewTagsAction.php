@@ -25,12 +25,8 @@ class ViewTagsAction extends TagsAction
             throw new HttpBadRequestException($this->request);
         }
 
-        $search = '';
-        if ($this->hasQueryParam('search')) {
-            $search = $this->resolveQueryParam('search');
-            $tl = $this->calibre->tagsSlice($index, $this->config[AppConstants::PAGE_SIZE], trim($search));
-        } else
-            $tl = $this->calibre->tagsSlice($index, $this->config[AppConstants::PAGE_SIZE]);
+        $search = $this->checkAndGenSearchOptions();
+        $tl = $this->calibre->tagsSlice($index, $this->config[AppConstants::PAGE_SIZE], $search);
 
         return $this->respondWithPage('tags.twig', array(
             'page' => $this->mkPage($this->getMessageString('tags'), 4, 1),

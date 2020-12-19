@@ -23,12 +23,8 @@ class ViewSeriesAction extends SeriesAction
             throw new HttpBadRequestException($this->request);
         }
 
-        $search = '';
-        if ($this->hasQueryParam('search')) {
-            $search = $this->resolveQueryParam('search');
-            $tl = $this->calibre->seriesSlice($index, $this->config[AppConstants::PAGE_SIZE], trim($search));
-        } else
-            $tl = $this->calibre->seriesSlice($index, $this->config[AppConstants::PAGE_SIZE]);
+        $search = $this->checkAndGenSearchOptions();
+        $tl = $this->calibre->seriesSlice($index, $this->config[AppConstants::PAGE_SIZE], $search);
 
         return $this->respondWithPage('series.twig', array(
             'page' => $this->mkPage($this->getMessageString('series'), 5, 1),

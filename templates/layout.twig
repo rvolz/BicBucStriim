@@ -62,8 +62,8 @@
                         switch(val) {
                             case '1': Turbolinks.visit('/titles/', { action: "replace" }); break;
                             case '2': Turbolinks.visit('/authors/', { action: "replace" }); break;
-                            case '3': Turbolinks.visit('/series/', { action: "replace" }); break;
-                            case '4': Turbolinks.visit('/tags/', { action: "replace" }); break;
+                            case '3': Turbolinks.visit('/tags/', { action: "replace" }); break;
+                            case '4': Turbolinks.visit('/series/', { action: "replace" }); break;
                             default: return;
                         }
                     }
@@ -74,8 +74,8 @@
                     <option value="0"> Select an area ... </option>
                     <option value="1">{{page.glob.l10n.titles}}</option>
                     <option value="2">{{page.glob.l10n.authors}}</option>
-                    <option value="3">{{page.glob.l10n.series}}</option>
-                    <option value="4">{{page.glob.l10n.tags}}</option>
+                    <option value="3">{{page.glob.l10n.tags}}</option>
+                    <option value="4">{{page.glob.l10n.series}}</option>
                 </select>
                 {# TODO l10n text for filter label and placeholder #}
                 <label class="sr-only" for="filter-input">Filter</label>

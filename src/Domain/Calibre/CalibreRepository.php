@@ -87,18 +87,14 @@ interface CalibreRepository
 
     /**
      * Search a list of authors defined by the parameters $index and $length.
-     * If $search is defined it is used to filter the names, ignoring case. It searches the name field, not the sort field.
-     * If $translit is true the $search is compared to transliterated names, to make it easier to search for
-     * names with non-ascii characters.
      *
      * @param integer $index page index
      * @param integer $length page length
-     * @param ?string $search search string
-     * @param bool $translit if true uses transliteration for search.
-     * @return array                with elements: current page,
+     * @param SearchOptions|null $searchOptions
+     * @return array        with elements: current page,
      *                      no. of pages, $length entries
      */
-    function authorsSlice($index = 0, $length = 100, $search = null, $translit = false);
+    function authorsSlice(int $index = 0, int $length = 100, SearchOptions $searchOptions=null): array;
 
     /**
      * Find the initials of all authors and their count
@@ -159,7 +155,14 @@ interface CalibreRepository
      */
     function tagDetailsSlice(string $lang, int $id, $index = 0, $length = 100, $filter): array;
 
-    function tagsSlice($index = 0, $length = 100, $search = null);
+    /**
+     * Search a list of tags defined by the parameters $index and $length.
+     * @param int $index
+     * @param int $length
+     * @param SearchOptions|null $searchOptions
+     * @return array of tags matching
+     */
+    function tagsSlice($index = 0, $length = 100, SearchOptions $searchOptions=null): array;
 
     /**
      * Find the initials of all tags and their count
@@ -215,18 +218,15 @@ interface CalibreRepository
 
     /**
      * Search a list of books defined by the parameters $index and $length.
-     * If $search is defined it is used to filter the book title, ignoring case.
-     * If $translit is true the $search is compared to transliterated names, to make it easier to search for
-     * titles with non-ascii characters.
+
      * @param string $lang target language code
      * @param int $index page index, default 0
      * @param int $length page length, default 100
-     * @param object $filter CalibreFilter
-     * @param ?string $search search phrase, default null
-     * @param bool $translit if true uses transliteration for search.
+     * @param CalibreFilter $filter CalibreFilter
+     * @param SearchOptions|null $searchOptions
      * @return  array          an array with elements: current page, no. of pages, $length entries
      */
-    function titlesSlice($lang, $index, $length, $filter, $search = null, $translit = false);
+    function titlesSlice(string $lang, int $index, int $length, CalibreFilter $filter, SearchOptions $searchOptions=null): array;
 
     /**
      * Find only one book
@@ -369,19 +369,14 @@ interface CalibreRepository
     public function series4Book(int $id): ?object;
 
     /**
-     * Search a list of books defined by the parameters $index and $length.
-     * If $search is defined it is used to filter the book title, ignoring case.
-     * Return an array with elements: current page, no. of pages, $length entries
-     * If $translit is true the $search is compared to transliterated names, to make it easier to search for
-     * titles with non-ascii characters.
+     * Search a list of series defined by the parameters $index and $length.
      *
      * @param integer $index =0     page indes
      * @param integer $length =100  page length
-     * @param string $search =NULL search criteria for series name
-     * @param bool $translit =false if true uses transliteration for search
+     * @param SearchOptions|null $searchOptions
      * @return array                see findSlice
      */
-    function seriesSlice($index = 0, $length = 100, $search = null, $translit = false);
+    function seriesSlice($index = 0, $length = 100, SearchOptions $searchOptions=null): array;
 
     /**
      * Find the initials of all series and their number

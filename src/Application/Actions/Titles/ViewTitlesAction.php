@@ -25,9 +25,7 @@ class ViewTitlesAction extends TitlesAction
             throw new HttpBadRequestException($this->request);
         }
 
-        $search = '';
-        if ($this->hasQueryParam('search'))
-            $search = $this->resolveQueryParam('search');
+        $search = $this->checkAndGenSearchOptions();
         $lang = $this->l10n->user_lang;
         $pg_size = $this->config[AppConstants::PAGE_SIZE];
         $filter = $this->getFilter();

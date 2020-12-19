@@ -24,12 +24,8 @@ class ViewAuthorsAction extends AuthorsAction
             throw new HttpBadRequestException($this->request);
         }
 
-        $search = '';
-        if ($this->hasQueryParam('search')) {
-            $search = $this->resolveQueryParam('search');
-            $tl = $this->calibre->authorsSlice($index, $this->config[AppConstants::PAGE_SIZE], trim($search));
-        } else
-            $tl = $this->calibre->authorsSlice($index, $this->config[AppConstants::PAGE_SIZE]);
+        $search = $this->checkAndGenSearchOptions();
+        $tl = $this->calibre->authorsSlice($index, $this->config[AppConstants::PAGE_SIZE], $search);
 
         foreach ($tl['entries'] as $author) {
             $author->thumbnail = $this->bbs->getAuthorThumbnail($author->id);

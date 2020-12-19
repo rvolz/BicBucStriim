@@ -26,6 +26,7 @@ use App\Application\Actions\Authors\ViewOpdsByAuthorNamesForInitialAction;
 use App\Application\Actions\Login\DoLoginAction;
 use App\Application\Actions\Login\ViewLoginAction;
 use App\Application\Actions\Login\ViewLogoutAction;
+use App\Application\Actions\Search\UpdateSearchAction;
 use App\Application\Actions\Search\ViewOpdsSearchAction;
 use App\Application\Actions\Search\ViewOpdsSearchDescriptorAction;
 use App\Application\Actions\Search\ViewSearchAction;
@@ -58,6 +59,7 @@ return function (App $app) {
     $app->post('/login/', DoLoginAction::class);
     $app->get('/logout/', ViewLogoutAction::class);
     $app->get('/search/', ViewSearchAction::class);
+    $app->post('/search/', UpdateSearchAction::class);
     $app->group('/admin', function (Group $group) {
         $group->get('/', ViewAdminAction::class);
         $group->get('/configuration/', ViewConfigurationAction::class);

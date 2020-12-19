@@ -216,13 +216,12 @@ class Calibre implements CalibreRepository
      * If $search is defined it is used to filter the titles, ignoring case.
      * Return an array with elements: current page, no. of pages, $length entries
      *
-     * @param  integer          searchType      index of search type to use, see CalibreSearchType
-     * @param  integer          index           page index
-     * @param  integer          length          length of page
-     * @param  CalibreFilter    filter          filter expression
-     * @param  string           search=null     search pattern for sort/name fields
-     * @param  integer          id=null         optional author/tag/series ID
-     * @param  bool             translit=false  set to true to use transliteration
+     * @param int $searchType index of search type to use, see CalibreSearchType
+     * @param integer $index page index
+     * @param integer $length length of page
+     * @param CalibreFilter $filter filter expression
+     * @param SearchOptions|null $searchOptions =null
+     * @param null $id =null         optional author/tag/series ID
      * @return array                            an array with current page (key 'page'),
      *                                          number of pages (key 'pages'),
      *                                          an array of $class instances (key 'entries') or NULL
@@ -230,12 +229,17 @@ class Calibre implements CalibreRepository
      * Changed thanks to QNAP who insist on publishing outdated libraries in their firmware
      * TODO revert back to real SQL, not the outdated-QNAP stlyle
      */
-    protected function findSliceFiltered($searchType, $index, $length, $filter, $search = null, $id = null, $translit = false)
+    protected function findSliceFiltered(int $searchType, int $index, int $length, CalibreFilter $filter, SearchOptions $searchOptions = null, $id = null): array
     {
         if ($index < 0 || $length < 1 || $searchType < CalibreSearchType::Author || $searchType > CalibreSearchType::LastModifiedOrderedBook)
             return array('page' => 0, 'pages' => 0, 'entries' => NULL);
         $offset = $index * $length;
-        $searching = !is_null($search);
+
+        // TODO Integrate SearchOptions fully instead of emulating the old behaviour
+        $searching = !is_null($searchOptions);
+        $search = is_null($searchOptions) ? null : $searchOptions->getSearchTerm();
+        $translit = is_null($searchOptions) ? false : $searchOptions->isUseAsciiTransliteration();
+
         $countParams = $this->mkCountParams($id, $filter, $search);
         $queryParams = $this->mkQueryParams($id, $filter, $search, $length, $offset);
         $queryFilter = $filter->getBooksFilter();
@@ -338,14 +342,14 @@ class Calibre implements CalibreRepository
 
     /**
      * Generate a SQL query for selecting books ordered by various fields
-     * @param CalibreSearchType $searchType
+     * @param int $searchType
      * @param boolean $sortAscending ASC, result should be sorted ASC or DESC?
-     * @param CalibreFilter $queryFilter
+     * @param string $queryFilter
      * @param ?string $search optional search string
      * @param bool $translit if true use transliteration for search term
      * @return string                               SQL query
      */
-    private function mkBooksQuery($searchType, $sortAscending, $queryFilter, $search = null, $translit = false)
+    private function mkBooksQuery(int $searchType, bool $sortAscending, string $queryFilter, $search = null, $translit = false): string
     {
         switch ($searchType) {
             case CalibreSearchType::Book:
@@ -546,9 +550,9 @@ class Calibre implements CalibreRepository
         return array('author' => $author) + $slice;
     }
 
-    function authorsSlice($index = 0, $length = 100, $search = null, $translit=false): array
+    function authorsSlice(int $index=0, int $length=100, SearchOptions $searchOptions=null): array
     {
-        return $this->findSliceFiltered(CalibreSearchType::Author, $index, $length, new CalibreFilter(), $search, null, $translit);
+        return $this->findSliceFiltered(CalibreSearchType::Author, $index, $length, new CalibreFilter(), $searchOptions, null);
     }
 
     function authorsInitials()
@@ -639,12 +643,12 @@ class Calibre implements CalibreRepository
         return array('tag' => $tag) + $slice;
     }
 
-    # Search a list of tags defined by the parameters $index and $length.
-    # If $search is defined it is used to filter the tag names, ignoring case.
-    # Return an array with elements: current page, no. of pages, $length entries
-    function tagsSlice($index = 0, $length = 100, $search = null, $translit = false)
+    /**
+     * @inheritDoc
+     */
+    function tagsSlice($index = 0, $length = 100, $searchOptions = null): array
     {
-        return $this->findSliceFiltered(CalibreSearchType::Tag, $index, $length, new CalibreFilter(), $search, null, $translit);
+        return $this->findSliceFiltered(CalibreSearchType::Tag, $index, $length, new CalibreFilter(), $searchOptions, null);
     }
 
     function tagsInitials()
@@ -691,9 +695,9 @@ class Calibre implements CalibreRepository
         return $books;
     }
 
-    function titlesSlice($lang, $index=0, $length=100, $filter, $search = null,  $translit = false)
+    function titlesSlice(string $lang, int $index, int $length, object $filter, $searchOptions = null): array
     {
-        $books = $this->findSliceFiltered(CalibreSearchType::Book, $index, $length, $filter, $search, null, $translit);
+        $books = $this->findSliceFiltered(CalibreSearchType::Book, $index, $length, $filter, $searchOptions, null);
         $this->addBookDetails($lang, $books['entries']);
         return $books;
     }
@@ -983,9 +987,9 @@ class Calibre implements CalibreRepository
         return array('series' => $series) + $slice;
     }
 
-    function seriesSlice($index = 0, $length = 100, $search = null, $translit = false)
+    function seriesSlice($index = 0, $length = 100, $searchOptions = null): array
     {
-        return $this->findSliceFiltered(CalibreSearchType::Series, $index, $length, new CalibreFilter(), $search, null, $translit);
+        return $this->findSliceFiltered(CalibreSearchType::Series, $index, $length, new CalibreFilter(), $searchOptions, null);
     }
 
     function seriesInitials()

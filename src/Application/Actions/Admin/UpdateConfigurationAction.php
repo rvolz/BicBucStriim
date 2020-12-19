@@ -29,7 +29,7 @@ class UpdateConfigurationAction extends AdminAction
         $req_configs = $this->request->getParsedBody();
         $errors = array();
         $messages = array();
-        $this->logger->debug('admin_change: ' . var_export($req_configs, true));
+        // $this->logger->debug('admin_change: ' . var_export($req_configs, true));
 
         ## Check for consistency - calibre directory
         # Calibre dir is still empty and no change in sight --> error
@@ -50,7 +50,7 @@ class UpdateConfigurationAction extends AdminAction
         }
         ## More consistency checks - kindle feature
         # Switch off Kindle feature, if no valid email address supplied
-        if ($req_configs[AppConstants::KINDLE] == "1") {
+        if ($req_configs[AppConstants::KINDLE] == "on") {
             if (empty($req_configs[AppConstants::KINDLE_FROM_EMAIL])) {
                 array_push($errors, 5);
             } elseif (!$this->isEMailValid($req_configs[AppConstants::KINDLE_FROM_EMAIL])) {
@@ -88,7 +88,7 @@ class UpdateConfigurationAction extends AdminAction
             ## Apply changes
             foreach ($req_configs as $key => $value) {
                 if (!isset($globalSettings[$key]) || $value != $globalSettings[$key]) {
-                    $nconfigs[$key] = $value;
+                    $nconfigs[$key] = $value == 'on' ? '1' : $value;
                     $globalSettings[$key] = $value;
                     $this->logger->debug('admin_change: ' . $key . ' changed: ' . $value);
                 }
@@ -102,7 +102,8 @@ class UpdateConfigurationAction extends AdminAction
             return $this->respondWithPage('admin_configuration.twig', array(
                 'page' => $this->mkPage($this->getMessageString('admin'), 0, 2),
                 'messages' => array($this->getMessageString('changes_saved')),
-                //'mailers' => $this->mkMailers(),
+                'config' => array_merge($this->config->getConfig(), $nconfigs),
+                'mailers' => $this->mkMailers(),
                 'ttss' => $this->mkTitleTimeSortOptions(),
                 'isadmin' => true,
             ));

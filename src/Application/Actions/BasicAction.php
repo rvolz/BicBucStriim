@@ -6,6 +6,7 @@ namespace App\Application\Actions;
 
 use App\Domain\BicBucStriim\BicBucStriimRepository;
 use App\Domain\BicBucStriim\Configuration;
+use App\Domain\Calibre\SearchOptions;
 use Psr\Log\LoggerInterface;
 
 abstract class BasicAction extends Action
@@ -52,6 +53,25 @@ abstract class BasicAction extends Action
     }
 
     /**
+     * Checks if the current request/action includes query parameters for search
+     * and returns them, else null.
+     * @return SearchOptions|null
+     */
+    protected function checkAndGenSearchOptions(): ?SearchOptions
+    {
+        $search = '';
+        if ($this->hasQueryParam('search'))
+            $search = trim($this->resolveQueryParam('search'));
+        $respect_case = false;
+        if ($this->hasQueryParam('case'))
+            $respect_case = trim($this->resolveQueryParam('case'));
+        $ascii_transliteration = false;
+        if ($this->hasQueryParam('transliteration'))
+            $ascii_transliteration = trim($this->resolveQueryParam('transliteration'));
+        return empty($search) ? null : new SearchOptions($search, $respect_case, $ascii_transliteration);
+    }
+
+    /**
      * Checks if a thumbnail image is available for a book, adds it and returns the book
      * @param object $book
      * @return object
@@ -91,5 +111,6 @@ abstract class BasicAction extends Action
             $lastPage = $tl['pages'] - 1;
         return $lastPage;
     }
+
 
 }

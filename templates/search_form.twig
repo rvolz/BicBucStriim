@@ -1,0 +1,27 @@
+<section class="bg-steel-200 rounded border-r-2 border-b-2 border-hotpink-300 m-2">
+    <h2></h2>
+    <form action="{{page.rot}}/search/" method="post" id="searchForm">
+        <fieldset class="config-fieldset">
+            <label for="search">{{page.glob.l10n.pagination_search_lbl}}</label>
+            <input type="search" name="search" id="search" value="{{search}}"
+                   placeholder="{{page.glob.l10n.pagination_search_ph}}" autofocus required/>
+            <p></p>
+        </fieldset>
+        <fieldset class="config-fieldset">
+            {# TODO new translation key for case search #}
+            <label for="case">Case sensitive</label>
+            <input type="checkbox" id="case" name="case" {% if case %}checked{% endif %}>
+            <p>Respect upper/lower case in search text</p>
+        </fieldset>
+        <fieldset class="config-fieldset">
+            {# TODO new translation key for transliteration #}
+            <label for="transliteration">ASCII transliteration</label>
+            <input type="checkbox" id="transliteration" name="transliteration" {% if transliteration  %}checked{% endif %}
+            >
+            <p>Use ASCII transliteration to include results with diacritics etc.</p>
+        </fieldset>
+        <button type="submit" class="btn-config">
+            {{page.glob.l10n.pagination_search_lbl}}
+        </button>
+    </form>
+</section>

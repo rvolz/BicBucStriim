@@ -4,11 +4,11 @@
 namespace App\Application\Actions\Search;
 
 
-use App\Domain\DomainException\DomainRecordNotFoundException;
-use Psr\Http\Message\ResponseInterface as Response;
-use Slim\Exception\HttpBadRequestException;
+use App\Application\Actions\CalibreHtmlAction;
+use App\Domain\BicBucStriim\AppConstants;
+use App\Domain\Calibre\SearchOptions;
 
-abstract class SearchAction extends \App\Application\Actions\CalibreHtmlAction
+abstract class SearchAction extends CalibreHtmlAction
 {
 
 }

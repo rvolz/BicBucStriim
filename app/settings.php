@@ -7,7 +7,7 @@ require __DIR__ . '/../src/Application/Version.php';
 
 return function (ContainerBuilder $containerBuilder) {
     /** @var bool $docker; */
-    $docker = isset($_ENV['docker']) ? $_ENV['docker'] : false;
+    $docker = getenv('docker') ? true : false;
     $debugMode = isset($_ENV['BBS_DEBUG_MODE']) ? $_ENV['BBS_DEBUG_MODE'] : false;
     $basePath = isset($_ENV['BBS_BASE_PATH']) ? $_ENV['BBS_BASE_PATH'] : '';
     $logLevel = isset($_ENV['BBS_LOG_LEVEL']) ? $_ENV['BBS_LOG_LEVEL'] : 'info';
