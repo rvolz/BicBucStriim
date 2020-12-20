@@ -14,3 +14,4 @@ work
 worklib
 /.phpunit.result.cache
 vendor
+.env
