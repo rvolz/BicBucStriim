@@ -17,6 +17,7 @@ use Dflydev\FigCookies\SetCookie;
 use Firebase\JWT\ExpiredException;
 use Firebase\JWT\JWT;
 use PDO;
+use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
 use Psr\Http\Server\MiddlewareInterface as Middleware;
@@ -24,7 +25,6 @@ use Psr\Log\LoggerInterface;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use Psr\Container\ContainerInterface;
-use Psr\Http\Message\ResponseInterface as Response;
 use Slim\Exception\HttpUnauthorizedException;
 
 class AuthMiddleware  implements Middleware
@@ -83,13 +83,14 @@ class AuthMiddleware  implements Middleware
             }
             $this->logger->debug("Authentication valid, resuming for user " . $auth->getUserName());
             if (substr_compare($path, '/logout', 0, 7) == 0) {
+                $uid = intval($ud['id']);
                 $this->logout($auth_factory, $pdo_adapter, $auth, false);
                 // TODO remove setting user via container
                 $this->container->set(User::class, User::emptyUser());
                 $request = $request->withAttribute('user', User::emptyUser());
                 $response = $handler->handle($request);
                 if ($this->rememberMeEnabled)
-                    return FigResponseCookies::expire($response, $this->jwtCookieName);
+                    return $this->expireCookieAuth($uid, $request, $response);
                 else
                     return $response;
             }
@@ -257,7 +258,6 @@ class AuthMiddleware  implements Middleware
                 "uid" => $uid
             );
         $encoded = JWT::encode($payload, $this->jwtKey);
-        $cookie = Cookie::create($this->jwtCookieName, $encoded);
         $this->logger->debug('setting auth cookie',[__FILE__, $uid, $domain, $dt]);
         // TODO get base path for cookie
         return FigResponseCookies::set($response, SetCookie::create($this->jwtCookieName)
@@ -268,6 +268,28 @@ class AuthMiddleware  implements Middleware
             ->withPath('/')
         );
     }
+
+    /**
+     * Expire the auth cookie we set with 'setCookieAuth'.
+     * We need this because FigResponseCookies::expire doesn't work, see https://github.com/dflydev/dflydev-fig-cookies/issues/23
+     * @param int $uid
+     * @param ServerRequestInterface $request
+     * @param Response $response
+     * @return Response
+     */
+    protected function expireCookieAuth(int $uid, ServerRequestInterface $request, Response $response): Response
+    {
+        $domain = $request->getUri()->getHost();
+        // TODO get base path for cookie
+        return FigResponseCookies::set($response, SetCookie::create($this->jwtCookieName)
+            ->withValue('')
+            ->withDomain($domain)
+            ->withExpires(strtotime('-2 years'))
+            ->withSameSite(SameSite::lax())
+            ->withPath('/')
+        );
+    }
+
 
     /**
      * Look for PHP authorization headers

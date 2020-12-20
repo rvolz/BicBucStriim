@@ -3,7 +3,7 @@
 {% block headerlinks %}{% endblock %}
 
 {% block content %}
-<header>
+<header x-on:turbolinks:render="Turbolinks.clearCache">
 	<h1>{{page.glob.l10n.logout}}</h1>	
 </header>  
 <p>
