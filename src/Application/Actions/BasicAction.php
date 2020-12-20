@@ -83,6 +83,16 @@ abstract class BasicAction extends Action
 
     }
 
+    /**
+     * Checks if a thumbnail image is available for an author, adds it and returns the author
+     * @param object $author
+     * @return object
+     */
+    protected function checkAuthorThumbnail(object $author): object
+    {
+        $author->thumbnail = $this->bbs->getAuthorThumbnail($author->id);
+        return $author;
+    }
 
     /**
      * Calculate the next page number for search results
