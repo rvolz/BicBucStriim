@@ -3,10 +3,19 @@ declare(strict_types=1);
 namespace App\Application\Middleware;
 
 
+use App\Domain\BicBucStriim\BicBucStriimRepository;
 use App\Domain\User\User;
 use Aura\Auth;
 use Aura\Auth\AuthFactory;
 use Aura\Auth\Exception;
+use DateTime;
+use Dflydev\FigCookies\Cookie;
+use Dflydev\FigCookies\FigRequestCookies;
+use Dflydev\FigCookies\FigResponseCookies;
+use Dflydev\FigCookies\Modifier\SameSite;
+use Dflydev\FigCookies\SetCookie;
+use Firebase\JWT\ExpiredException;
+use Firebase\JWT\JWT;
 use PDO;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
@@ -15,29 +24,41 @@ use Psr\Log\LoggerInterface;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use Psr\Container\ContainerInterface;
-use GuzzleHttp\Psr7\Response;
+use Psr\Http\Message\ResponseInterface as Response;
 use Slim\Exception\HttpUnauthorizedException;
 
 class AuthMiddleware  implements Middleware
 {
 
     private LoggerInterface $logger;
-    private PDO $pdo;
+    private BicBucStriimRepository $bbs;
+    private ?PDO $pdo;
     private ContainerInterface $container;
     private int $idleTime;
+    private string $jwtKey;
+    private string $jwtCookieName;
+    private int $jwtDuration;
+    private bool $rememberMeEnabled;
+
     /**
      * Set the LoggerInterface instance.
      *
      * @param LoggerInterface $logger Logger
-     * @param PDO $pdo BicBucStriim user database
+     * @param BicBucStriimRepository $bbs
      * @param ContainerInterface $container
      */
-    public function __construct(LoggerInterface $logger, PDO $pdo, ContainerInterface $container)
+    public function __construct(LoggerInterface $logger, BicBucStriimRepository $bbs, ContainerInterface $container)
     {
         $this->logger = $logger;
-        $this->pdo = $pdo;
+        $this->bbs = $bbs;
+        $this->pdo = $bbs->getDb();
         $this->container = $container;
         $this->idleTime = $this->container->get('settings')['idleTime'];
+        // TODO add configuration for 'remember me' token
+        $this->rememberMeEnabled = true;
+        $this->jwtKey = 'test';
+        $this->jwtCookieName = 'bicbucstriim';
+        $this->jwtDuration =  2*3600; //5 * 24 * 3600;
     }
 
     /**
@@ -63,9 +84,14 @@ class AuthMiddleware  implements Middleware
             $this->logger->debug("Authentication valid, resuming for user " . $auth->getUserName());
             if (substr_compare($path, '/logout', 0, 7) == 0) {
                 $this->logout($auth_factory, $pdo_adapter, $auth, false);
+                // TODO remove setting user via container
                 $this->container->set(User::class, User::emptyUser());
                 $request = $request->withAttribute('user', User::emptyUser());
-                return $handler->handle($request);
+                $response = $handler->handle($request);
+                if ($this->rememberMeEnabled)
+                    return FigResponseCookies::expire($response, $this->jwtCookieName);
+                else
+                    return $response;
             }
             // TODO find another method for setting or a different interface
             $this->container->set(User::class, User::fromArray($ud, array($auth->getUserName(),'')));
@@ -83,11 +109,18 @@ class AuthMiddleware  implements Middleware
                     $ud = $this->try_login($auth_factory, $pdo_adapter, $auth, $auth_data);
                     if (is_null($ud)) {
                         $this->container->set(User::class, User::emptyUser());
+                        return $handler->handle($request);
                     } else {
-                        $this->container->set(User::class, User::fromArray($ud, $auth_data));
-                        $request = $request->withAttribute('user', User::fromArray($ud, array($auth->getUserName(),'')));
+                        $user = User::fromArray($ud, array($auth->getUserName(),''));
+                        $this->container->set(User::class, $user);
+                        $request = $request->withAttribute('user', $user);
+                        $response = $handler->handle($request);
+                        if ($this->rememberMeEnabled)
+                            return $this->setCookieAuth($user->getId(), $request, $response);
+                        else
+                            return $response;
                     }
-                    return $handler->handle($request);
+
                 } else {
                     return $handler->handle($request);
                 }
@@ -101,8 +134,9 @@ class AuthMiddleware  implements Middleware
                 if (is_null($ud)) {
                     return $this->answer401($request, 'Authentication required.');
                 } else {
-                    $this->container->set(User::class, User::fromArray($ud, $auth_data));
-                    $request = $request->withAttribute('user', User::fromArray($ud, array($auth->getUserName(),'')));
+                    $user = User::fromArray($ud, array($auth->getUserName(),''));
+                    $this->container->set(User::class, $user);
+                    $request = $request->withAttribute('user', $user);
                     return $handler->handle($request);
                 }
             }
@@ -119,7 +153,7 @@ class AuthMiddleware  implements Middleware
      * @return Response
      * @throws HttpUnauthorizedException
      */
-    protected function answer401(Request $r, string $msg): ResponseInterface
+    protected function answer401(Request $r, string $msg): Response
     {
         if ($this->isApiRequest($r)) {
             $this->logger->debug("AuthMiddleware::answer401: unauthorized API request");
@@ -127,7 +161,13 @@ class AuthMiddleware  implements Middleware
             throw new HttpUnauthorizedException($r,$msg);
         } else {
             $this->logger->debug("AuthMiddleware::answer401: unauthorized HTML request");
-            return new Response(302, ['Location' => '/login/'], null, '1.1', $msg);
+
+            return new \GuzzleHttp\Psr7\Response(
+                302,
+                ['Location' => '/login/', 'Turbolinks-Location' => '/login/'],
+                null,
+                '1.1',
+                $msg);
         }
 
     }
@@ -166,7 +206,67 @@ class AuthMiddleware  implements Middleware
         if (is_null($auth_data)) {
             $auth_data = $this->checkHttpAuth($request);
         }
+        if (is_null($auth_data)) {
+            $auth_data = $this->checkCookieAuth($request);
+        }
         return $auth_data;
+    }
+
+    /**
+     * Look for the authorization cookie
+     * @param ServerRequestInterface $request PSR7 request
+     * @return array with uid, or null
+     */
+    protected function checkCookieAuth(ServerRequestInterface $request): ?array
+    {
+        $cookie = FigRequestCookies::get($request, $this->jwtCookieName);
+        if (is_null($cookie->getValue()))
+            return null;
+        try {
+            $decoded = JWT::decode($cookie->getValue(), $this->jwtKey, array('HS256'));
+            $payload = (array)$decoded;
+            return array($payload['uid']);
+        } catch(ExpiredException $ex) {
+            return null; // Token expired, must login again
+        } catch (\UnexpectedValueException $ex) {
+            $this->logger->error('Invalid auth token received', [__FILE__, $ex->getMessage()]);
+            return null;
+        }
+    }
+
+    /**
+     * Set a "remember me" cookie for the user id
+     * @param int $uid
+     * @param ServerRequestInterface $request
+     * @param Response $response
+     * @return Response
+     */
+    protected function setCookieAuth(int $uid, ServerRequestInterface $request, Response $response): Response
+    {
+        $domain = $request->getUri()->getHost();
+        $now = time();
+        $exp = $now + $this->jwtDuration;
+        $dt = new DateTime();
+        $dt->setTimestamp($exp);
+        $payload = array(
+                "iss" => $domain,
+                "aud" => $domain,
+                "iat" => $now,
+                "nbf" => $now,
+                "exp" => $exp,
+                "uid" => $uid
+            );
+        $encoded = JWT::encode($payload, $this->jwtKey);
+        $cookie = Cookie::create($this->jwtCookieName, $encoded);
+        $this->logger->debug('setting auth cookie',[__FILE__, $uid, $domain, $dt]);
+        // TODO get base path for cookie
+        return FigResponseCookies::set($response, SetCookie::create($this->jwtCookieName)
+            ->withValue($encoded)
+            ->withDomain($domain)
+            ->withExpires($dt->format(DATE_COOKIE))
+            ->withSameSite(SameSite::lax())
+            ->withPath('/')
+        );
     }
 
     /**
@@ -257,11 +357,11 @@ class AuthMiddleware  implements Middleware
     {
         $logout_service = $auth_factory->newLogoutService($pdo_adapter);
         if ($force) {
-            $this->logger->debug("%s: %s, forcing logout", [__FILE__, __FUNCTION__]);
+            $this->logger->debug("forcing logout", [__FILE__, $auth->getUserName()]);
             $logout_service->forceLogout($auth);
         }
         else {
-            $this->logger->debug("%s: %s, logout", [__FILE__, __FUNCTION__]);
+            $this->logger->debug("user logged out", [__FILE__, $auth->getUserName()]);
             $logout_service->logout($auth);
         }
     }
@@ -277,7 +377,15 @@ class AuthMiddleware  implements Middleware
     {
         try {
             $login_service =  $auth_factory->newLoginService($pdo_adapter);
-            $login_service->login($auth, array('username' => $auth_data[0], 'password' => $auth_data[1]));
+            if (sizeof($auth_data) == 1) {
+                $user = $this->bbs->user(strval($auth_data[0]));
+                $login_service->forceLogin(
+                    $auth,
+                    $user->username,
+                    array('id' => $user->id, 'email' => $user->email, 'languages' => $user->languages, 'tags' => $user->tags, 'role' => $user->role));
+            } else {
+                $login_service->login($auth, array('username' => $auth_data[0], 'password' => $auth_data[1]));
+            }
             if ($auth->isValid()) {
                 $this->logger->debug("Login succeeded for user ".$auth->getUserName());
                 $ud = $auth->getUserData();
