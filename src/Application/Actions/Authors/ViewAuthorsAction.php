@@ -36,6 +36,7 @@ class ViewAuthorsAction extends AuthorsAction
             'authors' => $tl['entries'],
             'curpage' => $tl['page'],
             'pages' => $tl['pages'],
-            'search' => $search));
+            'search' => $search->getSearchTerm(),
+            'search_options' => $search->toMask()));
     }
 }

@@ -62,13 +62,10 @@ abstract class BasicAction extends Action
         $search = '';
         if ($this->hasQueryParam('search'))
             $search = trim($this->resolveQueryParam('search'));
-        $respect_case = false;
-        if ($this->hasQueryParam('case'))
-            $respect_case = trim($this->resolveQueryParam('case'));
-        $ascii_transliteration = false;
-        if ($this->hasQueryParam('transliteration'))
-            $ascii_transliteration = trim($this->resolveQueryParam('transliteration'));
-        return empty($search) ? null : new SearchOptions($search, $respect_case, $ascii_transliteration);
+        $options = 0;
+        if ($this->hasQueryParam('options'))
+            $options = (int) $this->resolveQueryParam('option');
+        return empty($search) ? null : SearchOptions::fromParams($search, $options);
     }
 
     /**

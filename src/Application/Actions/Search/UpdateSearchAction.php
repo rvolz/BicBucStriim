@@ -60,6 +60,7 @@ class UpdateSearchAction extends SearchAction
             'more_series' => ($tls['total'] > $pg_size),
             'search' => $search,
             'case' => $respect_case,
-            'transliteration' => $ascii_transliteration));
+            'transliteration' => $ascii_transliteration,
+            'options' => $searchOptions->toMask()));
     }
 }
