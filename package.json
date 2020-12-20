@@ -5,7 +5,7 @@
     "tailwindcss": "^2.0.1"
   },
   "scripts": {
-    "genl10n": "node scripts/genl10n.js assets/l10n/messages.yml lib/BicBucStriim",
+    "genl10n": "node scripts/genl10n.js assets/l10n/messages.yml src/Domain/BicBucStriim",
     "package": "node scripts/package.js",
     "serve": "cross-env NODE_ENV=development concurrently \"postcss assets/style/style.css -o dist/style/style.css --watch\"",
     "development": "cross-env NODE_ENV=development postcss assets/style/style.css -o dist/style/style.css",

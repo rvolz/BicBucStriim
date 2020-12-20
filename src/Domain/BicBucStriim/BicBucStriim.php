@@ -340,7 +340,7 @@ class BicBucStriim implements BicBucStriimRepository
         return $ret;
     }
 
-    public function getFirstArtefact($calibreThing): ?OODBBean
+    public function getFirstArtefact($calibreThing): ?CalibreThing
     {
         $artefacts = array_values(array_filter($calibreThing->ownArtefact, function ($artefact) {
             return ($artefact->atype == DataConstants::AUTHOR_THUMBNAIL_ARTEFACT);
@@ -351,7 +351,7 @@ class BicBucStriim implements BicBucStriimRepository
             return $artefacts[0];
     }
 
-    public function getAuthorThumbnail($authorId): ?OODBBean
+    public function getAuthorThumbnail($authorId): ?CalibreThing
     {
         $calibreThing = $this->getCalibreThing(DataConstants::CALIBRE_AUTHOR_TYPE, $authorId);
         if (is_null($calibreThing)) {

@@ -54,6 +54,9 @@ return function (ContainerBuilder $containerBuilder) {
             // TODO Allow the web server to send the content-length header?
             'addContentLengthHeader' => false,
 
+            // Cookie name for "Remember me"
+            'rememberme_cookie_name' => 'bicbucstriim',
+
             // Renderer settings
             'renderer' => [
                 'template_path' => __DIR__ . '/../templates/',

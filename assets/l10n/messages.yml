@@ -25,6 +25,14 @@ admin:
   gl: Configuración
   es: Configuración
   pl: Konfiguracja
+admin_ascii_translit:
+  de: ASCII Transliteration
+  en: ASCII transliteration
+  fr: Translittération ASCII
+admin_ascii_translit_expl:
+  de: "Suche: Findet auch Begriffe, die sich nur durch diakritische Zeichen (Umlautpunkte, Akzente) unterscheiden"
+  en: "Search: Finds also terms that use diacritics (accented characters etc.)"
+  fr: "Recherche: Trouve également des termes qui ne diffèrent que par des marques diacritiques (points tréma, accents)"
 admin_check_version:
   hu: Verzió ellenőrzése
   de: Auf neue Version prüfen
@@ -250,6 +258,22 @@ admin_pw_required2:
     de administrador válida. Por favor introduce una contraseña de administrador válida.
   pl: Próbujesz użyć opcji hasła administratora do ochrony pobierania bez wcześniejszego ustawienia tego hasła.
     Ustaw najpierw hasło administratora.
+admin_remember_cookie_enabled:
+  de: "\\'Angemeldet bleiben\\' Cookie"
+  en: "\\'Remember me\\' Cookie"
+  fr: "\\'Se souvenir de moi\\' Cookie"
+admin_remember_cookie_enabled_expl:
+  de: Automatischer Login über längere Zeiträume
+  en: Automatic login over longer periods of time
+  fr: Connexion automatique sur de plus longues périodes
+admin_remember_cookie_duration:
+  de: Gültig für
+  en: Valid for
+  fr: Valable
+admin_remember_cookie_duration_expl:
+  de: Anzahl Tage die das Cookie gültig ist
+  en: Number of days the cookie is valid
+  fr: Nombre de jours de validité du cookie
 admin_short:
   hu: Admin
   de: Admin

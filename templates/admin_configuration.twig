@@ -38,8 +38,7 @@
 		<p>{{page.glob.l10n.admin_mailer_expl}} <a href="../mail/">SMTP</a></p>					
 	</fieldset>
 	<fieldset class="config-fieldset">
-		{# TODO new translation keys for transliteration #}
-		<label for="search_ascii_transliteration">Use ASCII transliteration in searches</label>
+		<label for="search_ascii_transliteration">{{page.glob.l10n.admin_ascii_translit}}</label>
 		<select name="search_ascii_transliteration" id="search_ascii_transliteration">
 			<option value="0" {% if config.search_ascii_transliteration == "0" %}selected {%endif%}>
 				{{page.glob.l10n.switch_no}}
@@ -48,7 +47,7 @@
 				{{page.glob.l10n.switch_yes}}
 			</option>
 		</select>
-		<p></p>
+		<p>{{page.glob.l10n.admin_ascii_translit_expl}}</p>
 	</fieldset>
 	<fieldset class="config-fieldset">
         <label for="title_time_sort">{{page.glob.l10n.admin_tts}}</label>
@@ -115,6 +114,28 @@
 			</option>
 		</select>
 		<p>{{page.glob.l10n.relative_urls_expl}}</p>
+	</fieldset>
+	<fieldset class="config-fieldset">
+		<label for="remember_cookie_enabled">{{page.glob.l10n.admin_remember_cookie_enabled}}</label>
+		<select name="remember_cookie_enabled" id="remember_cookie_enabled" data-role="slider">
+			<option value="0" {% if config.remember_cookie_enabled == "0" %}selected {%endif%}>
+				{{page.glob.l10n.switch_no}}
+			</option>
+			<option value="1" {% if config.remember_cookie_enabled == "1" %}selected {%endif%}>
+				{{page.glob.l10n.switch_yes}}
+			</option>
+		</select>
+		<p>{{page.glob.l10n.admin_remember_cookie_enabled_expl}}</p>
+	</fieldset>
+	<fieldset class="config-fieldset">
+		<label for="remember_cookie_duration">{{page.glob.l10n.admin_remember_cookie_duration}}</label>
+		<input name="remember_cookie_duration" id="remember_cookie_duration"
+			   type="number"
+			   value="{{config.remember_cookie_duration}}"
+			   min="1"
+			   step="1"
+		/>
+		<p>{{page.glob.l10n.admin_remember_cookie_duration_expl}}</p>
 	</fieldset>
 	<button type="submit" class="btn-config">{{page.glob.l10n.save}}</button>
 </form>

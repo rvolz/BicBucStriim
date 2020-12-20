@@ -3,13 +3,14 @@ declare(strict_types=1);
 namespace App\Application\Middleware;
 
 
+use App\Domain\BicBucStriim\AppConstants;
 use App\Domain\BicBucStriim\BicBucStriimRepository;
+use App\Domain\BicBucStriim\Configuration;
 use App\Domain\User\User;
 use Aura\Auth;
 use Aura\Auth\AuthFactory;
 use Aura\Auth\Exception;
 use DateTime;
-use Dflydev\FigCookies\Cookie;
 use Dflydev\FigCookies\FigRequestCookies;
 use Dflydev\FigCookies\FigResponseCookies;
 use Dflydev\FigCookies\Modifier\SameSite;
@@ -54,11 +55,10 @@ class AuthMiddleware  implements Middleware
         $this->pdo = $bbs->getDb();
         $this->container = $container;
         $this->idleTime = $this->container->get('settings')['idleTime'];
-        // TODO add configuration for 'remember me' token
-        $this->rememberMeEnabled = true;
-        $this->jwtKey = 'test';
-        $this->jwtCookieName = 'bicbucstriim';
-        $this->jwtDuration =  2*3600; //5 * 24 * 3600;
+        $this->rememberMeEnabled = (bool) $this->container->get(Configuration::class)[AppConstants::REMEMBER_COOKIE_ENABLED];
+        $this->jwtKey = $this->container->get(Configuration::class)[AppConstants::REMEMBER_COOKIE_KEY];
+        $this->jwtCookieName = $this->container->get('settings')['rememberme_cookie_name'];
+        $this->jwtDuration =  24 * 3600 * $this->container->get(Configuration::class)[AppConstants::REMEMBER_COOKIE_DURATION] ;
     }
 
     /**

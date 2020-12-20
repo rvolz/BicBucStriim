@@ -6,7 +6,7 @@
 {% block content %}
 	{% include "search_form.twig" %}
 	<section>
-		<div class="collapsible">
+		<div class="collapsible collapsed">
 			{% if more_books %}
 			<h3>{{page.glob.l10n.titles}}: <a href="{{page.rot}}/titles/?search={{search}}&case= {{ case }}&transliteration={{ transliteration }}">{{books_total}} {{page.glob.l10n.titles}} ...</a></h3>
 			{% else %}
@@ -15,7 +15,7 @@
 			{% include "titles_listview.twig" %}
 			{# TODO include an extra card for "more books/authors..." instead of the link #}
 		</div>
-		<div class="collapsible">
+		<div class="collapsible collapsed">
 			{% if more_authors %}
 			<h3>{{page.glob.l10n.authors}}:  <a href="{{page.rot}}/authors/?search={{search}}&case= {{ case }}&transliteration={{ transliteration }}">{{authors_total}} {{page.glob.l10n.authors}}...</a></h3>
 			{% else %}
@@ -23,7 +23,7 @@
 			{% endif %}
 			{% include "authors_listview.twig" %}
 		</div>
-		<div class="collapsible">
+		<div class="collapsible collapsed">
 			{% if more_tags %}
 			<h3>{{page.glob.l10n.tags}}:  <a href="{{page.rot}}/tags/?search={{search}}&case= {{ case }}&transliteration={{ transliteration }}">{{tags_total}} {{page.glob.l10n.tags}}...</a></h3>
 			{% else %}
@@ -31,7 +31,7 @@
 			{% endif %}
 			{% include "tags_listview.twig" %}
 		</div>
-		<div class="collapsible">
+		<div class="collapsible collapsed">
 			{% if more_series %}
 			<h3>{{page.glob.l10n.series}}:  <a href="{{page.rot}}/series/?search={{search}}&case= {{ case }}&transliteration={{ transliteration }}">{{series_total}} {{page.glob.l10n.series}}...</a></h3>
 			{% else %}

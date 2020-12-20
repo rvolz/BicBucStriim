@@ -50,7 +50,7 @@ class UpdateConfigurationAction extends AdminAction
         }
         ## More consistency checks - kindle feature
         # Switch off Kindle feature, if no valid email address supplied
-        if ($req_configs[AppConstants::KINDLE] == "on") {
+        if ($req_configs[AppConstants::KINDLE] == "1") {
             if (empty($req_configs[AppConstants::KINDLE_FROM_EMAIL])) {
                 array_push($errors, 5);
             } elseif (!$this->isEMailValid($req_configs[AppConstants::KINDLE_FROM_EMAIL])) {
@@ -74,6 +74,13 @@ class UpdateConfigurationAction extends AdminAction
             if ($req_configs[AppConstants::PAGE_SIZE] < 1 || $req_configs[AppConstants::PAGE_SIZE] > 100) {
                 $this->logger->warning('admin_change: Invalid page size requested: ' . $req_configs[AppConstants::PAGE_SIZE]);
                 array_push($errors, 4);
+            }
+        }
+
+        ## Check for a change in the "remember me" cookie feature and generate a new key if enabled
+        if ($req_configs[AppConstants::REMEMBER_COOKIE_ENABLED] != $this->config[AppConstants::REMEMBER_COOKIE_ENABLED]) {
+            if ($req_configs[AppConstants::REMEMBER_COOKIE_ENABLED] == 1) {
+                $req_configs[AppConstants::REMEMBER_COOKIE_KEY] =  random_bytes(20);
             }
         }
 

@@ -14,11 +14,10 @@
             <p>Respect upper/lower case in search text</p>
         </fieldset>
         <fieldset class="config-fieldset">
-            {# TODO new translation key for transliteration #}
-            <label for="transliteration">ASCII transliteration</label>
+            <label for="transliteration">{{ page.glob.l10n.admin_ascii_translit }}</label>
             <input type="checkbox" id="transliteration" name="transliteration" {% if transliteration  %}checked{% endif %}
             >
-            <p>Use ASCII transliteration to include results with diacritics etc.</p>
+            <p>{{ page.glob.l10n.admin_ascii_translit_expl }}</p>
         </fieldset>
         <button type="submit" class="btn-config">
             {{page.glob.l10n.pagination_search_lbl}}

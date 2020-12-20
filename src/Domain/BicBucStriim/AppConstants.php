@@ -32,6 +32,12 @@ class AppConstants
     const PAGE_SIZE = 'page_size';
     # if true then relative urls will be generated
     const RELATIVE_URLS = 'relative_urls';
+    # duration in days for valid cookies
+    const REMEMBER_COOKIE_DURATION = 'remember_cookie_duration';
+    # if true then auth cookies can be used
+    const REMEMBER_COOKIE_ENABLED = 'remember_cookie_enabled';
+    # encryption key for cookies
+    const REMEMBER_COOKIE_KEY = 'remember_cookie_key';
     # if true ascii transliteration will be used for searches
     const SEARCH_ASCII_TRANSLITERATION = 'search_ascii_transliteration';
     # Name of SMTP server, if SMTP mailer is used
