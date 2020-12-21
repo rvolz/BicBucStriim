@@ -32,7 +32,7 @@ class UpdateSearchAction extends SearchAction
 
         $filter = $this->getFilter();
         $lang = $this->l10n->user_lang;
-        $pg_size = 3; //$this->config[AppConstants::PAGE_SIZE];
+        $pg_size = $this->config[AppConstants::PAGE_SIZE];
         $tlb = $this->calibre->titlesSlice($lang, 0, $pg_size, $filter, $searchOptions);
         $tlb_books = array_map(array($this, 'checkThumbnail'), $tlb['entries']);
         $tla = $this->calibre->authorsSlice(0, $pg_size, $searchOptions);

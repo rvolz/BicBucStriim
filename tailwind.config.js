@@ -149,6 +149,6 @@ module.exports = {
   },
   plugins: [
       require('@tailwindcss/forms'),
-      require('./assets/style/plugins/simple-card')
+      require('./assets/style/plugins/simple-card'),
   ],
 }
