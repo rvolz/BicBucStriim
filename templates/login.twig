@@ -1,30 +1,31 @@
-{% extends "layout.twig" %}
+{% extends "layout-mini.twig" %}
 {% block content %}
-<div class="flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-    <div class="max-w-md w-full space-y-8">
-        <form action="{{page.rot}}/login/" method="post" class="mt-8 space-y-6">
-            <div class="rounded-md shadow-sm -space-y-px">
-                <fieldset>
-                    <label for="username" class="sr-only">{{page.glob.l10n.admin_username}}</label>
-                    <input type="text" name="username" id="username" autocomplete="username" placeholder="{{page.glob.l10n.admin_username}}" value="{{username}}" autofocus required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"/>
-                </fieldset >
-                <fieldset>
-                    <label for="password" class="sr-only">{{page.glob.l10n.admin_userpw}}</label>
-                    <input type="password" name="password" id="password" autocomplete="current-password" placeholder="{{page.glob.l10n.admin_userpw}}" value="{{password}}" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"/>
-                </fieldset>
-            </div>
-            <div>
-                <button type="submit" name="login" class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                  <span class="absolute left-0 inset-y-0 flex items-center pl-3" aria-hidden="true">
-                    <!-- Heroicon name: lock-closed -->
-                    <svg class="h-5 w-5 text-indigo-500 group-hover:text-indigo-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                      <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
-                    </svg>
-                  </span>
-                    {{page.glob.l10n.login}}
-                </button>
-            </div>
-        </form>
+    <h2 class="text-2xl flex items-center justify-center py-4 px-4 sm:px-6 lg:px-8">{{page.glob.l10n.login}}</h2>
+    <div class="flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-md w-full space-y-8">
+            <form action="{{page.rot}}/login/" method="post" class="mt-8 space-y-6">
+                <div class="rounded-md shadow-sm -space-y-px">
+                    <fieldset>
+                        <label for="username" class="sr-only">{{page.glob.l10n.admin_username}}</label>
+                        <input type="text" name="username" id="username" autocomplete="username" placeholder="{{page.glob.l10n.admin_username}}" value="{{username}}" autofocus required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-steel-500 focus:border-steel-500 focus:z-10 sm:text-sm"/>
+                    </fieldset >
+                    <fieldset>
+                        <label for="password" class="sr-only">{{page.glob.l10n.admin_userpw}}</label>
+                        <input type="password" name="password" id="password" autocomplete="current-password" placeholder="{{page.glob.l10n.admin_userpw}}" value="{{password}}" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-steel-500 focus:border-steel-500 focus:z-10 sm:text-sm"/>
+                    </fieldset>
+                </div>
+                <div>
+                    <button type="submit" name="login" class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-steel-600 hover:bg-steel-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-steel-500">
+                      <span class="absolute left-0 inset-y-0 flex items-center pl-3" aria-hidden="true">
+                        <!-- Heroicon name: lock-closed -->
+                        <svg class="h-5 w-5 text-steel-500 group-hover:text-steel-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                          <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+                        </svg>
+                      </span>
+                        {{page.glob.l10n.login}}
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
-</div>
 {% endblock %}

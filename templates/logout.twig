@@ -1,12 +1,14 @@
-{% extends 'layout.twig' %}
+{% extends 'layout-mini.twig' %}
 
 {% block headerlinks %}{% endblock %}
 
 {% block content %}
-<header x-on:turbolinks:render="Turbolinks.clearCache">
-	<h1>{{page.glob.l10n.logout}}</h1>	
-</header>  
-<p>
-{{page.glob.l10n.logout_expl}}:  <a href="{{page.rot}}/login/">{{page.glob.l10n.login}}</a>.
-</p>
+	<h2 class="text-2xl flex items-center justify-center py-4 px-4 sm:px-6 lg:px-8" x-on:turbolinks:render="Turbolinks.clearCache">{{page.glob.l10n.logout}}</h2>
+	<div class="flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+		<div class="max-w-md w-full space-y-8">
+			<p>
+			{{page.glob.l10n.logout_expl}}:  <a class="menu-link" href="{{page.rot}}/login/">{{page.glob.l10n.login}}</a>
+			</p>
+		</div>
+	</div>
 {% endblock %}

@@ -78,10 +78,7 @@ abstract class LoginAction extends BasicAction
      */
     protected function mkPage($subtitle = '', $menu = 0, $level = 0): array
     {
-        if ($subtitle == '')
-            $title = $this->config[AppConstants::DISPLAY_APP_NAME];
-        else
-            $title = $this->config[AppConstants::DISPLAY_APP_NAME] . ': ' . $subtitle;
+        $title = $this->config[AppConstants::DISPLAY_APP_NAME];
 
         // TODO mkRootUrl
         $rot = $this->mkRootUrl($this->request, '');

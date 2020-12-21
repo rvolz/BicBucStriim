@@ -54,8 +54,8 @@ abstract class BasicAction extends Action
 
     /**
      * Checks if the current request/action includes query parameters for search
-     * and returns them, else null.
-     * @return SearchOptions|null
+     * and returns them.
+     * @return SearchOptions
      */
     protected function checkAndGenSearchOptions(): ?SearchOptions
     {
@@ -65,7 +65,10 @@ abstract class BasicAction extends Action
         $options = 0;
         if ($this->hasQueryParam('options'))
             $options = (int) $this->resolveQueryParam('option');
-        return empty($search) ? null : SearchOptions::fromParams($search, $options);
+        if (!empty($search))
+            return SearchOptions::fromParams($search, $options);
+        else
+            return SearchOptions::fromParams('', 0);
     }
 
     /**

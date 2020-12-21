@@ -1,0 +1,112 @@
+<header class="flex items-center justify-between bg-manatee-200">
+    <h1 class="text-left">
+        {{ page.h1 }}
+    </h1>
+    <div class="ml-4 flex items-end">
+        <a href="{{ page.rot }}/" class="top-link" title="{{ page.glob.l10n.home }}" title="{{ page.glob.l10n.home }}">
+            <span class="sr-only">{{ page.glob.l10n.home }}</span>
+            {# Heroicon name: home #}
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+        </a>
+        <a href="{{ page.rot }}/search/" class="top-link" title="{{ page.glob.l10n.pagination_search }}" title="{{ page.glob.l10n.pagination_search }}">
+            <span class="sr-only">{{ page.glob.l10n.pagination_search }}</span>
+            {# Heroicon name: search #}
+            <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+        </a>
+        <a href="{{ page.rot }}/admin/" class="top-link" title="{{ page.glob.l10n.admin_short }}">
+            <span class="sr-only">{{ page.glob.l10n.admin_short }}</span>
+            {# Heroicon name: adjustments #}
+            <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+            </svg>
+        </a>
+        <a href="{{ page.rot }}/logout/" class="top-link" title="{{ page.glob.l10n.logout }}">
+            <span class="sr-only">{{ page.glob.l10n.logout }}</span>
+            {# Heroicon name: logout #}
+            <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            </svg>
+        </a>
+    </div>
+</header>
+<nav class="bg-manatee-200 py-1">
+    <div class="flex">
+        <a class="menu-link" href="{{page.rot}}/titles/" title="{{page.glob.l10n.titles}}">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+            </svg>
+            {{page.glob.l10n.titles}}
+        </a>
+        <a class="menu-link" href="{{page.rot}}/authors/">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            </svg>
+            {{page.glob.l10n.authors}}
+        </a>
+        <a class="menu-link" href="{{page.rot}}/series/">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+            </svg>
+            {{page.glob.l10n.series}}
+        </a>
+        <a class="menu-link" href="{{page.rot}}/tags/">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+            </svg>
+            {{page.glob.l10n.tags}}
+        </a>
+    </div>
+    <div class="flex items-center justify-around h-8"
+         x-data="{ selectedSort: 1 }"
+         x-init="$watch('selectedSort', () => {visit(selectedSort)})"
+    >
+        <script type="application/javascript">
+            async function visit4Sort(val) {
+                url = "{{page.rot}}/{{url}}/?index={{curpage}}{% if search is not empty %}&search={{search}}&options={{search_options}}{% endif %}"
+                switch(val) {
+                    case '1': Turbolinks.visit(url+'?sort=byTitle', { action: "replace" }); break;
+                    case '2': Turbolinks.visit(url+'?sort=byReverseDate', { action: "replace" }); break;
+                    default: return;
+                }
+            }
+        </script>
+        <a class="top-link" href="#">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7"></path></svg>
+        </a>
+        <a
+                class="{% if curpage is not null and curpage > 0 %}top-link{% else %}top-link-disabled{% endif %}"
+                href="{% if curpage is not null and curpage > 0 %}{{page.rot}}/{{url}}/?index={{curpage - 1}}{% if search is not empty %}&search={{search}}&options={{search_options}}{% endif %}{% if sort is not empty  %}&sort={{sort}}{% endif %}{% else %}#{% endif %}"
+                title="{{page.glob.l10n.pagination_prev}}"
+        >
+            <span class="sr-only">{{page.glob.l10n.pagination_prev}}</span>
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+        </a>
+        {# TODO l10n text for sort label  #}
+        <label class="sr-only" for="sort-select">Sort</label>
+        <select name="sort" id="sort-select" class="input" x-model="selectedSort" {% if page.menu != 2 %}disabled {% endif %}>
+            <option value="1">{{ page.glob.l10n.title }}</option>
+            <option value="2">{{ page.glob.l10n.date }}</option>
+        </select>
+        <span>
+                    {% if search != NULL %}
+                        {{page.glob.l10n.pagination_search}}
+                    {% else %}
+                        {{page.glob.l10n.pagination_page}}
+                    {% endif %}
+            {% if pages > 0 %}{{ curpage+1 }}/{{ pages }}{% else %}0/0{% endif %}
+                </span>
+        <a
+                class="{% if curpage is not null and curpage+1 < pages %}top-link{% else %}top-link-disabled{% endif %}"
+                href="{% if curpage is not null and curpage+1 < pages %}{{page.rot}}/{{url}}/?index={{curpage + 1}}{% if search is not empty %}&search={{search}}&options={{search_options}}{% endif %}{% if sort is not empty  %}&sort={{sort}}{% endif %}{% else %}#{% endif %}"
+                title="{{page.glob.l10n.pagination_next}}"
+        >
+            <span class="sr-only">{{page.glob.l10n.pagination_next}}</span>
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+        </a>
+        <a class="top-link" href="#">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7"></path></svg>
+        </a>
+    </div>
+</nav>
