@@ -49,8 +49,8 @@ class BicBucStriim implements BicBucStriimRepository
     {
         $rp = realpath($dataPath);
         $this->data_dir = dirname($rp);
-        $this->thumb_dir = $this->data_dir . '/thumbnails/titles';
-        $this->authors_dir = $this->data_dir . '/thumbnails/authors';
+        $this->thumb_dir = $this->data_dir . '/titles';
+        $this->authors_dir = $this->data_dir . '/authors';
         if (file_exists($rp) && is_writeable($rp)) {
             $this->mydb = new PDO('sqlite:' . $rp, NULL, NULL, array());
             $this->mydb->setAttribute(1002, 'SET NAMES utf8');
@@ -340,7 +340,7 @@ class BicBucStriim implements BicBucStriimRepository
         return $ret;
     }
 
-    public function getFirstArtefact($calibreThing): ?CalibreThing
+    public function getFirstArtefact($calibreThing): ?object
     {
         $artefacts = array_values(array_filter($calibreThing->ownArtefact, function ($artefact) {
             return ($artefact->atype == DataConstants::AUTHOR_THUMBNAIL_ARTEFACT);
@@ -351,7 +351,7 @@ class BicBucStriim implements BicBucStriimRepository
             return $artefacts[0];
     }
 
-    public function getAuthorThumbnail($authorId): ?CalibreThing
+    public function getAuthorThumbnail($authorId): ?object
     {
         $calibreThing = $this->getCalibreThing(DataConstants::CALIBRE_AUTHOR_TYPE, $authorId);
         if (is_null($calibreThing)) {

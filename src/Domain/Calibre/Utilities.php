@@ -74,7 +74,7 @@ class Utilities
             return Utilities::MIME_EPUB;
         else if (preg_match('/mobi$/', $file_path) == 1)
             return 'application/x-mobipocket-ebook';
-        else if (preg_match('/azw3?$/', $file_path) == 1)
+        else if (preg_match('/azw[1-3]?$/', $file_path) == 1)
             return 'application/vnd.amazon.ebook';
         else if (preg_match('/pdf$/', $file_path) == 1)
             return 'application/pdf';

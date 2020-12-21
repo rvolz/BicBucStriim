@@ -16,7 +16,7 @@ class BicBucStriimTest extends TestCase
     const DATA = __DIR__ . '/../../data';
     const DATADB = __DIR__ . '/../../data/data.db';
 
-    var $bbs;
+    var BicBucStriim $bbs;
 
     function setUp(): void
     {
@@ -32,9 +32,14 @@ class BicBucStriimTest extends TestCase
     function tearDown(): void
     {
         // Must use nuke() to clear caches etc.
-        R::nuke();
+        try {
+            $isConnected = R::testConnection();
+            if ($isConnected)
+                R::nuke();
+        } catch (\PDOException $ex) {
+
+        }
         R::close();
-        $this->bbs = null;
         system("rm -rf ".self::DATA);
     }
 
@@ -226,7 +231,7 @@ class BicBucStriimTest extends TestCase
         $result = $artefacts[1];
         $this->assertNotNull($result);
         $this->assertEquals(DataConstants::AUTHOR_THUMBNAIL_ARTEFACT, $result->atype);
-        $this->assertEquals(self::DATA.'/authors/author_1_thm.png', $result->url);
+        $this->assertEquals(realpath(self::DATA.'/authors/author_1_thm.png'), $result->url);
     }
 
     function testGetAuthorThumbnail() {
@@ -235,7 +240,7 @@ class BicBucStriimTest extends TestCase
         $result = $this->bbs->getAuthorThumbnail(1);
         $this->assertNotNull($result);
         $this->assertEquals(DataConstants::AUTHOR_THUMBNAIL_ARTEFACT, $result->atype);
-        $this->assertEquals(self::DATA.'/authors/author_1_thm.png', $result->url);
+        $this->assertEquals(realpath(self::DATA.'/authors/author_1_thm.png'), $result->url);
         $result = $this->bbs->getAuthorThumbnail(2);
         $this->assertNotNull($result);
     }
@@ -280,7 +285,7 @@ class BicBucStriimTest extends TestCase
         $note = $this->bbs->editAuthorNote(1, 'Author 2', 'text/markdown', '*Hello again!*');
         $this->assertEquals('text/markdown', $note->mime);
         $this->assertEquals('*Hello again!*', $note->ntext);
-        $this->assertTrue($this->bbs->deleteAuthorNote(1, 2));
+        $this->assertTrue($this->bbs->deleteAuthorNote(1));
         $this->assertEquals(1, R::count('note'));
     }
 

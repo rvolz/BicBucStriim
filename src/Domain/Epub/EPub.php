@@ -10,12 +10,12 @@ use ZipArchive;
  * @author Andreas Gohr <andi@splitbrain.org>
  */
 class EPub {
-    public $xml; //FIXME change to protected, later
-    protected $xpath;
-    protected $file;
+    public DOMDocument $xml; //FIXME change to protected, later
+    protected EPubDOMXPath $xpath;
+    protected string $file;
     protected $meta;
     protected $namespaces;
-    protected $imagetoadd='';
+    protected string $imagetoadd='';
 
     /**
      * Constructor
@@ -23,7 +23,7 @@ class EPub {
      * @param string $file path to epub file to work on
      * @throws Exception if metadata could not be loaded
      */
-    public function __construct($file){
+    public function __construct(string $file){
         // open file
         $this->file = $file;
         $zip = new ZipArchive();
@@ -49,7 +49,7 @@ class EPub {
             throw new Exception('Failed to access epub metadata');
         }
         $this->xml =  new DOMDocument();
-        $this->xml->registerNodeClass('DOMElement','EPubDOMElement');
+        $this->xml->registerNodeClass('DOMElement',EPubDOMElement::class);
         $this->xml->loadXML($data);
         $this->xml->formatOutput = true;
         $this->xpath = new EPubDOMXPath($this->xml);

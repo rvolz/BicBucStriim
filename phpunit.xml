@@ -5,7 +5,9 @@
             <exclude>./tests/Functional/TitlesTest.php</exclude>
         </testsuite>
         <testsuite name="Unit">
+            <directory>./tests/Domain</directory>
             <directory>./tests/Application</directory>
+            <directory>./tests/Infrastructure</directory>
         </testsuite>
     </testsuites>
     <filter>

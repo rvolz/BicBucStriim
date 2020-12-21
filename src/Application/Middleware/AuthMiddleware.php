@@ -54,11 +54,13 @@ class AuthMiddleware  implements Middleware
         $this->bbs = $bbs;
         $this->pdo = $bbs->getDb();
         $this->container = $container;
-        $this->idleTime = $this->container->get('settings')['idleTime'];
-        $this->rememberMeEnabled = (bool) $this->container->get(Configuration::class)[AppConstants::REMEMBER_COOKIE_ENABLED];
-        $this->jwtKey = $this->container->get(Configuration::class)[AppConstants::REMEMBER_COOKIE_KEY];
-        $this->jwtCookieName = $this->container->get('settings')['rememberme_cookie_name'];
-        $this->jwtDuration =  24 * 3600 * $this->container->get(Configuration::class)[AppConstants::REMEMBER_COOKIE_DURATION] ;
+        $settings = $this->container->get('settings');
+        $config = $this->container->get(Configuration::class);
+        $this->idleTime = $settings['idleTime'];
+        $this->rememberMeEnabled = (bool) $config[AppConstants::REMEMBER_COOKIE_ENABLED];
+        $this->jwtKey = (string) $config[AppConstants::REMEMBER_COOKIE_KEY];
+        $this->jwtCookieName = $settings['rememberme_cookie_name'];
+        $this->jwtDuration =  24 * 3600 * $config[AppConstants::REMEMBER_COOKIE_DURATION] ;
     }
 
     /**
@@ -343,7 +345,7 @@ class AuthMiddleware  implements Middleware
         // TODO enable XHR check
         //if ($r->getHeaderLine('X-Requested-With') === 'XMLHttpRequest')
         //    return true;
-        $ct = $r->getHeaderLine('Content-Type');
+        $ct = $r->getHeaderLine('Accept');
         foreach (['application/xml', 'application/atom+xml', 'application/json'] as $item) {
             if (strstr($ct, $item))
                 return true;

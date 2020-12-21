@@ -19,7 +19,7 @@ class SearchOptions
      * @param bool $respectCase
      * @param bool $useAsciiTransliteration
      */
-    public function __construct(string $searchTerm, bool $respectCase, bool $useAsciiTransliteration)
+    public function __construct(string $searchTerm, bool $respectCase = false, bool $useAsciiTransliteration = false)
     {
         $this->searchTerm = $searchTerm;
         $this->respectCase = $respectCase;

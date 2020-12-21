@@ -1067,9 +1067,15 @@ class Calibre implements CalibreRepository
      * @param int $id
      * @return object|null
      */
-    public function series4Book(int $id): ?object
+    public function series4Book(int $id): ?array
     {
-        // TODO: Implement series4Book() method if necessary
-        return null;
+        $series_ids = $this->findPrepared(BookSeriesLink::class, 'SELECT * FROM books_series_link WHERE book=:id',
+            array('id' => $id));
+        $series = array();
+        foreach ($series_ids as $aid) {
+            $this_series = $this->findOne(Series::class, 'SELECT * FROM series WHERE id=:id', array('id' => $aid->series));
+            array_push($series, $this_series);
+        }
+        return $series;
     }
 }

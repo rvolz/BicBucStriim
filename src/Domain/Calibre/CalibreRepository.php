@@ -364,9 +364,9 @@ interface CalibreRepository
     /**
      * Find series info for a book
      * @param int $id book id
-     * @return object|null series or null if no series available
+     * @return array|null series or null if no series available
      */
-    public function series4Book(int $id): ?object;
+    public function series4Book(int $id): ?array;
 
     /**
      * Search a list of series defined by the parameters $index and $length.

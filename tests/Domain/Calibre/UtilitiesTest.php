@@ -16,12 +16,11 @@ class UtilitiesTest extends TestCase
 
     function testTitleMimeType() {
         $this->assertEquals('application/epub+zip', Utilities::titleMimeType('x/y/test.epub'));
-        $this->assertEquals('application/x-mobi8-ebook', Utilities::titleMimeType('test.azw3'));
+        $this->assertEquals('application/vnd.amazon.ebook', Utilities::titleMimeType('test.azw3'));
         $this->assertEquals('application/x-mobipocket-ebook', Utilities::titleMimeType('test.mobi'));
-        $this->assertEquals('application/x-mobipocket-ebook', Utilities::titleMimeType('test.azw'));
+        $this->assertEquals('application/vnd.amazon.ebook', Utilities::titleMimeType('test.azw'));
         $this->assertEquals('application/vnd.amazon.ebook', Utilities::titleMimeType('test.azw1'));
         $this->assertEquals('application/vnd.amazon.ebook', Utilities::titleMimeType('test.azw2'));
         $this->assertEquals('text/plain', Utilities::titleMimeType(self::FIXT.'/test.unknown-format'));
-        $this->assertEquals('application/xml', Utilities::titleMimeType(self::FIXT.'/atom.rng'));
     }
 }

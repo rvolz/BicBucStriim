@@ -7,7 +7,7 @@ namespace App\Domain\Epub;
 use DOMElement;
 
 class EPubDOMElement extends DOMElement {
-    public $namespaces = array(
+    public array $namespaces = array(
         'n'   => 'urn:oasis:names:tc:opendocument:xmlns:container',
         'opf' => 'http://www.idpf.org/2007/opf',
         'dc'  => 'http://purl.org/dc/elements/1.1/'
