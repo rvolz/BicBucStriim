@@ -20,14 +20,16 @@ class ViewTitleFile extends StaticsAction
     protected function action(): Response
     {
         $id = (int) $this->resolveArg('id');
-        $file = (string) $this->resolveArg('file');
-        $details = $this->calibre->titleDetails($this->user, $id);
+        $format = (string) $this->resolveArg('format');
+        $fname = (string) $this->resolveArg('file');
+        $details = $this->calibre->titleDetails($this->l10n->user_lang, $id);
         // for people trying to circumvent filtering by direct access
-        if (title_forbidden($details)) {
+        if ($this->title_forbidden($this->user->getLanguages(), $this->user->getTags(), $details)) {
             $this->logger->warning("book: requested book not allowed for user: " . $id);
             throw new TitleNotFoundException();
         }
 
+        $file = "{$fname}.{$format}";
         $real_bookpath = $this->calibre->titleFile($id, $file);
         $contentType = Utilities::titleMimeType($real_bookpath);
         $this->logger->info("book download by " . $this->user->getUsername() . " for " . $real_bookpath .

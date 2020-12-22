@@ -8,6 +8,7 @@ use App\Domain\BicBucStriim\BicBucStriimRepository;
 use App\Domain\BicBucStriim\Configuration;
 use App\Domain\BicBucStriim\L10n;
 use App\Domain\Calibre\CalibreRepository;
+use App\Domain\User\User;
 use Psr\Log\LoggerInterface;
 use Slim\HttpCache\CacheProvider;
 use GuzzleHttp\Psr7\Stream;
@@ -88,12 +89,48 @@ abstract class StaticsAction extends CalibreHtmlAction
     public function respondWithDownload(LazyOpenStream $stream, string $filename, string $type): Response {
         return $this->response
             ->withHeader('Content-Type', $type)
-            ->withHeader('Content-Disposition',  "attachment; filename=\"${$filename}\"")
+            ->withHeader('Content-Disposition',  "attachment; filename=\"{$filename}\"")
             ->withHeader('Content-Description', 'File Transfer')
             ->withHeader('Content-Transfer-Encoding', 'binary')
-            ->withBody($stream)
-            ->withStatus(200);
+            ->withStatus(200)
+            ->withBody($stream);
+            //->withHeader('Content-Length', $stream->getSize());
             // will be done by middleware
-            // ->withHeader('Content-Length', $stream->getSize())
+    }
+
+    /**
+     * Check if a title is available for a user
+     * @param string $languages user language filter
+     * @param string $tags user tag filter
+     * @param array $book_details output of BicBucStriim::title_details()
+     * @return  bool      true if the title is not available for the user, else false
+     */
+    function title_forbidden(string $languages, string $tags, array $book_details): bool
+    {
+        if (!empty($languages)) {
+            $lang_found = false;
+            foreach ($book_details['langcodes'] as $langcode) {
+                if ($langcode === $languages) {
+                    $lang_found = true;
+                    break;
+                }
+            }
+            if (!$lang_found) {
+                return true;
+            }
+        }
+        if (!empty($tags)) {
+            $tag_found = false;
+            foreach ($book_details['tags'] as $tag) {
+                if ($tag->name === $tags) {
+                    $tag_found = true;
+                    break;
+                }
+            }
+            if ($tag_found) {
+                return true;
+            }
+        }
+        return false;
     }
 }

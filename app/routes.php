@@ -109,7 +109,7 @@ return function (App $app) {
         // TODO HEAD request for thumbnails?
         $group->get('/covers/{id}/', ViewCoverAction::class);
         // TODO HEAD request for covers?
-        $group->get('/files/{id}/{file}/', ViewTitleFile::class);
+        $group->get('/files/{id}/{format}/{file}/', ViewTitleFile::class);
         $group->get('/titlethumbs/{id}/', ViewTitleThumbnailAction::class);
         // TODO HEAD request for thumbnails?
     });

@@ -6,6 +6,7 @@ use App\Domain\BicBucStriim\Configuration;
 use App\Domain\Calibre\Calibre;
 use App\Domain\Calibre\CalibreFilter;
 use App\Domain\Opds\OpdsGenerator;
+use App\Domain\User\User;
 use \Psr\Container\ContainerInterface;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
@@ -290,7 +291,7 @@ function isEMailValid(string $mail): bool
  * @param array $book_details output of BicBucStriim::title_details()
  * @return  bool      true if the title is not available for the user, else false
  */
-function title_forbidden(bool $login_required, array $user, array $book_details): bool
+function title_forbidden(bool $login_required, User $user, array $book_details): bool
 {
     if (!$login_required) {
         return false;

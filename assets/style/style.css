@@ -83,4 +83,18 @@
 
     div.collapsed {
     }
+
+    .title_detail_image {
+        width: 40%;
+        float: left;
+    }
+    .title_detail_image > img {
+        width: 90%;
+    }
+
+    .title_details {
+        width: 55%;
+        float: right;
+        padding-left: 1%;
+    }
 }

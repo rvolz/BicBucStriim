@@ -3,41 +3,30 @@
 {% block content %}
 <section class="title_detail">	
 	<header>
-		<h1>{{ book.title }}</h1>
+		<h1 class="text-2xl">{{ book.title }}</h1>
 		<p>
 			{% set pb = book.pubdate|date("Y") %}
-			{% if pb != "0101" %} ({{ pb }}) {% endif %}
+			{% if pb != "0101" %} {{ pb }} {% endif %}
 			{{ language }}
 		</p>
 		<p class="ui-state-error">{{ flash.error }}</p>
 	</header>		
-	<div data-role="collapsible">
-		<h2>{{page.glob.l10n.download}}</h2>
-		{% if protect_dl == true %} 
-		<div class="dl_access">
-			<p>
-				{{ page.glob.l10n.check_access_info }}
-			</p>
-			<a data-role="button" data-rel="dialog" href="{{page.rot}}/titles/{{book.id}}/showaccess/">
-				{{ page.glob.l10n.check_access }}
-			</a>
-		</div>
-		{% endif %}	
-		<div class ="dl_download" {% if protect_dl == true %} hidden="true" {% endif %}>
+	<div class="collapsible my-2 py-2">
+		<h2 class="font-semibold">{{page.glob.l10n.download}}</h2>
+		<div class ="dl_download">
 			<p>
 				{{ page.glob.l10n.presskey }}
 			</p>
-			<div data-role="controlgroup" data-type="horizontal" class="downButtons">
+			<div >
 				{% for format in formats %}				
-					<a data-role="button"
-						{% if page.glob.glob_dl_toggle == true %} disabled="true" {% endif %}
-						data-ajax="false"
-						href="{{page.rot}}/static/files/{{book.id}}/{{format.name|url_encode()}}.{{format.format|lower}}">
+					<a class="top-link"
+					   download="{{format.name|url_encode()}}.{{format.format|lower}}"
+					   href="{{page.rot}}/static/files/{{book.id}}/{{format.format|lower}}/{{format.name|url_encode()}}/">
 							{{ format.format }} | {{format.uncompressed_size|hfsize}}
 					</a>
 				{% endfor %}
 				{% if kindle_format %}
-					<input id="kindleButton" type="button" data-inline="true" data-icon="forward" value="{{page.glob.l10n.send_to_kindle}}" />
+					<input id="kindleButton" type="button" value="{{page.glob.l10n.send_to_kindle}}" />
 				{% endif %}
 			</div>
 		</div>
@@ -64,95 +53,109 @@
 		  </div>
 		</div>
 	{% endif %}
-	<aside class="title_detail_image">
-		{% if book.has_cover %}		
-		<img src="{{page.rot}}/static/covers/{{ book.id }}/" />
-		{% endif %}		
-	</aside>
-	<section class="title_details">
-		<div id="authors" data-role="collapsible" data-collapsed="false">
-				<h2>{{page.glob.l10n.authors}}</h2>
-				{% for author in authors %}
-				<a data-role="button" data-icon="info" href="{{page.rot}}/authors/{{author.id}}/">{{ author.name }}</a>
-				{% endfor %} 
-		</div>
-		{% if series != NULL %}
-		<div id="series" data-role="collapsible">
-				<h2>{{page.glob.l10n.series}}</h2>
-				{% for this_series in series %}
-				<a data-role="button" data-icon="info" href="{{page.rot}}/series/{{this_series.id}}/">{{ this_series.name }} ({{book.series_index}})</a>
-				{% endfor %} 
-		</div>		
-		{% endif %}
-		<div id="tags" data-role="collapsible">
-			<h2>{{page.glob.l10n.tags}}</h2>			
-			<p>
-				{% for tag in tags %}
-				<a data-role="button" data-mini="true" data-inline="true" href="{{page.rot}}/tags/{{tag.id}}/">{{ tag.name }}</a>
-				{% endfor %}
-			</p>
-		</div>
-		{% if show_idlinks %}
-		<div id="idlinks" data-role="collapsible" data-collapsed="false">
-			<h2>{{page.glob.l10n.idlinks}}</h2>			
-			<p>
-				{% for id in ids %}
-					{% if id_templates[id.type] != NULL %}
-						<a data-role="button" data-icon="cloud" rel="external" href="{{ id_templates[id.type][0]|replace({'%id%': id.val})}}">{{ id_templates[id.type][1] }}</a>
-					{% endif %}
-				{% endfor %}
-			</p>
-		</div>
-		{% endif %}
-		{% if ccs != NULL %}
-		<div id="custom_columns" data-role="collapsible">
-			<h4>{{page.glob.l10n.custom_columns}}</h4>			
-			<table id="custom_columns_table">
-				<tbody>
-					{% for cc in ccs %}
-					<tr>
-						<th>
-							{{cc.name}}
-						</th>
-						<td>
-							{% if cc.type == 'comments' %}
-								{% autoescape false %}{{cc.value}}{% endautoescape %}
-							{% else %}
-								{% if cc.type == 'rating' %}
-									{% set i = cc.value/2 %}
-									{% for y in 1..i %}
-										 &#10033;
-									{% endfor %}
-								{% else %}
-									{% if cc.type == 'bool' %}
-										{% if cc.value == 1 %}
-										 	&#10004;
-										{% else %}	 
-											 &#10006;
-										{% endif %}			 
-									{% else %}
-										{{cc.value}}
-									{% endif %}	
-								{% endif %}
-							{% endif %}
-						</td>
-					</tr>
+	<div class="block">
+		<aside class="title_detail_image">
+			{% if book.has_cover %}
+				<img src="{{page.rot}}/static/covers/{{ book.id }}/"  alt="cover image" width="265" height="341"/>
+			{% endif %}
+		</aside>
+		<section class="title_details">
+			<div id="authors" class="collapsible" >
+					<h2 class="font-semibold">{{page.glob.l10n.authors}}</h2>
+					{% for author in authors %}
+					<a class="top-link" href="{{page.rot}}/authors/{{author.id}}/">
+						<svg class="w-6 h-6 inline " fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+						{{ author.name }}
+					</a>
 					{% endfor %}
-				</tbody>
-			</table>
-		</div>
-		{% endif %}
-		{% if comment %}
-		<div id="comment">
-				<h4>{{page.glob.l10n.comment}}</h4>			
-				<div>
-					{% autoescape false %}
-					{{ comment }}
-					{% endautoescape %}
-				</div>
-		</div>
-		{% endif %}
-	</section>
+			</div>
+			{% if series != NULL %}
+			<div id="series" class="collapsible">
+					<h2 class="font-semibold">{{page.glob.l10n.series}}</h2>
+					{% for this_series in series %}
+					<a class="top-link"  href="{{page.rot}}/series/{{this_series.id}}/">
+						<svg class="w-6 h-6 inline " fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+						{{ this_series.name }} ({{book.series_index}})
+					</a>
+					{% endfor %}
+			</div>
+			{% endif %}
+			<div id="tags" class="collapsible">
+				<h2 class="font-semibold">{{page.glob.l10n.tags}}</h2>
+				<p>
+					{% for tag in tags %}
+					<a class="top-link" href="{{page.rot}}/tags/{{tag.id}}/">
+						<svg class="w-6 h-6 inline " fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+						{{ tag.name }}
+					</a>
+					{% endfor %}
+				</p>
+			</div>
+			{% if show_idlinks %}
+			<div id="idlinks" class="collapsible">
+				<h2 class="font-semibold">{{page.glob.l10n.idlinks}}</h2>
+				<p>
+					{% for id in ids %}
+						{% if id_templates[id.type] != NULL %}
+							<a class="top-link" rel="external" href="{{ id_templates[id.type][0]|replace({'%id%': id.val})}}">
+								<svg class="w-6 h-6 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"></path></svg>
+								{{ id_templates[id.type][1] }}
+							</a>
+						{% endif %}
+					{% endfor %}
+				</p>
+			</div>
+			{% endif %}
+			{% if ccs != NULL %}
+			<div id="custom_columns" class="collapsible">
+				<h4>{{page.glob.l10n.custom_columns}}</h4>
+				<table id="custom_columns_table">
+					<tbody>
+						{% for cc in ccs %}
+						<tr>
+							<th>
+								{{cc.name}}
+							</th>
+							<td>
+								{% if cc.type == 'comments' %}
+									{% autoescape false %}{{cc.value}}{% endautoescape %}
+								{% else %}
+									{% if cc.type == 'rating' %}
+										{% set i = cc.value/2 %}
+										{% for y in 1..i %}
+											 &#10033;
+										{% endfor %}
+									{% else %}
+										{% if cc.type == 'bool' %}
+											{% if cc.value == 1 %}
+												&#10004;
+											{% else %}
+												 &#10006;
+											{% endif %}
+										{% else %}
+											{{cc.value}}
+										{% endif %}
+									{% endif %}
+								{% endif %}
+							</td>
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+			{% endif %}
+			{% if comment %}
+			<div id="comment">
+					<h4>{{page.glob.l10n.comment}}</h4>
+					<div>
+						{% autoescape false %}
+						{{ comment }}
+						{% endautoescape %}
+					</div>
+			</div>
+			{% endif %}
+		</section>
+	</div>
 </section>
 
 
