@@ -1,7 +1,7 @@
 {% extends 'layout.twig' %}
 
 {% block content %}
-<section class="title_detail">	
+<section class="title_detail block">
 	<header>
 		<h1 class="text-2xl">{{ book.title }}</h1>
 		<p>
@@ -53,7 +53,7 @@
 		  </div>
 		</div>
 	{% endif %}
-	<div class="block">
+	<div>
 		<aside class="title_detail_image">
 			{% if book.has_cover %}
 				<img src="{{page.rot}}/static/covers/{{ book.id }}/"  alt="cover image" width="265" height="341"/>
@@ -108,7 +108,7 @@
 			{% endif %}
 			{% if ccs != NULL %}
 			<div id="custom_columns" class="collapsible">
-				<h4>{{page.glob.l10n.custom_columns}}</h4>
+				<h2 class="font-semibold">{{page.glob.l10n.custom_columns}}</h2>
 				<table id="custom_columns_table">
 					<tbody>
 						{% for cc in ccs %}
@@ -146,8 +146,8 @@
 			{% endif %}
 			{% if comment %}
 			<div id="comment">
-					<h4>{{page.glob.l10n.comment}}</h4>
-					<div>
+					<h2 class="font-semibold">{{page.glob.l10n.comment}}</h2>
+					<div class="m-1 p-1 font-serif">
 						{% autoescape false %}
 						{{ comment }}
 						{% endautoescape %}

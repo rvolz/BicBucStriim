@@ -341,11 +341,11 @@ class AuthMiddleware  implements Middleware
      */
     protected function isApiRequest(Request $r): bool
     {
-        // jQuery Mobile uses Xhr to communicate so we can't use this
+        // Turbolinks uses Xhr to communicate so we can't use this
         // TODO enable XHR check
         //if ($r->getHeaderLine('X-Requested-With') === 'XMLHttpRequest')
         //    return true;
-        $ct = $r->getHeaderLine('Accept');
+        $ct = $r->getHeaderLine('Content-Type');
         foreach (['application/xml', 'application/atom+xml', 'application/json'] as $item) {
             if (strstr($ct, $item))
                 return true;
