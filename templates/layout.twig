@@ -15,8 +15,7 @@
 </head>
 <body class="bg-manatee-50 dark:bg-manatee-900">
     <div class="px-1 pt-0.5 md:container md:mx-auto">
-        {% include "header.twig" %}
-
+        {% block header %}{% endblock %}
         <main>
             <div class=" mx-auto py-6 sm:px-6 lg:px-8 overflow-y-scroll">
                 <div class="px-4 py-6 sm:px-0">
@@ -26,9 +25,7 @@
                 </div>
             </div>
         </main>
-        <footer class="bg-manatee-200  py-1 sm:px-6 lg:px-8">
-            <p><a href="https://github.com/rvolz/BicBucStriim">BicBucStriim {{page.version}}</a> ― &copy; 2012-{{"now"|date('Y')}} Rainer Volz</p>
-        </footer>
+        {% include "footer.twig" %}
     </div>
 </body>
 </html>
