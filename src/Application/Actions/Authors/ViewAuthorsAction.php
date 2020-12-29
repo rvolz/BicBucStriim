@@ -15,17 +15,18 @@ class ViewAuthorsAction extends AuthorsAction
      */
     protected function action(): Response
     {
-        $index = 0;
-        if ($this->hasQueryParam('index'))
-            $index = (int) $this->resolveQueryParam('index');
-        // parameter checking
-        if ($index < 0) {
-            $this->logger->warning('ViewAuthorsAction: invalid page id ' . $index);
-            throw new HttpBadRequestException($this->request);
+        $index = $this->getIndexParam(__CLASS__);
+        $jumpTarget = $this->getJumpTargetParam(__CLASS__);
+        $search = $this->checkAndGenSearchOptions();
+        $pg_size = $this->config[AppConstants::PAGE_SIZE];
+
+        // Jumping overrides normal navigation
+        if (!empty($jumpTarget)) {
+            $pos = $this->calibre->calcInitialPos('sort', 'authors', $jumpTarget, $search);
+            $index = $pos / $pg_size;
         }
 
-        $search = $this->checkAndGenSearchOptions();
-        $tl = $this->calibre->authorsSlice($index, $this->config[AppConstants::PAGE_SIZE], $search);
+        $tl = $this->calibre->authorsSlice($index, $pg_size, $search);
 
         foreach ($tl['entries'] as $author) {
             $author->thumbnail = $this->bbs->getAuthorThumbnail($author->id);

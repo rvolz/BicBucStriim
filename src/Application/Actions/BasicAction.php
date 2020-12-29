@@ -8,6 +8,7 @@ use App\Domain\BicBucStriim\BicBucStriimRepository;
 use App\Domain\BicBucStriim\Configuration;
 use App\Domain\Calibre\SearchOptions;
 use Psr\Log\LoggerInterface;
+use Slim\Exception\HttpBadRequestException;
 
 abstract class BasicAction extends Action
 {
@@ -68,7 +69,7 @@ abstract class BasicAction extends Action
         if (!empty($search))
             return SearchOptions::fromParams($search, $options);
         else
-            return SearchOptions::fromParams('', 0);
+            return SearchOptions::genEmpty();
     }
 
     /**
@@ -92,6 +93,32 @@ abstract class BasicAction extends Action
     {
         $author->thumbnail = $this->bbs->getAuthorThumbnail($author->id);
         return $author;
+    }
+
+    /**
+     * Check and return the query parameter 'index', default 0
+     * @param string $actionName
+     * @return int
+     * @throws HttpBadRequestException if index < 0
+     */
+    protected function getIndexParam(string $actionName): int
+    {
+        $index = 0;
+        if ($this->hasQueryParam('index'))
+            $index = (int) $this->resolveQueryParam('index');
+        if ($index < 0) {
+            $this->logger->warning('invalid page id ' . $index, [$actionName]);
+            throw new HttpBadRequestException($this->request);
+        }
+        return $index;
+    }
+
+    protected function getJumpTargetParam(string $actionName): string
+    {
+        $jumpTarget = '';
+        if ($this->hasQueryParam('jumpTarget'))
+            $jumpTarget = $this->resolveQueryParam('jumpTarget');
+        return $jumpTarget;
     }
 
     /**

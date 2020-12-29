@@ -19,6 +19,7 @@ use App\Application\Actions\Authors\CreateAuthorThumbnailAction;
 use App\Application\Actions\Authors\DeleteAuthorLinkAction;
 use App\Application\Actions\Authors\DeleteAuthorThumbnailAction;
 use App\Application\Actions\Authors\ViewAuthorAction;
+use App\Application\Actions\Authors\ViewAuthorInitialsAction;
 use App\Application\Actions\Authors\ViewAuthorsAction;
 use App\Application\Actions\Authors\ViewOpdsByAuthorAction;
 use App\Application\Actions\Authors\ViewOpdsByAuthorInitialsAction;
@@ -35,6 +36,7 @@ use App\Application\Actions\Series\ViewOpdsSeriesAction;
 use App\Application\Actions\Series\ViewOpdsSeriesByInitial;
 use App\Application\Actions\Series\ViewOpdsSeriesNames4Initials;
 use App\Application\Actions\Series\ViewSeriesAction;
+use App\Application\Actions\Series\ViewSeriesInitialsAction;
 use App\Application\Actions\Start\ViewLast30Action;
 use App\Application\Actions\Start\ViewOpdsNewestAction;
 use App\Application\Actions\Start\ViewOpdsRootCatalogAction;
@@ -47,8 +49,10 @@ use App\Application\Actions\Tags\ViewOpdsTagNames4Initial;
 use App\Application\Actions\Tags\ViewOpdsTagsByInitial;
 use App\Application\Actions\Tags\ViewTagAction;
 use App\Application\Actions\Tags\ViewTagsAction;
+use App\Application\Actions\Tags\ViewTagInitialsAction;
 use App\Application\Actions\Titles\ViewOpdsTitlesAction;
 use App\Application\Actions\Titles\ViewTitleAction;
+use App\Application\Actions\Titles\ViewTitleInitialsAction;
 use App\Application\Actions\Titles\ViewTitlesAction;
 use Slim\App;
 use Slim\Interfaces\RouteCollectorProxyInterface as Group;
@@ -82,6 +86,12 @@ return function (App $app) {
         $group->delete('/{id}/thumbnail/', DeleteAuthorThumbnailAction::class);
         $group->post('/{id}/link/', CreateAuthorLinkAction::class);
         $group->delete('/{id}/link/{link}/', DeleteAuthorLinkAction::class);
+    });
+    $app->group('/params', function (Group $group) {
+        $group->get('/authors/initials/', ViewAuthorInitialsAction::class);
+        $group->get('/series/initials/', ViewSeriesInitialsAction::class);
+        $group->get('/tags/initials/', ViewTagInitialsAction::class);
+        $group->get('/titles/initials/', ViewTitleInitialsAction::class);
     });
     $app->group('/opds', function (Group $group) {
         $group->get('/', ViewOpdsRootCatalogAction::class);
@@ -120,5 +130,6 @@ return function (App $app) {
     $app->group('/titles', function (Group $group) {
         $group->get('/', ViewTitlesAction::class);
         $group->get('/{id}/', ViewTitleAction::class);
+        $group->post('/', ViewTitleAction::class);
     });
 };

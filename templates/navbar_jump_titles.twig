@@ -1,0 +1,19 @@
+<div x-data="{ url: '/params/titles/initials/', initials: [], selectedInitial: '' }"
+      x-init="$fetch(url).then(t => initials = t.data.data); $watch('selectedInitial', () => {visit4Jump(selectedInitial)})">
+    >
+    <script type="application/javascript">
+        async function visit4Jump(val) {
+            urlP = "{{page.rot}}/{{url}}/?jumpTarget=";
+            urlS = "{% if search is not empty %}&search={{search}}&options={{search_options}}{% endif %}"
+            url = urlP+val+urlS
+            Turbolinks.visit(url+'&sort=byTitle', { action: "replace" });
+        }
+    </script>
+    {# TODO l10n text for jump label  #}
+    <label class="sr-only" for="initials-select">Jump</label>
+    <select name="initials-select" id="initials-select" class="input" x-model="selectedInitial">
+        <template x-for="i in initials" :key="i">
+            <option :value="i"  x-text="i"></option>
+        </template>
+    </select>
+</div>

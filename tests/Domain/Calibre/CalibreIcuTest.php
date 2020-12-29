@@ -2,6 +2,7 @@
 
 namespace Tests\Domain\Calibre;
 
+use App\Domain\BicBucStriim\AppConstants;
 use App\Domain\Calibre\Calibre;
 use App\Domain\Calibre\CalibreFilter;
 use App\Domain\Calibre\SearchOptions;
@@ -60,4 +61,5 @@ class CalibreIcuTest extends TestCase
         $result0 = $this->calibre->titlesSlice('fr', 0, 2, new CalibreFilter(), new SearchOptions('ò'));
         $this->assertCount(1, $result0['entries']);
     }
+
 }

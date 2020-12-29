@@ -16,17 +16,18 @@ class ViewTagsAction extends TagsAction
      */
     protected function action(): Response
     {
-        $index = 0;
-        if ($this->hasQueryParam('index'))
-            $index = (int) $this->resolveQueryParam('index');
-        // parameter checking
-        if ($index < 0) {
-            $this->logger->warning('ViewSeriesAction: invalid page id ' . $index);
-            throw new HttpBadRequestException($this->request);
+        $index = $this->getIndexParam(__CLASS__);
+        $jumpTarget = $this->getJumpTargetParam(__CLASS__);
+        $search = $this->checkAndGenSearchOptions();
+        $pg_size = $this->config[AppConstants::PAGE_SIZE];
+
+        // Jumping overrides normal navigation
+        if (!empty($jumpTarget)) {
+            $pos = $this->calibre->calcInitialPos('name', 'tags', $jumpTarget, $search);
+            $index = $pos / $pg_size;
         }
 
-        $search = $this->checkAndGenSearchOptions();
-        $tl = $this->calibre->tagsSlice($index, $this->config[AppConstants::PAGE_SIZE], $search);
+        $tl = $this->calibre->tagsSlice($index, $pg_size, $search);
 
         return $this->respondWithPage('tags.twig', array(
             'page' => $this->mkPage($this->getMessageString('tags'), 4, 1),

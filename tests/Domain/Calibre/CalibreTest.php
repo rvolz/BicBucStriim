@@ -2,6 +2,7 @@
 
 namespace Tests\Domain\Calibre;
 
+use App\Domain\BicBucStriim\AppConstants;
 use App\Domain\Calibre\Book;
 use App\Domain\Calibre\Calibre;
 use App\Domain\Calibre\CalibreFilter;
@@ -177,6 +178,16 @@ class CalibreTest extends TestCase
         $this->assertEquals(1, $result[0]->ctr);
         $this->assertEquals('R', $result[4]->initial);
         $this->assertEquals(2, $result[4]->ctr);
+    }
+
+    function testAuthorsCalcNamePos()
+    {
+        $result = $this->calibre->calcInitialPos('sort', 'authors', 'G', SearchOptions::genEmpty());
+        $this->assertEquals(2, $result);
+        $result = $this->calibre->calcInitialPos('sort', 'authors', 'R', new SearchOptions('*in*'));
+        $this->assertEquals(2, $result);
+        $result = $this->calibre->calcInitialPos('sort', 'authors', 'X', SearchOptions::genEmpty());
+        $this->assertEquals(0, $result);
     }
 
     function testAuthorsNamesForInitial()
@@ -363,6 +374,16 @@ class CalibreTest extends TestCase
         $this->assertEquals(1, $result0['pages']);
     }
 
+    function testTitlesCalcInitialPos()
+    {
+        $result = $this->calibre->calcInitialPos('sort', 'books', 'G', SearchOptions::genEmpty());
+        $this->assertEquals(1, $result);
+        $result = $this->calibre->calcInitialPos('sort', 'books', 'Z', new SearchOptions('*ei*'));
+        $this->assertEquals(2, $result);
+        $result = $this->calibre->calcInitialPos('sort', 'books', 'X', SearchOptions::genEmpty());
+        $this->assertEquals(0, $result);
+    }
+
     function testCount()
     {
         $count = 'select count(*) from books where lower(title) like :search';
@@ -418,6 +439,36 @@ class CalibreTest extends TestCase
         $this->assertEquals(0, $this->calibre->last_error);
         $this->assertNotNull($result);
         $this->assertEquals('cover.jpg', basename($result));
+    }
+
+    function testSearchOptions2Where() {
+        $so = new SearchOptions('Search', true, false);
+        $result = $this->calibre->searchOption2Where($so, 'title');
+        $this->assertEquals("WHERE title GLOB 'Search'", $result, 'case sensitive search option not properly transformed');
+        $so = new SearchOptions('Search', false, false);
+        $result = $this->calibre->searchOption2Where($so, 'title');
+        $this->assertEquals("WHERE lower(title) LIKE 'search'", $result, 'case insensitive search option not properly transformed');
+        $so = new SearchOptions('Search', false, true);
+        $result = $this->calibre->searchOption2Where($so, 'title');
+        $this->assertEquals("WHERE transliterated(title) LIKE 'Search'", $result, 'translit search option not properly transformed');
+        $so = new SearchOptions('*Search?', true, false);
+        $result = $this->calibre->searchOption2Where($so, 'title');
+        $this->assertEquals("WHERE title GLOB '*Search?'", $result, 'case sensitive search option not properly transformed');
+        $so = new SearchOptions('*Search?', false, false);
+        $result = $this->calibre->searchOption2Where($so, 'title');
+        $this->assertEquals("WHERE lower(title) LIKE '%search_'", $result, 'case insensitive search option not properly transformed');
+    }
+
+    function testTitleInitials()
+    {
+        $result = $this->calibre->titleInitials(SearchOptions::genEmpty());
+        $this->assertCount(6, $result);
+        $this->assertEquals('G', $result[0]->initial);
+        $this->assertEquals(1, $result[0]->ctr);
+        $result = $this->calibre->titleInitials(new SearchOptions('*Spring*', false, false));
+        $this->assertCount(1, $result);
+        $this->assertEquals('S', $result[0]->initial);
+        $this->assertEquals(1, $result[0]->ctr);
     }
 
     function testTitleFile()

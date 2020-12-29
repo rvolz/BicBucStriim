@@ -9,6 +9,7 @@
 
 namespace App\Domain\Calibre;
 
+use App\Domain\BicBucStriim\AppConstants;
 use App\Domain\Calibre\Author;
 use App\Domain\Calibre\AuthorBook;
 use App\Domain\Calibre\Book;
@@ -32,6 +33,7 @@ use App\Domain\Calibre\Utilities;
 use \PDO;
 use \Locale;
 use AnyAscii;
+use Slim\App;
 
 class Calibre implements CalibreRepository
 {
@@ -555,20 +557,21 @@ class Calibre implements CalibreRepository
         return $this->findSliceFiltered(CalibreSearchType::Author, $index, $length, new CalibreFilter(), $searchOptions, null);
     }
 
-    function authorsInitials()
+
+    function mkInitialsQuery(string $table, string $field, SearchOptions $searchOptions): array
     {
-        $initials = $this->findPrepared(Item::class,
-            'SELECT DISTINCT substr(upper(sort),1,1) AS initial FROM authors ORDER BY initial ASC',
-            array());
-        $ret = array();
-        foreach ($initials as $initial) {
-            $i = new Item();
-            $ctr = $this->findOne(Item::class, 'SELECT COUNT(*) as ctr FROM authors WHERE substr(upper(sort),1,1)=:initial', array('initial' => $initial->initial));
-            $i->initial = $initial->initial;
-            $i->ctr = $ctr->ctr;
-            array_push($ret, $i);
-        }
-        return $ret;
+        // TODO add a collation for proper sorting according to language
+        $where = $this->searchOption2Where($searchOptions, $field);
+        $sql = "SELECT substr(upper({$field}),1,1) AS initial, count(*) AS ctr FROM {$table} {$where} GROUP BY initial ORDER BY initial ASC";
+        return $this->findPrepared(Item::class, $sql, array());
+    }
+
+    /**
+     * @inheritdoc
+     */
+    function authorsInitials(SearchOptions $searchOptions): array
+    {
+        return $this->mkInitialsQuery('authors', 'sort', $searchOptions);
     }
 
     function authorsNamesForInitial($initial)
@@ -651,20 +654,9 @@ class Calibre implements CalibreRepository
         return $this->findSliceFiltered(CalibreSearchType::Tag, $index, $length, new CalibreFilter(), $searchOptions, null);
     }
 
-    function tagsInitials()
+    function tagsInitials(SearchOptions $searchOptions): array
     {
-        $initials = $this->findPrepared(Item::class,
-            'SELECT DISTINCT substr(upper(name),1,1) AS initial FROM tags ORDER BY initial ASC',
-            array());
-        $ret = array();
-        foreach ($initials as $initial) {
-            $i = new Item();
-            $ctr = $this->findOne(Item::class, 'SELECT COUNT(*) as ctr FROM tags WHERE substr(upper(name),1,1)=:initial', array('initial' => $initial->initial));
-            $i->initial = $initial->initial;
-            $i->ctr = $ctr->ctr;
-            array_push($ret, $i);
-        }
-        return $ret;
+        return $this->mkInitialsQuery('tags', 'name', $searchOptions);
     }
 
     function tagsNamesForInitial($initial)
@@ -702,6 +694,85 @@ class Calibre implements CalibreRepository
         return $books;
     }
 
+    /**
+     * @inheritDoc
+     */
+    function calcInitialPos(string $field, string $table, string $jumpTarget, SearchOptions $searchOptions): int
+    {
+        $where = $this->searchOption2Where($searchOptions, $field);
+        $sql = "select r from (select distinct initial, rank() over(order by initial) as r from (select upper(substr({$field},1,1)) as initial from {$table} {$where} order by initial)) where initial='{$jumpTarget}';";
+        $pos = $this->count($sql, []);
+        return $pos;
+    }
+    /**
+     * @inheritDoc
+     */
+    function titlesCalcTitlePos(string $jumpTarget, SearchOptions $searchOptions): int
+    {
+        $field = 'sort';
+        $table = 'books';
+        $where = $this->searchOption2Where($searchOptions, $field);
+        $sql = "select r from (select distinct initial, rank() over(order by initial) as r from (select upper(substr({$field},1,1)) as initial from {$table} {$where} order by initial)) where initial='{$jumpTarget}';";
+        $pos = $this->count($sql, []);
+        return $pos;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    function authorsCalcNamePos(string $jumpTarget, SearchOptions $searchOptions): int
+    {
+        $field = 'sort';
+        $table = 'authors';
+        $where = $this->searchOption2Where($searchOptions, $field);
+        $sql = "select r from (select distinct initial, rank() over(order by initial) as r from (select upper(substr({$field},1,1)) as initial from {$table} {$where} order by initial)) where initial='{$jumpTarget}';";
+        $pos = $this->count($sql, []);
+        return $pos;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    function seriesCalcNamePos(string $jumpTarget, SearchOptions $searchOptions): int
+    {
+        $field = 'name';
+        $table = 'series';
+        $where = $this->searchOption2Where($searchOptions, $field);
+        $sql = "select r from (select distinct initial, rank() over(order by initial) as r from (select upper(substr({$field},1,1)) as initial from {$table} {$where} order by initial)) where initial='{$jumpTarget}';";
+        $pos = $this->count($sql, []);
+        return $pos;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    function tagsCalcNamePos(string $jumpTarget, SearchOptions $searchOptions): int
+    {
+        $field = 'name';
+        $table = 'tags';
+        $where = $this->searchOption2Where($searchOptions, $field);
+        $sql = "select r from (select distinct initial, rank() over(order by initial) as r from (select upper(substr({$field},1,1)) as initial from {$table} {$where} order by initial)) where initial='{$jumpTarget}';";
+        $pos = $this->count($sql, []);
+        return $pos;
+    }
+
+
+    /**
+     * @inheritDoc
+     */
+    function titlesCalcYearPos(string $jumpTarget, SearchOptions $searchOptions, string $sort): int
+    {
+        switch ($sort) {
+            case AppConstants::TITLE_TIME_SORT_LASTMODIFIED: $field = 'last_modified'; break;
+            case AppConstants::TITLE_TIME_SORT_PUBDATE: $field = 'pubdate'; break;
+            default: $field = 'timestamp'; break;
+        }
+        $table = 'books';
+        $where = $this->searchOption2Where($searchOptions, $field);
+        $sql = "select min(r) from (select strftime('%Y',{$field}) as initial, rank() over (order by {$field}) as r from {$table} order by {$field}) {$where}) WHERE initial = {$jumpTarget}";
+        $pos = $this->count($sql, []);
+        return $pos;
+    }
 
     /**
      * @inheritDoc
@@ -716,6 +787,43 @@ class Calibre implements CalibreRepository
     }
 
     /**
+     * Generate the WHERE part of a SELECT according to search options.
+     *
+     * @param SearchOptions $searchOptions
+     * @param string $fieldName field to use for searching
+     * @return string WHERE part of an SQL query
+     */
+    public function searchOption2Where(SearchOptions $searchOptions, string $fieldName): string
+    {
+        $where = '';
+        if ($searchOptions->empty())
+            return $where;
+        if ($searchOptions->isRespectCase())
+            $where = "WHERE {$fieldName} GLOB '{$searchOptions->getSearchTerm()}'";
+        else {
+            $st = str_replace('*', '%', $searchOptions->getSearchTerm());
+            $st = str_replace('?', '_', $st);
+            if ($searchOptions->isUseAsciiTransliteration()) {
+                $st = $this->mkTransliteration($st);
+                $where = "WHERE transliterated({$fieldName}) LIKE '{$st}'";
+            } else {
+                $st = mb_strtolower($st, 'UTF-8');
+                $where = "WHERE lower({$fieldName}) LIKE '{$st}'";
+            }
+        }
+            return $where;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    function titleInitials(SearchOptions $searchOptions): array
+    {
+        $field = 'sort'; // title or sort?
+        return $this->mkInitialsQuery('books', $field, $searchOptions);
+    }
+
+    /**
      * @inheritDoc
      */
     function titleCover(int $id): string
@@ -727,7 +835,6 @@ class Calibre implements CalibreRepository
         else
             return $cover_path;
     }
-
 
     function getLanguage($book_id)
     {
@@ -992,20 +1099,9 @@ class Calibre implements CalibreRepository
         return $this->findSliceFiltered(CalibreSearchType::Series, $index, $length, new CalibreFilter(), $searchOptions, null);
     }
 
-    function seriesInitials()
+    function seriesInitials(SearchOptions $searchOptions): array
     {
-        $initials = $this->findPrepared(Item::class,
-            'SELECT DISTINCT substr(upper(name),1,1) AS initial FROM series ORDER BY initial ASC',
-            array());
-        $ret = array();
-        foreach ($initials as $initial) {
-            $i = new Item();
-            $ctr = $this->findOne(Item::class, 'SELECT COUNT(*) as ctr FROM series WHERE substr(upper(name),1,1)=:initial', array('initial' => $initial->initial));
-            $i->initial = $initial->initial;
-            $i->ctr = $ctr->ctr;
-            array_push($ret, $i);
-        }
-        return $ret;
+        return $this->mkInitialsQuery('series', 'name', $searchOptions);
     }
 
     function seriesNamesForInitial($initial)

@@ -26,6 +26,16 @@ class SearchOptions
         $this->useAsciiTransliteration = $useAsciiTransliteration;
     }
 
+
+    /**
+     * Convenience method to return an empty search options instance
+     * @return SearchOptions
+     */
+    public static function genEmpty(): SearchOptions
+    {
+        return new SearchOptions('',false, false);
+    }
+
     /**
      * Create options object from term and bitmask used in URIs
      * @param string $searchTerm
@@ -75,5 +85,9 @@ class SearchOptions
         return $this->useAsciiTransliteration;
     }
 
+    public function empty(): bool
+    {
+        return empty($this->searchTerm);
+    }
 
 }

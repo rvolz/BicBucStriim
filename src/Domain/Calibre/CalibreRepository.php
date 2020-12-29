@@ -97,13 +97,11 @@ interface CalibreRepository
     function authorsSlice(int $index = 0, int $length = 100, SearchOptions $searchOptions=null): array;
 
     /**
-     * Find the initials of all authors and their count
-     * @return array an array of Items with initial character and author count
-     *
-     * Changed thanks to QNAP who insist on publishing outdated libraries in their firmware
-     * TODO revert back to real SQL, not the outdated-QNAP stlyle
+     * Find the initials of all author names and their frequency
+     * @param SearchOptions $searchOptions
+     * @return array an array of initials (initial) and corresponding frequency counter (ctr)
      */
-    function authorsInitials();
+    function authorsInitials(SearchOptions $searchOptions): array;
 
     /**
      * Find all authors with a given initial and return their names and book count
@@ -165,13 +163,10 @@ interface CalibreRepository
     function tagsSlice($index = 0, $length = 100, SearchOptions $searchOptions=null): array;
 
     /**
-     * Find the initials of all tags and their count
+     * Find the initials of all tags and their frequencies
      * @return array an array of Items with initial character and tag count
-     *
-     * Changed thanks to QNAP who insist on publishing outdated libraries in their firmware
-     * TODO revert back to real SQL, not the outdated-QNAP stlyle
      */
-    function tagsInitials();
+    function tagsInitials(SearchOptions $searchOptions);
 
     /**
      * Find all authors with a given initial and return their names and book count
@@ -339,6 +334,32 @@ interface CalibreRepository
     function titleGetKindleFormat($id);
 
     /**
+     * Find the initials of titles and their frequency
+     * @param SearchOptions $searchOptions restrict the titles processed
+     * @return array an array of initials (initial) and corresponding frequency counter (ctr)
+     */
+    function titleInitials(SearchOptions $searchOptions): array;
+
+    /**
+     * Calc the position of the first title/name with initial $jumpTarget
+     * @param string $field name of field to use for searching
+     * @param string $table name of table to use for searching
+     * @param string $jumpTarget title initial
+     * @param SearchOptions $searchOptions
+     * @return int position of first matching title or 0 if not found
+     */
+    function calcInitialPos(string $field, string $table, string $jumpTarget, SearchOptions $searchOptions): int;
+
+    /**
+     * Calc the position of the first title with year $jumpTarget
+     * @param string $jumpTarget title year
+     * @param SearchOptions $searchOptions
+     * @param string $sort
+     * @return int position of first matching title
+     */
+    function titlesCalcYearPos(string $jumpTarget, SearchOptions $searchOptions, string $sort): int;
+
+    /**
      * Find a single series and return the details plus all books.
      * @param int $id series id
      * @return array  an array with series details (key 'series') and
@@ -379,13 +400,10 @@ interface CalibreRepository
     function seriesSlice($index = 0, $length = 100, SearchOptions $searchOptions=null): array;
 
     /**
-     * Find the initials of all series and their number
+     * Find the initials of all series and their frequencies
      * @return array an array of Items with initial character and series count
-     *
-     * Changed thanks to QNAP who insist on publishing outdated libraries in their firmware
-     * TODO revert back to real SQL, not the outdated-QNAP stlyle
      */
-    function seriesInitials();
+    function seriesInitials(SearchOptions $searchOptions): array;
 
     /**
      * Find all series with a given initial and return their names and book count

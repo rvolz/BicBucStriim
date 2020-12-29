@@ -40,14 +40,14 @@
         </form>
         {# sort #}
         <div x-data="{ selectedSort: 1 }"
-             x-init="$watch('selectedSort', () => {visit(selectedSort)})"
+             x-init="$watch('selectedSort', () => {visit4Sort(selectedSort)})"
         >
             <script type="application/javascript">
                 async function visit4Sort(val) {
                     url = "{{page.rot}}/{{url}}/?index={{curpage}}{% if search is not empty %}&search={{search}}&options={{search_options}}{% endif %}"
                     switch(val) {
-                        case '1': Turbolinks.visit(url+'?sort=byTitle', { action: "replace" }); break;
-                        case '2': Turbolinks.visit(url+'?sort=byReverseDate', { action: "replace" }); break;
+                        case '1': Turbolinks.visit(url+'&sort=byTitle', { action: "replace" }); break;
+                        case '2': Turbolinks.visit(url+'&sort=byReverseDate', { action: "replace" }); break;
                         default: return;
                     }
                 }
@@ -81,11 +81,22 @@
             <span class="sr-only">{{page.glob.l10n.pagination_next}}</span>
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
         </a>
-       {# jump #}
-        <a class="top-link" href="#">
-            <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l4-4 4 4m0 6l-4 4-4-4" />
-            </svg>
-        </a>
+        {# jump #}
+        {% if page.menu == 2 %}
+            {% include "navbar_jump_titles.twig" %}
+        {% elseif page.menu == 3 %}
+            {% include "navbar_jump_authors.twig" %}
+        {% elseif page.menu == 4 %}
+            {% include "navbar_jump_tags.twig" %}
+        {% elseif page.menu == 5 %}
+            {% include "navbar_jump_series.twig" %}
+        {% else %}
+            <div>
+                {# TODO l10n text for Jump label  #}
+                <label class="sr-only" for="initials-select">Jump</label>
+                <select name="initials-select" id="initials-select" class="input" disabled>
+                </select>
+            </div>
+        {% endif %}
     </div>
 </nav>
