@@ -9,10 +9,12 @@ module.exports = {
       center: true,
       padding: '2rem',
     },
+    truncate: {
+      lines: {
+        2: '2'
+      }
+    },
     extend: {
-        card: theme => ({
-          maxWidth: '20rem'
-        }),
         // generated with https://tailwind.ink/ for brand color #8494AD aka .bg-manatee-500
         colors: theme => ({
           steel: {
@@ -149,6 +151,6 @@ module.exports = {
   },
   plugins: [
       require('@tailwindcss/forms'),
-      require('./assets/style/plugins/simple-card'),
+      require('tailwindcss-truncate-multiline')(),
   ],
 }

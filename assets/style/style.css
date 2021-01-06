@@ -59,6 +59,7 @@
         @apply bg-manatee-200 rounded border m-2 p-2 flex items-center justify-between
     }
 
+    /* front page library stats */
     .stats-cell {
         @apply py-4 px-4 bg-manatee-200 border rounded border-chocolate-400
     }
@@ -67,6 +68,14 @@
     }
     .stats-value {
         @apply text-blush-600 text-4xl font-bold text-center
+    }
+
+    /* list view title counts */
+    .count-cell {
+        @apply bg-manatee-200 ring-chocolate-400 ring-2
+    }
+    .count-value {
+        @apply p-1 bg-manatee-200 rounded ring-chocolate-400 ring-2 text-blush-600 text-xl font-bold text-center
     }
 
 
@@ -101,4 +110,5 @@
         float: right;
         padding-left: 1%;
     }
+
 }

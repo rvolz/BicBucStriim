@@ -3,10 +3,10 @@
 {% block content %}
 <section class="tag_detail row">
 	<header>
-		<h1>{{page.glob.l10n.booksbytag}} "{{ tag.name }}":</h1>
+		<h1 class="text-2xl">{{page.glob.l10n.booksbytag}} <em>{{ tag.name }}</em>:</h1>
 	</header>
 </section>
-<section>
+<section class="py-2">
 	{% include "titles_listview.twig" %}
 </section>
 {% endblock %}

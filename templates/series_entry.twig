@@ -1,18 +1,20 @@
 <a href="{{page.rot}}/series/{{ this_series.id }}/">
-    <div class="card">
-        <div class="card-image">
+    <div class="relative bg-white">
+        <div class="h-56 bg-blush-400 absolute left-0 h-full w-1/3">
             {# Heroicons: list #}
-            <svg class="h-12 w-12" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg class="w-full h-full object-cover" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
             </svg>
         </div>
-        <div class="card-content">
-            <p class="text-lg font-semibold truncate">
-                {{ this_series.name }}
-            </p>
-            <p class="font-medium text-cyan-600 truncate">
-                {{ this_series.anzahl }}
-            </p>
+        <div class="relative max-w-10xl mx-auto px-4 sm:px-6 py-2">
+            <div class="mx-auto max-w-none mr-0 ml-auto w-2/3 pl-5">
+                <p class="text-lg font-semibold h-14 truncate-2-lines">
+                    {{ this_series.name }}
+                </p>
+                <p class="text-center mt-2">
+                    <span class="count-value">{{this_series.anzahl}}</span>
+                </p>
+            </div>
         </div>
     </div>
 </a>

@@ -2112,6 +2112,11 @@ svgo@^1.0.0:
     unquote "~1.1.1"
     util.promisify "~1.0.0"
 
+tailwindcss-truncate-multiline@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/tailwindcss-truncate-multiline/-/tailwindcss-truncate-multiline-1.0.3.tgz#de3ccb99a5a44ab042dd447be640776e4753ed23"
+  integrity sha512-YsF5Nn2lQUCJECbU99dMDJ/XhrG8RKbSYXPmvoHnldB+HG/H8vJUqB+b5HKapvT26aQotdZLjJpC8YBGrWU12A==
+
 tailwindcss@^2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/tailwindcss/-/tailwindcss-2.0.1.tgz#8d336917819341d1018208e8b3ed8cbc46e6b643"
