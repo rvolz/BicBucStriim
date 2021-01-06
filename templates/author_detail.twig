@@ -1,4 +1,4 @@
-{% extends 'layout.twig' %}
+{% extends 'layout-default.twig' %}
 
 {% block pid %}id="pauthor_detail"{%endblock%}
 
@@ -45,30 +45,26 @@
 					</svg>
 				{% endif %}
 			</div>
-			<section class="float-right w-3/5">
+			<section class="relative float-right px-6 w-3/5">
 				<div id="author-links">
-					{% if author.links %}
-						<div id="links" class="collapsible">
-							<h2 class="font-semibold">{{page.glob.l10n.links}}</h2>
-							{% for link in author.links %}
-								<a class="top-link"  href="{{link.url}}">
-									<svg class="w-6 h-6 inline " fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-									{{ link.label }}
-								</a>
-							{% endfor %}
-						</div>
-					{% endif %}
-					{% if series %}
-						<div id="series" class="collapsible">
-							<h2 class="font-semibold">{{page.glob.l10n.series}}</h2>
-							{% for this_series in series %}
-								<a class="top-link"  href="{{page.rot}}/series/{{this_series.id}}/">
-									<svg class="w-6 h-6 inline " fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-									{{ this_series.name }} ({{book.series_index}})
-								</a>
-							{% endfor %}
-						</div>
-					{% endif %}
+					<div id="links" class="collapsible">
+						<h2 class="font-semibold">{{page.glob.l10n.author_links}}</h2>
+						{% for link in author.links %}
+							<a class="top-link truncate"  href="{{link.url}}">
+								<svg class="w-6 h-6 inline " fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+								{{ link.label }}
+							</a>
+						{% endfor %}
+					</div>
+					<div id="series" class="collapsible">
+						<h2 class="font-semibold">{{page.glob.l10n.series}}</h2>
+						{% for this_series in series %}
+							<a class="other-link truncate"  href="{{page.rot}}/series/{{this_series.id}}/">
+								<svg class="w-6 h-6 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+								<span class="truncate">{{ this_series.name }}</span>
+							</a>
+						{% endfor %}
+					</div>
 				</div>
 			</section>
 		</div>

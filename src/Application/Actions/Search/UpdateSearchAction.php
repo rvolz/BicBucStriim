@@ -38,9 +38,9 @@ class UpdateSearchAction extends SearchAction
         $tla = $this->calibre->authorsSlice(0, $pg_size, $searchOptions);
         $tla_books = array_map(array($this, 'checkAuthorThumbnail'), $tla['entries']);
         $tlt = $this->calibre->tagsSlice(0, $pg_size, $searchOptions);
-        //$tlt_books = array_map(array($this, 'checkThumbnail'), $tlt['entries']);
+        $tlt_books = array_map(array($this, 'checkThumbnail'), $tlt['entries']);
         $tls = $this->calibre->seriesSlice(0, $pg_size, $searchOptions);
-        //$tls_books = array_map(array($this, 'checkThumbnail'), $tls['entries']);
+        $tls_books = array_map(array($this, 'checkThumbnail'), $tls['entries']);
 
         $this->logger->info('found books',[__FILE__, $tlb['total']]);
         return $this->respondWithPage('global_search_result.twig', array(
@@ -52,10 +52,10 @@ class UpdateSearchAction extends SearchAction
             'authors' => $tla_books,
             'authors_total' => $tla['total'] == -1 ? 0 : $tla['total'],
             'more_authors' => ($tla['total'] > $pg_size),
-            'tags' => $tlt,
+            'tags' => $tlt_books,
             'tags_total' => $tlt['total'] == -1 ? 0 : $tlt['total'],
             'more_tags' => ($tlt['total'] > $pg_size),
-            'series' => $tls,
+            'series' => $tls_books,
             'series_total' => $tls['total'] == -1 ? 0 : $tls['total'],
             'more_series' => ($tls['total'] > $pg_size),
             'search' => $search,
