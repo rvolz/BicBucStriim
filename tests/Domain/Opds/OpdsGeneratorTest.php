@@ -8,6 +8,7 @@ use App\Domain\BicBucStriim\L10n;
 use App\Domain\Calibre\Calibre;
 use App\Domain\Calibre\CalibreFilter;
 use App\Domain\Calibre\CalibreRepository;
+use App\Domain\Calibre\SearchOptions;
 use App\Domain\Opds\OpdsGenerator;
 use DateTime;
 use DateTimeZone;
@@ -209,7 +210,7 @@ class OpdsGeneratorTest extends TestCase
 
     function testAuthorsInitialCatalogValidation() {
         $feed = self::DATA.'/feed.xml';
-        $tl = $this->calibre->authorsInitials();
+        $tl = $this->calibre->authorsInitials(SearchOptions::genEmpty());
         $xml = $this->gen->authorsRootCatalog($feed,$tl);
         $this->assertTrue(file_exists($feed));
         $this->assertTrue($this->opdsValidateSchema($feed));
@@ -240,7 +241,7 @@ class OpdsGeneratorTest extends TestCase
 
     function testTagsInitialCatalogValidation() {
         $feed = self::DATA.'/feed.xml';
-        $tl = $this->calibre->tagsInitials();
+        $tl = $this->calibre->tagsInitials(SearchOptions::genEmpty());
         $xml = $this->gen->tagsRootCatalog($feed,$tl);
         $this->assertTrue(file_exists($feed));
         $this->assertTrue($this->opdsValidateSchema($feed));
@@ -271,7 +272,7 @@ class OpdsGeneratorTest extends TestCase
 
     function testSeriesInitialCatalogValidation() {
         $feed = self::DATA.'/feed.xml';
-        $tl = $this->calibre->seriesInitials();
+        $tl = $this->calibre->seriesInitials(SearchOptions::genEmpty());
         $xml = $this->gen->seriesRootCatalog($feed,$tl);
         $this->assertTrue(file_exists($feed));
         $this->assertTrue($this->opdsValidateSchema($feed));

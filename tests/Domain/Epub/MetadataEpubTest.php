@@ -56,7 +56,10 @@ class MetadataEpubTest extends TestCase
         $tmpfile = $conv->getUpdatedFile();
         $this->assertTrue(file_exists($tmpfile));
         $parts = pathinfo($tmpfile);
-        $this->assertEquals(sys_get_temp_dir(), $parts['dirname']);
+        $dirname = $parts['dirname'];
+        if (php_uname('s') == 'Darwin' && self::stringStartsWith('/private'))
+            $dirname = substr($dirname, 8);
+        $this->assertEquals(sys_get_temp_dir(), $dirname);
         $this->assertEquals(filesize($orig), filesize($tmpfile));
     }
 
