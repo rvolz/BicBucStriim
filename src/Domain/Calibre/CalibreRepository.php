@@ -342,13 +342,11 @@ interface CalibreRepository
 
     /**
      * Calc the position of the first title/name with initial $jumpTarget
-     * @param string $field name of field to use for searching
-     * @param string $table name of table to use for searching
      * @param string $jumpTarget title initial
      * @param SearchOptions $searchOptions
      * @return int position of first matching title or 0 if not found
      */
-    function calcInitialPos(string $field, string $table, string $jumpTarget, SearchOptions $searchOptions): int;
+    function titlesCalcTitlePos(string $jumpTarget, SearchOptions $searchOptions): int;
 
     /**
      * Calc the position of the first title with year $jumpTarget

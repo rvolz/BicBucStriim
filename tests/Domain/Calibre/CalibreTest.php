@@ -171,7 +171,7 @@ class CalibreTest extends TestCase
 
     function testAuthorsInitials()
     {
-        $result = $this->calibre->authorsInitials();
+        $result = $this->calibre->authorsInitials(SearchOptions::genEmpty());
         $this->assertEquals(0, $this->calibre->last_error);
         $this->assertCount(5, $result);
         $this->assertEquals('E', $result[0]->initial);
@@ -182,11 +182,11 @@ class CalibreTest extends TestCase
 
     function testAuthorsCalcNamePos()
     {
-        $result = $this->calibre->calcInitialPos('sort', 'authors', 'G', SearchOptions::genEmpty());
+        $result = $this->calibre->authorsCalcNamePos('G', SearchOptions::genEmpty());
         $this->assertEquals(2, $result);
-        $result = $this->calibre->calcInitialPos('sort', 'authors', 'R', new SearchOptions('*in*'));
+        $result = $this->calibre->authorsCalcNamePos('R', new SearchOptions('*in*'));
         $this->assertEquals(2, $result);
-        $result = $this->calibre->calcInitialPos('sort', 'authors', 'X', SearchOptions::genEmpty());
+        $result = $this->calibre->authorsCalcNamePos('X', SearchOptions::genEmpty());
         $this->assertEquals(0, $result);
     }
 
@@ -248,7 +248,7 @@ class CalibreTest extends TestCase
 
     function testTagsInitials()
     {
-        $result = $this->calibre->tagsInitials();
+        $result = $this->calibre->tagsInitials(SearchOptions::genEmpty());
         $this->assertEquals(0, $this->calibre->last_error);
         $this->assertCount(5, $result);
         $this->assertEquals('A', $result[0]->initial);
@@ -374,13 +374,17 @@ class CalibreTest extends TestCase
         $this->assertEquals(1, $result0['pages']);
     }
 
-    function testTitlesCalcInitialPos()
+    function testTitlesCalcTitlePos()
     {
-        $result = $this->calibre->calcInitialPos('sort', 'books', 'G', SearchOptions::genEmpty());
+        $result = $this->calibre->titlesCalcTitlePos('G', SearchOptions::genEmpty());
         $this->assertEquals(1, $result);
-        $result = $this->calibre->calcInitialPos('sort', 'books', 'Z', new SearchOptions('*ei*'));
+        $result = $this->calibre->titlesCalcTitlePos('L', SearchOptions::genEmpty());
         $this->assertEquals(2, $result);
-        $result = $this->calibre->calcInitialPos('sort', 'books', 'X', SearchOptions::genEmpty());
+        $result = $this->calibre->titlesCalcTitlePos('N', SearchOptions::genEmpty());
+        $this->assertEquals(3, $result);
+        $result = $this->calibre->titlesCalcTitlePos('Z', new SearchOptions('*ei*'));
+        $this->assertEquals(2, $result);
+        $result = $this->calibre->titlesCalcTitlePos('X', SearchOptions::genEmpty());
         $this->assertEquals(0, $result);
     }
 
@@ -562,7 +566,7 @@ class CalibreTest extends TestCase
 
     function testSeriesInitials()
     {
-        $result = $this->calibre->seriesInitials();
+        $result = $this->calibre->seriesInitials(SearchOptions::genEmpty());
         $this->assertEquals(0, $this->calibre->last_error);
         $this->assertCount(1, $result);
         $this->assertEquals('S', $result[0]->initial);

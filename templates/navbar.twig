@@ -31,9 +31,9 @@
         </a>
     </div>
     {# second level: nav in section #}
-    <div class="flex items-center justify-around h-8">
+    <div class="flex pt-2">
         {# filter #}
-        <form method="get" action="{{page.rot}}/{{url}}/?index={{curpage}}">
+        <form class="w-1/6" method="get" action="{{page.rot}}/{{url}}/?index={{curpage}}">
             {# TODO l10n text for filter label/placeholder  #}
             <label class="sr-only" for="filter">Filter</label>
             <input type="search" class="input" id="filter" name="filter" placeholder="filter" value="{{ filter }}"/>
@@ -41,6 +41,7 @@
         {# sort #}
         <div x-data="{ selectedSort: 1 }"
              x-init="$watch('selectedSort', () => {visit4Sort(selectedSort)})"
+             class="min-w-1/6 w-auto"
         >
             <script type="application/javascript">
                 async function visit4Sort(val) {
@@ -54,7 +55,7 @@
             </script>
             {# TODO l10n text for sort label  #}
             <label class="sr-only" for="sort-select">Sort</label>
-            <select name="sort" id="sort-select" class="input" x-model="selectedSort" {% if page.menu != 2 %}disabled {% endif %}>
+            <select name="sort" id="sort-select" class="input top-select" x-model="selectedSort" {% if page.menu != 2 %}disabled {% endif %}>
                 <option value="1">{{ page.glob.l10n.title }}</option>
                 <option value="2">{{ page.glob.l10n.date }}</option>
             </select>
@@ -68,13 +69,13 @@
             <span class="sr-only">{{page.glob.l10n.pagination_prev}}</span>
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
         </a>
-        <span>
+        <span class="w-1/6 text-center">
             {% if search != NULL %}{{page.glob.l10n.pagination_search}}{% else %}{{page.glob.l10n.pagination_page}}{% endif %}
             {% if pages > 0 %}{{ curpage+1 }}/{{ pages }}{% else %}0/0{% endif %}
         </span>
         {# go forwards #}
         <a
-                class="{% if curpage is not null and curpage+1 < pages %}top-link{% else %}top-link-disabled{% endif %}"
+                class="{% if curpage is not null and curpage+1 < pages %}top-link{% else %}top-link-disabled{% endif %} justify-center"
                 href="{% if curpage is not null and curpage+1 < pages %}{{page.rot}}/{{url}}/?index={{curpage + 1}}{% if search is not empty %}&search={{search}}&options={{search_options}}{% endif %}{% if sort is not empty  %}&sort={{sort}}{% endif %}{% else %}#{% endif %}"
                 title="{{page.glob.l10n.pagination_next}}"
         >
@@ -91,10 +92,10 @@
         {% elseif page.menu == 5 %}
             {% include "navbar_jump_series.twig" %}
         {% else %}
-            <div>
+            <div class="w-1/6">
                 {# TODO l10n text for Jump label  #}
                 <label class="sr-only" for="initials-select">Jump</label>
-                <select name="initials-select" id="initials-select" class="input" disabled>
+                <select name="initials-select" id="initials-select" class="input top-select" disabled>
                 </select>
             </div>
         {% endif %}

@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
+- Navigation with initials for authors, series, titles and tags, closes #16
 - Added the possibility to search with ASCII transliteration for titles, authors, tags and series with names 
   containing non-ASCII characters, closes #333 
 - alpine 2.7.3 JS dependency

@@ -700,7 +700,7 @@ class Calibre implements CalibreRepository
     function calcInitialPos(string $field, string $table, string $jumpTarget, SearchOptions $searchOptions): int
     {
         $where = $this->searchOption2Where($searchOptions, $field);
-        $sql = "select r from (select distinct initial, rank() over(order by initial) as r from (select upper(substr({$field},1,1)) as initial from {$table} {$where} order by initial)) where initial='{$jumpTarget}';";
+        $sql = "select r from (select distinct initial, rank() over(order by initial) as r from (select upper(substr({$field},1,1)) as initial from {$table} {$where} order by initial)) where initial='{$jumpTarget}'";
         $pos = $this->count($sql, []);
         return $pos;
     }
@@ -712,7 +712,7 @@ class Calibre implements CalibreRepository
         $field = 'sort';
         $table = 'books';
         $where = $this->searchOption2Where($searchOptions, $field);
-        $sql = "select r from (select distinct initial, rank() over(order by initial) as r from (select upper(substr({$field},1,1)) as initial from {$table} {$where} order by initial)) where initial='{$jumpTarget}';";
+        $sql = "select r from (select distinct initial, rank() over(order by initial) as r from (select upper(substr({$field},1,1)) as initial from {$table} {$where} order by initial)) where initial='{$jumpTarget}'";
         $pos = $this->count($sql, []);
         return $pos;
     }
