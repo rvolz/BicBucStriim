@@ -33,6 +33,7 @@ use App\Domain\Calibre\Utilities;
 use \PDO;
 use \Locale;
 use AnyAscii;
+use PDOException;
 use Slim\App;
 
 class Calibre implements CalibreRepository
@@ -695,72 +696,99 @@ class Calibre implements CalibreRepository
     }
 
     /**
-     * @inheritDoc
+     * Calculates the position of the first name or title starting with initial $jumpTarget.
+     *
+     * The SQL works only with SQLite version >= 3.25. 3.25 added the windowing functions
+     * functions used here, e.g. rank(). See https://sqlite.org/releaselog/3_25_0.html.
+     * If the SQLite has a lower version, we try a workaround.
+     *
+     * @param string $field field to search, name or title
+     * @param string $table table to search
+     * @param string $jumpTarget initial to search for
+     * @param SearchOptions $searchOptions restricting the search space
+     * @return array position of matching record and total number
      */
-    function calcInitialPos(string $field, string $table, string $jumpTarget, SearchOptions $searchOptions): int
+    function calcInitialPos(string $field, string $table, string $jumpTarget, SearchOptions $searchOptions): array
     {
         $where = $this->searchOption2Where($searchOptions, $field);
-        $sql = "select r from (select distinct initial, rank() over(order by initial) as r from (select upper(substr({$field},1,1)) as initial from {$table} {$where} order by initial)) where initial='{$jumpTarget}'";
-        $pos = $this->count($sql, []);
-        return $pos;
+        $sqlc = "SELECT count(*) FROM {$table} {$where}";
+        $total = $this->count($sqlc, []);
+
+        $sql = "SELECT r FROM (SELECT DISTINCT initial, rank() OVER(order by initial) AS r FROM (SELECT upper(substr({$field},1,1)) AS initial FROM {$table} {$where} ORDER BY initial)) WHERE initial='{$jumpTarget}'";
+        try {
+            $pos = $this->count($sql, []);
+            return array($pos, $total);
+        } catch (PDOException $ex) {
+            $pos = $this->calcInitialPosSimple($field, $table, $jumpTarget, $searchOptions);
+            return array($pos, $total);
+        }
     }
+
+    /**
+     * Calculates the position of the first name or title starting with initial $jumpTarget.
+     * Workaround for SQLite versions < 3.25. See 'calcInitialPos'
+     *
+     * @param string $field field to search, name or title
+     * @param string $table table to search
+     * @param string $jumpTarget initial to search for
+     * @param SearchOptions $searchOptions restricting the search space
+     * @return int position
+     */
+    function calcInitialPosSimple(string $field, string $table, string $jumpTarget, SearchOptions $searchOptions): int
+    {
+        $where = $this->searchOption2Where($searchOptions, $field);
+        $sql1 = "SELECT count(*) FROM (SELECT upper(substr({$field},1,1)) AS initial FROM {$table} {$where} ORDER BY initial) WHERE initial < '{$jumpTarget}'";
+        $offset = $this->count($sql1, []);
+        $sql2 = "SELECT count(*) FROM (SELECT upper(substr({$field},1,1)) AS initial FROM {$table} {$where} ORDER BY initial) WHERE initial = '{$jumpTarget}'";
+        $length = $this->count($sql2, []);
+        return $offset + $length;
+    }
+
     /**
      * @inheritDoc
      */
-    function titlesCalcTitlePos(string $jumpTarget, SearchOptions $searchOptions): int
+    function titlesCalcTitlePos(string $jumpTarget, SearchOptions $searchOptions): array
     {
         $field = 'sort';
         $table = 'books';
-        $where = $this->searchOption2Where($searchOptions, $field);
-        $sql = "select r from (select distinct initial, rank() over(order by initial) as r from (select upper(substr({$field},1,1)) as initial from {$table} {$where} order by initial)) where initial='{$jumpTarget}'";
-        $pos = $this->count($sql, []);
-        return $pos;
+        return $this->calcInitialPos($field, $table, $jumpTarget, $searchOptions);
     }
 
     /**
      * @inheritDoc
      */
-    function authorsCalcNamePos(string $jumpTarget, SearchOptions $searchOptions): int
+    function authorsCalcNamePos(string $jumpTarget, SearchOptions $searchOptions): array
     {
         $field = 'sort';
         $table = 'authors';
-        $where = $this->searchOption2Where($searchOptions, $field);
-        $sql = "select r from (select distinct initial, rank() over(order by initial) as r from (select upper(substr({$field},1,1)) as initial from {$table} {$where} order by initial)) where initial='{$jumpTarget}';";
-        $pos = $this->count($sql, []);
-        return $pos;
+        return $this->calcInitialPos($field, $table, $jumpTarget, $searchOptions);
     }
 
     /**
      * @inheritDoc
      */
-    function seriesCalcNamePos(string $jumpTarget, SearchOptions $searchOptions): int
+    function seriesCalcNamePos(string $jumpTarget, SearchOptions $searchOptions): array
     {
         $field = 'name';
         $table = 'series';
-        $where = $this->searchOption2Where($searchOptions, $field);
-        $sql = "select r from (select distinct initial, rank() over(order by initial) as r from (select upper(substr({$field},1,1)) as initial from {$table} {$where} order by initial)) where initial='{$jumpTarget}';";
-        $pos = $this->count($sql, []);
-        return $pos;
+        return $this->calcInitialPos($field, $table, $jumpTarget, $searchOptions);
     }
 
     /**
      * @inheritDoc
      */
-    function tagsCalcNamePos(string $jumpTarget, SearchOptions $searchOptions): int
+    function tagsCalcNamePos(string $jumpTarget, SearchOptions $searchOptions): array
     {
         $field = 'name';
         $table = 'tags';
-        $where = $this->searchOption2Where($searchOptions, $field);
-        $sql = "select r from (select distinct initial, rank() over(order by initial) as r from (select upper(substr({$field},1,1)) as initial from {$table} {$where} order by initial)) where initial='{$jumpTarget}';";
-        $pos = $this->count($sql, []);
-        return $pos;
+        return $this->calcInitialPos($field, $table, $jumpTarget, $searchOptions);
     }
 
 
     /**
      * @inheritDoc
      */
-    function titlesCalcYearPos(string $jumpTarget, SearchOptions $searchOptions, string $sort): int
+    function titlesCalcYearPos(string $jumpTarget, SearchOptions $searchOptions, string $sort): array
     {
         switch ($sort) {
             case AppConstants::TITLE_TIME_SORT_LASTMODIFIED: $field = 'last_modified'; break;
@@ -769,9 +797,12 @@ class Calibre implements CalibreRepository
         }
         $table = 'books';
         $where = $this->searchOption2Where($searchOptions, $field);
+        $sqlc = "SELECT count(*) FROM {$table} {$where}";
+        $total = $this->count($sqlc, []);
+
         $sql = "select min(r) from (select strftime('%Y',{$field}) as initial, rank() over (order by {$field}) as r from {$table} order by {$field}) {$where}) WHERE initial = {$jumpTarget}";
         $pos = $this->count($sql, []);
-        return $pos;
+        return [$pos, $total];
     }
 
     /**

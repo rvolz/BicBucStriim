@@ -97,6 +97,14 @@ interface CalibreRepository
     function authorsSlice(int $index = 0, int $length = 100, SearchOptions $searchOptions=null): array;
 
     /**
+     * Calc the position of the first name with initial $jumpTarget
+     * @param string $jumpTarget title initial
+     * @param SearchOptions $searchOptions restricts the search space
+     * @return array position of first matching record (0 if not found), and total number
+     */
+    function authorsCalcNamePos(string $jumpTarget, SearchOptions $searchOptions): array;
+
+    /**
      * Find the initials of all author names and their frequency
      * @param SearchOptions $searchOptions
      * @return array an array of initials (initial) and corresponding frequency counter (ctr)
@@ -161,6 +169,14 @@ interface CalibreRepository
      * @return array of tags matching
      */
     function tagsSlice($index = 0, $length = 100, SearchOptions $searchOptions=null): array;
+
+    /**
+     * Calc the position of the first name with initial $jumpTarget
+     * @param string $jumpTarget title initial
+     * @param SearchOptions $searchOptions restricts the search space
+     * @return array position of first matching record (0 if not found), and total number
+     */
+    function tagsCalcNamePos(string $jumpTarget, SearchOptions $searchOptions): array;
 
     /**
      * Find the initials of all tags and their frequencies
@@ -344,18 +360,18 @@ interface CalibreRepository
      * Calc the position of the first title/name with initial $jumpTarget
      * @param string $jumpTarget title initial
      * @param SearchOptions $searchOptions
-     * @return int position of first matching title or 0 if not found
+     * @return array position of first matching record (0 if not found), and total number
      */
-    function titlesCalcTitlePos(string $jumpTarget, SearchOptions $searchOptions): int;
+    function titlesCalcTitlePos(string $jumpTarget, SearchOptions $searchOptions): array;
 
     /**
      * Calc the position of the first title with year $jumpTarget
      * @param string $jumpTarget title year
      * @param SearchOptions $searchOptions
      * @param string $sort
-     * @return int position of first matching title
+     * @return array position of first matching record (0 if not found), and total number
      */
-    function titlesCalcYearPos(string $jumpTarget, SearchOptions $searchOptions, string $sort): int;
+    function titlesCalcYearPos(string $jumpTarget, SearchOptions $searchOptions, string $sort): array;
 
     /**
      * Find a single series and return the details plus all books.
@@ -396,6 +412,14 @@ interface CalibreRepository
      * @return array                see findSlice
      */
     function seriesSlice($index = 0, $length = 100, SearchOptions $searchOptions=null): array;
+
+    /**
+     * Calc the position of the first name with initial $jumpTarget
+     * @param string $jumpTarget title initial
+     * @param SearchOptions $searchOptions restricts the search space
+     * @return array position of first matching record (0 if not found), and total number
+     */
+    function seriesCalcNamePos(string $jumpTarget, SearchOptions $searchOptions): array;
 
     /**
      * Find the initials of all series and their frequencies

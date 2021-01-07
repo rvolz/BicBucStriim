@@ -21,8 +21,13 @@ class ViewSeriesAction extends SeriesAction
 
         // Jumping overrides normal navigation
         if (!empty($jumpTarget)) {
-            $pos = $this->calibre->calcInitialPos('name', 'series', $jumpTarget, $search);
-            $index = $pos / $pg_size;
+            [$pos, $total] = $this->calibre->seriesCalcNamePos( $jumpTarget, $search);
+            $max_pgs = (int)($total / $pg_size);
+            if ($total % $pg_size > 0)
+                $max_pgs += 1;
+            $index = (int)($pos / $pg_size);
+            if ($index >= $max_pgs)
+                $index -= 1;
         }
 
         $tl = $this->calibre->seriesSlice($index, $this->config[AppConstants::PAGE_SIZE], $search);

@@ -23,8 +23,13 @@ class ViewTagsAction extends TagsAction
 
         // Jumping overrides normal navigation
         if (!empty($jumpTarget)) {
-            $pos = $this->calibre->calcInitialPos('name', 'tags', $jumpTarget, $search);
-            $index = $pos / $pg_size;
+            [$pos, $total] = $this->calibre->tagsCalcNamePos( $jumpTarget, $search);
+            $max_pgs = (int)($total / $pg_size);
+            if ($total % $pg_size > 0)
+                $max_pgs += 1;
+            $index = (int)($pos / $pg_size);
+            if ($index >= $max_pgs)
+                $index -= 1;
         }
 
         $tl = $this->calibre->tagsSlice($index, $pg_size, $search);

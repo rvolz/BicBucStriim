@@ -36,17 +36,20 @@ class ViewTitlesAction extends TitlesAction
         $search = $this->checkAndGenSearchOptions();
         $pg_size = $this->config[AppConstants::PAGE_SIZE];
         // Jumping overrides normal navigation
-        $this->logger->debug("Jump target ",[$jumpTarget]);
         if (!empty($jumpTarget)) {
-            if ($sort == AppConstants::TITLE_ALPHA_SORT) {
-                $this->logger->debug("Jump target2 ",[$jumpTarget]);
-                $pos = $this->calibre->titlesCalcTitlePos($jumpTarget, $search);
-                $this->logger->debug("pos ",[$pos]);
-            }
+            if ($sort == AppConstants::TITLE_ALPHA_SORT)
+                [$pos, $total] = $this->calibre->titlesCalcTitlePos($jumpTarget, $search);
             else
-                $pos = $this->calibre->titlesCalcYearPos($jumpTarget, $search, $sort);
-            $index = $pos / $pg_size;
+                [$pos, $total] = $this->calibre->titlesCalcYearPos($jumpTarget, $search, $sort);
+            $max_pgs = (int)($total / $pg_size);
+            if ($total % $pg_size > 0)
+                $max_pgs += 1;
+            $index = (int)($pos / $pg_size);
+            if ($index >= $max_pgs)
+                $index -= 1;
+            $this->logger->debug("pos",[$pos, $total, $max_pgs]);
         }
+
         $this->logger->debug("Page index ",[$index]);
 
         $tl = $this->getTitles($index, $sort, $search, $pg_size);
