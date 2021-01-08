@@ -1,0 +1,95 @@
+{# second level: nav in section list #}
+<div class="flex items-center justify-between pt-2">
+    <div class="flex items-start">
+        {# filter #}
+        <form class="px-2" method="get" action="{{ page.rot }}/{{ url }}/?index={{ curpage }}">
+            {# TODO l10n text for filter label/placeholder #}
+            <label class="sr-only" for="filter">Filter</label>
+            <input type="search" class="input" id="filter" name="filter" placeholder="filter" value="{{ filter }}"/>
+        </form>
+        {% if page.menu == 2 %}{% include "navbar_titles_sort.twig" %}{% endif %}
+    </div>
+    <div class="flex items-center">
+        <span class="text-center">
+            {% if search != NULL %}{{ page.glob.l10n.pagination_search }}{% else %}{{ page.glob.l10n.pagination_page }}{% endif %}
+            {% if pages > 0 %}{{ curpage+1 }}/{{ pages }}{% else %}0/0{% endif %}
+        </span>
+    </div>
+    <div class="flex items-end px-2" x-data="initials()">
+        <script>
+            function initials() {
+                return {
+                    show: false,
+                    initialsData: [],
+                    selectedInitial: '',
+                    open() { this.show = true },
+                    close() { this.show = false },
+                    isOpen() { return this.show === true },
+                {% if page.menu == 2 %}
+                    url: '/params/titles/initials/',
+                {% elseif page.menu == 3 %}
+                    url: '/params/authors/initials/',
+                {% elseif page.menu == 4 %}
+                    url: '/params/tags/initials/',
+                {% else %}
+                    url: '/params/series/initials/',
+                {% endif %}
+                }
+            }
+        </script>
+        <script type="application/javascript">
+            async function visit4Jump(val) {
+                urlP = "{{page.rot}}/{{url}}/?jumpTarget=";
+                urlS = "{% if search is not empty %}&search={{search}}&options={{search_options}}{% endif %}"
+                url = urlP+val+urlS
+                Turbolinks.visit(url+'&sort=byTitle', { action: "replace" });
+            }
+        </script>
+        <span class="relative z-0 inline-flex shadow-sm rounded-md">
+            {# go backwards #}
+            <a
+                    class="nav-link rounded-l-md"
+                    href="{% if curpage is not null and curpage > 0 %}{{ page.rot }}/{{ url }}/?index={{ curpage - 1 }}{% if search is not empty %}&search={{ search }}&options={{ search_options }}{% endif %}{% if sort is not empty %}&sort={{ sort }}{% endif %}{% else %}#{% endif %}"
+                    title="{{ page.glob.l10n.pagination_prev }}"
+            >
+                <span class="sr-only">{{ page.glob.l10n.pagination_prev }}</span>
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                </svg>
+            </a>
+            {# go forwards #}
+            <a
+                    class="nav-link"
+                    href="{% if curpage is not null and curpage+1 < pages %}{{ page.rot }}/{{ url }}/?index={{ curpage + 1 }}{% if search is not empty %}&search={{ search }}&options={{ search_options }}{% endif %}{% if sort is not empty %}&sort={{ sort }}{% endif %}{% else %}#{% endif %}"
+                    title="{{ page.glob.l10n.pagination_next }}"
+            >
+                <span class="sr-only">{{ page.glob.l10n.pagination_next }}</span>
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
+            </a>
+            {# jump #}
+            <button class="nav-link rounded-r-md"
+                    @mouseenter.once="
+                        $fetch(url)
+                        .then(t => initialsData = t.data.data)
+                        .then($watch('selectedInitial', () => {visit4Jump(selectedInitial)}))
+                        "
+                    @click="open"
+            >
+                <span class="sr-only">{{ page.glob.l10n.pagination_prev }}</span>
+               <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z" />
+               </svg>
+            </button>
+            <div x-ref="initials" x-show="isOpen()" @click.away="close" class="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+                <h2>Initials</h2>
+                <select name="initials-select" id="initials-select" class="input" x-model="selectedInitial">
+                    <template x-for="i in initialsData" :key="i">
+                        <option :value="i"  x-text="i"></option>
+                    </template>
+                </select>
+            </div>
+        </span>
+    </div>
+</div>

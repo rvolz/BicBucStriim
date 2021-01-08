@@ -5,6 +5,10 @@
     <link rel="alternate" href="{{page.rot}}/opds/tags/" type="application/atom+xml;profile=opds-catalog" title="OPDS catalog: by tags">
 {% endblock %}
 
+{% block navbar %}
+    {% include "navbar_list.twig" %}
+{% endblock %}
+
 {% block content %}
     {% include "tags_listview.twig" %}
 {% endblock %}

@@ -1,5 +1,8 @@
 {% extends "layout.twig" %}
 {% block header %}
     {% include "header.twig" %}
-    {% include "navbar.twig" %}
+    <nav class="bg-manatee-200 py-1">
+        {% include "navbar_top.twig" %}
+        {% block navbar %}{% endblock %}
+    </nav>
 {% endblock %}

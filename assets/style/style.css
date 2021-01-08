@@ -5,7 +5,7 @@
 @layer components {
 
     .input {
-        @apply h-6 text-sm px-1 py-0 disabled:opacity-50
+        @apply h-10 text-sm px-2 py-2 disabled:opacity-50
     }
 
     .top-select {
@@ -36,6 +36,10 @@
 
     .menu-link-disabled {
         @apply flex-grow text-center bg-manatee-300 px-1 mx-1 rounded text-black opacity-50
+    }
+
+    .nav-link {
+        @apply relative inline-flex items-center px-2 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-blush-500 focus:border-blush-500
     }
 
     .config-fieldset {

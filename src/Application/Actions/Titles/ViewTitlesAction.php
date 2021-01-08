@@ -19,13 +19,13 @@ class ViewTitlesAction extends TitlesAction
     {
         $index = $this->getIndexParam(__CLASS__);
 
-        $sort = AppConstants::TITLE_ALPHA_SORT;
+        $sort = 'byTitle';
         if ($this->hasQueryParam('sort')) {
             $sortP = $this->resolveQueryParam('sort');
             if ($sortP == 'byReverseDate') {
-                $sort = AppConstants::TITLE_TIME_SORT;
+                $sort = $sortP;
             } elseif ($sortP == 'byTitle') {
-                $sort = AppConstants::TITLE_ALPHA_SORT;
+                $sort = $sortP;
             } else {
                 $this->logger->warning('invalid sort id ' . $sortP, [__FILE__]);
                 throw new HttpBadRequestException($this->request);
@@ -37,7 +37,7 @@ class ViewTitlesAction extends TitlesAction
         $pg_size = $this->config[AppConstants::PAGE_SIZE];
         // Jumping overrides normal navigation
         if (!empty($jumpTarget)) {
-            if ($sort == AppConstants::TITLE_ALPHA_SORT)
+            if ($sort == 'byTitle')
                 [$pos, $total] = $this->calibre->titlesCalcTitlePos($jumpTarget, $search);
             else
                 [$pos, $total] = $this->calibre->titlesCalcYearPos($jumpTarget, $search, $sort);

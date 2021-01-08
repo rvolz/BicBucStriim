@@ -5,6 +5,10 @@
     <link rel="alternate" href="{{page.rot}}/opds/authors/" type="application/atom+xml;profile=opds-catalog" title="OPDS catalog: by authors">
 {% endblock %}
 
+{% block navbar %}
+    {% include "navbar_list.twig" %}
+{% endblock %}
+
 {% block content %}
     {% include "authors_listview.twig" %}
 {% endblock %}

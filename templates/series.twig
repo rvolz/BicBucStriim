@@ -5,6 +5,10 @@
 	<link rel="alternate" href="{{page.rot}}/opds/series/" type="application/atom+xml;profile=opds-catalog" title="OPDS catalog: by series">
 {% endblock %}
 
+{% block navbar %}
+	{% include "navbar_list.twig" %}
+{% endblock %}
+
 {% block content %}
 	{% include "series_listview.twig" %}
 {% endblock %}

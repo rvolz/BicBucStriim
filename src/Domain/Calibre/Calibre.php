@@ -800,7 +800,7 @@ class Calibre implements CalibreRepository
         $sqlc = "SELECT count(*) FROM {$table} {$where}";
         $total = $this->count($sqlc, []);
 
-        $sql = "select min(r) from (select strftime('%Y',{$field}) as initial, rank() over (order by {$field}) as r from {$table} order by {$field}) {$where}) WHERE initial = {$jumpTarget}";
+        $sql = "select min(r) from (select strftime('%Y',{$field}) as initial, rank() over (order by {$field}) as r from {$table} order by {$field} {$where}) WHERE initial = {$jumpTarget}";
         $pos = $this->count($sql, []);
         return [$pos, $total];
     }
