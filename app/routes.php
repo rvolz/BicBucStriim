@@ -54,6 +54,7 @@ use App\Application\Actions\Titles\ViewOpdsTitlesAction;
 use App\Application\Actions\Titles\ViewTitleAction;
 use App\Application\Actions\Titles\ViewTitleInitialsAction;
 use App\Application\Actions\Titles\ViewTitlesAction;
+use App\Application\Actions\Titles\ViewTitleYearsAction;
 use Slim\App;
 use Slim\Interfaces\RouteCollectorProxyInterface as Group;
 
@@ -92,6 +93,7 @@ return function (App $app) {
         $group->get('/series/initials/', ViewSeriesInitialsAction::class);
         $group->get('/tags/initials/', ViewTagInitialsAction::class);
         $group->get('/titles/initials/', ViewTitleInitialsAction::class);
+        $group->get('/titles/years/', ViewTitleYearsAction::class);
     });
     $app->group('/opds', function (Group $group) {
         $group->get('/', ViewOpdsRootCatalogAction::class);

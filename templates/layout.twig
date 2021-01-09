@@ -16,12 +16,10 @@
     <script src="{{page.rot}}/js/main.js" defer></script>
 </head>
 <body class="bg-manatee-50 dark:bg-manatee-900">
-    {#
-        Sticky header with flex box, see https://stackoverflow.com/questions/60169463/tailwindcss-fixed-navbar.
-        Without the sticky header the nav popups will get z-index problems!
-    #}
+    {# Sticky header with flex box, see https://stackoverflow.com/questions/60169463/tailwindcss-fixed-navbar. #}
     <div class="flex flex-col h-screen px-1 pt-0.5 md:container md:mx-auto">
-        <div>
+        {# z-index necessary for nav popups #}
+        <div class="z-10">
         {% block header %}{% endblock %}
         </div>
         <div class="flex-1 overflow-y-auto">

@@ -848,10 +848,27 @@ class Calibre implements CalibreRepository
     /**
      * @inheritdoc
      */
-    function titleInitials(SearchOptions $searchOptions): array
+    function titlesInitials(SearchOptions $searchOptions): array
     {
         $field = 'sort'; // title or sort?
         return $this->mkInitialsQuery('books', $field, $searchOptions);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    function titlesYears(SearchOptions $searchOptions, string $timeSortOption): array
+    {
+        $table = 'books';
+        switch ($timeSortOption) {
+            case AppConstants::TITLE_TIME_SORT_LASTMODIFIED: $field = 'last_modified'; break;
+            case AppConstants::TITLE_TIME_SORT_PUBDATE:  $field = 'pubdate'; break;
+            case AppConstants::TITLE_TIME_SORT_TIMESTAMP:  $field = 'timestamp'; break;
+            default: $field = 'pubdate';
+        }
+        $where = $this->searchOption2Where($searchOptions, $field);
+        $sql = "SELECT strftime('%Y',{$field}) AS initial, count(*) AS ctr FROM {$table} {$where} GROUP BY initial ORDER BY initial DESC";
+        return $this->findPrepared(Item::class, $sql, array());
     }
 
     /**

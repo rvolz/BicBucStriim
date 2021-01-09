@@ -354,7 +354,15 @@ interface CalibreRepository
      * @param SearchOptions $searchOptions restrict the titles processed
      * @return array an array of initials (initial) and corresponding frequency counter (ctr)
      */
-    function titleInitials(SearchOptions $searchOptions): array;
+    function titlesInitials(SearchOptions $searchOptions): array;
+
+    /**
+     * Find the pub/mod/etc years of titles and their frequency
+     * @param SearchOptions $searchOptions restrict the titles processed
+     * @param string $timeSortOption defines what field will be used for search
+     * @return array an array of years and corresponding frequency counter (ctr)
+     */
+    function titlesYears(SearchOptions $searchOptions, string $timeSortOption): array;
 
     /**
      * Calc the position of the first title/name with initial $jumpTarget

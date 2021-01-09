@@ -31,7 +31,11 @@
                     close() { this.show = false },
                     isOpen() { return this.show === true },
                 {% if page.menu == 2 %}
-                    url: '/params/titles/initials/',
+                    {% if sort == 'byReverseDate' %}
+                        url: '/params/titles/years/',
+                    {% else %}
+                        url: '/params/titles/initials/',
+                    {% endif %}
                 {% elseif page.menu == 3 %}
                     url: '/params/authors/initials/',
                 {% elseif page.menu == 4 %}
@@ -47,7 +51,7 @@
                 urlP = "{{page.rot}}/{{url}}/?jumpTarget=";
                 urlS = "{% if search is not empty %}&search={{search}}&options={{search_options}}{% endif %}"
                 url = urlP+val+urlS
-                Turbolinks.visit(url+'&sort=byTitle', { action: "replace" });
+                Turbolinks.visit(url+'&sort={{ sort }}', { action: "replace" });
             }
         </script>
         <span class="relative z-0 inline-flex shadow-sm rounded-md">
