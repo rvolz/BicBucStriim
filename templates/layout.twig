@@ -10,23 +10,32 @@
     <link rel="stylesheet" href="{{ page.rot }}/style/style.css">
     <script src="{{page.rot}}/js/modernizr-3.11.2.min.js"></script>
     <script src="{{page.rot}}/js/turbolinks-5.2.0.min.js" defer></script>
+    <script src="{{page.rot}}/js/alpine-turbo-drive-adapter-1.0.1.min.js" defer></script>
     <script src="{{page.rot}}/js/alpine-magic-helpers-0.5.1.min.js" defer></script>
     <script src="{{page.rot}}/js/alpine-2.7.3.min.js" defer></script>
     <script src="{{page.rot}}/js/main.js" defer></script>
 </head>
 <body class="bg-manatee-50 dark:bg-manatee-900">
-    <div class="px-1 pt-0.5 md:container md:mx-auto">
+    {#
+        Sticky header with flex box, see https://stackoverflow.com/questions/60169463/tailwindcss-fixed-navbar.
+        Without the sticky header the nav popups will get z-index problems!
+    #}
+    <div class="flex flex-col h-screen px-1 pt-0.5 md:container md:mx-auto">
+        <div>
         {% block header %}{% endblock %}
-        <main>
-            <div class=" mx-auto py-6 sm:px-6 lg:px-8 overflow-y-scroll">
-                <div class="px-4 py-6 sm:px-0">
-                    <div class="border-4 border-dashed border-gray-200 rounded-lg">
-                        {% block content %}{% endblock %}
+        </div>
+        <div class="flex-1 overflow-y-auto">
+            <main >
+                <div class=" mx-auto py-6 sm:px-6 lg:px-8 overflow-y-scroll">
+                    <div class="px-4 py-6 sm:px-0">
+                        <div class="border-4 border-dashed border-gray-200 rounded-lg">
+                            {% block content %}{% endblock %}
+                        </div>
                     </div>
                 </div>
-            </div>
-        </main>
-        {% include "footer.twig" %}
+            </main>
+            {% include "footer.twig" %}
+        </div>
     </div>
 </body>
 </html>

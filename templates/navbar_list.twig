@@ -1,13 +1,18 @@
 {# second level: nav in section list #}
-<div class="flex items-center justify-between pt-2">
+<div class="flex items-center justify-between pt-2 px-2" xmlns="http://www.w3.org/1999/html">
     <div class="flex items-start">
+        {# sort #}
+        {% if page.menu == 2 %}{% include "navbar_titles_sort.twig" %}{% endif %}
         {# filter #}
-        <form class="px-2" method="get" action="{{ page.rot }}/{{ url }}/?index={{ curpage }}">
+        <button class="nav-link rounded visible md:invisible">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path></svg>
+        </button>
+        <form class="px-2 invisible w-0 md:visible md:w-1" method="get" action="{{ page.rot }}/{{ url }}/?index={{ curpage }}">
             {# TODO l10n text for filter label/placeholder #}
             <label class="sr-only" for="filter">Filter</label>
             <input type="search" class="input" id="filter" name="filter" placeholder="filter" value="{{ filter }}"/>
         </form>
-        {% if page.menu == 2 %}{% include "navbar_titles_sort.twig" %}{% endif %}
+
     </div>
     <div class="flex items-center">
         <span class="text-center">
@@ -76,19 +81,20 @@
                         .then($watch('selectedInitial', () => {visit4Jump(selectedInitial)}))
                         "
                     @click="open"
+                    aria-haspopup="true"
+                    aria-expanded="true"
             >
                 <span class="sr-only">{{ page.glob.l10n.pagination_prev }}</span>
                <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z" />
                </svg>
             </button>
-            <div x-ref="initials" x-show="isOpen()" @click.away="close" class="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
-                <h2>Initials</h2>
-                <select name="initials-select" id="initials-select" class="input" x-model="selectedInitial">
+            <div x-ref="initials" x-show="isOpen()" @click.away="close" class="origin-top-right absolute right-0 mt-2 w-32 h-auto rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5"  >
+                <ul name="initials-select" id="initials-select" class="overflow-y-scroll h-auto" x-model="selectedInitial">
                     <template x-for="i in initialsData" :key="i">
-                        <option :value="i"  x-text="i"></option>
+                        <li x-text="i" @click="selectedInitial=i" class="hover:bg-blush-100"></li>
                     </template>
-                </select>
+                </ul>
             </div>
         </span>
     </div>

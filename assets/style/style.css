@@ -4,6 +4,8 @@
 
 @layer components {
 
+    [x-cloak] { display: none; }
+
     .input {
         @apply h-10 text-sm px-2 py-2 disabled:opacity-50
     }
