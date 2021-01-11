@@ -10,7 +10,7 @@ use GuzzleHttp\Psr7\Stream;
 
 /**
  * Return a PNG thumbnail of an author. An ETag for client caching is calculated.
- * If there is thumbnail, return 404.
+ * If there is no thumbnail, return 404.
  * @package App\Application\Actions\Statics
  */
 class ViewAuthorThumbnailAction extends StaticsAction
@@ -20,6 +20,14 @@ class ViewAuthorThumbnailAction extends StaticsAction
      */
     protected function action(): Response
     {
-        // TODO make author thumb handling like for titles
+        $id = (int) $this->resolveArg('id');
+        $thumbnail = $this->bbs->getAuthorThumbnail($id);
+        if (!empty($thumbnail)) {
+            $fh = fopen($thumbnail, 'rb');
+            $stream = new Stream($fh);
+            return $this->respondWithArtefact($stream, $this->calcEtag($thumbnail), 'image/png;base64');
+        } else {
+            throw new DomainRecordNotFoundException();
+        }
     }
 }

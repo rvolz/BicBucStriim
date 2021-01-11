@@ -72,6 +72,10 @@
         @apply w-full bg-steel-500 text-center text-white font-bold p-4 rounded-b
     }
 
+    .btn-app {
+        @apply bg-steel-500 text-center text-white font-bold p-2 rounded-b
+    }
+
     .li-config {
         @apply bg-manatee-200 rounded border m-2 p-2 flex items-center justify-between
     }

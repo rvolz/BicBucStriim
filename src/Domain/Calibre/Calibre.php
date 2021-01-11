@@ -660,28 +660,28 @@ class Calibre implements CalibreRepository
         return $this->mkInitialsQuery('tags', 'name', $searchOptions);
     }
 
-    function tagsNamesForInitial($initial)
+    function tagsNamesForInitial($initial): array
     {
         return $this->findPrepared(Tag::class,
             'SELECT tags.id, tags.name, (SELECT COUNT(*) FROM books_tags_link AS btl WHERE tags.id = btl.tag ) AS anzahl FROM tags WHERE substr(upper(tags.name),1,1)=:initial ORDER BY tags.name',
             array('initial' => $initial));
     }
 
-    function pubdateOrderedTitlesSlice($lang, $index = 0, $length = 100, $filter, $search = null)
+    function pubdateOrderedTitlesSlice($lang, $index = 0, $length = 100, $filter, $search = null): array
     {
         $books = $this->findSliceFiltered(CalibreSearchType::PubDateOrderedBook, $index, $length, $filter, $search);
         $this->addBookDetails($lang, $books['entries']);
         return $books;
     }
 
-    function lastmodifiedOrderedTitlesSlice($lang, $index = 0, $length = 100, $filter, $search = null)
+    function lastmodifiedOrderedTitlesSlice($lang, $index = 0, $length = 100, $filter, $search = null): array
     {
         $books = $this->findSliceFiltered(CalibreSearchType::LastModifiedOrderedBook, $index, $length, $filter, $search);
         $this->addBookDetails($lang, $books['entries']);
         return $books;
     }
 
-    function timestampOrderedTitlesSlice($lang, $index = 0, $length = 100, $filter, $search = null)
+    function timestampOrderedTitlesSlice($lang, $index = 0, $length = 100, $filter, $search = null): array
     {
         $books = $this->findSliceFiltered(CalibreSearchType::TimestampOrderedBook, $index, $length, $filter, $search);
         $this->addBookDetails($lang, $books['entries']);
@@ -717,10 +717,10 @@ class Calibre implements CalibreRepository
         $sql = "SELECT r FROM (SELECT DISTINCT initial, rank() OVER(order by initial) AS r FROM (SELECT upper(substr({$field},1,1)) AS initial FROM {$table} {$where} ORDER BY initial)) WHERE initial='{$jumpTarget}'";
         try {
             $pos = $this->count($sql, []);
-            return array($pos, $total);
+            return [$pos, $total];
         } catch (PDOException $ex) {
-            $pos = $this->calcInitialPosSimple($field, $table, $jumpTarget, $searchOptions);
-            return array($pos, $total);
+            $pos = $this->calcInitialPosSimple($field, $table, $jumpTarget, $where);
+            return [$pos, $total];
         }
     }
 
@@ -731,12 +731,11 @@ class Calibre implements CalibreRepository
      * @param string $field field to search, name or title
      * @param string $table table to search
      * @param string $jumpTarget initial to search for
-     * @param SearchOptions $searchOptions restricting the search space
+     * @param string $where SQL for WHERE condition
      * @return int position
      */
-    function calcInitialPosSimple(string $field, string $table, string $jumpTarget, SearchOptions $searchOptions): int
+    function calcInitialPosSimple(string $field, string $table, string $jumpTarget, string $where): int
     {
-        $where = $this->searchOption2Where($searchOptions, $field);
         $sql1 = "SELECT count(*) FROM (SELECT upper(substr({$field},1,1)) AS initial FROM {$table} {$where} ORDER BY initial) WHERE initial < '{$jumpTarget}'";
         $offset = $this->count($sql1, []);
         $sql2 = "SELECT count(*) FROM (SELECT upper(substr({$field},1,1)) AS initial FROM {$table} {$where} ORDER BY initial) WHERE initial = '{$jumpTarget}'";
@@ -800,11 +799,34 @@ class Calibre implements CalibreRepository
         $sqlc = "SELECT count(*) FROM {$table} {$where}";
         $total = $this->count($sqlc, []);
 
-        $sql = "select min(r) from (select strftime('%Y',{$field}) as initial, rank() over (order by {$field}) as r from {$table} order by {$field} {$where}) WHERE initial = {$jumpTarget}";
-        $pos = $this->count($sql, []);
-        return [$pos, $total];
+        try {
+            $sql = "select min(r) from (SELECT strftime('%Y',{$field}) AS initial, rank() OVER (order by {$field}) AS r FROM {$table} ORDER BY {$field} {$where}) WHERE initial = {$jumpTarget}";
+            $pos = $this->count($sql, []);
+            return [$pos, $total];
+        } catch (PDOException $ex) {
+            $pos = $this->calcYearPosSimple($field, $table, $jumpTarget, $where);
+            return [$pos, $total];
+        }
     }
 
+    /**
+     * Calculates the position of the title date with year.
+     * Workaround for SQLite versions < 3.25. See 'titlesCalcYearPos'
+     *
+     * @param string $field field to search, name or title
+     * @param string $table table to search
+     * @param string $jumpTarget initial to search for
+     * @param string $where SQL for WHERE condition
+     * @return int position
+     */
+    function calcYearPosSimple(string $field, string $table, string $jumpTarget, string $where): int
+    {
+        $sql1 = "SELECT count(*) FROM (SELECT strftime('%Y',{$field}) AS initial FROM {$table} {$where} ORDER BY initial) WHERE initial < {$jumpTarget}";
+        $offset = $this->count($sql1, []);
+        $sql2 = "SELECT count(*) FROM (SELECT strftime('%Y',{$field}) AS initial FROM {$table} {$where} ORDER BY initial) WHERE initial = {$jumpTarget}";
+        $length = $this->count($sql2, []);
+        return $offset + $length;
+    }
     /**
      * @inheritDoc
      */

@@ -9,43 +9,36 @@
 {% include "flash_messages.twig" %}
 <section class="author-detail-row">
 	<header>
-
-		{# Display edit menu only on first page and if user is admin #}
-		{#  if curpage == 0 and isadmin %}
-		<a id="author_edit" href="#popupMenu" data-rel="popup" data-role="button" data-inline="true" data-mini="true" data-icon="edit" data-theme="b" data-iconpos="notext">
-			{{page.glob.l10n.edit}}
-		</a>
-		<div data-role="popup" id="popupMenu" data-theme="d">
-		        <ul data-role="listview" data-inset="true" style="min-width:210px;" data-theme="a">
-		            <li data-role="divider" data-theme="b">
-		            	{{page.glob.l10n.author_metadata}}
-		            </li>
-		            <li>
-		            	<a href="#author-mdthumb-panel">
-		            		{{page.glob.l10n.author_thumbnail}}
-		            	</a>
-		            </li>
-		            <li>
-		            	<a href="#author-mdlinks-panel">
-		            		{{page.glob.l10n.author_links}}
-		            	</a>
-		            </li>
-		        </ul>
-		</div>
-		{% endif%} #}
-
 		{# Display available metadata only on first page #}
 		{% if curpage == 0 %}
 		<div id="author-metadata">
 			<h1 class="text-2xl">{{ author.name }}</h1>
-			<div class="float-left w-2/5">
-				{% if author.thumbnail %}
-					<img id="author-thumbnail-pic" src="{{page.rot}}/{{thumbnail}}/"/>
+			<div class="float-left w-2/5"  x-data="authorImageEdit()">
+				{% if author.thumbnail != '' %}
+					<img id="author-thumbnail-pic" src="{{page.rot}}/static/authorthumbs/{{ author.id }}/" title="{{ author.name }}" alt="image of author"/>
 				{% else %}
 					<svg class="w-48 h-48" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
 					</svg>
 				{% endif %}
+				{% if isadmin %}
+					<button class="btn-app" type="button" title="{{ page.glob.l10n.edit }}" @click="open()">
+						{# Heroicons: pencil #}
+						<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+						<span class="sr-only">{{ page.glob.l10n.edit }}</span>
+					</button>
+					{% include "author_edit_image.twig" %}
+				{% endif %}
+				<script type="application/javascript">
+					function authorImageEdit() {
+						return {
+							show: false,
+							open() { this.show = true },
+							close() { this.show = false },
+							isOpen() { return this.show === true },
+						}
+					}
+				</script>
 			</div>
 			<section class="relative float-right px-6 w-3/5">
 				<div id="author-links">

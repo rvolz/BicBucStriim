@@ -351,13 +351,13 @@ class BicBucStriim implements BicBucStriimRepository
             return $artefacts[0];
     }
 
-    public function getAuthorThumbnail($authorId): ?object
+    public function getAuthorThumbnail($authorId): string
     {
         $calibreThing = $this->getCalibreThing(DataConstants::CALIBRE_AUTHOR_TYPE, $authorId);
         if (is_null($calibreThing)) {
-            return null;
+            return '';
         } else {
-            return $this->getFirstArtefact($calibreThing);
+            return $this->getFirstArtefact($calibreThing)->url;
         }
     }
 
