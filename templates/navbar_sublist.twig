@@ -1,0 +1,38 @@
+{# second level: nav in section list #}
+<div class="flex items-center justify-between pt-2 px-2" xmlns="http://www.w3.org/1999/html">
+    <div class="flex items-start">
+
+    </div>
+    <div class="flex items-center">
+        <span class="text-center">
+            {% if search != NULL %}{{ page.glob.l10n.pagination_search }}{% else %}{{ page.glob.l10n.pagination_page }}{% endif %}
+            {% if pages > 0 %}{{ curpage+1 }}/{{ pages }}{% else %}0/0{% endif %}
+        </span>
+    </div>
+    <div class="flex items-end px-2">
+        <span class="relative z-0 inline-flex shadow-sm rounded-md">
+            {# go backwards #}
+            <a
+                    class="nav-link rounded-l-md"
+                    href="{% if curpage is not null and curpage > 0 %}{{ page.rot }}/{{ url }}/?index={{ curpage - 1 }}{% if search is not empty %}&search={{ search }}&options={{ search_options }}{% endif %}{% if sort is not empty %}&sort={{ sort }}{% endif %}{% else %}#{% endif %}"
+                    title="{{ page.glob.l10n.pagination_prev }}"
+            >
+                <span class="sr-only">{{ page.glob.l10n.pagination_prev }}</span>
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                </svg>
+            </a>
+            {# go forwards #}
+            <a
+                    class="nav-link rounded-r-md"
+                    href="{% if curpage is not null and curpage+1 < pages %}{{ page.rot }}/{{ url }}/?index={{ curpage + 1 }}{% if search is not empty %}&search={{ search }}&options={{ search_options }}{% endif %}{% if sort is not empty %}&sort={{ sort }}{% endif %}{% else %}#{% endif %}"
+                    title="{{ page.glob.l10n.pagination_next }}"
+            >
+                <span class="sr-only">{{ page.glob.l10n.pagination_next }}</span>
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
+            </a>
+        </span>
+    </div>
+</div>

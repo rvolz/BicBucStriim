@@ -41,7 +41,7 @@ class ViewASeriesAction extends SeriesAction
         $books = array_map(array($this, 'checkThumbnail'), $tl['entries']);
         return $this->respondWithPage('series_detail.twig', array(
             'page' => $this->mkPage($this->getMessageString('series_details'), 5, 2),
-            'url' => 'series/' . $id . '/',
+            'url' => 'series/' . $id,
             'series' => $tl['series'],
             'books' => $books,
             'curpage' => $tl['page'],
