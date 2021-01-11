@@ -8,10 +8,29 @@
 {% block content %}
 <section class="tag_detail row">
 	<header>
-		<h1 class="text-2xl">{{page.glob.l10n.booksbytag}} <em>{{ tag.name }}</em>:</h1>
+		{% if curpage == 0 %}
+			<div id="series-metadata">
+				<h1 class="text-2xl">{{ tag.name }}</h1>
+				<div class="float-left w-2/5">
+					{# Heroicons: tag #}
+					<svg class="w-48 h-48" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+					</svg>
+				</div>
+				<section class="relative float-right px-6 w-3/5">
+					<div id="tag-links">
+						&nbsp;
+					</div>
+				</section>
+			</div>
+		{% else %}
+			<h3>
+				{{page.glob.l10n.booksbytag}} <em>{{ tag.name }}</em>:
+			</h3>
+		{% endif %}
 	</header>
 </section>
-<section class="py-2">
+<section class="clear-both">
 	{% include "titles_listview.twig" %}
 </section>
 {% endblock %}

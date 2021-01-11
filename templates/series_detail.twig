@@ -7,10 +7,29 @@
 {% block content %}
 	<section class="series_detail row">
 		<header>
-			<h1 class="text-2xl">{{page.glob.l10n.booksbyseries}} <em>{{ series.name }}</em>:</h1>
+			{% if curpage == 0 %}
+				<div id="series-metadata">
+					<h1 class="text-2xl">{{ series.name }}</h1>
+					<div class="float-left w-2/5">
+						{# Heroicons: list #}
+						<svg class="w-48 h-48" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+						</svg>
+					</div>
+					<section class="relative float-right px-6 w-3/5">
+						<div id="series-links">
+							&nbsp;
+						</div>
+					</section>
+				</div>
+			{% else %}
+				<h3>
+					{{page.glob.l10n.booksbyseries}} <em>{{ series.name }}</em>:
+				</h3>
+			{% endif %}
 		</header>
 	</section>
-	<section class="py-2">
+	<section class="clear-both">
 		{% include "titles_listview.twig" %}
 	</section>
 {% endblock %}
