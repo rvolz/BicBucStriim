@@ -7,7 +7,7 @@
     [x-cloak] { display: none; }
 
     .input {
-        @apply h-10 text-sm px-2 py-2 disabled:opacity-50
+        @apply h-6 text-sm px-2 py-2 disabled:opacity-50
     }
 
     .top-select {
@@ -33,7 +33,11 @@
     }
 
     .menu-link > svg {
-        @apply w-6 h-6 hidden md:inline-flex
+        @apply w-6 h-6 inline-flex
+    }
+
+    .menu-link > span {
+        @apply hidden md:inline-flex
     }
 
     .menu-link-disabled {

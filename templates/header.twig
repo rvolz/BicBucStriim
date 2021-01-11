@@ -1,8 +1,12 @@
 <header class="flex items-center justify-between bg-manatee-200">
-    <h1 class="text-left">
+    <h1 class="px-2 text-left hidden md:visible">
         {{ page.h1 }}
     </h1>
-    <div class="ml-4 flex items-end">
+    <form class="px-1" method="get" action="{{ page.rot }}/{{ url }}/">
+        <label class="sr-only" for="filter">{{ page.glob.l10n.pagination_search_ph }}</label>
+        <input type="search" class="input w-24 md:w-auto" id="filter" name="search" placeholder="{{ page.glob.l10n.pagination_search_ph }}" value="{{ search }}"/>
+    </form>
+    <div class=" flex items-end">
         <a href="{{ page.rot }}/" class="top-link" title="{{ page.glob.l10n.home }}" title="{{ page.glob.l10n.home }}">
             <span class="sr-only">{{ page.glob.l10n.home }}</span>
             {# Heroicon name: home #}
