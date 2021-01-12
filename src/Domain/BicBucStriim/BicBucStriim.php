@@ -357,7 +357,11 @@ class BicBucStriim implements BicBucStriimRepository
         if (is_null($calibreThing)) {
             return '';
         } else {
-            return $this->getFirstArtefact($calibreThing)->url;
+            $artefact = $this->getFirstArtefact($calibreThing);
+            if (is_null($artefact))
+                return '';
+            else
+                return $this->authors_dir . '/' . $artefact->url;
         }
     }
 
@@ -374,14 +378,15 @@ class BicBucStriim implements BicBucStriimRepository
         else
             $png = true;
 
-        $fname = $this->authors_dir . '/author_' . $calibreThing->id . '_thm.png';
-        if (file_exists($fname))
-            unlink($fname);
+        $fname = 'author_' . $calibreThing->id . '_thm.png';
+        $ffname = $this->authors_dir . '/' . $fname;
+        if (file_exists($ffname))
+            unlink($ffname);
 
         if ($clipped)
-            $created = $this->thumbnailClipped($file, $png, self::THUMB_RES, self::THUMB_RES, $fname);
+            $created = $this->thumbnailClipped($file, $png, self::THUMB_RES, self::THUMB_RES, $ffname);
         else
-            $created = $this->thumbnailStuffed($file, $png, self::THUMB_RES, self::THUMB_RES, $fname);
+            $created = $this->thumbnailStuffed($file, $png, self::THUMB_RES, self::THUMB_RES, $ffname);
 
         $artefact = $this->getFirstArtefact($calibreThing);
         if (is_null($artefact)) {

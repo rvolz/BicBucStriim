@@ -1,4 +1,4 @@
-<section class="absolute inset-y-0 pl-16 max-w-full right-0 flex" style="z-index: 1001"
+<section class="fixed inset-y-0 pl-16 max-w-full right-0 flex" style="z-index: 1001"
          aria-labelledby="{{ page.glob.l10n.author_details }} {{ page.glob.l10n.author_metadata }} {{ page.glob.l10n.author_thumbnail }}"
          x-show="isOpen()"
          @click.away="close"
@@ -27,7 +27,7 @@
                             {{ page.glob.l10n.author_thumbnail }}
                         </h2>
                         <div class="ml-3 h-7 flex items-center">
-                            <button class="bg-indigo-700 rounded-md text-indigo-200 hover:text-white focus:outline-none focus:ring-2 focus:ring-white"
+                            <button class="app-btn"
                                     @click="close()"
                             >
                                 <span class="sr-only">Close panel</span>
@@ -44,7 +44,7 @@
                         </p>
                     </div>
                 </div>
-                <div class="flex-1 flex flex-col justify-between">
+                <div class="flex-1 flex flex-col justify-between mt-1">
                     <div class="px-4 divide-y divide-gray-200 sm:px-6">
                         <input type="file"
                                name="file"

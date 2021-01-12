@@ -13,39 +13,51 @@
 		{% if curpage == 0 %}
 		<div id="author-metadata">
 			<h1 class="text-2xl">{{ author.name }}</h1>
-			<div class="float-left w-2/5"  x-data="authorImageEdit()">
-				{% if author.thumbnail != '' %}
-					<img id="author-thumbnail-pic" src="{{page.rot}}/static/authorthumbs/{{ author.id }}/" title="{{ author.name }}" alt="image of author"/>
-				{% else %}
-					<svg class="w-48 h-48" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-					</svg>
-				{% endif %}
-				{% if isadmin %}
-					<button class="btn-app" type="button" title="{{ page.glob.l10n.edit }}" @click="open()">
-						{# Heroicons: pencil #}
-						<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
-						<span class="sr-only">{{ page.glob.l10n.edit }}</span>
-					</button>
-					{% include "author_edit_image.twig" %}
-				{% endif %}
-				<script type="application/javascript">
-					function authorImageEdit() {
-						return {
-							show: false,
-							open() { this.show = true },
-							close() { this.show = false },
-							isOpen() { return this.show === true },
+			<div class="float-left w-2/5">
+				<div class="relative"
+					 x-data="authorImageEdit()"
+					 @mouseenter="showButton = true"
+					 @mouseleave="showButton = false"
+				>
+					{% if author.thumbnail != '' %}
+						<img class="max-h-48" id="author-thumbnail-pic" src="{{page.rot}}/static/authorthumbs/{{ author.id }}/" title="{{ author.name }}" alt="image of author"/>
+					{% else %}
+						<svg class="w-48 h-48" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+						</svg>
+					{% endif %}
+					{% if isadmin %}
+						<button class="btn-app absolute left-0 top-0"
+								type="button"
+								title="{{ page.glob.l10n.edit }}"
+								@click="open()"
+								x-show="showButton == true"
+						>
+							{# Heroicons: pencil #}
+							<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+							<span class="sr-only">{{ page.glob.l10n.edit }}</span>
+						</button>
+						{% include "author_edit_image.twig" %}
+					{% endif %}
+					<script type="application/javascript">
+						function authorImageEdit() {
+							return {
+								show: false,
+								showButton: false,
+								open() { this.show = true },
+								close() { this.show = false },
+								isOpen() { return this.show === true },
+							}
 						}
-					}
-				</script>
+					</script>
+				</div>
 			</div>
 			<section class="relative float-right px-6 w-3/5">
 				<div id="author-links">
 					<div id="links" class="collapsible">
 						<h2 class="font-semibold">{{page.glob.l10n.author_links}}</h2>
 						{% for link in author.links %}
-							<a class="top-link truncate"  href="{{link.url}}">
+							<a class="top-link"  href="{{link.url}}">
 								<svg class="w-6 h-6 inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
 								</svg>
@@ -56,9 +68,9 @@
 					<div id="series" class="collapsible">
 						<h2 class="font-semibold">{{page.glob.l10n.series}}</h2>
 						{% for this_series in series %}
-							<a class="other-link truncate"  href="{{page.rot}}/series/{{this_series.id}}/">
+							<a class="other-link"  href="{{page.rot}}/series/{{this_series.id}}/">
 								<svg class="w-6 h-6 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-								<span class="truncate">{{ this_series.name }}</span>
+								{{ this_series.name }}
 							</a>
 						{% endfor %}
 					</div>
@@ -71,7 +83,7 @@
 		</h3> 
 		{% endif %}
 	</header>
-	<section id="author-books" class="clear-both">
+	<section id="author-books" class="clear-both pt-2">
 		{% include "titles_listview.twig" %}
 	</section>
 </section>
