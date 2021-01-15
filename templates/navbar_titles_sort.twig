@@ -20,8 +20,10 @@
             {% if page.menu != 2 %}disabled {% endif %}
             {% if sort is empty or sort == "byTitle" %}
                 x-on:click="visit4Sort('2')"
+                title="{{ page.glob.l10n.opds_by_title1 }}"
             {% else %}
                 x-on:click="visit4Sort('1')"
+                title="{{ page.glob.l10n.admin_tts }}"
             {% endif %}
     >
         {% if sort is empty or sort == "byTitle" %}
@@ -31,6 +33,7 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
             </svg>
         {% else %}
+            <span class="sr-only">{{ page.glob.l10n.admin_tts }}</span>
             <!-- Heroicon name: time -->
             <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                  stroke="currentColor">

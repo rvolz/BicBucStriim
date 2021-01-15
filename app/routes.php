@@ -18,6 +18,7 @@ use App\Application\Actions\Authors\CreateAuthorLinkAction;
 use App\Application\Actions\Authors\CreateAuthorThumbnailAction;
 use App\Application\Actions\Authors\DeleteAuthorLinkAction;
 use App\Application\Actions\Authors\DeleteAuthorThumbnailAction;
+use App\Application\Actions\Authors\DoAuthorAction;
 use App\Application\Actions\Authors\ViewAuthorAction;
 use App\Application\Actions\Authors\ViewAuthorInitialsAction;
 use App\Application\Actions\Authors\ViewAuthorsAction;
@@ -83,6 +84,7 @@ return function (App $app) {
     $app->group('/authors', function (Group $group) {
         $group->get('/', ViewAuthorsAction::class);
         $group->get('/{id}/', ViewAuthorAction::class);
+        $group->post('/{id}/', DoAuthorAction::class);
         $group->post('/{id}/thumbnail/', CreateAuthorThumbnailAction::class);
         $group->delete('/{id}/thumbnail/', DeleteAuthorThumbnailAction::class);
         $group->post('/{id}/link/', CreateAuthorLinkAction::class);

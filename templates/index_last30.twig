@@ -8,6 +8,7 @@
 {% endblock %}
 
 {% block content %}
+    {% include "flash_messages.twig" %}
     <h2>{{page.glob.l10n.intro}}</h2>
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-1">
         <div class="stats-cell">

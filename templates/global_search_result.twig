@@ -4,6 +4,7 @@
 {% endblock %}
 
 {% block content %}
+	{% include "flash_messages.twig" %}
 	{% include "search_form.twig" %}
 	<section>
 		<div class="collapsible" x-data="{ open: false }">

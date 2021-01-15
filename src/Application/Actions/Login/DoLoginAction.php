@@ -34,7 +34,9 @@ return $response->withHeader('Location', $url);
         } else {
             // TODO add error message
             return $this->respondWithPage('login.twig', array(
-                'page' => $this->mkPage($this->getMessageString('login'))));
+                'page' => $this->mkPage($this->getMessageString('login')),
+                'flash' => ['error' => $this->getMessageString('invalid_password')]
+            ));
         }
     }
 }

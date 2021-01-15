@@ -1,0 +1,71 @@
+<section class="fixed inset-y-0 pl-16 max-w-full right-0 flex"
+         style="z-index: 1001"
+         aria-labelledby="{{ page.glob.l10n.author_details }} {{ page.glob.l10n.author_links }}"
+         x-show="isDeleteThumbnailOpen()"
+         @click.away="closeDeleteThumbnail"
+>
+    {#
+      Slide-over panel, show/hide based on slide-over state.
+
+      Entering: "transform transition ease-in-out duration-500 sm:duration-700"
+        From: "translate-x-full"
+        To: "translate-x-0"
+      Leaving: "transform transition ease-in-out duration-500 sm:duration-700"
+        From: "translate-x-0"
+        To: "translate-x-full"
+    #}
+    <div class="w-screen max-w-md">
+        <div class="w-screen max-w-md">
+            <div class="h-full flex flex-col bg-bgl dark:bg-bgd shadow-xl overflow-y-scroll">
+                <div class="py-6 px-4 bg-hbgl dark:bg-hbgd sm:px-6">
+                    <div class="flex items-center justify-between">
+                        <h2 id="slide-over-heading" class="text-lg font-medium text-htxtl dark:htxtd">
+                            {{ page.glob.l10n.author_thumbnail }}
+                        </h2>
+                        <div class="ml-3 h-7 flex items-center">
+                            <button class="bg-hbgl dark:bg-hbgd text-htxtl dark:text-htxtd rounded-md hover:text-hover1 focus:outline-none focus:ring-2 focus:ring-ring1"
+                                    @click="closeDeleteThumbnail"
+                            >
+                                <span class="sr-only">Close panel</span>
+                                <!-- Heroicon name: x -->
+                                <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="mt-1">
+                        <p class="text-sm text-txtl dark:txtd">
+                            {{ page.glob.l10n.author_thumbnail_expl }}
+                        </p>
+                    </div>
+                </div>
+                <div class="flex-1 flex flex-col justify-between mt-1">
+                    <div class="px-4 divide-y divide-gray-200 sm:px-6">
+                {# <div class="relative flex-1 py-6 px-4 sm:px-6">
+                    <div class="absolute inset-0 py-6 px-4 sm:px-6"> #}
+                        <div class="h-full" aria-hidden="true">
+                            <form class="h-full divide-y divide-gray-200 flex flex-col bg-white shadow-xl"
+                                  id="author-pic"
+                                  action="{{page.rot}}/authors/{{ author.id }}/"
+                                  method="post"
+                                  enctype="multipart/form-data"
+                            >
+                                <input name="function" class="hidden" value="deleteImage" aria-hidden="true"/>
+                                <button type="button"
+                                        class="btn-cancel"
+                                        @click="closeDeleteThumbnail()"
+                                >
+                                    {{ page.glob.l10n.cancel }}
+                                </button>
+                                <button type="submit" class="ml-4 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                    {{page.glob.l10n.delete }}
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

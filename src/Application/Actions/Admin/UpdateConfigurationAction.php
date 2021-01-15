@@ -89,7 +89,10 @@ class UpdateConfigurationAction extends AdminAction
             $this->logger->error('admin_change: ended with error ' . var_export($errors, true));
             return $this->respondWithPage('admin_configuration.twig', array(
                 'page' => $this->mkPage($this->getMessageString('admin')),
-                'isadmin' => true,
+                'config' => array_merge($this->config->getConfig(), $nconfigs),
+                'mailers' => $this->mkMailers(),
+                'ttss' => $this->mkTitleTimeSortOptions(),
+                'isadmin' => $this->is_admin(),
                 'errors' => $errors));
         } else {
             ## Apply changes
@@ -112,7 +115,7 @@ class UpdateConfigurationAction extends AdminAction
                 'config' => array_merge($this->config->getConfig(), $nconfigs),
                 'mailers' => $this->mkMailers(),
                 'ttss' => $this->mkTitleTimeSortOptions(),
-                'isadmin' => true,
+                'isadmin' => $this->is_admin(),
             ));
         }
     }

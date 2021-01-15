@@ -1,0 +1,102 @@
+<section class="fixed inset-y-0 pl-16 max-w-full right-0 flex"
+         style="z-index: 1001"
+         aria-labelledby="{{ page.glob.l10n.author_details }} {{ page.glob.l10n.author_links }}"
+         x-show="isLinksPanelOpen()"
+         @click.away="closeLinksPanel"
+>
+    {#
+      Slide-over panel, show/hide based on slide-over state.
+
+      Entering: "transform transition ease-in-out duration-500 sm:duration-700"
+        From: "translate-x-full"
+        To: "translate-x-0"
+      Leaving: "transform transition ease-in-out duration-500 sm:duration-700"
+        From: "translate-x-0"
+        To: "translate-x-full"
+    #}
+    <div class="w-screen max-w-md">
+        <div class="w-screen max-w-md">
+            <div class="h-full flex flex-col bg-white shadow-xl overflow-y-scroll">
+                <div class="py-6 px-4 bg-indigo-700 sm:px-6">
+                    <div class="flex items-center justify-between">
+                        <h2 id="slide-over-heading" class="text-lg font-medium text-white">
+                            {{ page.glob.l10n.author_links }}
+                        </h2>
+                        <div class="ml-3 h-7 flex items-center">
+                            <button class="bg-indigo-700 rounded-md text-indigo-200 hover:text-white focus:outline-none focus:ring-2 focus:ring-white"
+                                    @click="closeLinksPanel"
+                            >
+                                <span class="sr-only">Close panel</span>
+                                <!-- Heroicon name: x -->
+                                <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="mt-1">
+                        <p class="text-sm text-indigo-300">
+                            {{ page.glob.l10n.author_links_expl }}
+                        </p>
+                    </div>
+                </div>
+                <div class="flex-1 flex flex-col justify-between mt-1">
+                    <div class="px-4 divide-y divide-gray-200 sm:px-6">
+                {# <div class="relative flex-1 py-6 px-4 sm:px-6">
+                    <div class="absolute inset-0 py-6 px-4 sm:px-6"> #}
+                        <div class="h-full border-2 border-dashed border-gray-200" aria-hidden="true">
+                            <form id="author-link-new"
+                                  action="{{page.rot}}/authors/{{ author.id }}/"
+                                  method="post"
+                                  class="space-y-6 pt-6 pb-5"
+                            >
+                                <input name="function" class="hidden" value="createLink" aria-hidden="true"/>
+                                <fieldset>
+                                    <label class="sr-only" for="link-description">{{page.glob.l10n.author_links_text}}</label>
+                                    <input type="text" name="link-description" id="link-description"
+                                           placeholder="{{page.glob.l10n.author_links_text}}"
+                                           maxlength="50"
+                                           required
+                                           class="block w-full shadow-sm sm:text-sm focus:ring-indigo-500 focus:border-indigo-500 border-gray-300 rounded-md"
+                                    />
+                                </fieldset>
+                                <fieldset>
+                                    <label class="sr-only" for="link-url">{{page.glob.l10n.author_links_url}}</label>
+                                    <input type="url" name="link-url" id="link-url"
+                                           placeholder="{{page.glob.l10n.author_links_url}}"
+                                           maxlength="255"
+                                           required
+                                           class="block w-full shadow-sm sm:text-sm focus:ring-indigo-500 focus:border-indigo-500 border-gray-300 rounded-md"
+                                    />
+                                </fieldset>
+                                <input type="submit" class="btn-app" value="{{page.glob.l10n.save}}" />
+                            </form>
+                            <hr class="my-2" />
+                            <h3 class="text-semibold">{{ page.glob.l10n.delete }}</h3>
+                            <form id="author-link-delete"
+                                  action="{{page.rot}}/authors/{{ author.id }}/"
+                                  method="post"
+                                  class="space-y-6 pt-6 pb-5"
+                            >
+                                <input name="function" class="hidden" value="deleteLinks" aria-hidden="true"/>
+                                {% for link in author.links %}
+                                    <fieldset>
+                                        <label>
+                                            <input name="link-{{ link.id }}"
+                                                   aria-describedby="author link"
+                                                   type="checkbox"
+                                                   class=""
+                                                   value="{{ link.id }}">
+                                            {{ link.label }}
+                                        </label>
+                                    </fieldset>
+                                {% endfor %}
+                                <input type="submit" class="btn-app" value="{{page.glob.l10n.delete}}" />
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

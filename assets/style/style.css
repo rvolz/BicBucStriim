@@ -6,6 +6,41 @@
 
     [x-cloak] { display: none; }
 
+    /* flash messages */
+    .success { @apply bg-orchid-600 text-white}
+    .error { @apply bg-blush-600 text-white }
+    .note { @apply bg-steel-300 }
+
+
+    /* border around main area */
+    .main-border {
+        @apply border-4 border-dashed border-gray-200 rounded-lg
+    }
+
+    .top-link {
+        @apply flex-grow bg-btn2 dark:bg-btn2d p-1 mx-1 rounded text-htxtl hover:text-hover1 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-ring1
+    }
+
+    .top-link-disabled {
+        @apply flex-grow bg-btn2 dark:bg-btn2d px-1 mx-1 rounded text-htxtd opacity-50
+    }
+
+    /* buttons */
+    button.btn-submit {
+        @apply bg-btn1 dark:bg-btn1d py-2 px-4 text-white border border-transparent shadow-sm text-sm font-medium rounded-md hover:bg-hover1 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-1
+    }
+    button.btn-cancel {
+        @apply bg-btn2 dark:bg-btn2d py-2 px-4 text-gray-700 border border-gray-300 shadow-sm text-sm font-medium rounded-md hover:bg-hover1 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-ring1
+    }
+
+
+
+    /** move up */
+
+    .other-link {
+        @apply bg-manatee-300 px-1 mx-1 rounded text-black hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white
+    }
+
     .input {
         @apply h-6 text-sm px-2 py-2 disabled:opacity-50
     }
@@ -14,15 +49,7 @@
         min-width: 5rem;
         width: auto;
     }
-    .top-link {
-        @apply flex-grow bg-manatee-300 px-1 mx-1 rounded text-black hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white
-    }
-    .other-link {
-        @apply bg-manatee-300 px-1 mx-1 rounded text-black hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white
-    }
-    .top-link-disabled {
-        @apply flex-grow bg-manatee-300 px-1 mx-1 rounded text-black opacity-50
-    }
+
 
     .menu-link {
         @apply flex-grow text-center bg-manatee-300 px-1 mx-1 rounded text-black hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-steel-400 focus:ring-steel-300
@@ -116,20 +143,6 @@
     }
 
     div.collapsed {
-    }
-
-    .title_detail_image {
-        width: 40%;
-        float: left;
-    }
-    .title_detail_image > img {
-        width: 90%;
-    }
-
-    .title_details {
-        width: 55%;
-        float: right;
-        padding-left: 1%;
     }
 
 }

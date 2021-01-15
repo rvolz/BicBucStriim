@@ -5,6 +5,7 @@
 {% endblock %}
 
 {% block content %}
+	{% include "flash_messages.twig" %}
 	<section class="series_detail row">
 		<header>
 			{% if curpage == 0 %}

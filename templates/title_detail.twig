@@ -1,162 +1,133 @@
 {% extends 'layout-default.twig' %}
 
 {% block content %}
-<section class="title_detail block">
-	<header>
-		<h1 class="text-2xl">{{ book.title }}</h1>
-		<p>
-			{% set pb = book.pubdate|date("Y") %}
-			{% if pb != "0101" %} {{ pb }} {% endif %}
-			{{ language }}
-		</p>
-		<p class="ui-state-error">{{ flash.error }}</p>
-	</header>		
-	<div class="collapsible my-2 py-2">
-		<h2 class="font-semibold">{{page.glob.l10n.download}}</h2>
-		<div class ="dl_download">
+	{% include "flash_messages.twig" %}
+	<section class="title_detail block">
+		<header>
+			<h1 class="text-2xl">{{ book.title }}</h1>
 			<p>
+				{% set pb = book.pubdate|date("Y") %}
+				{% if pb != "0101" %} {{ pb }} {% endif %}
+				{{ language }}
+			</p>
+		</header>
+		<div class="my-2 py-2">
+			<h2 class="font-semibold">{{page.glob.l10n.download}}</h2>
+			<p class="text-sm">
 				{{ page.glob.l10n.presskey }}
 			</p>
-			<div >
-				{% for format in formats %}				
+			<div class="mt-2">
+				{% for format in formats %}
 					<a class="top-link"
 					   download="{{format.name|url_encode()}}.{{format.format|lower}}"
 					   href="{{page.rot}}/static/files/{{book.id}}/{{format.format|lower}}/{{format.name|url_encode()}}/">
-							{{ format.format }} | {{format.uncompressed_size|hfsize}}
+						{# Heroicons: download #}
+						<svg class="w-6 h-6 inline-flex" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+						{{ format.format }} | {{format.uncompressed_size|hfsize}}
 					</a>
 				{% endfor %}
-				{% if kindle_format %}
-					<input id="kindleButton" type="button" value="{{page.glob.l10n.send_to_kindle}}" />
+			</div>
+		</div>
+		<div class="flex flex-col md:flex-row">
+			<aside class="w-full md:w-1/3">
+				{% if book.has_cover %}
+					<img class="m-auto block md:m-0" src="{{page.rot}}/static/covers/{{ book.id }}/"  alt="cover image" width="265" height="341"/>
 				{% endif %}
-			</div>
-		</div>
-	</div>
-	{% if kindle_format %}
-	    <div data-role="popup" id="kindlePopup" data-overlay-theme="a" data-theme="c" style="max-width:450px;" class="ui-corner-all" data-transition="pop" data-dismissible="false">
-	      <div data-role="header" data-theme="a" class="ui-corner-top">
-	        <h1>{{page.glob.l10n.send_to_kindle}}</h1>
-	      </div>
-	      <div data-role="content" data-theme="a" class="ui-corner-bottom ui-content">
-	        <h4 class="ui-title">{{ page.glob.l10n.presskey2 }}</h4>
-	        <p><em>{{kindle_from_email}}</em> {{ page.glob.l10n.presskey3 }}</p>
-			<form action="{{page.rot}}/titles/{{book.id}}/kindle/{{kindle_format.name|url_encode()}}.{{kindle_format.format|lower}}" method="POST" id="ajax-form" data-ajax="false">
-			<div style="padding:5px 0 0 5px;max-width:280px;">
-				<label for="kindleEmail" class="ui-hidden-accessible">{{page.glob.l10n.kindle_to_email}}</label>
-				<input type="email" name="kindleEmail" id="kindleEmail" value="" placeholder="{{page.glob.l10n.kindle_to_email}}" data-theme="d" data-clear-btn="true" />
-		  	</div>
-	      	<div id="ajax-message" style="height:0.7em;padding-bottom:5px;">
-	        	<span id="msg" style="color:red;display:none;"><small>{{ page.glob.l10n.error_kindle_send }}</small></span> 
-	      	</div>
-	      	<input id="ajax-form-button" type="submit" data-inline="true" data-theme="b" value="{{page.glob.l10n.send_now}}"/>
-	      	<a href="#" data-role="button" data-inline="true" data-rel="back" data-theme="c">{{page.glob.l10n.cancel}}</a>  
-	        </form> 
-		  </div>
-		</div>
-	{% endif %}
-	<div>
-		<aside class="title_detail_image">
-			{% if book.has_cover %}
-				<img src="{{page.rot}}/static/covers/{{ book.id }}/"  alt="cover image" width="265" height="341"/>
-			{% endif %}
-		</aside>
-		<section class="title_details">
-			<div id="authors" class="collapsible" >
-					<h2 class="font-semibold">{{page.glob.l10n.authors}}</h2>
-					{% for author in authors %}
-					<a class="top-link" href="{{page.rot}}/authors/{{author.id}}/">
-						<svg class="w-6 h-6 inline " fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-						{{ author.name }}
-					</a>
-					{% endfor %}
-			</div>
-			{% if series != NULL %}
-			<div id="series" class="collapsible">
-					<h2 class="font-semibold">{{page.glob.l10n.series}}</h2>
-					{% for this_series in series %}
-					<a class="top-link"  href="{{page.rot}}/series/{{this_series.id}}/">
-						<svg class="w-6 h-6 inline " fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-						{{ this_series.name }} ({{book.series_index}})
-					</a>
-					{% endfor %}
-			</div>
-			{% endif %}
-			<div id="tags" class="collapsible">
-				<h2 class="font-semibold">{{page.glob.l10n.tags}}</h2>
-				<p>
-					{% for tag in tags %}
-					<a class="top-link" href="{{page.rot}}/tags/{{tag.id}}/">
-						<svg class="w-6 h-6 inline " fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-						{{ tag.name }}
-					</a>
-					{% endfor %}
-				</p>
-			</div>
-			{% if show_idlinks %}
-			<div id="idlinks" class="collapsible">
-				<h2 class="font-semibold">{{page.glob.l10n.idlinks}}</h2>
-				<p>
-					{% for id in ids %}
-						{% if id_templates[id.type] != NULL %}
-							<a class="top-link" rel="external" href="{{ id_templates[id.type][0]|replace({'%id%': id.val})}}">
-								<svg class="w-6 h-6 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"></path></svg>
-								{{ id_templates[id.type][1] }}
-							</a>
-						{% endif %}
-					{% endfor %}
-				</p>
-			</div>
-			{% endif %}
-			{% if ccs != NULL %}
-			<div id="custom_columns" class="collapsible">
-				<h2 class="font-semibold">{{page.glob.l10n.custom_columns}}</h2>
-				<table id="custom_columns_table">
-					<tbody>
-						{% for cc in ccs %}
-						<tr>
-							<th>
-								{{cc.name}}
-							</th>
-							<td>
-								{% if cc.type == 'comments' %}
-									{% autoescape false %}{{cc.value}}{% endautoescape %}
-								{% else %}
-									{% if cc.type == 'rating' %}
-										{% set i = cc.value/2 %}
-										{% for y in 1..i %}
-											 &#10033;
-										{% endfor %}
+			</aside>
+			<section class="w-full md:w-2/3 mt-2 md:mt-0 md:ml-2">
+				<div id="authors" class="" >
+						<h2 class="font-semibold">{{page.glob.l10n.authors}}</h2>
+						{% for author in authors %}
+						<a class="top-link" href="{{page.rot}}/authors/{{author.id}}/">
+							<svg class="w-6 h-6 inline " fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+							{{ author.name }}
+						</a>
+						{% endfor %}
+				</div>
+				{% if series != NULL %}
+				<div id="series" class="mt-2">
+						<h2 class="font-semibold">{{page.glob.l10n.series}}</h2>
+						{% for this_series in series %}
+						<a class="top-link"  href="{{page.rot}}/series/{{this_series.id}}/">
+							<svg class="w-6 h-6 inline " fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+							{{ this_series.name }} ({{book.series_index | number_format(0) }})
+						</a>
+						{% endfor %}
+				</div>
+				{% endif %}
+				<div id="tags" class="mt-2">
+					<h2 class="font-semibold">{{page.glob.l10n.tags}}</h2>
+					<p>
+						{% for tag in tags %}
+						<a class="top-link" href="{{page.rot}}/tags/{{tag.id}}/">
+							<svg class="w-6 h-6 inline " fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+							{{ tag.name }}
+						</a>
+						{% endfor %}
+					</p>
+				</div>
+				{% if show_idlinks %}
+				<div id="idlinks" class="mt-2">
+					<h2 class="font-semibold">{{page.glob.l10n.idlinks}}</h2>
+					<p>
+						{% for id in ids %}
+							{% if id_templates[id.type] != NULL %}
+								<a class="top-link" rel="external" href="{{ id_templates[id.type][0]|replace({'%id%': id.val})}}">
+									<svg class="w-6 h-6 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"></path></svg>
+									{{ id_templates[id.type][1] }}
+								</a>
+							{% endif %}
+						{% endfor %}
+					</p>
+				</div>
+				{% endif %}
+				{% if ccs != NULL %}
+				<div id="custom_columns" class="mt-2">
+					<h2 class="font-semibold">{{page.glob.l10n.custom_columns}}</h2>
+					<table id="custom_columns_table" class="table-auto">
+						<tbody>
+							{% for cc in ccs %}
+							<tr>
+								<td class="font-thin text-left border-r-2 px-2">
+									{{cc.name}}
+								</td>
+								<td class="px-2">
+									{% if cc.type == 'comments' %}
+										{% autoescape false %}{{cc.value}}{% endautoescape %}
 									{% else %}
-										{% if cc.type == 'bool' %}
+										{% if cc.type == 'rating' %}
+											{% set i = cc.value/2 %}
+											{% for y in 1..i %}
+												 &#10033;
+											{% endfor %}
+										{% elseif cc.type == 'bool' %}
 											{% if cc.value == 1 %}
 												&#10004;
 											{% else %}
-												 &#10006;
+												&#10006;
 											{% endif %}
 										{% else %}
 											{{cc.value}}
 										{% endif %}
 									{% endif %}
-								{% endif %}
-							</td>
-						</tr>
-						{% endfor %}
-					</tbody>
-				</table>
-			</div>
-			{% endif %}
-			{% if comment %}
-			<div id="comment">
-					<h2 class="font-semibold">{{page.glob.l10n.comment}}</h2>
-					<div class="m-1 p-1 font-serif">
-						{% autoescape false %}
-						{{ comment }}
-						{% endautoescape %}
-					</div>
-			</div>
-			{% endif %}
-		</section>
-	</div>
-</section>
-
-
+								</td>
+							</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+				</div>
+				{% endif %}
+				{% if comment %}
+				<div id="comment" class="mt-2">
+						<h2 class="font-semibold">{{page.glob.l10n.comment}}</h2>
+						<div class="m-1 p-1 font-serif">
+							{% autoescape false %}
+							{{ comment }}
+							{% endautoescape %}
+						</div>
+				</div>
+				{% endif %}
+			</section>
+		</div>
+	</section>
 {% endblock %}

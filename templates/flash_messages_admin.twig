@@ -1,0 +1,28 @@
+<div id="flash" class="my-1">
+	{% for message in messages %}
+		<p class="success p-0.5">{{message}}</p>
+	{% endfor %}
+
+	{% for error in errors %}
+		{% if error == 1 %}
+			<p class="error p-0.5">{{page.glob.l10n.invalid_calibredir2}}</p>
+		{% elseif error == 2 %}
+			<p class="error p-0.5">{{page.glob.l10n.invalid_password2}}</p>
+		{% elseif error == 3 %}
+			<p class="error p-0.5">{{page.glob.l10n.admin_pw_required2}}</p>
+		{% elseif error == 4 %}
+			<p class="error p-0.5">{{page.glob.l10n.admin_invalid_page_size}}</p>
+		{% elseif error == 5 %}
+			<p class="error p-0.5">{{page.glob.l10n.invalid_email_address}}</p>
+		{% else %}
+			<p class="error p-0.5">{{page.glob.l10n.unknown_error1}}</p>
+		{% endif %}
+	{% endfor %}
+	{% if errors %}
+		<div class="my-5" >
+			<a href="{{page.rot}}/installcheck.php" class="btn-config">
+				{{page.glob.l10n.check_installation}}
+			</a>
+		</div>
+	{% endif %}
+</div>	

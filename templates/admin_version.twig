@@ -3,7 +3,7 @@
 {% block content %}
 
 <h1>{{ page.glob.l10n.admin_check_version }}</h1>
-{% include "flash_messages.twig" %}
+{% include "flash_messages_admin.twig" %}
 
 <p {% if versionClass != '' %}class="{{versionClass}}"{% endif %}>
 	{{versionAnswer|raw}}.

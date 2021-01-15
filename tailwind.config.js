@@ -3,7 +3,7 @@ module.exports = {
     './templates/*.html',
     './templates/*.twig'
   ],
-  darkMode: false, // or 'media' or 'class'
+  darkMode: 'media', // or 'media' or 'class'
   theme: {
     container: {
       center: true,
@@ -17,6 +17,21 @@ module.exports = {
     extend: {
         // generated with https://tailwind.ink/ for brand color #8494AD aka .bg-manatee-500
         colors: theme => ({
+          bgl: '#f6f9f9', /* background light: manatee-50 */
+          bgd: '#293241', /* background dark:  manatee-900 */
+          txtl: '#000000', /* text */
+          txtd: '#ffffff', /* text: dark */
+          hover1: '#e96d51', /* text hover: coral-500 */
+          ring1: '#e96d51', /* ring: coral-500 */
+          hbgl: '#dde8ea', /* header background: manatee-200 */
+          hbgd: '#3f516a', /* header background dark: manatee-700 */
+          htxtl: '#000000', /* header text */
+          htxtd: '#ffffff', /* header text: dark */
+          btn1: '#233257', /* button primary: steel-900 */
+          btn1d: '#f5f9fa', /* button primary dark: steel-50 */
+          btn2: '#c3d5dc', /* button secondary: manatee-300 */
+          btn2d: '#4b6887', /* button secondary dark: manatee-600 */
+
           steel: {
             '50':  '#f5f9fa',
             '100': '#eaf4f8',
@@ -140,7 +155,6 @@ module.exports = {
         }),
         backgroundColor: theme => ({
           ...theme('colors'),
-
         }),
     },
   },

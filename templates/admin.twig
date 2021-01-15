@@ -1,66 +1,67 @@
 {% extends "layout-default.twig" %}
 
 {% block content %}
-<ul class="w-full">
-	<li class="bg-manatee-200 rounded border-1 m-2 p-2 flex items-center justify-between">
-		<a href="{{page.rot}}/admin/configuration/">
-			<h2>{{page.glob.l10n.admin}}</h2>
-		</a>
-		<div class="ml-4 flex items-end">
-			<a class="top-link" href="#" title="{{ page.glob.l10n.admin_users_delete }}">
-				<svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-				</svg>
+	{% include "flash_messages_admin.twig" %}
+	<ul class="w-full">
+		<li class="bg-manatee-200 rounded border-1 m-2 p-2 flex items-center justify-between">
+			<a href="{{page.rot}}/admin/configuration/">
+				<h2>{{page.glob.l10n.admin}}</h2>
 			</a>
-		</div>
-	</li>
-	<li class="bg-manatee-200 rounded border-1 m-2 p-2 flex items-center justify-between">
-		<a href="{{page.rot}}/admin/users/">
-			<h2>{{page.glob.l10n.admin_users}}</h2>
-		</a>
-		<div class="ml-4 flex items-end">
-			<a class="top-link" href="#" title="{{ page.glob.l10n.admin_users_delete }}">
-				<svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-				</svg>
+			<div class="ml-4 flex items-end">
+				<a class="top-link" href="#" title="{{ page.glob.l10n.admin_users_delete }}">
+					<svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+					</svg>
+				</a>
+			</div>
+		</li>
+		<li class="bg-manatee-200 rounded border-1 m-2 p-2 flex items-center justify-between">
+			<a href="{{page.rot}}/admin/users/">
+				<h2>{{page.glob.l10n.admin_users}}</h2>
 			</a>
-		</div>
-	</li>
-	<li class="bg-manatee-200 rounded border-1 m-2 p-2 flex items-center justify-between">
-		<a href="{{page.rot}}/admin/idtemplates/">
-			<h2>{{page.glob.l10n.admin_idtemplates}}</h2>
-		</a>
-		<div class="ml-4 flex items-end">
-			<a class="top-link" href="#" title="{{ page.glob.l10n.admin_users_delete }}">
-				<svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-				</svg>
+			<div class="ml-4 flex items-end">
+				<a class="top-link" href="#" title="{{ page.glob.l10n.admin_users_delete }}">
+					<svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+					</svg>
+				</a>
+			</div>
+		</li>
+		<li class="bg-manatee-200 rounded border-1 m-2 p-2 flex items-center justify-between">
+			<a href="{{page.rot}}/admin/idtemplates/">
+				<h2>{{page.glob.l10n.admin_idtemplates}}</h2>
 			</a>
-		</div>
-	</li>
-	<li class="bg-manatee-200 rounded border-1 m-2 p-2 flex items-center justify-between">
-		<a href="{{page.rot}}/admin/mail/">
-			<h2>{{page.glob.l10n.admin_mail}}</h2>
-		</a>
-		<div class="ml-4 flex items-end">
-			<a class="top-link" href="#" title="{{ page.glob.l10n.admin_users_delete }}">
-				<svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-				</svg>
+			<div class="ml-4 flex items-end">
+				<a class="top-link" href="#" title="{{ page.glob.l10n.admin_users_delete }}">
+					<svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+					</svg>
+				</a>
+			</div>
+		</li>
+		<li class="bg-manatee-200 rounded border-1 m-2 p-2 flex items-center justify-between">
+			<a href="{{page.rot}}/admin/mail/">
+				<h2>{{page.glob.l10n.admin_mail}}</h2>
 			</a>
-		</div>
-	</li>
-	<li class="bg-manatee-200 rounded border-1 m-2 p-2 flex items-center justify-between">
-		<a href="{{page.rot}}/admin/version/">
-			<h2>{{page.glob.l10n.admin_check_version}}</h2>
-		</a>
-		<div class="ml-4 flex items-end">
-			<a class="top-link" href="#" title="{{ page.glob.l10n.admin_users_delete }}">
-				<svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-				</svg>
+			<div class="ml-4 flex items-end">
+				<a class="top-link" href="#" title="{{ page.glob.l10n.admin_users_delete }}">
+					<svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+					</svg>
+				</a>
+			</div>
+		</li>
+		<li class="bg-manatee-200 rounded border-1 m-2 p-2 flex items-center justify-between">
+			<a href="{{page.rot}}/admin/version/">
+				<h2>{{page.glob.l10n.admin_check_version}}</h2>
 			</a>
-		</div>
-	</li>
-</ul>
+			<div class="ml-4 flex items-end">
+				<a class="top-link" href="#" title="{{ page.glob.l10n.admin_users_delete }}">
+					<svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+					</svg>
+				</a>
+			</div>
+		</li>
+	</ul>
 {% endblock %}

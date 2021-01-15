@@ -16,7 +16,7 @@
     <div class="w-screen max-w-md">
         <form class="h-full divide-y divide-gray-200 flex flex-col bg-white shadow-xl"
               id="author-pic"
-              action="{{page.rot}}/authors/{{ author.id }}/thumbnail/"
+              action="{{page.rot}}/authors/{{ author.id }}/"
               method="post"
               enctype="multipart/form-data"
         >
@@ -49,7 +49,6 @@
                         <input type="file"
                                name="file"
                                accept="image/jpg,image/jpeg,image/pjpeg,image/png,image/x-png,.jpg,.png,.jpeg"
-                               capture
                                required
                                />
                     </div>
@@ -61,11 +60,6 @@
                         @click="close()"
                 >
                     {{ page.glob.l10n.cancel }}
-                </button>
-                <button type="button"
-                        class="ml-4 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blush-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blush-500"
-                        @click="$fetch({ url: '{{page.rot}}/authors/{{ author.id }}/thumbnail/', method: 'delete' }).then(({ data }) => console.log(data))">
-                    {{ page.glob.l10n.delete }}
                 </button>
                 <button type="submit" class="ml-4 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                     {{page.glob.l10n.upload }}

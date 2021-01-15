@@ -15,7 +15,7 @@
     <script src="{{page.rot}}/js/alpine-2.7.3.min.js" defer></script>
     <script src="{{page.rot}}/js/main.js" defer></script>
 </head>
-<body class="bg-manatee-50 dark:bg-manatee-900">
+<body class="bg-bgl dark:bg-bgd">
     {# Sticky header with flex box, see https://stackoverflow.com/questions/60169463/tailwindcss-fixed-navbar. #}
     <div class="flex flex-col h-screen px-1 pt-0.5 md:container md:mx-auto">
         {# z-index necessary for nav popups #}
@@ -26,7 +26,7 @@
             <main >
                 <div class=" mx-auto py-6 sm:px-6 lg:px-8 overflow-y-scroll">
                     <div class="px-4 py-6 sm:px-0">
-                        <div class="border-4 border-dashed border-gray-200 rounded-lg">
+                        <div class="main-border">
                             {% block content %}{% endblock %}
                         </div>
                     </div>

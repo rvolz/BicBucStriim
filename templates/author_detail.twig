@@ -27,26 +27,43 @@
 						</svg>
 					{% endif %}
 					{% if isadmin %}
-						<button class="btn-app absolute left-0 top-0"
+						<button class="absolute left-0 top-0 top-link"
 								type="button"
 								title="{{ page.glob.l10n.edit }}"
 								@click="open()"
 								x-show="showButton == true"
 						>
-							{# Heroicons: pencil #}
-							<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+							{# Heroicon name: upload #}
+							<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
 							<span class="sr-only">{{ page.glob.l10n.edit }}</span>
 						</button>
+						<button class="absolute top-8 left-0 top-link"
+								type="button"
+								title="{{ page.glob.l10n.delete }}"
+								@click="openDeleteThumbnail()"
+								x-show="showButton == true"
+						>
+							{# Heroicon name: x #}
+							<svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+							</svg>
+							<span class="sr-only">{{ page.glob.l10n.delete }}</span>
+						</button>
 						{% include "author_edit_image.twig" %}
+						{% include "author_delete_image.twig" %}
 					{% endif %}
 					<script type="application/javascript">
 						function authorImageEdit() {
 							return {
 								show: false,
+								showDeleteThumbnail: false,
 								showButton: false,
 								open() { this.show = true },
+								openDeleteThumbnail() { this.showDeleteThumbnail = true },
 								close() { this.show = false },
+								closeDeleteThumbnail() { this.showDeleteThumbnail = false },
 								isOpen() { return this.show === true },
+								isDeleteThumbnailOpen() { return this.showDeleteThumbnail === true },
 							}
 						}
 					</script>
@@ -54,7 +71,12 @@
 			</div>
 			<section class="relative float-right px-6 w-3/5">
 				<div id="author-links">
-					<div id="links" class="collapsible">
+					<div id="links"
+						 class="collapsible relative"
+						 x-data="authorLinksEdit()"
+						 @mouseenter="showLinksPanelButton = true"
+						 @mouseleave="showLinksPanelButton = false"
+					>
 						<h2 class="font-semibold">{{page.glob.l10n.author_links}}</h2>
 						{% for link in author.links %}
 							<a class="top-link"  href="{{link.url}}">
@@ -64,6 +86,30 @@
 								{{ link.label }}
 							</a>
 						{% endfor %}
+						{% if isadmin %}
+							<button class="btn-app absolute right-0 top-0"
+									type="button"
+									title="{{ page.glob.l10n.edit }}"
+									@click="openLinksPanel()"
+									x-show="showLinksPanelButton == true"
+							>
+								{# Heroicons: pencil #}
+								<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+								<span class="sr-only">{{ page.glob.l10n.edit }}</span>
+							</button>
+							{% include "author_edit_links.twig" %}
+						{% endif %}
+						<script type="application/javascript">
+							function authorLinksEdit() {
+								return {
+									showLinksPanel: false,
+									showLinksPanelButton: false,
+									openLinksPanel() { this.showLinksPanel = true },
+									closeLinksPanel() { this.showLinksPanel = false },
+									isLinksPanelOpen() { return this.showLinksPanel === true },
+								}
+							}
+						</script>
 					</div>
 					<div id="series" class="collapsible">
 						<h2 class="font-semibold">{{page.glob.l10n.series}}</h2>

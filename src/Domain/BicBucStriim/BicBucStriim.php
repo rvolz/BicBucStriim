@@ -327,7 +327,7 @@ class BicBucStriim implements BicBucStriimRepository
         if (!is_null($calibreThing)) {
             $artefact = $this->getFirstArtefact($calibreThing);
             if (!is_null($artefact)) {
-                $ret = unlink($artefact->url);
+                $ret = unlink($this->authors_dir . '/' . $artefact->url);
                 unset($calibreThing->ownArtefact[$artefact->id]);
                 $calibreThing->refctr -= 1;
                 R::trash($artefact);
