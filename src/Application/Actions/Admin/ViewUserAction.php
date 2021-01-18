@@ -14,7 +14,7 @@ use Slim\Exception\HttpBadRequestException;
  * Class ViewUserAction needs Calibre therefore it extends a different class.
  * @package App\Application\Actions\Admin
  */
-class ViewUserAction extends CalibreHtmlAction
+class ViewUserAction extends AdminAction
 {
 
     /**
@@ -22,6 +22,8 @@ class ViewUserAction extends CalibreHtmlAction
      */
     protected function action(): Response
     {
+        if (!$this->is_admin())
+            return $this->refuseNonAdmin();
         $id = (int) $this->resolveArg('id');
         // parameter checking
         if (!is_numeric($id)) {

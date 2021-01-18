@@ -182,6 +182,10 @@ admin_new_version_error:
   gl: Non foi posível comprobar a información de versión. Podes comprobalo manualmente
   es: Imposible cargar la información de la versión. Por favor comprobar manualmente.
   pl: Nie można załadować informacji o nowej wersji. Proszę sprawdź ręcznie.
+admin_no_permission:
+  de: Sie benötigen Admin-Berechtigungen für diese Funktion.
+  en: You need admin rights for this function.
+  fr: Vous avez besoin des droits d\'administrateur pour cette fonction.
 admin_no_new_version:
   hu: "Aktuális verziód: %s."
   de: Die Version %s ist aktuell

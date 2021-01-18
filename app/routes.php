@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 // Register routes
 use App\Application\Actions\Admin\ChangeUserAction;
+use App\Application\Actions\Admin\CreateUserAction;
 use App\Application\Actions\Admin\DeleteIdTemplatesAction;
 use App\Application\Actions\Admin\UpdateConfigurationAction;
 use App\Application\Actions\Admin\UpdateIdTemplatesAction;
@@ -76,9 +77,9 @@ return function (App $app) {
         $group->get('/mail/', ViewMailAction::class);
         $group->post('/mail/', UpdateMailAction::class);
         $group->get('/users/', ViewUsersAction::class);
+        $group->post('/users/', CreateUserAction::class);
         $group->get('/users/{id}/', ViewUserAction::class);
-        $group->put('/users/{id}/', ChangeUserAction::class);
-        $group->delete('/users/{id}/', DeleteIdTemplatesAction::class);
+        $group->post('/users/{id}/', ChangeUserAction::class);
         $group->get('/version/', ViewVersionCheckAction::class);
     });
     $app->group('/authors', function (Group $group) {

@@ -1,9 +1,12 @@
 {% extends 'layout-default.twig' %}
 
-{% block content %}
+{% block headerlinks %}
+    <meta name="turbolinks-cache-control" content="no-cache">
+{% endblock %}
 
-<h1>{{ title }}</h1>
-<p class="alert-error">
-	{{ error }}
-</p>
+{% block content %}
+    <h2 class="font-semibold">{{ page.glob.l10n.error }}</h2>
+    <p class="error p-2 mt-2">
+        {{ error }}
+    </p>
 {% endblock %}

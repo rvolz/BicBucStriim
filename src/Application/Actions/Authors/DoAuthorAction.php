@@ -21,6 +21,8 @@ class DoAuthorAction extends AuthorsAction
      */
     protected function action(): Response
     {
+        if (!$this->is_admin())
+            return $this->refuseNonAdmin();
         $flash = array();
         $id = (int) $this->resolveArg('id');
         // parameter checking

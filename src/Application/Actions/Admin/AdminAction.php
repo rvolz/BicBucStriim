@@ -4,17 +4,16 @@
 namespace App\Application\Actions\Admin;
 
 
-use App\Application\Actions\RenderHtmlAction;
+use App\Application\Actions\CalibreHtmlAction;
 use App\Domain\BicBucStriim\AppConstants;
 use App\Domain\BicBucStriim\ConfigMailer;
 use App\Domain\BicBucStriim\ConfigTtsOption;
 use App\Domain\BicBucStriim\Encryption;
-use App\Domain\DomainException\DomainRecordNotFoundException;
 use App\Infrastructure\Mail\Mailer;
 use Psr\Http\Message\ResponseInterface as Response;
 use Slim\Exception\HttpBadRequestException;
 
-abstract class AdminAction extends RenderHtmlAction
+abstract class AdminAction extends CalibreHtmlAction
 {
 
     protected function mkMailers(): array

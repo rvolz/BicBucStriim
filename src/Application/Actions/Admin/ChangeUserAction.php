@@ -12,10 +12,12 @@ class ChangeUserAction extends AdminAction
 {
 
     /**
-     * @inheritDoc
+     * Change user data and return it
      */
     protected function action(): Response
     {
+        if (!$this->is_admin())
+            return $this->refuseNonAdmin();
         $id = (int) $this->resolveArg('id');
         // parameter checking
         if (!is_numeric($id)) {

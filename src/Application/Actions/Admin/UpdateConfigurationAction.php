@@ -16,15 +16,9 @@ class UpdateConfigurationAction extends AdminAction
      */
     protected function action(): Response
     {
+        if (!$this->is_admin())
+            return $this->refuseNonAdmin();
         $this->logger->debug('admin_change: started');
-        # Check access permission
-        if (!$this->is_admin()) {
-            $this->logger->warning('admin_change: no admin permission');
-            return $this->respondWithPage('admin_configuration.twig', array(
-                'page' => $this->mkPage($this->getMessageString('admin')),
-                'messages' => array($this->getMessageString('invalid_password')),
-                'isadmin' => false));
-        }
         $nconfigs = array();
         $req_configs = $this->request->getParsedBody();
         $errors = array();

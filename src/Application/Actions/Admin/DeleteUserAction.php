@@ -16,6 +16,8 @@ class DeleteUserAction extends AdminAction
      */
     protected function action(): Response
     {
+        if (!$this->is_admin())
+            return $this->refuseNonAdmin();
         $id = (int) $this->resolveArg('id');
         // parameter checking
         if (!is_numeric($id)) {
@@ -23,19 +25,19 @@ class DeleteUserAction extends AdminAction
             throw new HttpBadRequestException($this->request);
         }
 
+        $flash = [];
         $this->logger->debug('admin_delete_user: ' . var_export($id, true));
         $success = $this->bbs->deleteUser($id);
         if ($success) {
-            $ap = new ActionPayload(200, array(
-                    'msg' => $this->getMessageString('admin_modified')
-                )
-            );
+            $flash['info'] = $this->getMessageString('admin_modified');
         } else {
-            $ap = new ActionPayload(500, array(
-                    'msg' => $this->getMessageString('admin_modify_error')
-                )
-            );
+            $flash['error'] = $this->getMessageString('admin_modify_error');
         }
-        return $this->respondWithData($ap);
+        $users = $this->bbs->users();
+        return $this->respondWithPage('admin_users.twig', array(
+            'page' => $this->mkPage($this->getMessageString('admin_users'), 0, 2),
+            'users' => $users,
+            'flash' => $flash,
+            'isadmin' => $this->is_admin()));
     }
 }

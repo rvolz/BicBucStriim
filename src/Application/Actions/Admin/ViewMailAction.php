@@ -16,6 +16,8 @@ class ViewMailAction extends AdminAction
      */
     protected function action(): Response
     {
+        if (!$this->is_admin())
+            return $this->refuseNonAdmin();
         $mail = array(
             'username' => $this->config[AppConstants::SMTP_USER],
             'password' => $this->config[AppConstants::SMTP_PASSWORD],

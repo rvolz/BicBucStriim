@@ -13,6 +13,7 @@
 		{% if curpage == 0 %}
 		<div id="author-metadata">
 			<h1 class="text-2xl">{{ author.name }}</h1>
+			{# author thumbnail #}
 			<div class="float-left w-2/5">
 				<div class="relative"
 					 x-data="authorImageEdit()"
@@ -26,7 +27,7 @@
 							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
 						</svg>
 					{% endif %}
-					{% if isadmin %}
+					{% if page.admin %}
 						<button class="absolute left-0 top-0 top-link"
 								type="button"
 								title="{{ page.glob.l10n.edit }}"
@@ -69,52 +70,55 @@
 					</script>
 				</div>
 			</div>
+			{# author metadata #}
 			<section class="relative float-right px-6 w-3/5">
-				<div id="author-links">
-					<div id="links"
-						 class="collapsible relative"
-						 x-data="authorLinksEdit()"
-						 @mouseenter="showLinksPanelButton = true"
-						 @mouseleave="showLinksPanelButton = false"
-					>
-						<h2 class="font-semibold">{{page.glob.l10n.author_links}}</h2>
-						{% for link in author.links %}
-							<a class="top-link"  href="{{link.url}}">
-								<svg class="w-6 h-6 inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-								</svg>
-								{{ link.label }}
-							</a>
-						{% endfor %}
-						{% if isadmin %}
-							<button class="btn-app absolute right-0 top-0"
-									type="button"
-									title="{{ page.glob.l10n.edit }}"
-									@click="openLinksPanel()"
-									x-show="showLinksPanelButton == true"
-							>
-								{# Heroicons: pencil #}
-								<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
-								<span class="sr-only">{{ page.glob.l10n.edit }}</span>
-							</button>
-							{% include "author_edit_links.twig" %}
-						{% endif %}
-						<script type="application/javascript">
-							function authorLinksEdit() {
-								return {
-									showLinksPanel: false,
-									showLinksPanelButton: false,
-									openLinksPanel() { this.showLinksPanel = true },
-									closeLinksPanel() { this.showLinksPanel = false },
-									isLinksPanelOpen() { return this.showLinksPanel === true },
+				<div id="author-metadata">
+					{% if author.links or page.admin %}
+						<div id="links"
+							 class="relative"
+							 x-data="authorLinksEdit()"
+							 @mouseenter="showLinksPanelButton = true"
+							 @mouseleave="showLinksPanelButton = false"
+						>
+							<h2 class="font-semibold">{{page.glob.l10n.author_links}}</h2>
+							{% for link in author.links %}
+								<a class="top-link"  href="{{link.url}}">
+									<svg class="w-6 h-6 inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+									</svg>
+									{{ link.label }}
+								</a>
+							{% endfor %}
+							{% if page.admin %}
+								<button class="top-link absolute right-0 top-0"
+										type="button"
+										title="{{ page.glob.l10n.edit }}"
+										@click="openLinksPanel()"
+										x-show="showLinksPanelButton == true"
+								>
+									{# Heroicons: pencil #}
+									<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+									<span class="sr-only">{{ page.glob.l10n.edit }}</span>
+								</button>
+								{% include "author_edit_links.twig" %}
+							{% endif %}
+							<script type="application/javascript">
+								function authorLinksEdit() {
+									return {
+										showLinksPanel: false,
+										showLinksPanelButton: false,
+										openLinksPanel() { this.showLinksPanel = true },
+										closeLinksPanel() { this.showLinksPanel = false },
+										isLinksPanelOpen() { return this.showLinksPanel === true },
+									}
 								}
-							}
-						</script>
-					</div>
-					<div id="series" class="collapsible">
+							</script>
+						</div>
+					{% endif %}
+					<div id="series" class="mt-2">
 						<h2 class="font-semibold">{{page.glob.l10n.series}}</h2>
 						{% for this_series in series %}
-							<a class="other-link"  href="{{page.rot}}/series/{{this_series.id}}/">
+							<a class="top-link"  href="{{page.rot}}/series/{{this_series.id}}/">
 								<svg class="w-6 h-6 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
 								{{ this_series.name }}
 							</a>

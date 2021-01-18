@@ -5,7 +5,7 @@
 {% include "flash_messages_admin.twig" %}
 
 <p>{{page.glob.l10n.admin_users_legend2}}</p>
-<form action="{{page.rot}}/admin/users/{{user.id}}" method="put" id="userform">
+<form action="{{page.rot}}/admin/users/{{user.id}}" method="post" id="userform">
 	<fieldset  class="config-fieldset">
 		<label for="edituser_name">{{page.glob.l10n.admin_username}}</label>
 		<input name="edituser_name" id="edituser_name" type="text" 

@@ -84,9 +84,9 @@
                </svg>
             </button>
             <div x-ref="initials" x-show="isOpen()" @click.away="close" class="origin-top-right absolute right-0 mt-2 w-32 h-auto rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5"  >
-                <ul name="initials-select" id="initials-select" class="overflow-y-scroll h-auto" x-model="selectedInitial">
+                <ul name="initials-select" id="initials-select" class="overflow-y-scroll h-auto border-2" x-model="selectedInitial">
                     <template x-for="i in initialsData" :key="i">
-                        <li x-text="i" @click="selectedInitial=i" class="hover:bg-blush-100"></li>
+                        <li x-text="i" @click="selectedInitial=i" class="text-center hover:bg-blush-100"></li>
                     </template>
                 </ul>
             </div>

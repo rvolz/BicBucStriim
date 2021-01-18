@@ -17,6 +17,8 @@ class DeleteIdTemplatesAction extends AdminAction
      */
     protected function action(): Response
     {
+        if (!$this->is_admin())
+            return $this->refuseNonAdmin();
         $id = (int) $this->resolveArg('id');
         // parameter checking
         if (!preg_match('/^\w+$/u',$id)) {

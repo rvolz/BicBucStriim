@@ -4,8 +4,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [2.0.0-alpha.2] - 2021-01-18
 ### Added
+- Added filtering for current section
 - Navigation with initials for authors, series, titles and tags, closes #16
 - Added the possibility to search with ASCII transliteration for titles, authors, tags and series with names 
   containing non-ASCII characters, closes #333 

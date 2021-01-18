@@ -17,6 +17,8 @@ class ViewVersionCheckAction extends AdminAction
      */
     protected function action(): Response
     {
+        if (!$this->is_admin())
+            return $this->refuseNonAdmin();
         $versionAnswer = array();
         $contents = file_get_contents(AppConstants::VERSION_URL);
         if ($contents == false) {

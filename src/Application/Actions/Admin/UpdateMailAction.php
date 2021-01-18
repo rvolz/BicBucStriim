@@ -15,6 +15,8 @@ class UpdateMailAction extends AdminAction
      */
     protected function action(): Response
     {
+        if (!$this->is_admin())
+            return $this->refuseNonAdmin();
         $mail_data = $this->request->getParsedBody();
         $this->logger->debug('admin_change_smtp_configuration: ' . var_export($mail_data, true));
         $mail_config = array(

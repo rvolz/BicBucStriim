@@ -16,6 +16,8 @@ class ViewUsersAction extends AdminAction
      */
     protected function action(): Response
     {
+        if (!$this->is_admin())
+            return $this->refuseNonAdmin();
         $users = $this->bbs->users();
         return $this->respondWithPage('admin_users.twig', array(
             'page' => $this->mkPage($this->getMessageString('admin_users'), 0, 2),

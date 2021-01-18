@@ -12,7 +12,7 @@ use Psr\Http\Message\ResponseInterface as Response;
  * Class ViewIdTemplatesAction needs Calibre, therefore it extends from a different Action class.
  * @package App\Application\Actions\Admin
  */
-class ViewIdTemplatesAction extends CalibreHtmlAction
+class ViewIdTemplatesAction extends AdminAction
 {
 
     /**
@@ -20,6 +20,8 @@ class ViewIdTemplatesAction extends CalibreHtmlAction
      */
     protected function action(): Response
     {
+        if (!$this->is_admin())
+            return $this->refuseNonAdmin();
         $idtemplates = $this->bbs->idTemplates();
         $idtypes = $this->calibre->idTypes();
         $ids2add = array();

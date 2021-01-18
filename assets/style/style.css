@@ -22,7 +22,7 @@
     }
 
     .top-link-disabled {
-        @apply flex-grow bg-btn2 dark:bg-btn2d px-1 mx-1 rounded text-htxtd opacity-50
+        @apply flex-grow bg-btn2 dark:bg-btn2d p-1 mx-1 rounded text-htxtl opacity-50 hover:text-hover1 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-ring1
     }
 
     /* buttons */
@@ -126,10 +126,6 @@
         @apply p-1 bg-manatee-200 rounded ring-chocolate-400 ring-2 text-blush-600 text-xl font-bold text-center
     }
 
-
-    /*div.listview-titles {
-        @apply grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4
-    }*/
     div.listview-titles {
         @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3
     }

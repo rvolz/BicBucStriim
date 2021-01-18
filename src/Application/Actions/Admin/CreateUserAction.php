@@ -16,27 +16,43 @@ class CreateUserAction extends AdminAction
      */
     protected function action(): Response
     {
+        if (!$this->is_admin())
+            return $this->refuseNonAdmin();
+        $flash = [];
         $user_data = $this->request->getParsedBody();
-        $this->logger->debug('admin_add_user: ' . var_export($user_data, true));
-        try {
-            $user = $this->bbs->addUser($user_data['username'], $user_data['password']);
-        } catch (Exception $e) {
-            $this->logger->error('admin_add_user: error for adding user ' . var_export($user_data, true));
-            $this->logger->error('admin_add_user: exception ' . $e->getMessage());
-            $user = null;
-        }
-        if (isset($user)) {
-            $ap = new ActionPayload(200, array(
-                    'user' => $user->getProperties(),
-                    'msg' => $this->getMessageString('admin_modified')
-                )
-            );
+        if ($user_data['function'] == 'createuser') {
+            $this->logger->debug('admin_add_user: ' . var_export($user_data, true), [__FILE__]);
+            try {
+                $user = $this->bbs->addUser($user_data['newuser_name'], $user_data['newuser_password']);
+            } catch (Exception $e) {
+                $this->logger->error('admin_add_user: error for adding user ' . var_export($user_data, true), [__FILE__]);
+                $this->logger->error('admin_add_user: exception ' . $e->getMessage(), [__FILE__]);
+                $user = null;
+            }
+            if (isset($user)) {
+                $flash['info'] = $this->getMessageString('admin_modified');
+            } else {
+                $flash['error'] = $this->getMessageString('admin_modify_error');
+            }
+        } elseif ($user_data['function'] == 'deleteuser') {
+            $id = $user_data['userid'];
+            $this->logger->debug('admin_delete_user: ' . var_export($id, true), [__FILE__]);
+            $success = $this->bbs->deleteUser($id);
+            if ($success) {
+                $flash['info'] = $this->getMessageString('admin_modified');
+            } else {
+                $flash['error'] = $this->getMessageString('admin_modify_error');
+            }
         } else {
-            $ap = new ActionPayload(500, array(
-                    'msg' => $this->getMessageString('admin_modify_error')
-                )
-            );
+            $this->logger->error('unknown function: ' . var_export($user_data, true), [__FILE__]);
+            $flash['error'] = $this->getMessageString('unknown_error1');
         }
-        return $this->respondWithData($ap);
+
+        $users = $this->bbs->users();
+        return $this->respondWithPage('admin_users.twig', array(
+            'page' => $this->mkPage($this->getMessageString('admin_users'), 0, 2),
+            'users' => $users,
+            'flash' => $flash,
+            'isadmin' => $this->is_admin()));
     }
 }

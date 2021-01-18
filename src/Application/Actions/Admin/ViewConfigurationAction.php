@@ -20,6 +20,8 @@ class ViewConfigurationAction extends AdminAction
      */
     protected function action(): Response
     {
+        if (!$this->is_admin())
+            return $this->refuseNonAdmin();
         return $this->respondWithPage('admin_configuration.twig', array(
             'page' => $this->mkPage($this->getMessageString('admin'), 0, 2),
             'config' => $this->config,

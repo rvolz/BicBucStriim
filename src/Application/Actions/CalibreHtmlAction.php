@@ -8,6 +8,7 @@ use App\Domain\BicBucStriim\BicBucStriimRepository;
 use App\Domain\BicBucStriim\Configuration;
 use App\Domain\BicBucStriim\L10n;
 use App\Domain\Calibre\CalibreRepository;
+use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Log\LoggerInterface;
 use Slim\Views\Twig;
 
@@ -36,5 +37,16 @@ abstract class CalibreHtmlAction extends RenderHtmlAction
     {
         parent::__construct($logger, $bbs, $config, $twig, $l10n);
         $this->calibre = $calibre;
+    }
+
+    /**
+     * Return an error page for missing admin rights
+     */
+    protected function refuseNonAdmin(): Response
+    {
+        // TODO
+        return $this->respondWithPage('error.twig', array(
+            'page' => $this->mkPage($this->getMessageString('error'), 0, 2),
+            'error' => $this->getMessageString('admin_no_permission')));
     }
 }
