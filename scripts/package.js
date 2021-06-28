@@ -7,7 +7,7 @@ zip.addLocalFolder("js", "js", "/**/*.min.js");
 zip.addLocalFile("js/libs/jquery.cookie.js", "js/libs/jquery.cookie.js");
 zip.addLocalFile("js/script.js", "js/script.js");
 zip.addLocalFolder("style/jquery", "style/jquery");
-zip.addLocalFile("style/style.css", "style/style.css");
+zip.addLocalFile("style/style.css", "style/");
 zip.addLocalFolder("lib/BicBucStriim", "lib/BicBucStriim");
 zip.addLocalFolder("vendor", "vendor", "*.php");
 zip.addLocalFolder("vendor/aura", "vendor/aura");
