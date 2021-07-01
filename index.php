@@ -29,19 +29,19 @@ use Aura\Auth as Auth;
 
 # Allowed languages, i.e. languages with translations
 $allowedLangs = array('de', 'en', 'es', 'fr', 'gl' , 'hu', 'it', 'nl', 'pl');
-# Fallback language if the browser prefers otherau than the allowed languages
+# Fallback language if the browser prefers another than the allowed languages
 $fallbackLang = 'en';
 # Application Name
 $appname = 'BicBucStriim';
 # App version
-$appversion = '1.5.2';
+$appversion = '1.5.3';
 
 # Init app and routes
 $app = new \Slim\Slim(array(
     'view' => new \Slim\Views\Twig(),
-    'mode' => 'production',
+    #'mode' => 'production',
     #'mode' => 'debug',
-    #'mode' => 'development',
+    'mode' => 'development',
 ));
 
 $app->configureMode('production', 'confprod');

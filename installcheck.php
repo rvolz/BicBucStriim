@@ -121,7 +121,7 @@ $template = $twig->loadTemplate('installcheck.html');
 echo $template->render(array(
 	'page' => array(
 		'rot' => '',
-		'version' => '1.5.22'
+		'version' => '1.5.3'
 	),
 	'is_a' => $is_a,
 	'srv' => $srv,
@@ -135,6 +135,7 @@ echo $template->render(array(
 	'dwrit' => fw('./data'),
 	'intl' => extension_loaded('intl'),
 	'mcrypt' => extension_loaded('mcrypt'),
+	'sodium' => extension_loaded('sodium'),
 	'mwrit' => fw('./data/data.db'),
 	'opd' => ini_get('open_basedir'),
 	'php' => check_php(),

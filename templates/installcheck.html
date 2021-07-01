@@ -259,7 +259,7 @@
               <img src="img/bbs-light-yellow.png" />
             {% endif %}
             <h3>            
-              Is Mcrypt enabled?
+              Is Mcrypt enabled? (PHP <7.4)
             </h3>
             <p>
             {% if mcrypt == true %}
@@ -270,6 +270,28 @@
             </p>
           </a>
           <a href="#popupMcrypt" data-rel="popup">
+            info
+          </a>
+        </li>
+        <li>
+          <a href="#">
+            {% if sodium == true %}
+            <img src="img/bbs-light-green.png" />
+            {% else %}
+            <img src="img/bbs-light-yellow.png" />
+            {% endif %}
+            <h3>
+              Is Sodium enabled? (PHP 7.4+)
+            </h3>
+            <p>
+              {% if sodium == true %}
+              Yes.
+              {% else %}
+              No.
+              {% endif %}
+            </p>
+          </a>
+          <a href="#popupSodium" data-rel="popup">
             info
           </a>
         </li>
@@ -413,14 +435,26 @@
     </div>
     <div id="popupMcrypt" data-role="popup" data-theme="a">
       <p>
-        Mcrypt is used by the underlying framework to encrypt browser cookies. BicBucStriim works 
+        Mcrypt is used by the underlying framework to encrypt browser cookies when using PHP <7.4. BicBucStriim works
         without it, but then might transmit data unencrypted. In a secure home network 
         this is usually not a problem.
       </p>
       <p>
         In case you are using BicBucStriim in a public network, you might consider 
         enabling mcrypt to protect your cookies. In order to enable mcrypt, install
-        a module like <em>php5-mcrypt</em>.
+        a module like <em>php-mcrypt</em>.
+      </p>
+    </div>
+    <div id="popupSodium" data-role="popup" data-theme="a">
+      <p>
+        Sodium is used by the underlying framework to encrypt browser cookies when using PHP 7.4+. BicBucStriim works
+        without it, but then might transmit data unencrypted. In a secure home network
+        this is usually not a problem.
+      </p>
+      <p>
+        In case you are using BicBucStriim in a public network, you might consider
+        enabling sodium to protect your cookies. In order to enable sodium, install
+        a module like <em>php-sodium</em>.
       </p>
     </div>
     <div id="popupIntl" data-role="popup" data-theme="a">
