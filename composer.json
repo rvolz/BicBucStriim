@@ -10,10 +10,11 @@
         "ircmaxell/password-compat": "v1.0.4"
     },
     "require-dev": {
-        "simpletest/simpletest": "^1.1"
+        "simpletest/simpletest": "^1.1",
+        "alchemy/zippy": "^1.0"
     },
     "scripts": {
         "genl10n": "yarn genl10n",
-        "package": "yarn package"
+        "package": "@php scripts/package.php"
     }
 }

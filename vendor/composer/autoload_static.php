@@ -7,21 +7,61 @@ namespace Composer\Autoload;
 class ComposerStaticInit6e580b08396e5103632328888dee9907
 {
     public static $files = array (
+        'a4a119a56e50fbb293281d9a48007e0e' => __DIR__ . '/..' . '/symfony/polyfill-php80/bootstrap.php',
+        '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
+        '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
         'e40631d46120a9c38ea139981f8dab26' => __DIR__ . '/..' . '/ircmaxell/password-compat/lib/password.php',
         '2c102faa651ef8ea5874edb585946bce' => __DIR__ . '/..' . '/swiftmailer/swiftmailer/lib/swift_required.php',
     );
 
     public static $prefixLengthsPsr4 = array (
+        'S' => 
+        array (
+            'Symfony\\Polyfill\\Php80\\' => 23,
+            'Symfony\\Polyfill\\Mbstring\\' => 26,
+            'Symfony\\Polyfill\\Ctype\\' => 23,
+            'Symfony\\Component\\Process\\' => 26,
+            'Symfony\\Component\\Filesystem\\' => 29,
+        ),
+        'D' => 
+        array (
+            'Doctrine\\Common\\Collections\\' => 28,
+        ),
         'A' => 
         array (
             'Aura\\Session\\_Config\\' => 21,
             'Aura\\Session\\' => 13,
             'Aura\\Auth\\_Config\\' => 18,
             'Aura\\Auth\\' => 10,
+            'Alchemy\\Zippy\\' => 14,
         ),
     );
 
     public static $prefixDirsPsr4 = array (
+        'Symfony\\Polyfill\\Php80\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/polyfill-php80',
+        ),
+        'Symfony\\Polyfill\\Mbstring\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/polyfill-mbstring',
+        ),
+        'Symfony\\Polyfill\\Ctype\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/polyfill-ctype',
+        ),
+        'Symfony\\Component\\Process\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/process',
+        ),
+        'Symfony\\Component\\Filesystem\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/filesystem',
+        ),
+        'Doctrine\\Common\\Collections\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/doctrine/collections/lib/Doctrine/Common/Collections',
+        ),
         'Aura\\Session\\_Config\\' => 
         array (
             0 => __DIR__ . '/..' . '/aura/session/config',
@@ -37,6 +77,10 @@ class ComposerStaticInit6e580b08396e5103632328888dee9907
         'Aura\\Auth\\' => 
         array (
             0 => __DIR__ . '/..' . '/aura/auth/src',
+        ),
+        'Alchemy\\Zippy\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/alchemy/zippy/src',
         ),
     );
 
@@ -91,6 +135,7 @@ class ComposerStaticInit6e580b08396e5103632328888dee9907
         'AnyOldThing' => __DIR__ . '/..' . '/simpletest/simpletest/test/reflection_php4_test.php',
         'AnyOldTypeHintedClass' => __DIR__ . '/..' . '/simpletest/simpletest/test/reflection_php5_test.php',
         'AnythingExpectation' => __DIR__ . '/..' . '/simpletest/simpletest/expectation.php',
+        'Attribute' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
         'BadTestCases' => __DIR__ . '/..' . '/simpletest/simpletest/test/bad_test_suite.php',
         'BadTestSuite' => __DIR__ . '/..' . '/simpletest/simpletest/test_case.php',
         'CallCountExpectation' => __DIR__ . '/..' . '/simpletest/simpletest/mock_objects.php',
@@ -173,7 +218,7 @@ class ComposerStaticInit6e580b08396e5103632328888dee9907
         'NotAExpectation' => __DIR__ . '/..' . '/simpletest/simpletest/expectation.php',
         'NotEqualExpectation' => __DIR__ . '/..' . '/simpletest/simpletest/expectation.php',
         'NotIdenticalExpectation' => __DIR__ . '/..' . '/simpletest/simpletest/expectation.php',
-        'OpaqueContainer' => __DIR__ . '/..' . '/simpletest/simpletest/test/expectation_test.php',
+        'OpaqueContainer' => __DIR__ . '/..' . '/simpletest/simpletest/test/visual/visual_errors.php',
         'OtherTestException' => __DIR__ . '/..' . '/simpletest/simpletest/test/exceptions_test.php',
         'OutsideMarginExpectation' => __DIR__ . '/..' . '/simpletest/simpletest/expectation.php',
         'PHPUnit_TestCase' => __DIR__ . '/..' . '/simpletest/simpletest/extensions/pear_test_case.php',
@@ -271,7 +316,7 @@ class ComposerStaticInit6e580b08396e5103632328888dee9907
         'SimpleRadioButtonTag' => __DIR__ . '/..' . '/simpletest/simpletest/tag.php',
         'SimpleRadioGroup' => __DIR__ . '/..' . '/simpletest/simpletest/tag.php',
         'SimpleRealm' => __DIR__ . '/..' . '/simpletest/simpletest/authentication.php',
-        'SimpleReflection' => __DIR__ . '/..' . '/simpletest/simpletest/reflection_php4.php',
+        'SimpleReflection' => __DIR__ . '/..' . '/simpletest/simpletest/reflection_php5.php',
         'SimpleReporter' => __DIR__ . '/..' . '/simpletest/simpletest/scorer.php',
         'SimpleReporterDecorator' => __DIR__ . '/..' . '/simpletest/simpletest/scorer.php',
         'SimpleResult' => __DIR__ . '/..' . '/simpletest/simpletest/recorder.php',
@@ -310,6 +355,7 @@ class ComposerStaticInit6e580b08396e5103632328888dee9907
         'SimpleUrl' => __DIR__ . '/..' . '/simpletest/simpletest/url.php',
         'SimpleUserAgent' => __DIR__ . '/..' . '/simpletest/simpletest/user_agent.php',
         'SimpleWidget' => __DIR__ . '/..' . '/simpletest/simpletest/tag.php',
+        'Stringable' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Stringable.php',
         'TestCaseWithParseError' => __DIR__ . '/..' . '/simpletest/simpletest/test/test_with_parse_error.php',
         'TestDisplayClass' => __DIR__ . '/..' . '/simpletest/simpletest/test/visual_test.php',
         'TestDoxReporter' => __DIR__ . '/..' . '/simpletest/simpletest/extensions/testdox.php',
@@ -389,7 +435,7 @@ class ComposerStaticInit6e580b08396e5103632328888dee9907
         'TestOfLiveAuthentication' => __DIR__ . '/..' . '/simpletest/simpletest/test/acceptance_test.php',
         'TestOfLiveBrowser' => __DIR__ . '/..' . '/simpletest/simpletest/test/acceptance_test.php',
         'TestOfLiveCookies' => __DIR__ . '/..' . '/simpletest/simpletest/test/acceptance_test.php',
-        'TestOfLiveCssSelectors' => __DIR__ . '/..' . '/simpletest/simpletest/extensions/dom_tester/test/dom_tester_test.php',
+        'TestOfLiveCssSelectors' => __DIR__ . '/..' . '/simpletest/simpletest/extensions/dom_tester/test/dom_tester_doc_test.php',
         'TestOfLiveFetching' => __DIR__ . '/..' . '/simpletest/simpletest/test/acceptance_test.php',
         'TestOfLiveFrontControllerEmulation' => __DIR__ . '/..' . '/simpletest/simpletest/test/acceptance_test.php',
         'TestOfLiveHeaders' => __DIR__ . '/..' . '/simpletest/simpletest/test/acceptance_test.php',
@@ -492,8 +538,10 @@ class ComposerStaticInit6e580b08396e5103632328888dee9907
         'TreemapReporter' => __DIR__ . '/..' . '/simpletest/simpletest/extensions/treemap_reporter.php',
         'TreemapStack' => __DIR__ . '/..' . '/simpletest/simpletest/extensions/treemap_reporter/treemap_recorder.php',
         'TrueExpectation' => __DIR__ . '/..' . '/simpletest/simpletest/expectation.php',
+        'UnhandledMatchError' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/UnhandledMatchError.php',
         'UnitTestCase' => __DIR__ . '/..' . '/simpletest/simpletest/unit_tester.php',
         'UnitTests' => __DIR__ . '/..' . '/simpletest/simpletest/test/unit_tests.php',
+        'ValueError' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/ValueError.php',
         'VisualTestOfErrors' => __DIR__ . '/..' . '/simpletest/simpletest/test/visual/visual_errors.php',
         'VisualTestOfExceptions' => __DIR__ . '/..' . '/simpletest/simpletest/test/visual/visual_errors.php',
         'VisualTestOfObjectComparison' => __DIR__ . '/..' . '/simpletest/simpletest/test/visual/visual_errors.php',
