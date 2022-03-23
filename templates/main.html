@@ -91,6 +91,9 @@
     <div data-role="content">
         {% block content %}{% endblock %}
     </div>
+        {% if page.dialog==false %}
+        {% include "paginate.html" %}
+        {% endif %}
     <div data-role="footer" class="footer">
         {% include "footer.html" %}
     </div>
