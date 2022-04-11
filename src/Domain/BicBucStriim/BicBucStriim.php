@@ -76,7 +76,6 @@ class BicBucStriim implements BicBucStriimRepository
     {
         $schema = file(dirname($dataPath) . '/schema.sql');
         $this->mydb = new PDO('sqlite:' . $dataPath, null, null, array());
-        $this->mydb->setAttribute(1002, 'SET NAMES utf8');
         $this->mydb->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $this->mydb->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
         for ($i = 0; $i < count($schema); $i++) {
