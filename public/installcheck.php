@@ -153,21 +153,13 @@ $gde = ($gdv >= 2);
 
 // TODO check, probably too many
 // php7-sodium necessary?
-$php_modules = [
-    'apache2', // really?
-    'common', // not loaded?
-    'gd',
-    'intl',
-    'json',
-    'mbstring',
-    'pdo',
-    'pdo_sqlite',
-    'session',
-    'sqlite3',
-    'xml',
-    'xmlwriter',
-    'zip'
-];
+$composerData = json_decode(file_get_contents(__DIR__ . '/../composer.json'));
+$php_modules = [];
+foreach ($composerData->require as $dependency => $version) {
+    if (substr($dependency, 0, 4) === 'ext-') {
+        $php_modules[] = substr($dependency, 4);
+    }
+}
 
 
 $template = $twig->load('installcheck.twig');
