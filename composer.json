@@ -24,7 +24,7 @@
         "middlewares/trailing-slash": "^2.0",
         "anyascii/anyascii": "^0.1.7",
         "dflydev/fig-cookies": "^2.0",
-        "firebase/php-jwt": "^5.2"
+        "firebase/php-jwt": "^6.0"
     },
     "require-dev": {
         "ext-simplexml": "*",
