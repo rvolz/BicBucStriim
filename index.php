@@ -25,6 +25,8 @@ require_once 'mailer.php';
 require_once 'metadata_epub.php';
 require_once 'deprecated.php';
 
+ini_set('session.gc_maxlifetime', 3600);
+
 use dflydev\markdown\MarkdownExtraParser;
 use Aura\Auth as Auth;
 
