@@ -13,22 +13,25 @@ require_once('simpletest/simpletest/autorun.php');
 require 'lib/BicBucStriim/inst_utils.php';
 
 
-class TestOfInstUtils extends UnitTestCase {
+class TestOfInstUtils extends UnitTestCase
+{
+    public function setUp()
+    {
+    }
 
-    function setUp() {}
-
-    function tearDown() {}
+    public function tearDown()
+    {
+    }
 
     ##
     # Test
     #
-    function testFindGdVersion() {
+    public function testFindGdVersion()
+    {
         $this->assertEqual("2.1", find_gd_version("gd version 2.1"));
         $this->assertEqual("2.1.0", find_gd_version("gd version 2.1.0"));
         $this->assertEqual("2.1", find_gd_version("gd headers version 2.1"));
         $this->assertEqual("2.1.0", find_gd_version("gd headers version 2.1.0"));
         $this->assertEqual("2.1.0-alpha", find_gd_version("GD headers Version 2.1.0-alpha "));
     }
-
 }
-?>

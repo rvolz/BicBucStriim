@@ -9,22 +9,21 @@ require_once('lib/BicBucStriim/calibre_filter.php');
 
 class TestOfCalibreIcu extends UnitTestCase
 {
+    public const CDB4 = './tests/fixtures/lib4/metadata.db';
 
-    const CDB4 = './tests/fixtures/lib4/metadata.db';
+    public $calibre;
 
-    var $calibre;
-
-    function setUp()
+    public function setUp()
     {
         $this->calibre = new Calibre(self::CDB4);
     }
 
-    function tearDown()
+    public function tearDown()
     {
         $this->calibre = null;
     }
 
-    function testAuthorsSliceSearch()
+    public function testAuthorsSliceSearch()
     {
         $result0 = $this->calibre->authorsSlice(0, 2, 'Асприн');
         $this->assertEqual(1, count($result0['entries']));
@@ -32,13 +31,13 @@ class TestOfCalibreIcu extends UnitTestCase
         $this->assertEqual(1, count($result0['entries']));
     }
 
-    function testSeriesSliceSearch()
+    public function testSeriesSliceSearch()
     {
         $result0 = $this->calibre->seriesSlice(0, 2, 'ü');
         $this->assertEqual(1, count($result0['entries']));
     }
 
-    function testTagsSliceSearch()
+    public function testTagsSliceSearch()
     {
         $result0 = $this->calibre->tagsSlice(0, 2, 'I');
         $this->assertEqual(2, count($result0['entries']));
@@ -48,7 +47,7 @@ class TestOfCalibreIcu extends UnitTestCase
         $this->assertEqual(2, count($result0['entries']));
     }
 
-    function testTitlesSliceSearch()
+    public function testTitlesSliceSearch()
     {
         $result0 = $this->calibre->titlesSlice('de', 0, 2, new CalibreFilter(), 'ü');
         $this->assertEqual(1, count($result0['entries']));
@@ -61,5 +60,4 @@ class TestOfCalibreIcu extends UnitTestCase
         $result0 = $this->calibre->titlesSlice('fr', 0, 2, new CalibreFilter(), 'ò');
         $this->assertEqual(1, count($result0['entries']));
     }
-
 }

@@ -1,8 +1,9 @@
 <?php
+
 # Generated file. Please don't edit here,
-# edit messages.yml instead. 
+# edit messages.yml instead.
 #
-$langde = array(
+$langde = [
 'admin' => 'Konfiguration',
 'admin_check_version' => 'Auf neue Version prüfen',
 'admin_check_version_legend' => 'Prüfen, ob mittlerweile eine neue Version von BicBucStriim vorliegt.',
@@ -202,9 +203,9 @@ $langde = array(
 'unknown_error1' => 'Unbekannter Fehler',
 'unknown_error2' => 'Ein bisher unbekannter Fehler wurde gemeldet.',
 'upload' => 'Hochladen',
-);
+];
 
-$langen = array(
+$langen = [
 'admin' => 'Configuration',
 'admin_check_version' => 'Check version',
 'admin_check_version_legend' => 'Check for a new BicBucStriim version',
@@ -404,9 +405,9 @@ $langen = array(
 'unknown_error1' => 'Unknown Error',
 'unknown_error2' => 'An unknown error occured.',
 'upload' => 'Upload',
-);
+];
 
-$langes = array(
+$langes = [
 'admin' => 'Configuración',
 'admin_check_version' => 'Comprobar versión',
 'admin_check_version_legend' => 'Comprobar si existe una nueva versión de BicBucStriim',
@@ -605,9 +606,9 @@ $langes = array(
 'unknown_error1' => 'Error desconocido',
 'unknown_error2' => 'Se ha producido un error desconocido.',
 'upload' => 'Subida',
-);
+];
 
-$langfr = array(
+$langfr = [
 'admin' => 'Configuration',
 'admin_check_version' => 'Vérification de la version',
 'admin_check_version_legend' => 'Verifier la présence d\'une mise à jour de BicBucStriim',
@@ -807,9 +808,9 @@ $langfr = array(
 'unknown_error1' => 'Erreur inconnue',
 'unknown_error2' => 'Une erreur inconnue s\'est produite.',
 'upload' => 'Téléversement',
-);
+];
 
-$langgl = array(
+$langgl = [
 'admin' => 'Configuración',
 'admin_check_version' => 'Comprobar versión',
 'admin_check_version_legend' => 'Comprobar versión de BicBucStriim',
@@ -993,9 +994,9 @@ $langgl = array(
 'unknown_error1' => 'Erro descoñecido',
 'unknown_error2' => 'Produciuse un erro descoñecido.',
 'upload' => 'Subida',
-);
+];
 
-$langhu = array(
+$langhu = [
 'admin' => 'Beállítások',
 'admin_check_version' => 'Verzió ellenőrzése',
 'admin_check_version_legend' => 'Ellenőrizd, van e új BicBucStriim verzió',
@@ -1193,9 +1194,9 @@ $langhu = array(
 'unknown_error1' => 'Ismeretlen hiba',
 'unknown_error2' => 'Ismeretlen hiba lépett fel.',
 'upload' => 'Feltöltés',
-);
+];
 
-$langit = array(
+$langit = [
 'admin' => 'Configurazione',
 'admin_check_version' => 'Verifica versione',
 'admin_check_version_legend' => 'Verificare la presenza di una nuova versione di BicBucStriim',
@@ -1379,9 +1380,9 @@ $langit = array(
 'unknown_error1' => 'Errore Sconosciuto',
 'unknown_error2' => 'Si è verificato un errore sconosciuto.',
 'upload' => 'Caricamento',
-);
+];
 
-$langnl = array(
+$langnl = [
 'admin' => 'Configuratie',
 'admin_pw1' => 'Admin Wachtwoord',
 'admin_pw2' => 'Admin Wachtwoord',
@@ -1480,9 +1481,9 @@ $langnl = array(
 'titles' => 'Boeken',
 'unknown_error1' => 'Onbekende Fout',
 'unknown_error2' => 'Er is een onbekende fout opgetreden.',
-);
+];
 
-$langpl = array(
+$langpl = [
 'admin' => 'Konfiguracja',
 'admin_check_version' => 'Sprawdź wersję',
 'admin_check_version_legend' => 'Sprawdź dostępność nowej wersji BicBucStriim',
@@ -1682,4 +1683,4 @@ $langpl = array(
 'unknown_error1' => 'Nieznany błąd',
 'unknown_error2' => 'Wystąpił nieznany błąd',
 'upload' => 'Wgrywanie',
-);
+];

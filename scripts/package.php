@@ -7,7 +7,7 @@ require __DIR__ . '/../vendor/autoload.php';
 
 // Load Zippy
 $zippy = Zippy::load();
-$archive = $zippy->create('bicbucstriim.zip', array(
+$archive = $zippy->create('bicbucstriim.zip', [
     'img' => 'img',
     'js' => 'js',
     'style/style.css' => 'style/style.css',
@@ -36,4 +36,4 @@ $archive = $zippy->create('bicbucstriim.zip', array(
     'NOTICE',
     'LICENSE',
     'README.md',
-), true);
+], true);
