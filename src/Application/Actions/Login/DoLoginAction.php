@@ -1,8 +1,8 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Application\Actions\Login;
-
 
 use App\Domain\DomainException\DomainRecordNotFoundException;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -10,7 +10,6 @@ use Slim\Exception\HttpBadRequestException;
 
 class DoLoginAction extends LoginAction
 {
-
     /**
      * @inheritDoc
      */
@@ -33,8 +32,8 @@ return $response->withHeader('Location', $url);
              */
         } else {
             // TODO add error message
-            return $this->respondWithPage('login.html', array(
-                'page' => $this->mkPage($this->getMessageString('login'))));
+            return $this->respondWithPage('login.html', [
+                'page' => $this->mkPage($this->getMessageString('login'))]);
         }
     }
 }

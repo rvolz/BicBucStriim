@@ -6,9 +6,9 @@ use App\Domain\BicBucStriim\Configuration;
 use App\Domain\Calibre\Calibre;
 use App\Domain\Calibre\CalibreFilter;
 use App\Domain\Opds\OpdsGenerator;
-use \Psr\Container\ContainerInterface;
-use \Psr\Http\Message\ServerRequestInterface;
-use \Psr\Http\Message\ResponseInterface;
+use Psr\Container\ContainerInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -109,10 +109,12 @@ function getFilter(ContainerInterface $container): CalibreFilter
     $user = $container['user'];
     if (isset($user)) {
         $container[LoggerInterface::class]->debug('getFilter: ' . var_export($user, true));
-        if (!empty($user['languages']))
+        if (!empty($user['languages'])) {
             $lang = $container['calibre']->getLanguageId($user->languages);
-        if (!empty($user['tags']))
+        }
+        if (!empty($user['tags'])) {
             $tag = $container['calibre']->getTagId($user->tags);
+        }
         $container[LoggerInterface::class]->debug('getFilter: Using language ' . $lang . ', tag ' . $tag);
     }
     return new CalibreFilter($lang, $tag);
@@ -125,10 +127,11 @@ function getFilter(ContainerInterface $container): CalibreFilter
  */
 function getNextSearchPage(array $tl): ?int
 {
-    if ($tl['page'] < $tl['pages'] - 1)
+    if ($tl['page'] < $tl['pages'] - 1) {
         $nextPage = $tl['page'] + 1;
-    else
-        $nextPage = null; // TODO null or 0? -> return type!
+    } else {
+        $nextPage = null;
+    } // TODO null or 0? -> return type!
     return $nextPage;
 }
 
@@ -139,10 +142,11 @@ function getNextSearchPage(array $tl): ?int
  */
 function getLastSearchPage(array $tl): int
 {
-    if ($tl['pages'] == 0)
+    if ($tl['pages'] == 0) {
         $lastPage = 0;
-    else
+    } else {
         $lastPage = $tl['pages'] - 1;
+    }
     return $lastPage;
 }
 
@@ -157,10 +161,11 @@ function getLastSearchPage(array $tl): int
  */
 function getQueryParam(array $params, string $name, $default)
 {
-    if (array_key_exists($name, $params))
+    if (array_key_exists($name, $params)) {
         return $params[$name];
-    else
+    } else {
         return $default;
+    }
 }
 
 /**
@@ -175,11 +180,13 @@ function mkOpdsGenerator(ContainerInterface $container, ServerRequestInterface $
     $version = $container['settings']['bbs']['version'];
     $cdir = $container['calibre']->calibre_dir;
     $clm = $container['calibre']->calibre_last_modified;
-    $gen = new OpdsGenerator($root,
+    $gen = new OpdsGenerator(
+        $root,
         $version,
         $cdir,
         date(DATE_ATOM, $clm),
-        $container['l10n']);
+        $container['l10n']
+    );
     return $gen;
 }
 
@@ -280,7 +287,7 @@ function processNewConfig(ContainerInterface $c, Configuration $config, Configur
 # Check for valid email address format
 function isEMailValid(string $mail): bool
 {
-    return (filter_var($mail, FILTER_VALIDATE_EMAIL) !== FALSE);
+    return (filter_var($mail, FILTER_VALIDATE_EMAIL) !== false);
 }
 
 /**

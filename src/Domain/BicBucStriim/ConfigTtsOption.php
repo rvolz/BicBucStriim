@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Domain\BicBucStriim;
-
 
 /**
  * Class ConfigTtsOption, a dummy class for configuration

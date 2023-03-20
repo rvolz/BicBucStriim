@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Application\Actions\Titles;
-
 
 use App\Domain\BicBucStriim\AppConstants;
 use App\Domain\DomainException\DomainRecordNotFoundException;
@@ -30,19 +28,21 @@ class ViewTitleAction extends TitlesAction
         }
         // Show ID links only if there are templates and ID data
         $idtemplates = $this->bbs->idTemplates();
-        $id_tmpls = array();
+        $id_tmpls = [];
         if (count($idtemplates) > 0 && count($details['ids']) > 0) {
             $show_idlinks = true;
             foreach ($idtemplates as $idtemplate) {
-                $id_tmpls[$idtemplate->name] = array($idtemplate->val, $idtemplate->label);
+                $id_tmpls[$idtemplate->name] = [$idtemplate->val, $idtemplate->label];
             }
-        } else
+        } else {
             $show_idlinks = false;
+        }
         $kindle_format = ($this->config[AppConstants::KINDLE] == 1) ? $this->calibre->titleGetKindleFormat($id) : null;
 
         $this->addFsFilter();
-        return $this->respondWithPage('title_detail.html',
-            array('page' => $this->mkPage($this->getMessageString('book_details'), 2, 2),
+        return $this->respondWithPage(
+            'title_detail.html',
+            ['page' => $this->mkPage($this->getMessageString('book_details'), 2, 2),
                 'book' => $details['book'],
                 'authors' => $details['authors'],
                 'series' => $details['series'],
@@ -56,7 +56,8 @@ class ViewTitleAction extends TitlesAction
                 'id_templates' => $id_tmpls,
                 'kindle_format' => $kindle_format,
                 'kindle_from_email' => $this->config[AppConstants::KINDLE_FROM_EMAIL],
-                'protect_dl' => false));
+                'protect_dl' => false]
+        );
     }
 
     private function addFsFilter(): void

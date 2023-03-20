@@ -9,6 +9,7 @@ use Psr\Log\LoggerInterface;
 use Slim\Factory\AppFactory;
 use Slim\Factory\ServerRequestCreatorFactory;
 use Slim\ResponseEmitter;
+
 require __DIR__ . '/../src/Application/Version.php';
 
 require __DIR__ . '/bbs-config.php';
@@ -96,7 +97,8 @@ $logger = $app->getContainer()->get(LoggerInterface::class);
 $logger->info(
     $app->getContainer()->get(Configuration::class)[AppConstants::DISPLAY_APP_NAME] .
     ' ' .
-    APP_VERSION);
+    APP_VERSION
+);
 $logger->info('Running on PHP: ' . PHP_VERSION);
 
 $response = $app->handle($request);

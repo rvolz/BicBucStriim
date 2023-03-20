@@ -28,7 +28,7 @@ use dflydev\markdown\MarkdownExtraParser;
 use Aura\Auth as Auth;
 
 # Allowed languages, i.e. languages with translations
-$allowedLangs = array('de', 'en', 'es', 'fr', 'gl' , 'hu', 'it', 'nl', 'pl');
+$allowedLangs = ['de', 'en', 'es', 'fr', 'gl', 'hu', 'it', 'nl', 'pl'];
 # Fallback language if the browser prefers otherau than the allowed languages
 $fallbackLang = 'en';
 # Application Name
@@ -37,12 +37,12 @@ $appname = 'BicBucStriim';
 $appversion = '1.5.1';
 
 # Init app and routes
-$app = new \Slim\Slim(array(
+$app = new \Slim\Slim([
     'view' => new \Slim\Views\Twig(),
     #'mode' => 'production',
     #'mode' => 'debug',
     'mode' => 'development',
-));
+]);
 
 $app->configureMode('production', 'confprod');
 $app->configureMode('development', 'confdev');
@@ -54,17 +54,17 @@ $app->configureMode('debug', 'confdebug');
 function confprod()
 {
     global $app, $appname, $appversion;
-    $app->config(array(
+    $app->config([
         'debug' => false,
         'cookies.lifetime' => '1 day',
         'cookies.secret_key' => 'b4924c3579e2850a6fad8597da7ad24bf43ab78e',
 
-    ));
+    ]);
     $app->getLog()->setEnabled(true);
     $app->getLog()->setLevel(\Slim\Log::WARN);
     $app->getLog()->info($appname . ' ' . $appversion . ': Running in production mode.');
     $app->getLog()->info('Running on PHP: ' . PHP_VERSION);
-    error_reporting(E_ALL ^ (E_DEPRECATED | E_USER_DEPRECATED ));
+    error_reporting(E_ALL ^ (E_DEPRECATED | E_USER_DEPRECATED));
 }
 
 /**
@@ -73,12 +73,12 @@ function confprod()
 function confdev()
 {
     global $app, $appname, $appversion;
-    $app->config(array(
+    $app->config([
         'debug' => true,
         'cookies.lifetime' => '5 minutes',
         'cookies.secret_key' => 'b4924c3579e2850a6fad8597da7ad24bf43ab78e',
 
-    ));
+    ]);
     $app->getLog()->setEnabled(true);
     $app->getLog()->setLevel(\Slim\Log::DEBUG);
     $app->getLog()->info($appname . ' ' . $appversion . ': Running in development mode.');
@@ -91,22 +91,22 @@ function confdev()
 function confdebug()
 {
     global $app, $appname, $appversion;
-    $app->config(array(
+    $app->config([
         'debug' => true,
         'cookies.lifetime' => '1 day',
         'cookies.secret_key' => 'b4924c3579e2850a6fad8597da7ad24bf43ab78e',
-    ));
+    ]);
     require 'vendor/DateTimeFileWriter.php';
     $app->getLog()->setEnabled(true);
     $app->getLog()->setLevel(\Slim\Log::DEBUG);
-    $app->getLog()->setWriter(new \Slim\Extras\Log\DateTimeFileWriter(array('path' => './data', 'name_format' => 'Y-m-d')));
+    $app->getLog()->setWriter(new \Slim\Extras\Log\DateTimeFileWriter(['path' => './data', 'name_format' => 'Y-m-d']));
     $app->getLog()->info($appname . ' ' . $appversion . ': Running in debug mode.');
     error_reporting(E_ALL | E_STRICT);
     $app->getLog()->info('Running on PHP: ' . PHP_VERSION);
 }
 
 # Init app globals
-$globalSettings = array();
+$globalSettings = [];
 $globalSettings['appname'] = $appname;
 $globalSettings['version'] = $appversion;
 $globalSettings['sep'] = ' :: ';
@@ -135,17 +135,17 @@ $globalSettings[LOGIN_REQUIRED] = 1;
 $globalSettings[TITLE_TIME_SORT] = TITLE_TIME_SORT_TIMESTAMP;
 $globalSettings[RELATIVE_URLS] = 1;
 
-$knownConfigs = array(CALIBRE_DIR, DB_VERSION, KINDLE, KINDLE_FROM_EMAIL,
+$knownConfigs = [CALIBRE_DIR, DB_VERSION, KINDLE, KINDLE_FROM_EMAIL,
     THUMB_GEN_CLIPPED, PAGE_SIZE, DISPLAY_APP_NAME, MAILER, SMTP_SERVER,
     SMTP_PORT, SMTP_USER, SMTP_PASSWORD, SMTP_ENCRYPTION, METADATA_UPDATE,
-    LOGIN_REQUIRED, TITLE_TIME_SORT, RELATIVE_URLS);
+    LOGIN_REQUIRED, TITLE_TIME_SORT, RELATIVE_URLS];
 
 # Freeze (true) DB schema before release! Set to false for DB development.
 $app->bbs = new BicBucStriim('data/data.db', true);
 $app->add(new \CalibreConfigMiddleware(CALIBRE_DIR));
-$app->add(new \LoginMiddleware($appname, array('js', 'img', 'style')));
+$app->add(new \LoginMiddleware($appname, ['js', 'img', 'style']));
 $app->add(new \OwnConfigMiddleware($knownConfigs));
-$app->add(new \CachingMiddleware(array('/admin', '/login')));
+$app->add(new \CachingMiddleware(['/admin', '/login']));
 
 ###### Init routes for production
 $app->notFound('myNotFound');
@@ -220,10 +220,10 @@ $app->run();
 function myNotFound()
 {
     global $app, $globalSettings;
-    $app->render('error.html', array(
+    $app->render('error.html', [
         'page' => mkPage(getMessageString('not_found1')),
         'title' => getMessageString('not_found1'),
-        'error' => getMessageString('not_found2')));
+        'error' => getMessageString('not_found2')]);
 }
 
 function show_login()
@@ -233,8 +233,8 @@ function show_login()
         $app->getLog()->info('user is already logged in : ' . $app->auth->getUserName());
         $app->redirect($app->request->getRootUri() . '/');
     } else {
-        $app->render('login.html', array(
-            'page' => mkPage(getMessageString('login'))));
+        $app->render('login.html', [
+            'page' => mkPage(getMessageString('login'))]);
     }
 }
 
@@ -247,10 +247,10 @@ function perform_login()
         $uname = $login_data['username'];
         $upw = $login_data['password'];
         if (empty($uname) || empty($upw)) {
-            $app->render('login.html', array(
-                'page' => mkPage(getMessageString('login'))));
+            $app->render('login.html', [
+                'page' => mkPage(getMessageString('login'))]);
         } else {
-            $app->login_service->login($app->auth, array('username' => $uname, 'password' => $upw));
+            $app->login_service->login($app->auth, ['username' => $uname, 'password' => $upw]);
             $success = $app->auth->getStatus();
             $app->getLog()->debug('login success: ' . $success);
             if (is_authenticated()) {
@@ -258,13 +258,13 @@ function perform_login()
                 $app->redirect($app->request->getRootUri() . '/');
             } else {
                 $app->getLog()->error('error logging in user : ' . $login_data['username']);
-                $app->render('login.html', array(
-                    'page' => mkPage(getMessageString('login'))));
+                $app->render('login.html', [
+                    'page' => mkPage(getMessageString('login'))]);
             }
         }
     } else {
-        $app->render('login.html', array(
-            'page' => mkPage(getMessageString('login'))));
+        $app->render('login.html', [
+            'page' => mkPage(getMessageString('login'))]);
     }
 }
 
@@ -281,8 +281,8 @@ function logout()
             $app->getLog()->info("logged out user: " . $username);
         }
     }
-    $app->render('logout.html', array(
-        'page' => mkPage(getMessageString('logout'))));
+    $app->render('logout.html', [
+        'page' => mkPage(getMessageString('logout'))]);
 }
 
 /**
@@ -293,9 +293,9 @@ function check_admin()
     global $app;
 
     if (!is_admin()) {
-        $app->render('error.html', array(
+        $app->render('error.html', [
             'page' => mkPage(getMessageString('error'), 0, 0),
-            'error' => getMessageString('error_no_access')));
+            'error' => getMessageString('error_no_access')]);
     }
 }
 
@@ -307,9 +307,9 @@ function admin()
 {
     global $app;
 
-    $app->render('admin.html', array(
+    $app->render('admin.html', [
         'page' => mkPage(getMessageString('admin'), 0, 1),
-        'isadmin' => is_admin()));
+        'isadmin' => is_admin()]);
 }
 
 
@@ -324,7 +324,7 @@ function mkMailers()
     $e2 = new ConfigMailer();
     $e2->key = Mailer::MAIL;
     $e2->text = getMessageString('admin_mailer_mail');
-    return array($e0, $e1, $e2);
+    return [$e0, $e1, $e2];
 }
 
 
@@ -339,7 +339,7 @@ function mkTitleTimeSortOptions()
     $e2 = new ConfigTtsOption();
     $e2->key = TITLE_TIME_SORT_LASTMODIFIED;
     $e2->text = getMessageString('admin_tts_by_lastmodified');
-    return array($e0, $e1, $e2);
+    return [$e0, $e1, $e2];
 }
 
 /**
@@ -349,11 +349,11 @@ function admin_configuration()
 {
     global $app;
 
-    $app->render('admin_configuration.html', array(
+    $app->render('admin_configuration.html', [
         'page' => mkPage(getMessageString('admin'), 0, 2),
         'mailers' => mkMailers(),
         'ttss' => mkTitleTimeSortOptions(),
-        'isadmin' => is_admin()));
+        'isadmin' => is_admin()]);
 }
 
 /**
@@ -365,7 +365,7 @@ function admin_get_idtemplates()
 
     $idtemplates = $app->bbs->idTemplates();
     $idtypes = $app->calibre->idTypes();
-    $ids2add = array();
+    $ids2add = [];
     foreach ($idtypes as $idtype) {
         if (empty($idtemplates)) {
             array_push($ids2add, $idtype['type']);
@@ -377,8 +377,9 @@ function admin_get_idtemplates()
                     break;
                 }
             }
-            if (!$found)
+            if (!$found) {
                 array_push($ids2add, $idtype['type']);
+            }
         }
     }
     foreach ($ids2add as $id2add) {
@@ -389,10 +390,10 @@ function admin_get_idtemplates()
         array_push($idtemplates, $ni);
     }
     $app->getLog()->debug('admin_get_idtemplates ' . var_export($idtemplates, true));
-    $app->render('admin_idtemplates.html', array(
+    $app->render('admin_idtemplates.html', [
         'page' => mkPage(getMessageString('admin_idtemplates'), 0, 2),
         'templates' => $idtemplates,
-        'isadmin' => is_admin()));
+        'isadmin' => is_admin()]);
 }
 
 function admin_modify_idtemplate($id)
@@ -400,7 +401,7 @@ function admin_modify_idtemplate($id)
     global $app;
 
     // parameter checking
-    if (!preg_match('/^\w+$/u',$id)) {
+    if (!preg_match('/^\w+$/u', $id)) {
         $app->getLog()->warn('admin_modify_idtemplate: invalid template id ' . $id);
         $app->halt(400, "Invalid ID for template: "+$id);
     }
@@ -409,10 +410,11 @@ function admin_modify_idtemplate($id)
     $app->getLog()->debug('admin_modify_idtemplate: ' . var_export($template_data, true));
     try {
         $template = $app->bbs->idTemplate($id);
-        if (is_null($template))
+        if (is_null($template)) {
             $ntemplate = $app->bbs->addIdTemplate($id, $template_data['url'], $template_data['label']);
-        else
+        } else {
             $ntemplate = $app->bbs->changeIdTemplate($id, $template_data['url'], $template_data['label']);
+        }
     } catch (Exception $e) {
         $app->getLog()->error('admin_modify_idtemplate: error while adding template' . var_export($template_data, true));
         $app->getLog()->error('admin_modify_idtemplate: exception ' . $e->getMessage());
@@ -422,7 +424,7 @@ function admin_modify_idtemplate($id)
     if (!is_null($ntemplate)) {
         $resp->status(200);
         $msg = getMessageString('admin_modified');
-        $answer = json_encode(array('template' => $ntemplate->getProperties(), 'msg' => $msg));
+        $answer = json_encode(['template' => $ntemplate->getProperties(), 'msg' => $msg]);
         $resp->header('Content-type', 'application/json');
     } else {
         $resp->status(500);
@@ -439,7 +441,7 @@ function admin_clear_idtemplate($id)
     global $app;
 
     // parameter checking
-    if (!preg_match('/^\w+$/u',$id)) {
+    if (!preg_match('/^\w+$/u', $id)) {
         $app->getLog()->warn('admin_clear_idtemplate: invalid template id ' . $id);
         $app->halt(400, "Invalid ID for template: "+$id);
     }
@@ -450,7 +452,7 @@ function admin_clear_idtemplate($id)
     if ($success) {
         $resp->status(200);
         $msg = getMessageString('admin_modified');
-        $answer = json_encode(array('msg' => $msg));
+        $answer = json_encode(['msg' => $msg]);
         $resp->header('Content-type', 'application/json');
     } else {
         $resp->status(404);
@@ -468,16 +470,16 @@ function admin_get_smtp_config()
 {
     global $app, $globalSettings;
 
-    $mail = array('username' => $globalSettings[SMTP_USER],
+    $mail = ['username' => $globalSettings[SMTP_USER],
         'password' => $globalSettings[SMTP_PASSWORD],
         'smtpserver' => $globalSettings[SMTP_SERVER],
         'smtpport' => $globalSettings[SMTP_PORT],
-        'smtpenc' => $globalSettings[SMTP_ENCRYPTION]);
-    $app->render('admin_mail.html', array(
+        'smtpenc' => $globalSettings[SMTP_ENCRYPTION]];
+    $app->render('admin_mail.html', [
         'page' => mkPage(getMessageString('admin_mail'), 0, 2),
         'mail' => $mail,
         'encryptions' => mkEncryptions(),
-        'isadmin' => is_admin()));
+        'isadmin' => is_admin()]);
 }
 
 function mkEncryptions()
@@ -491,7 +493,7 @@ function mkEncryptions()
     $e2 = new Encryption();
     $e2->key = 2;
     $e2->text = getMessageString('admin_smtpenc_tls');
-    return array($e0, $e1, $e2);
+    return [$e0, $e1, $e2];
 }
 
 /**
@@ -503,18 +505,18 @@ function admin_change_smtp_config()
 
     $mail_data = $app->request()->put();
     $app->getLog()->debug('admin_change_smtp_configuration: ' . var_export($mail_data, true));
-    $mail_config = array(SMTP_USER => $mail_data['username'],
+    $mail_config = [SMTP_USER => $mail_data['username'],
         SMTP_PASSWORD => $mail_data['password'],
         SMTP_SERVER => $mail_data['smtpserver'],
         SMTP_PORT => $mail_data['smtpport'],
-        SMTP_ENCRYPTION => $mail_data['smtpenc']);
+        SMTP_ENCRYPTION => $mail_data['smtpenc']];
     $app->bbs->saveConfigs($mail_config);
     $resp = $app->response();
-    $app->render('admin_mail.html', array(
+    $app->render('admin_mail.html', [
         'page' => mkPage(getMessageString('admin_smtp'), 0, 2),
         'mail' => $mail_data,
         'encryptions' => mkEncryptions(),
-        'isadmin' => is_admin()));
+        'isadmin' => is_admin()]);
 }
 
 
@@ -526,10 +528,10 @@ function admin_get_users()
     global $app;
 
     $users = $app->bbs->users();
-    $app->render('admin_users.html', array(
+    $app->render('admin_users.html', [
         'page' => mkPage(getMessageString('admin_users'), 0, 2),
         'users' => $users,
-        'isadmin' => is_admin()));
+        'isadmin' => is_admin()]);
 }
 
 
@@ -564,12 +566,12 @@ function admin_get_user($id)
     $nt->key = '';
     array_unshift($tags, $nt);
     $app->getLog()->debug('admin_get_user: ' . var_export($user, true));
-    $app->render('admin_user.html', array(
+    $app->render('admin_user.html', [
         'page' => mkPage(getMessageString('admin_users'), 0, 3),
         'user' => $user,
         'languages' => $languages,
         'tags' => $tags,
-        'isadmin' => is_admin()));
+        'isadmin' => is_admin()]);
 }
 
 /**
@@ -592,7 +594,7 @@ function admin_add_user()
     if (isset($user) && !is_null($user)) {
         $resp->status(200);
         $msg = getMessageString('admin_modified');
-        $answer = json_encode(array('user' => $user->getProperties(), 'msg' => $msg));
+        $answer = json_encode(['user' => $user->getProperties(), 'msg' => $msg]);
         $resp->header('Content-type', 'application/json');
     } else {
         $resp->status(500);
@@ -622,7 +624,7 @@ function admin_delete_user($id)
     if ($success) {
         $resp->status(200);
         $msg = getMessageString('admin_modified');
-        $answer = json_encode(array('msg' => $msg));
+        $answer = json_encode(['msg' => $msg]);
         $resp->header('Content-type', 'application/json');
     } else {
         $resp->status(500);
@@ -648,14 +650,19 @@ function admin_modify_user($id)
 
     $user_data = $app->request()->put();
     $app->getLog()->debug('admin_modify_user: ' . var_export($user_data, true));
-    $user = $app->bbs->changeUser($id, $user_data['password'],
-        $user_data['languages'], $user_data['tags'], $user_data['role']);
+    $user = $app->bbs->changeUser(
+        $id,
+        $user_data['password'],
+        $user_data['languages'],
+        $user_data['tags'],
+        $user_data['role']
+    );
     $app->getLog()->debug('admin_modify_user: ' . var_export($user, true));
     $resp = $app->response();
     if (isset($user) && !is_null($user)) {
         $resp->status(200);
         $msg = getMessageString('admin_modified');
-        $answer = json_encode(array('user' => $user->getProperties(), 'msg' => $msg));
+        $answer = json_encode(['user' => $user->getProperties(), 'msg' => $msg]);
         $resp->header('Content-type', 'application/json');
     } else {
         $resp->status(500);
@@ -678,31 +685,32 @@ function admin_change_json()
         # Check access permission
         if (!is_admin()) {
             $app->getLog()->warn('admin_change: no admin permission');
-            $app->render('admin_configuration.html', array(
+            $app->render('admin_configuration.html', [
                 'page' => mkPage(getMessageString('admin')),
-                'messages' => array(getMessageString('invalid_password')),
-                'isadmin' => false));
+                'messages' => [getMessageString('invalid_password')],
+                'isadmin' => false]);
             return;
         }
-        $nconfigs = array();
+        $nconfigs = [];
         $req_configs = $app->request()->post();
-        $errors = array();
-        $messages = array();
+        $errors = [];
+        $messages = [];
         $app->getLog()->debug('admin_change: ' . var_export($req_configs, true));
 
         ## Check for consistency - calibre directory
         # Calibre dir is still empty and no change in sight --> error
-        if (!has_valid_calibre_dir() && empty($req_configs[CALIBRE_DIR]))
+        if (!has_valid_calibre_dir() && empty($req_configs[CALIBRE_DIR])) {
             array_push($errors, 1);
+        }
         # Calibre dir changed, check it for existence, delete thumbnails of old calibre library
         elseif (array_key_exists(CALIBRE_DIR, $req_configs)) {
             $req_calibre_dir = $req_configs[CALIBRE_DIR];
             if ($req_calibre_dir != $globalSettings[CALIBRE_DIR]) {
                 if (!Calibre::checkForCalibre($req_calibre_dir)) {
                     array_push($errors, 1);
-                } elseif ($app->bbs->clearThumbnails())
+                } elseif ($app->bbs->clearThumbnails()) {
                     $app->getLog()->info('admin_change: Lib changed, deleted existing thumbnails.');
-                else {
+                } else {
                     $app->getLog()->info('admin_change: Lib changed, deletion of existing thumbnails failed.');
                 }
             }
@@ -721,9 +729,9 @@ function admin_change_json()
         if ($req_configs[THUMB_GEN_CLIPPED] != $globalSettings[THUMB_GEN_CLIPPED]) {
             $app->getLog()->info('admin_change: Thumbnail generation method changed. Existing Thumbnails will be deleted.');
             # Delete old thumbnails if necessary
-            if ($app->bbs->clearThumbnails())
+            if ($app->bbs->clearThumbnails()) {
                 $app->getLog()->info('admin_change: Deleted exisiting thumbnails.');
-            else {
+            } else {
                 $app->getLog()->info('admin_change: Deletion of exisiting thumbnails failed.');
             }
         }
@@ -739,10 +747,10 @@ function admin_change_json()
         # Don't save just return the error status
         if (count($errors) > 0) {
             $app->getLog()->error('admin_change: ended with error ' . var_export($errors, true));
-            $app->render('admin_configuration.html', array(
+            $app->render('admin_configuration.html', [
                 'page' => mkPage(getMessageString('admin')),
                 'isadmin' => true,
-                'errors' => $errors));
+                'errors' => $errors]);
         } else {
             ## Apply changes
             foreach ($req_configs as $key => $value) {
@@ -758,13 +766,13 @@ function admin_change_json()
                 $app->getLog()->debug('admin_change: changes saved');
             }
             $app->getLog()->debug('admin_change: ended');
-            $app->render('admin_configuration.html', array(
+            $app->render('admin_configuration.html', [
                 'page' => mkPage(getMessageString('admin'), 0, 2),
-                'messages' => array(getMessageString('changes_saved')),
+                'messages' => [getMessageString('changes_saved')],
                 'mailers' => mkMailers(),
                 'ttss' => mkTitleTimeSortOptions(),
                 'isadmin' => true,
-            ));
+            ]);
         }
     }
 }
@@ -775,7 +783,7 @@ function admin_change_json()
 function admin_check_version()
 {
     global $app, $globalSettings;
-    $versionAnswer = array();
+    $versionAnswer = [];
     $contents = file_get_contents(VERSION_URL);
     if ($contents == false) {
         $versionClass = 'error';
@@ -799,12 +807,12 @@ function admin_check_version()
             $versionAnswer = sprintf(getMessageString('admin_no_new_version'), $globalSettings['version']);
         }
     }
-    $app->render('admin_version.html', array(
+    $app->render('admin_version.html', [
         'page' => mkPage(getMessageString('admin_check_version'), 0, 2),
         'versionClass' => $versionClass,
         'versionAnswer' => $versionAnswer,
         'isadmin' => true,
-    ));
+    ]);
 }
 
 /*********************************************************************
@@ -826,7 +834,7 @@ function edit_author_thm($id)
         $app->halt(400, "Bad parameter");
     }
 
-    $allowedExts = array("jpeg", "jpg", "png");
+    $allowedExts = ["jpeg", "jpg", "png"];
     #$temp = explode(".", $_FILES["file"]["name"]);
     #$extension = end($temp);
     $extension = pathinfo($_FILES["file"]["name"], PATHINFO_EXTENSION);
@@ -880,7 +888,7 @@ function del_author_thm($id)
     if ($del) {
         $resp->status(200);
         $msg = getMessageString('admin_modified');
-        $answer = json_encode(array('msg' => $msg));
+        $answer = json_encode(['msg' => $msg]);
         $resp->header('Content-type', 'application/json');
     } else {
         $resp->status(500);
@@ -921,7 +929,7 @@ function edit_author_notes($id)
         $msg = getMessageString('admin_modified');
         $note2 = $note->getProperties();
         $note2['html'] = $html;
-        $answer = json_encode(array('note' => $note2, 'msg' => $msg));
+        $answer = json_encode(['note' => $note2, 'msg' => $msg]);
         $resp->header('Content-type', 'application/json');
     } else {
         $resp->status(500);
@@ -951,7 +959,7 @@ function del_author_notes($id)
     if ($del) {
         $resp->status(200);
         $msg = getMessageString('admin_modified');
-        $answer = json_encode(array('msg' => $msg));
+        $answer = json_encode(['msg' => $msg]);
         $resp->header('Content-type', 'application/json');
     } else {
         $resp->status(500);
@@ -986,7 +994,7 @@ function new_author_link($id)
     if (!is_null($link)) {
         $resp->status(200);
         $msg = getMessageString('admin_modified');
-        $answer = json_encode(array('link' => $link->getProperties(), 'msg' => $msg));
+        $answer = json_encode(['link' => $link->getProperties(), 'msg' => $msg]);
         $resp->header('Content-type', 'application/json');
     } else {
         $resp->status(500);
@@ -1016,7 +1024,7 @@ function del_author_link($id, $link)
     if ($ret) {
         $resp->status(200);
         $msg = getMessageString('admin_modified');
-        $answer = json_encode(array('msg' => $msg));
+        $answer = json_encode(['msg' => $msg]);
         $resp->header('Content-type', 'application/json');
     } else {
         $resp->status(500);
@@ -1042,10 +1050,10 @@ function main()
     $books1 = $app->calibre->last30Books($globalSettings['lang'], $globalSettings[PAGE_SIZE], $filter);
     $books = array_map('checkThumbnail', $books1);
     $stats = $app->calibre->libraryStats($filter);
-    $app->render('index_last30.html', array(
+    $app->render('index_last30.html', [
         'page' => mkPage(getMessageString('dl30'), 1, 1),
         'books' => $books,
-        'stats' => $stats));
+        'stats' => $stats]);
 }
 
 
@@ -1067,7 +1075,7 @@ function globalSearch()
     $tlt_books = array_map('checkThumbnail', $tlt['entries']);
     $tls = $app->calibre->seriesSlice(0, $globalSettings[PAGE_SIZE], trim($search));
     $tls_books = array_map('checkThumbnail', $tls['entries']);
-    $app->render('global_search.html', array(
+    $app->render('global_search.html', [
         'page' => mkPage(getMessageString('pagination_search'), 0),
         'books' => $tlb_books,
         'books_total' => $tlb['total'] == -1 ? 0 : $tlb['total'],
@@ -1081,7 +1089,7 @@ function globalSearch()
         'series' => $tls_books,
         'series_total' => $tls['total'] == -1 ? 0 : $tls['total'],
         'more_series' => ($tls['total'] > $globalSettings[PAGE_SIZE]),
-        'search' => $search));
+        'search' => $search]);
 }
 
 
@@ -1124,19 +1132,20 @@ function titlesSlice($index = 0)
     }
 
     $books = array_map('checkThumbnail', $tl['entries']);
-    $app->render('titles.html', array(
+    $app->render('titles.html', [
         'page' => mkPage(getMessageString('titles'), 2, 1),
         'url' => 'titleslist',
         'books' => $books,
         'curpage' => $tl['page'],
         'pages' => $tl['pages'],
         'search' => $search,
-        'sort' => $sort));
+        'sort' => $sort]);
 }
 
 # Creates a human readable filesize string
-function human_filesize($bytes, $decimals = 0) {
-    $size = array('B','KB','MB','GB','TB','PB','EB','ZB','YB');
+function human_filesize($bytes, $decimals = 0)
+{
+    $size = ['B','KB','MB','GB','TB','PB','EB','ZB','YB'];
     $factor = floor((strlen($bytes) - 1) / 3);
     return sprintf("%.{$decimals}f", $bytes / pow(1024, $factor)) . @$size[$factor];
 }
@@ -1148,8 +1157,8 @@ function title($id)
 
     // Add filter for huma nreadable filesize
     $filter = new Twig_SimpleFilter('hfsize', function ($string) {
-                                                                    return human_filesize($string);
-                                                                 });
+        return human_filesize($string);
+    });
     $tenv = $app->view->getEnvironment();
     $tenv->addFilter($filter);
 
@@ -1173,18 +1182,20 @@ function title($id)
     }
     // Show ID links only if there are templates and ID data
     $idtemplates = $app->bbs->idTemplates();
-    $id_tmpls = array();
+    $id_tmpls = [];
     if (count($idtemplates) > 0 && count($details['ids']) > 0) {
         $show_idlinks = true;
         foreach ($idtemplates as $idtemplate) {
-            $id_tmpls[$idtemplate->name] = array($idtemplate->val, $idtemplate->label);
+            $id_tmpls[$idtemplate->name] = [$idtemplate->val, $idtemplate->label];
         }
-    } else
+    } else {
         $show_idlinks = false;
+    }
     $kindle_format = ($globalSettings[KINDLE] == 1) ? $app->calibre->titleGetKindleFormat($id) : null;
     $app->getLog()->debug('titleDetails custom columns: ' . count($details['custom']));
-    $app->render('title_detail.html',
-        array('page' => mkPage(getMessageString('book_details'), 2, 2),
+    $app->render(
+        'title_detail.html',
+        ['page' => mkPage(getMessageString('book_details'), 2, 2),
             'book' => $details['book'],
             'authors' => $details['authors'],
             'series' => $details['series'],
@@ -1198,7 +1209,7 @@ function title($id)
             'id_templates' => $id_tmpls,
             'kindle_format' => $kindle_format,
             'kindle_from_email' => $globalSettings[KINDLE_FROM_EMAIL],
-            'protect_dl' => false)
+            'protect_dl' => false]
     );
 }
 
@@ -1314,10 +1325,11 @@ function book($id, $file)
             " with metadata update = " . $globalSettings[METADATA_UPDATE]);
     }
     if ($contentType == Utilities::MIME_EPUB && $globalSettings[METADATA_UPDATE]) {
-        if ($details['book']->has_cover == 1)
+        if ($details['book']->has_cover == 1) {
             $cover = $app->calibre->titleCover($id);
-        else
+        } else {
             $cover = null;
+        }
         // If an EPUB update the metadata
         $mdep = new MetadataEpub($real_bookpath);
         $mdep->updateMetadata($details, $cover);
@@ -1326,8 +1338,9 @@ function book($id, $file)
         $app->getLog()->debug("book(e): type " . $contentType);
         $booksize = filesize($bookpath);
         $app->getLog()->debug("book(e): size " . $booksize);
-        if ($booksize > 0)
+        if ($booksize > 0) {
             header("Content-Length: " . $booksize);
+        }
         header("Content-Type: " . $contentType);
         header("Content-Disposition: attachment; filename=\"" . $file . "\"");
         header("Content-Description: File Transfer");
@@ -1393,13 +1406,13 @@ function kindle($id, $file)
         $bookpath = $app->calibre->titleFile($id, $file);
         $app->getLog()->debug("kindle: requested file " . $bookpath);
         if ($globalSettings[MAILER] == Mailer::SMTP) {
-            $mail = array('username' => $globalSettings[SMTP_USER],
+            $mail = ['username' => $globalSettings[SMTP_USER],
                 'password' => $globalSettings[SMTP_PASSWORD],
                 'smtp-server' => $globalSettings[SMTP_SERVER],
-                'smtp-port' => $globalSettings[SMTP_PORT]);
-            if ($globalSettings[SMTP_ENCRYPTION] == 1)
+                'smtp-port' => $globalSettings[SMTP_PORT]];
+            if ($globalSettings[SMTP_ENCRYPTION] == 1) {
                 $mail['smtp-encryption'] = Mailer::SSL;
-            elseif ($globalSettings[SMTP_ENCRYPTION] == 2) {
+            } elseif ($globalSettings[SMTP_ENCRYPTION] == 2) {
                 $mail['smtp-encryption'] = Mailer::TLS;
             }
             $app->getLog()->debug('kindle mail config: ' . var_export($mail, true));
@@ -1413,10 +1426,11 @@ function kindle($id, $file)
         try {
             $message = $mailer->createBookMessage($bookpath, $globalSettings[DISPLAY_APP_NAME], $to_email, $globalSettings[KINDLE_FROM_EMAIL], $filename);
             $send_success = $mailer->sendMessage($message);
-            if ($send_success == 0)
+            if ($send_success == 0) {
                 $app->getLog()->warn('kindle: book delivery to ' . $to_email . ' failed, dump: ' . $mailer->getDump());
-            else
+            } else {
                 $app->getLog()->debug('kindle: book delivered to ' . $to_email . ', result ' . $send_success);
+            }
             # if there was an exception, log it and return gracefully
         } catch (Exception $e) {
             $app->getLog()->warn('kindle: Email exception ' . $e->getMessage());
@@ -1424,10 +1438,11 @@ function kindle($id, $file)
         }
         # Store e-mail address in cookie so user needs to enter it only once
         $app->setCookie(KINDLE_COOKIE, $to_email);
-        if ($send_success > 0)
+        if ($send_success > 0) {
             echo getMessageString('send_success');
-        else
+        } else {
             $app->response()->status(503);
+        }
     }
 }
 
@@ -1447,23 +1462,25 @@ function authorsSlice($index = 0)
     }
 
     $search = $app->request()->get('search');
-    if (isset($search))
+    if (isset($search)) {
         $tl = $app->calibre->authorsSlice($index, $globalSettings[PAGE_SIZE], trim($search));
-    else
+    } else {
         $tl = $app->calibre->authorsSlice($index, $globalSettings[PAGE_SIZE]);
+    }
 
     foreach ($tl['entries'] as $author) {
         $author->thumbnail = $app->bbs->getAuthorThumbnail($author->id);
-        if ($author->thumbnail)
+        if ($author->thumbnail) {
             $app->getLog()->debug('authorsSlice thumbnail ' . var_export($author->thumbnail->url, true));
+        }
     }
-    $app->render('authors.html', array(
+    $app->render('authors.html', [
         'page' => mkPage(getMessageString('authors'), 3, 1),
         'url' => 'authorslist',
         'authors' => $tl['entries'],
         'curpage' => $tl['page'],
         'pages' => $tl['pages'],
-        'search' => $search));
+        'search' => $search]);
 }
 
 /**
@@ -1480,10 +1497,10 @@ function author($id)
         $app->getLog()->debug("no author");
         $app->notFound();
     }
-    $app->render('author_detail.html', array(
+    $app->render('author_detail.html', [
         'page' => mkPage(getMessageString('author_details'), 3, 2),
         'author' => $details['author'],
-        'books' => $details['books']));
+        'books' => $details['books']]);
 }
 
 /**
@@ -1517,10 +1534,11 @@ function authorDetailsSlice($id, $index = 0)
     $author = $tl['author'];
     $author->thumbnail = $app->bbs->getAuthorThumbnail($id);
     $note = $app->bbs->authorNote($id);
-    if (!is_null($note))
+    if (!is_null($note)) {
         $author->notes_source = $note->ntext;
-    else
+    } else {
         $author->notes_source = null;
+    }
     if (!empty($author->notes_source)) {
         $markdownParser = new MarkdownExtraParser();
         $author->notes = $markdownParser->transformMarkdown($author->notes_source);
@@ -1529,7 +1547,7 @@ function authorDetailsSlice($id, $index = 0)
     }
 
     $author->links = $app->bbs->authorLinks($id);
-    $app->render('author_detail.html', array(
+    $app->render('author_detail.html', [
         'page' => mkPage(getMessageString('author_details'), 3, 2),
         'url' => 'authors/' . $id,
         'author' => $tl['author'],
@@ -1537,7 +1555,7 @@ function authorDetailsSlice($id, $index = 0)
         'series' => $series,
         'curpage' => $tl['page'],
         'pages' => $tl['pages'],
-        'isadmin' => is_admin()));
+        'isadmin' => is_admin()]);
 }
 
 
@@ -1562,21 +1580,22 @@ function authorNotes($id)
         $app->notFound();
     }
     $note = $app->bbs->authorNote($id);
-    if (!is_null($note))
+    if (!is_null($note)) {
         $author->notes_source = $note->ntext;
-    else
+    } else {
         $author->notes_source = null;
+    }
     if (!empty($author->notes_source)) {
         $markdownParser = new MarkdownExtraParser();
         $author->notes = $markdownParser->transformMarkdown($author->notes_source);
     } else {
         $author->notes = null;
     }
-    $app->render('author_notes.html', array(
+    $app->render('author_notes.html', [
         'page' => mkPage(getMessageString('author_notes'), 3, 2),
         'url' => 'authors/' . $id,
         'author' => $author,
-        'isadmin' => is_admin()));
+        'isadmin' => is_admin()]);
 }
 
 
@@ -1601,13 +1620,13 @@ function seriesSlice($index = 0)
     } else {
         $tl = $app->calibre->seriesSlice($index, $globalSettings[PAGE_SIZE]);
     }
-    $app->render('series.html', array(
+    $app->render('series.html', [
         'page' => mkPage(getMessageString('series'), 5, 1),
         'url' => 'serieslist',
         'series' => $tl['entries'],
         'curpage' => $tl['page'],
         'pages' => $tl['pages'],
-        'search' => $search));
+        'search' => $search]);
     $app->getLog()->debug('seriesSlice ended');
 }
 
@@ -1625,10 +1644,10 @@ function series($id)
         $app->getLog()->debug('no series ' . $id);
         $app->notFound();
     }
-    $app->render('series_detail.html', array(
+    $app->render('series_detail.html', [
         'page' => mkPage(getMessageString('series_details'), 5, 3),
         'series' => $details['series'],
-        'books' => $details['books']));
+        'books' => $details['books']]);
 }
 
 /**
@@ -1655,13 +1674,13 @@ function seriesDetailsSlice($id, $index = 0)
         $app->notFound();
     }
     $books = array_map('checkThumbnail', $tl['entries']);
-    $app->render('series_detail.html', array(
+    $app->render('series_detail.html', [
         'page' => mkPage(getMessageString('series_details'), 5, 2),
         'url' => 'series/' . $id,
         'series' => $tl['series'],
         'books' => $books,
         'curpage' => $tl['page'],
-        'pages' => $tl['pages']));
+        'pages' => $tl['pages']]);
 }
 
 
@@ -1680,17 +1699,18 @@ function tagsSlice($index = 0)
     }
 
     $search = $app->request()->get('search');
-    if (isset($search))
+    if (isset($search)) {
         $tl = $app->calibre->tagsSlice($index, $globalSettings[PAGE_SIZE], trim($search));
-    else
+    } else {
         $tl = $app->calibre->tagsSlice($index, $globalSettings[PAGE_SIZE]);
-    $app->render('tags.html', array(
+    }
+    $app->render('tags.html', [
         'page' => mkPage(getMessageString('tags'), 4, 1),
         'url' => 'tagslist',
         'tags' => $tl['entries'],
         'curpage' => $tl['page'],
         'pages' => $tl['pages'],
-        'search' => $search));
+        'search' => $search]);
 }
 
 # Details for a single tag -> /tags/:id/:page
@@ -1704,10 +1724,10 @@ function tag($id)
         $app->getLog()->debug("no tag");
         $app->notFound();
     }
-    $app->render('tag_detail.html', array(
+    $app->render('tag_detail.html', [
         'page' => mkPage(getMessageString('tag_details'), 4, 3),
         'tag' => $details['tag'],
-        'books' => $details['books']));
+        'books' => $details['books']]);
 }
 
 /**
@@ -1735,13 +1755,13 @@ function tagDetailsSlice($id, $index = 0)
         $app->notFound();
     }
     $books = array_map('checkThumbnail', $tl['entries']);
-    $app->render('tag_detail.html', array(
+    $app->render('tag_detail.html', [
         'page' => mkPage(getMessageString('tag_details'), 4, 2),
         'url' => 'tags/' . $id,
         'tag' => $tl['tag'],
         'books' => $books,
         'curpage' => $tl['page'],
-        'pages' => $tl['pages']));
+        'pages' => $tl['pages']]);
 }
 
 /*********************************************************************
@@ -1774,11 +1794,12 @@ function opdsNewest()
 
     $filter = getFilter();
     $just_books = $app->calibre->last30Books($globalSettings['lang'], $globalSettings[PAGE_SIZE], $filter);
-    $books1 = array();
+    $books1 = [];
     foreach ($just_books as $book) {
         $record = $app->calibre->titleDetailsOpds($book);
-        if (!empty($record['formats']))
+        if (!empty($record['formats'])) {
             array_push($books1, $record);
+        }
     }
     $books = array_map('checkThumbnailOpds', $books1);
     $gen = mkOpdsGenerator($app);
@@ -1806,15 +1827,22 @@ function opdsByTitle($index = 0)
 
     $filter = getFilter();
     $search = $app->request()->get('search');
-    if (isset($search))
+    if (isset($search)) {
         $tl = $app->calibre->titlesSlice($globalSettings['lang'], $index, $globalSettings[PAGE_SIZE], $filter, $search);
-    else
+    } else {
         $tl = $app->calibre->titlesSlice($globalSettings['lang'], $index, $globalSettings[PAGE_SIZE], $filter);
+    }
     $books1 = $app->calibre->titleDetailsFilteredOpds($tl['entries']);
     $books = array_map('checkThumbnailOpds', $books1);
     $gen = mkOpdsGenerator($app);
-    $cat = $gen->titlesCatalog(null, $books, false,
-        $tl['page'], getNextSearchPage($tl), getLastSearchPage($tl));
+    $cat = $gen->titlesCatalog(
+        null,
+        $books,
+        false,
+        $tl['page'],
+        getNextSearchPage($tl),
+        getLastSearchPage($tl)
+    );
     mkOpdsResponse($app, $cat, OpdsGenerator::OPDS_MIME_ACQ);
 }
 
@@ -1874,8 +1902,16 @@ function opdsByAuthor($initial, $id, $page)
     $books = array_map('checkThumbnailOpds', $books1);
     $app->getLog()->debug('opdsByAuthor 2 ' . var_export($books, true));
     $gen = mkOpdsGenerator($app);
-    $cat = $gen->booksForAuthorCatalog(null, $books, $initial, $tl['author'], false,
-        $tl['page'], getNextSearchPage($tl), getLastSearchPage($tl));
+    $cat = $gen->booksForAuthorCatalog(
+        null,
+        $books,
+        $initial,
+        $tl['author'],
+        false,
+        $tl['page'],
+        getNextSearchPage($tl),
+        getLastSearchPage($tl)
+    );
     mkOpdsResponse($app, $cat, OpdsGenerator::OPDS_MIME_ACQ);
 }
 
@@ -1933,8 +1969,16 @@ function opdsByTag($initial, $id, $page)
     $books1 = $app->calibre->titleDetailsFilteredOpds($tl['entries']);
     $books = array_map('checkThumbnailOpds', $books1);
     $gen = mkOpdsGenerator($app);
-    $cat = $gen->booksForTagCatalog(null, $books, $initial, $tl['tag'], false,
-        $tl['page'], getNextSearchPage($tl), getLastSearchPage($tl));
+    $cat = $gen->booksForTagCatalog(
+        null,
+        $books,
+        $initial,
+        $tl['tag'],
+        false,
+        $tl['page'],
+        getNextSearchPage($tl),
+        getLastSearchPage($tl)
+    );
     mkOpdsResponse($app, $cat, OpdsGenerator::OPDS_MIME_ACQ);
 }
 
@@ -1992,8 +2036,16 @@ function opdsBySeries($initial, $id, $page)
     $books1 = $app->calibre->titleDetailsFilteredOpds($tl['entries']);
     $books = array_map('checkThumbnailOpds', $books1);
     $gen = mkOpdsGenerator($app);
-    $cat = $gen->booksForSeriesCatalog(null, $books, $initial, $tl['series'], false,
-        $tl['page'], getNextSearchPage($tl), getLastSearchPage($tl));
+    $cat = $gen->booksForSeriesCatalog(
+        null,
+        $books,
+        $initial,
+        $tl['series'],
+        false,
+        $tl['page'],
+        getNextSearchPage($tl),
+        getLastSearchPage($tl)
+    );
     mkOpdsResponse($app, $cat, OpdsGenerator::OPDS_MIME_ACQ);
 }
 
@@ -2037,9 +2089,17 @@ function opdsBySearch($index = 0)
     $books1 = $app->calibre->titleDetailsFilteredOpds($tl['entries']);
     $books = array_map('checkThumbnailOpds', $books1);
     $gen = mkOpdsGenerator($app);
-    $cat = $gen->searchCatalog(null, $books, false,
-        $tl['page'], getNextSearchPage($tl), getLastSearchPage($tl), $search,
-        $tl['total'], $globalSettings[PAGE_SIZE]);
+    $cat = $gen->searchCatalog(
+        null,
+        $books,
+        false,
+        $tl['page'],
+        getNextSearchPage($tl),
+        getLastSearchPage($tl),
+        $search,
+        $tl['total'],
+        $globalSettings[PAGE_SIZE]
+    );
     mkOpdsResponse($app, $cat, OpdsGenerator::OPDS_MIME_ACQ);
 }
 
@@ -2071,10 +2131,12 @@ function getFilter()
     if (is_authenticated()) {
         $user = $app->auth->getUserData();
         $app->getLog()->debug('getFilter: ' . var_export($user, true));
-        if (!empty($user['languages']))
+        if (!empty($user['languages'])) {
             $lang = $app->calibre->getLanguageId($user['languages']);
-        if (!empty($user['tags']))
+        }
+        if (!empty($user['tags'])) {
             $tag = $app->calibre->getTagId($user['tags']);
+        }
         $app->getLog()->debug('getFilter: Using language ' . $lang . ', tag ' . $tag);
     }
     return new CalibreFilter($lang, $tag);
@@ -2133,10 +2195,13 @@ function mkOpdsGenerator(\Slim\Slim $app)
     global $appversion, $globalSettings;
 
     $root = mkRootUrl();
-    $gen = new OpdsGenerator($root, $appversion,
+    $gen = new OpdsGenerator(
+        $root,
+        $appversion,
         $app->calibre->calibre_dir,
         date(DATE_ATOM, $app->calibre->calibre_last_modified),
-        $globalSettings['l10n']);
+        $globalSettings['l10n']
+    );
     return $gen;
 }
 
@@ -2155,17 +2220,19 @@ function mkPage($subtitle = '', $menu = 0, $level = 0)
 {
     global $app, $globalSettings;
 
-    if ($subtitle == '')
+    if ($subtitle == '') {
         $title = $globalSettings[DISPLAY_APP_NAME];
-    else
+    } else {
         $title = $globalSettings[DISPLAY_APP_NAME] . $globalSettings['sep'] . $subtitle;
+    }
     $rot = mkRootUrl();
     $auth = is_authenticated();
-    if ($globalSettings[LOGIN_REQUIRED])
+    if ($globalSettings[LOGIN_REQUIRED]) {
         $adm = is_admin();
-    else
-        $adm = true;    # the admin button should be always visible if no login is required
-    $page = array('title' => $title,
+    } else {
+        $adm = true;
+    }    # the admin button should be always visible if no login is required
+    $page = ['title' => $title,
         'rot' => $rot,
         'h1' => $subtitle,
         'version' => $globalSettings['version'],
@@ -2173,7 +2240,7 @@ function mkPage($subtitle = '', $menu = 0, $level = 0)
         'menu' => $menu,
         'level' => $level,
         'auth' => $auth,
-        'admin' => $adm);
+        'admin' => $adm];
     return $page;
 }
 
@@ -2186,8 +2253,9 @@ function title_forbidden($book_details)
 {
     global $app;
 
-    if (!is_authenticated())
+    if (!is_authenticated()) {
         return false;
+    }
     $user = $app->auth->getUserData();
     if (empty($user['languages']) && empty($user['tags'])) {
         return false;
@@ -2244,10 +2312,11 @@ function getMessageString($id)
  */
 function getNextSearchPage($tl)
 {
-    if ($tl['page'] < $tl['pages'] - 1)
+    if ($tl['page'] < $tl['pages'] - 1) {
         $nextPage = $tl['page'] + 1;
-    else
+    } else {
         $nextPage = null;
+    }
     return $nextPage;
 }
 
@@ -2258,10 +2327,11 @@ function getNextSearchPage($tl)
  */
 function getLastSearchPage($tl)
 {
-    if ($tl['pages'] == 0)
+    if ($tl['pages'] == 0) {
         $lastPage = 0;
-    else
+    } else {
         $lastPage = $tl['pages'] - 1;
+    }
     return $lastPage;
 }
 
@@ -2279,7 +2349,7 @@ function getLastSearchPage($tl)
 function getUserLang($allowedLangs, $fallbackLang)
 {
     // reset user_lang array
-    $userLangs = array();
+    $userLangs = [];
     // 2nd highest priority: GET parameter 'lang'
     if (isset($_GET['lang']) && is_string($_GET['lang'])) {
         $userLangs[] = $_GET['lang'];
@@ -2297,8 +2367,9 @@ function getUserLang($allowedLangs, $fallbackLang)
     // Lowest priority: fallback
     $userLangs[] = $fallbackLang;
     foreach ($allowedLangs as $al) {
-        if ($userLangs[0] == $al)
+        if ($userLangs[0] == $al) {
             return $al;
+        }
     }
     return $fallbackLang;
 }
@@ -2371,7 +2442,6 @@ function readfile_chunked($filename)
     }
     $status = fclose($handle);
     return $status;
-
 }
 
 # Check for valid email address format
@@ -2379,6 +2449,3 @@ function isEMailValid($mail)
 {
     return (filter_var($mail, FILTER_VALIDATE_EMAIL) !== false);
 }
-
-
-?>

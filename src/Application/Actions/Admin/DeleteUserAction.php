@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Application\Actions\Admin;
-
 
 use App\Application\Actions\ActionPayload;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -10,7 +8,6 @@ use Slim\Exception\HttpBadRequestException;
 
 class DeleteUserAction extends AdminAction
 {
-
     /**
      * @inheritDoc
      */
@@ -26,14 +23,18 @@ class DeleteUserAction extends AdminAction
         $this->logger->debug('admin_delete_user: ' . var_export($id, true));
         $success = $this->bbs->deleteUser($id);
         if ($success) {
-            $ap = new ActionPayload(200, array(
-                    'msg' => $this->getMessageString('admin_modified')
-                )
+            $ap = new ActionPayload(
+                200,
+                [
+                    'msg' => $this->getMessageString('admin_modified'),
+                ]
             );
         } else {
-            $ap = new ActionPayload(500, array(
-                    'msg' => $this->getMessageString('admin_modify_error')
-                )
+            $ap = new ActionPayload(
+                500,
+                [
+                    'msg' => $this->getMessageString('admin_modify_error'),
+                ]
             );
         }
         return $this->respondWithData($ap);

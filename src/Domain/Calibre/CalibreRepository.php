@@ -8,13 +8,13 @@ interface CalibreRepository
      * Is the Calibre library open?
      * @return boolean    true if open, else false
      */
-    function libraryOk(): bool;
+    public function libraryOk(): bool;
 
     /**
      * Return the modification time of Calibre's metadata.db as Unix epoch.
      * @return int
      */
-    function getModTime(): int;
+    public function getModTime(): int;
 
     /**
      * Return an array with library statistics for titles, authors etc.
@@ -22,7 +22,7 @@ interface CalibreRepository
      * @param object $filter a QueryFilter
      * @return array            array of numbers fir titles, authers etc.
      */
-    function libraryStats(object $filter): array;
+    public function libraryStats(object $filter): array;
 
     /**
      * Return the number (int) of rows for a SQL COUNT Statement, e.g.
@@ -32,7 +32,7 @@ interface CalibreRepository
      * @param array $params query parameters
      * @return int                    number of result rows
      */
-    function count(string $sql, array $params): int;
+    public function count(string $sql, array $params): int;
 
     /**
      * Return the ID for a language code from the Calibre languages table
@@ -56,7 +56,7 @@ interface CalibreRepository
      * @return array of books
      * @deprecated
      */
-    function last30Books($lang, $nrOfTitles = 30, $filter = null);
+    public function last30Books($lang, $nrOfTitles = 30, $filter = null);
 
     /**
      * Return just the pure author information.
@@ -70,7 +70,7 @@ interface CalibreRepository
      * @param integer $id author id
      * @return array            array with elements: author data, books
      */
-    function authorDetails($id);
+    public function authorDetails($id);
 
     /**
      * Find a single author and return the details plus some books.
@@ -83,7 +83,7 @@ interface CalibreRepository
      * @return array           array with elements: author data, current page,
      *                               no. of pages, $length entries
      */
-    function authorDetailsSlice($lang, $id, $index = 0, $length = 100, $filter = null);
+    public function authorDetailsSlice($lang, $id, $index = 0, $length = 100, $filter = null);
 
     /**
      * Search a list of authors defined by the parameters $index and $length.
@@ -98,7 +98,7 @@ interface CalibreRepository
      * @return array                with elements: current page,
      *                      no. of pages, $length entries
      */
-    function authorsSlice($index = 0, $length = 100, $search = null, $translit = false);
+    public function authorsSlice($index = 0, $length = 100, $search = null, $translit = false);
 
     /**
      * Find the initials of all authors and their count
@@ -107,44 +107,44 @@ interface CalibreRepository
      * Changed thanks to QNAP who insist on publishing outdated libraries in their firmware
      * TODO revert back to real SQL, not the outdated-QNAP stlyle
      */
-    function authorsInitials();
+    public function authorsInitials();
 
     /**
      * Find all authors with a given initial and return their names and book count
      * @param string $initial initial character of last name, uppercase
      * @return array           array of authors with book count
      */
-    function authorsNamesForInitial($initial);
+    public function authorsNamesForInitial($initial);
 
     /**
      * Gets a unique list of all series from the author.
      * @param integer $id author id
      * @param array array of all books from the author
      */
-    function authorSeries($id, $books);
+    public function authorSeries($id, $books);
 
     /**
      * Find all ID types in the Calibre identifiers table
      * @return array id type names
      */
-    function idTypes();
+    public function idTypes();
 
     /**
      * Return a list of all languages
      */
-    function languages();
+    public function languages();
 
     /**
      * Return a list of all tags, ordered by name
      */
-    function tags();
+    public function tags();
 
     /**
      * Returns a tag and the related books
      * @param integer $id tag id
      * @return array            array with elements: tag data, books
      */
-    function tagDetails($id);
+    public function tagDetails($id);
 
     /**
      * Find a single tag and return the details plus some books.
@@ -157,9 +157,9 @@ interface CalibreRepository
      * @return array           array with elements: tag data, current page,
      *                               no. of pages, $length entries
      */
-    function tagDetailsSlice(string $lang, int $id, $index = 0, $length = 100, $filter = null): array;
+    public function tagDetailsSlice(string $lang, int $id, $index = 0, $length = 100, $filter = null): array;
 
-    function tagsSlice($index = 0, $length = 100, $search = null);
+    public function tagsSlice($index = 0, $length = 100, $search = null);
 
     /**
      * Find the initials of all tags and their count
@@ -168,14 +168,14 @@ interface CalibreRepository
      * Changed thanks to QNAP who insist on publishing outdated libraries in their firmware
      * TODO revert back to real SQL, not the outdated-QNAP stlyle
      */
-    function tagsInitials();
+    public function tagsInitials();
 
     /**
      * Find all authors with a given initial and return their names and book count
      * @param string $initial initial character of last name, uppercase
      * @return array           array of authors with book count
      */
-    function tagsNamesForInitial($initial);
+    public function tagsNamesForInitial($initial);
 
     /**
      * Search a list of books in publication date order, defined by the parameters $index and $length.
@@ -187,7 +187,7 @@ interface CalibreRepository
      * @param string $search search phrase, default null
      * @return  array               an array with elements: current page, no. of pages, $length entries
      */
-    function pubdateOrderedTitlesSlice($lang, $index = 0, $length = 100, $filter = null, $search = NULL);
+    public function pubdateOrderedTitlesSlice($lang, $index = 0, $length = 100, $filter = null, $search = null);
 
     /**
      * Search a list of books in last modified order, defined by the parameters $index and $length.
@@ -199,7 +199,7 @@ interface CalibreRepository
      * @param string $search search phrase, default null
      * @return  array               an array with elements: current page, no. of pages, $length entries
      */
-    function lastmodifiedOrderedTitlesSlice($lang, $index = 0, $length = 100, $filter = null, $search = NULL);
+    public function lastmodifiedOrderedTitlesSlice($lang, $index = 0, $length = 100, $filter = null, $search = null);
 
     /**
      * Search a list of books in timestamp order, defined by the parameters $index and $length.
@@ -211,7 +211,7 @@ interface CalibreRepository
      * @param string $search search phrase, default null
      * @return  array               an array with elements: current page, no. of pages, $length entries
      */
-    function timestampOrderedTitlesSlice($lang, $index = 0, $length = 100, $filter = null, $search = NULL);
+    public function timestampOrderedTitlesSlice($lang, $index = 0, $length = 100, $filter = null, $search = null);
 
     /**
      * Search a list of books defined by the parameters $index and $length.
@@ -226,7 +226,7 @@ interface CalibreRepository
      * @param bool $translit if true uses transliteration for search.
      * @return  array          an array with elements: current page, no. of pages, $length entries
      */
-    function titlesSlice($lang, $index, $length, $filter, $search = null, $translit = false);
+    public function titlesSlice($lang, $index, $length, $filter, $search = null, $translit = false);
 
     /**
      * Find only one book
@@ -234,7 +234,7 @@ interface CalibreRepository
      * @return object
      * @throws TitleNotFoundException
      */
-    function title(int $id): object;
+    public function title(int $id): object;
 
     /**
      * Returns the path to the cover image of a book
@@ -243,21 +243,21 @@ interface CalibreRepository
      * @throws TitleNotFoundException if the book wasn't found
      * @throws CoverNotFoundException if the cover file wasn't found
      */
-    function titleCover(int $id): string;
+    public function titleCover(int $id): string;
 
     /**
      * Try to find the language of a book. Returns an emty string, if there is none.
      * @param int $book_id the Calibre book ID
      * @return string                the language string or an empty string
      **/
-    function getLanguage($book_id);
+    public function getLanguage($book_id);
 
     /**
      * Try to find the languages of a book. Returns an empty array, if there is none.
      * @param int $book_id the Calibre book ID
      * @return array                the language strings
      **/
-    function getLanguages($book_id);
+    public function getLanguages($book_id);
 
     /**
      * Find a single book plus all kinds of details.
@@ -266,14 +266,14 @@ interface CalibreRepository
      * @return array            the book, its authors, series, tags, formats, languages, ids and comment.
      * @throws TitleNotFoundException if the is is not found
      */
-    function titleDetails($lang, $id): array;
+    public function titleDetails($lang, $id): array;
 
     /**
      * Find a single book, its tags and languages. Mainly used for restriction checks.
      * @param int $id the Calibre book ID
      * @return array            the book, its tags and languages
      */
-    function titleDetailsMini($id);
+    public function titleDetailsMini($id);
 
     /**
      * Find the custom colums for a book.
@@ -283,7 +283,7 @@ interface CalibreRepository
      * @return array                an array of arrays. one entry for each custom column
      *                                with name, type and value
      */
-    function customColumns($book_id);
+    public function customColumns($book_id);
 
     /**
      * Find a subset of the details for a book that is sufficient for an OPDS
@@ -292,7 +292,7 @@ interface CalibreRepository
      * @param Book $book complete book record from title()
      * @return array        the book and its authors, tags and formats
      */
-    function titleDetailsOpds($book);
+    public function titleDetailsOpds($book);
 
     /**
      * Retrieve the OPDS title details for a collection of Books and
@@ -304,7 +304,7 @@ interface CalibreRepository
      * @param array $books a collection of Book instances
      * @return array         the book and its authors, tags and formats
      */
-    function titleDetailsFilteredOpds($books);
+    public function titleDetailsFilteredOpds($books);
 
     /**
      * Returns the path to the file of a book or NULL.
@@ -312,7 +312,7 @@ interface CalibreRepository
      * @param string $file file name
      * @return string       full path to image file or NULL
      */
-    function titleFile($id, $file);
+    public function titleFile($id, $file);
 
     /**
      * Returns the path to the file of a book or NULL.
@@ -320,14 +320,14 @@ interface CalibreRepository
      * @param string $format format name
      * @return string       full path to image file or NULL
      */
-    function titleFileByFormat($id, $format);
+    public function titleFileByFormat($id, $format);
 
     /**
      * Return the formats for a book
      * @param int $bookid Calibre book id
      * @return array                the formats for the book
      */
-    function titleGetFormats($bookid);
+    public function titleGetFormats($bookid);
 
     /**
      * Returns a Kindle supported format of a book or NULL.
@@ -336,7 +336,7 @@ interface CalibreRepository
      * @param int $id book id
      * @return object   $format    the kindle format object for the book or NULL
      */
-    function titleGetKindleFormat($id);
+    public function titleGetKindleFormat($id);
 
     /**
      * Find a single series and return the details plus all books.
@@ -345,7 +345,7 @@ interface CalibreRepository
      *                the related books (key 'books')
      * @deprecated since 0.9.3
      */
-    function seriesDetails($id);
+    public function seriesDetails($id);
 
     /**
      * Find a single series and return the details plus some books.
@@ -358,7 +358,7 @@ interface CalibreRepository
      * @return array           array with elements: series data, current page,
      *                               no. of pages, $length entries
      */
-    function seriesDetailsSlice($lang, $id, $index = 0, $length = 100, $filter = null);
+    public function seriesDetailsSlice($lang, $id, $index = 0, $length = 100, $filter = null);
 
     /**
      * Search a list of books defined by the parameters $index and $length.
@@ -373,7 +373,7 @@ interface CalibreRepository
      * @param bool $translit =false if true uses transliteration for search
      * @return array                see findSlice
      */
-    function seriesSlice($index = 0, $length = 100, $search = null, $translit = false);
+    public function seriesSlice($index = 0, $length = 100, $search = null, $translit = false);
 
     /**
      * Find the initials of all series and their number
@@ -382,16 +382,16 @@ interface CalibreRepository
      * Changed thanks to QNAP who insist on publishing outdated libraries in their firmware
      * TODO revert back to real SQL, not the outdated-QNAP stlyle
      */
-    function seriesInitials();
+    public function seriesInitials();
 
     /**
      * Find all series with a given initial and return their names and book count
      * @param string $initial initial character of name, uppercase
      * @return array           array of Series with book count
      */
-    function seriesNamesForInitial($initial);
+    public function seriesNamesForInitial($initial);
 
-    function mkInitialedList($items);
+    public function mkInitialedList($items);
 
     /**
      * Usort helper function
@@ -400,5 +400,5 @@ interface CalibreRepository
      * @param object $b
      * @return int
      */
-    function kindleFormatSort($a, $b);
+    public function kindleFormatSort($a, $b);
 }

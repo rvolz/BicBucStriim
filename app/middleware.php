@@ -10,7 +10,7 @@ use App\Application\Middleware\RequestLogMiddleware;
 use App\Domain\BicBucStriim\BicBucStriimRepository;
 use App\Domain\BicBucStriim\Configuration;
 use App\Domain\Calibre\CalibreRepository;
-use \App\Domain\BicBucStriim\L10n;
+use App\Domain\BicBucStriim\L10n;
 use App\Domain\User\UserLanguage;
 use Psr\Log\LoggerInterface;
 use Slim\App;

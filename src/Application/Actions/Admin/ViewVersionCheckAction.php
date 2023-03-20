@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Application\Actions\Admin;
-
 
 use App\Domain\BicBucStriim\AppConstants;
 use App\Domain\DomainException\DomainRecordNotFoundException;
@@ -11,13 +9,12 @@ use Slim\Exception\HttpBadRequestException;
 
 class ViewVersionCheckAction extends AdminAction
 {
-
     /**
      * @inheritDoc
      */
     protected function action(): Response
     {
-        $versionAnswer = array();
+        $versionAnswer = [];
         $contents = file_get_contents(AppConstants::VERSION_URL);
         if ($contents == false) {
             $versionClass = 'error';
@@ -41,11 +38,11 @@ class ViewVersionCheckAction extends AdminAction
                 $versionAnswer = sprintf($this->getMessageString('admin_no_new_version'), APP_VERSION);
             }
         }
-        return $this->respondWithPage('admin_version.html', array(
+        return $this->respondWithPage('admin_version.html', [
             'page' => $this->mkPage($this->getMessageString('admin_check_version'), 0, 2),
             'versionClass' => $versionClass,
             'versionAnswer' => $versionAnswer,
             'isadmin' => true,
-        ));
+        ]);
     }
 }

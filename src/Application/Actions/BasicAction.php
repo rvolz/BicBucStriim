@@ -1,8 +1,8 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Application\Actions;
-
 
 use App\Domain\BicBucStriim\BicBucStriimRepository;
 use App\Domain\BicBucStriim\Configuration;
@@ -18,10 +18,11 @@ abstract class BasicAction extends Action
      * @param BicBucStriimRepository $bbs
      * @param Configuration $config
      */
-    public function __construct(LoggerInterface $logger,
-                                BicBucStriimRepository $bbs,
-                                Configuration $config)
-    {
+    public function __construct(
+        LoggerInterface $logger,
+        BicBucStriimRepository $bbs,
+        Configuration $config
+    ) {
         parent::__construct($logger);
         $this->bbs = $bbs;
         $this->config = $config;
@@ -60,7 +61,6 @@ abstract class BasicAction extends Action
     {
         $book->thumbnail = $this->bbs->isTitleThumbnailAvailable($book->id);
         return $book;
-
     }
 
 
@@ -71,10 +71,11 @@ abstract class BasicAction extends Action
      */
     protected function getNextSearchPage(array $tl): int
     {
-        if ($tl['page'] < $tl['pages'] - 1)
+        if ($tl['page'] < $tl['pages'] - 1) {
             $nextPage = $tl['page'] + 1;
-        else
+        } else {
             $nextPage = 0;
+        }
         return $nextPage;
     }
 
@@ -85,11 +86,11 @@ abstract class BasicAction extends Action
      */
     protected function getLastSearchPage(array $tl): int
     {
-        if ($tl['pages'] == 0)
+        if ($tl['pages'] == 0) {
             $lastPage = 0;
-        else
+        } else {
             $lastPage = $tl['pages'] - 1;
+        }
         return $lastPage;
     }
-
 }

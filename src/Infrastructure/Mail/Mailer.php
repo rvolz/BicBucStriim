@@ -4,16 +4,15 @@ namespace App\Infrastructure\Mail;
 
 class Mailer
 {
-
     // SMTP transport
-    const SMTP = 0;
+    public const SMTP = 0;
     // Sendmail transport
-    const SENDMAIL = 1;
+    public const SENDMAIL = 1;
     // PHP mail transport
-    const MAIL = 2;
+    public const MAIL = 2;
 
-    const SSL = 'ssl';
-    const TLS = 'tls';
+    public const SSL = 'ssl';
+    public const TLS = 'tls';
 
     protected $transport;
     protected $dump;
@@ -28,17 +27,17 @@ class Mailer
      *                                'username' - SMTP user
      *                                'password' - SMTP password
      */
-    function __construct($transportType = Mailer::MAIL, $config = array())
+    public function __construct($transportType = Mailer::MAIL, $config = [])
     {
         if ($transportType == Mailer::SMTP) {
             // Create the Transport
-            if (isset($config['smtp-encryption']))
+            if (isset($config['smtp-encryption'])) {
                 $this->transport = Swift_SmtpTransport::newInstance($config['smtp-server'], $config['smtp-port'], $config['smtp-encryption']);
-            else
+            } else {
                 $this->transport = Swift_SmtpTransport::newInstance($config['smtp-server'], $config['smtp-port']);
+            }
             $this->transport->setUsername($config['username'])
                 ->setPassword($config['password']);
-
         } elseif ($transportType == Mailer::SENDMAIL) {
             $this->transport = Swift_SendmailTransport::newInstance('/usr/sbin/sendmail -bs');
         } else {
@@ -62,9 +61,9 @@ class Mailer
             // Give the message a subject
             ->setSubject($subject)
             // Set the From address with an associative array
-            ->setFrom(array($sender))
+            ->setFrom([$sender])
             // Set the To addresses with an associative array
-            ->setTo(array($recipient))
+            ->setTo([$recipient])
             // Give it a body
             ->setBody('This book was sent to you by BicBucStriim.')
             // Optionally add any attachments
@@ -98,7 +97,4 @@ class Mailer
             return 0;
         }
     }
-
 }
-
-?>

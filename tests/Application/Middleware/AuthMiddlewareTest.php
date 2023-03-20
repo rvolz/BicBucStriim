@@ -14,9 +14,9 @@ use App\Application\Middleware\AuthMiddleware;
 
 class AuthMiddlewareTest extends Own_TestCase
 {
-    const DB2 = __DIR__ . '/../../fixtures/data2.db';
-    const DATA = __DIR__ . '/../twork/data';
-    const DATADB = __DIR__ . '/../twork/data/data.db';
+    public const DB2 = __DIR__ . '/../../fixtures/data2.db';
+    public const DATA = __DIR__ . '/../twork/data';
+    public const DATADB = __DIR__ . '/../twork/data/data.db';
 
     public static function setUpBeforeClass(): void
     {
@@ -29,8 +29,9 @@ class AuthMiddlewareTest extends Own_TestCase
 
     protected function setUp(): void
     {
-        if (file_exists(self::DATA))
+        if (file_exists(self::DATA)) {
             system("rm -rf " . self::DATA);
+        }
         mkdir(self::DATA, 0777, true);
         copy(self::DB2, self::DATADB);
     }
@@ -67,17 +68,17 @@ class AuthMiddlewareTest extends Own_TestCase
         $pdo = new \PDO('sqlite:'.self::DATADB);
         $container = new Container();
         $instance = new AuthMiddleware($logger, $pdo, $container);
-        $request = $this->createRequest("GET", "/",['PHP_AUTH_USER' => 'user', 'PHP_AUTH_PW' => 'password'],[],[]);
+        $request = $this->createRequest("GET", "/", ['PHP_AUTH_USER' => 'user', 'PHP_AUTH_PW' => 'password'], [], []);
         $ad = $instance->checkRequest4Auth($request);
         $this->assertNotNull($ad);
         $this->assertEquals(['user', 'password'], $ad);
-        $request = $this->createRequest("GET", "/",['HTTP_AUTHORIZATION' => 'Basic ' . base64_encode('user:password')],[],[]);
+        $request = $this->createRequest("GET", "/", ['HTTP_AUTHORIZATION' => 'Basic ' . base64_encode('user:password')], [], []);
         $ad = $instance->checkRequest4Auth($request);
         $this->assertNotNull($ad);
         $this->assertEquals(['user', 'password'], $ad);
-        $request = $this->createRequest("GET", "/",[],[],[]);
+        $request = $this->createRequest("GET", "/", [], [], []);
         $this->assertNull($instance->checkRequest4Auth($request));
-        $request = $this->createRequest("GET", "/",['HTTP_AUTHORIZATION' => 'Basic ' . 'bla'],[],[]);
+        $request = $this->createRequest("GET", "/", ['HTTP_AUTHORIZATION' => 'Basic ' . 'bla'], [], []);
         $ad = $instance->checkRequest4Auth($request);
         $this->assertNull($ad);
     }
@@ -89,11 +90,10 @@ class AuthMiddlewareTest extends Own_TestCase
         $container = new Container();
 
         $instance = new AuthMiddleware($logger, $pdo, $container);
-        $request = $this->createRequest("GET", "/",['PHP_AUTH_USER' => 'user', 'PHP_AUTH_PW' => 'password'],[],[]);
+        $request = $this->createRequest("GET", "/", ['PHP_AUTH_USER' => 'user', 'PHP_AUTH_PW' => 'password'], [], []);
         $response = $instance->process($request, $this->createRequestHandler());
         $this->assertEquals(401, $response->getStatusCode());
         $this->assertEquals('', $response->getBody()->getContents());
-
     }
 
     public function test___invoke2()
@@ -103,8 +103,8 @@ class AuthMiddlewareTest extends Own_TestCase
         $pdo = new \PDO('sqlite:'.self::DATADB);
         $container = new Container();
         $instance = new AuthMiddleware($logger, $pdo, $container);
-        $request = $this->createRequest("GET", "/",['PHP_AUTH_USER' => 'admin', 'PHP_AUTH_PW' => 'admin'],[],[]);
-        $response = $instance->process($request,$this->createRequestHandler());
+        $request = $this->createRequest("GET", "/", ['PHP_AUTH_USER' => 'admin', 'PHP_AUTH_PW' => 'admin'], [], []);
+        $response = $instance->process($request, $this->createRequestHandler());
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('', $response->getBody()->getContents());
     }

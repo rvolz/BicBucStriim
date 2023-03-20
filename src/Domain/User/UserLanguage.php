@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Domain\User;
@@ -11,6 +12,6 @@ namespace App\Domain\User;
  */
 class UserLanguage
 {
-    const DEFINED_LANGUAGES = array('de', 'en', 'es', 'fr', 'gl', 'hu', 'it', 'nl', 'pl');
-    const FALLBACK_LANGUAGE = 'en';
+    public const DEFINED_LANGUAGES = ['de', 'en', 'es', 'fr', 'gl', 'hu', 'it', 'nl', 'pl'];
+    public const FALLBACK_LANGUAGE = 'en';
 }

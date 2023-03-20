@@ -1,8 +1,8 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Application\Actions\Login;
-
 
 use App\Application\Actions\BasicAction;
 use App\Domain\BicBucStriim\AppConstants;
@@ -41,13 +41,14 @@ abstract class LoginAction extends BasicAction
      * @param L10n $l10n
      * @param Twig $twig
      */
-    public function __construct(LoggerInterface $logger,
-                                BicBucStriimRepository $bbs,
-                                Configuration $config,
-                                User $user,
-                                L10n $l10n,
-                                Twig $twig)
-    {
+    public function __construct(
+        LoggerInterface $logger,
+        BicBucStriimRepository $bbs,
+        Configuration $config,
+        User $user,
+        L10n $l10n,
+        Twig $twig
+    ) {
         parent::__construct($logger, $bbs, $config, $user);
         $this->l10n = $l10n;
         $this->twig = $twig;
@@ -63,7 +64,7 @@ abstract class LoginAction extends BasicAction
      * @throws RuntimeError
      * @throws SyntaxError
      */
-    protected function respondWithPage(string $templateName, array $data=array(), int $statusCode=200): Response
+    protected function respondWithPage(string $templateName, array $data=[], int $statusCode=200): Response
     {
         return $this->twig->render($this->response->withStatus($statusCode), $templateName, $data);
     }
@@ -77,10 +78,11 @@ abstract class LoginAction extends BasicAction
      */
     protected function mkPage($subtitle = '', $menu = 0, $level = 0): array
     {
-        if ($subtitle == '')
+        if ($subtitle == '') {
             $title = $this->config[AppConstants::DISPLAY_APP_NAME];
-        else
+        } else {
             $title = $this->config[AppConstants::DISPLAY_APP_NAME] . ': ' . $subtitle;
+        }
 
         // TODO mkRootUrl
         // $rot = mkRootUrl();
@@ -88,15 +90,15 @@ abstract class LoginAction extends BasicAction
         $rot = BBS_BASE_PATH;
         $auth = true;
         $adm = $this->user->getRole() == 1;
-        $page = array('title' => $title,
+        $page = ['title' => $title,
             'rot' => $rot,
             'h1' => $subtitle,
             'version' => APP_VERSION,
-            'glob' => array('l10n' => $this->l10n),
+            'glob' => ['l10n' => $this->l10n],
             'menu' => $menu,
             'level' => $level,
             'auth' => $auth,
-            'admin' => $adm);
+            'admin' => $adm];
         return $page;
     }
 
@@ -110,9 +112,8 @@ abstract class LoginAction extends BasicAction
      * @param  string $id message id
      * @return string     localized message string
      */
-    function getMessageString($id)
+    public function getMessageString($id)
     {
         return $this->l10n->message($id);
     }
-
 }

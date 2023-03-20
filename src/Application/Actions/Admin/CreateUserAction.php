@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Application\Actions\Admin;
-
 
 use App\Application\Actions\ActionPayload;
 use Exception;
@@ -10,7 +8,6 @@ use Psr\Http\Message\ResponseInterface as Response;
 
 class CreateUserAction extends AdminAction
 {
-
     /**
      * @inheritDoc
      */
@@ -26,15 +23,19 @@ class CreateUserAction extends AdminAction
             $user = null;
         }
         if (isset($user)) {
-            $ap = new ActionPayload(200, array(
+            $ap = new ActionPayload(
+                200,
+                [
                     'user' => $user->getProperties(),
-                    'msg' => $this->getMessageString('admin_modified')
-                )
+                    'msg' => $this->getMessageString('admin_modified'),
+                ]
             );
         } else {
-            $ap = new ActionPayload(500, array(
-                    'msg' => $this->getMessageString('admin_modify_error')
-                )
+            $ap = new ActionPayload(
+                500,
+                [
+                    'msg' => $this->getMessageString('admin_modify_error'),
+                ]
             );
         }
         return $this->respondWithData($ap);

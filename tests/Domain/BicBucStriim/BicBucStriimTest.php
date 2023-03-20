@@ -9,27 +9,28 @@ use RedBeanPHP\R;
 
 class BicBucStriimTest extends TestCase
 {
-    const SCHEMA = __DIR__ . '/../../../data/schema.sql';
-    const TESTSCHEMA = __DIR__ . '/../../data/schema.sql';
-    const DB2 = __DIR__ . '/../../fixtures/data2.db';
+    public const SCHEMA = __DIR__ . '/../../../data/schema.sql';
+    public const TESTSCHEMA = __DIR__ . '/../../data/schema.sql';
+    public const DB2 = __DIR__ . '/../../fixtures/data2.db';
 
-    const DATA = __DIR__ . '/../../data';
-    const DATADB = __DIR__ . '/../../data/data.db';
+    public const DATA = __DIR__ . '/../../data';
+    public const DATADB = __DIR__ . '/../../data/data.db';
 
-    var $bbs;
+    public $bbs;
 
-    function setUp(): void
+    public function setUp(): void
     {
-        if (file_exists(self::DATA))
+        if (file_exists(self::DATA)) {
             system("rm -rf ".self::DATA);
+        }
         mkdir(self::DATA);
-        chmod(self::DATA,0777);
+        chmod(self::DATA, 0777);
         copy(self::DB2, self::DATADB);
         copy(self::SCHEMA, self::TESTSCHEMA);
-        $this->bbs = new BicBucStriim(self::DATADB,false);
+        $this->bbs = new BicBucStriim(self::DATADB, false);
     }
 
-    function tearDown(): void
+    public function tearDown(): void
     {
         // Must use nuke() to clear caches etc.
         R::nuke();
@@ -38,13 +39,15 @@ class BicBucStriimTest extends TestCase
         system("rm -rf ".self::DATA);
     }
 
-    function testDbOk() {
+    public function testDbOk()
+    {
         $this->assertTrue($this->bbs->dbOk());
         $this->bbs = new BicBucStriim(self::DATA.'/nodata.db');
         $this->assertFalse($this->bbs->dbOk());
     }
 
-    function testCreateDb() {
+    public function testCreateDb()
+    {
         $this->bbs = new BicBucStriim(self::DATA.'/nodata.db');
         $this->assertFalse($this->bbs->dbOk());
         $this->bbs->createDataDB(self::DATA.'/newdata.db');
@@ -53,11 +56,12 @@ class BicBucStriimTest extends TestCase
         $this->assertTrue($this->bbs->dbOk());
     }
 
-    function testConfigs() {
+    public function testConfigs()
+    {
         $configs = $this->bbs->configs();
         $this->assertCount(1, $configs);
 
-        $configA = array('propa' => 'vala', 'propb' => 1);
+        $configA = ['propa' => 'vala', 'propb' => 1];
         $this->bbs->saveConfigs($configA);
         $configs = $this->bbs->configs();
         $this->assertCount(3, $configs);
@@ -66,7 +70,7 @@ class BicBucStriimTest extends TestCase
         $this->assertEquals('propb', $configs[3]->name);
         $this->assertEquals(1, $configs[3]->val);
 
-        $configB = array('propa' => 'vala', 'propb' => 2);
+        $configB = ['propa' => 'vala', 'propb' => 2];
         $this->bbs->saveConfigs($configB);
         $configs = $this->bbs->configs();
         $this->assertCount(3, $configs);
@@ -76,7 +80,8 @@ class BicBucStriimTest extends TestCase
         $this->assertEquals(2, $configs[3]->val);
     }
 
-    function testAddUser() {
+    public function testAddUser()
+    {
         $this->assertCount(1, $this->bbs->users());
         $user = $this->bbs->addUser('testuser', 'testuser');
         $this->assertNotNull($user);
@@ -87,22 +92,26 @@ class BicBucStriimTest extends TestCase
         $this->assertEquals(0, $user->role);
     }
 
-    function testAddUserEmptyUser() {
+    public function testAddUserEmptyUser()
+    {
         $user = $this->bbs->addUser('', '');
         $this->assertNull($user);
     }
 
-    function testAddUserEmptyUsername() {
+    public function testAddUserEmptyUsername()
+    {
         $user = $this->bbs->addUser('testuser2', '');
         $this->assertNull($user);
     }
 
-    function testAddUserEmptyPassword() {
+    public function testAddUserEmptyPassword()
+    {
         $user = $this->bbs->addUser('', '');
         $this->assertNull($user);
     }
 
-    function testGetUser() {
+    public function testGetUser()
+    {
         $this->bbs->addUser('testuser', 'testuser');
         $this->bbs->addUser('testuser2', 'testuser2');
         $this->assertCount(3, $this->bbs->users());
@@ -115,7 +124,8 @@ class BicBucStriimTest extends TestCase
         $this->assertEquals(0, $user->role);
     }
 
-    function testDeleteUser() {
+    public function testDeleteUser()
+    {
         $this->bbs->addUser('testuser', 'testuser');
         $this->bbs->addUser('testuser2', 'testuser2');
         $this->assertCount(3, $this->bbs->users());
@@ -134,7 +144,8 @@ class BicBucStriimTest extends TestCase
         $this->assertEquals('testuser', $user->username);
     }
 
-    function testChangeUser() {
+    public function testChangeUser()
+    {
         $this->bbs->addUser('testuser', 'testuser');
         $this->bbs->addUser('testuser2', 'testuser2');
         $users = $this->bbs->users();
@@ -154,7 +165,8 @@ class BicBucStriimTest extends TestCase
         $this->assertNull($changed);
     }
 
-    function testChangeUserRole() {
+    public function testChangeUserRole()
+    {
         $this->bbs->addUser('testuser', 'testuser');
         $this->bbs->addUser('testuser2', 'testuser2');
         $users = $this->bbs->users();
@@ -167,7 +179,8 @@ class BicBucStriimTest extends TestCase
         $this->assertNull($changed);
     }
 
-    function testIdTemplates() {
+    public function testIdTemplates()
+    {
         $this->assertCount(0, $this->bbs->idTemplates());
         $this->bbs->addIdTemplate('google', 'http://google.com/%id%', 'Google search');
         $this->bbs->addIdTemplate('amazon', 'http://amazon.com/%id%', 'Amazon search');
@@ -178,7 +191,8 @@ class BicBucStriimTest extends TestCase
         $this->assertEquals('Amazon search', $template->label);
     }
 
-    function testDeleteIdTemplates() {
+    public function testDeleteIdTemplates()
+    {
         $this->assertCount(0, $this->bbs->idTemplates());
         $this->bbs->addIdTemplate('google', 'http://google.com/%id%', 'Google search');
         $this->bbs->addIdTemplate('amazon', 'http://amazon.com/%id%', 'Amazon search');
@@ -189,7 +203,8 @@ class BicBucStriimTest extends TestCase
         $this->assertCount(1, $this->bbs->idTemplates());
     }
 
-    function testChangeIdTemplate() {
+    public function testChangeIdTemplate()
+    {
         $this->assertCount(0, $this->bbs->idTemplates());
         $this->bbs->addIdTemplate('google', 'http://google.com/%id%', 'Google search');
         $this->bbs->addIdTemplate('amazon', 'http://amazon.com/%id%', 'Amazon search');
@@ -204,7 +219,8 @@ class BicBucStriimTest extends TestCase
         $this->assertEquals('Amazon DE search', $template->label);
     }
 
-    function testCalibreThing() {
+    public function testCalibreThing()
+    {
         $this->assertNull($this->bbs->getCalibreThing(DataConstants::CALIBRE_AUTHOR_TYPE, 1));
         $result = $this->bbs->addCalibreThing(DataConstants::CALIBRE_AUTHOR_TYPE, 1, 'Author 1');
         $this->assertNotNull($result);
@@ -215,7 +231,8 @@ class BicBucStriimTest extends TestCase
         $this->assertEquals(0, $result2->refctr);
     }
 
-    function testEditAuthorThumbnail() {
+    public function testEditAuthorThumbnail()
+    {
         $this->assertTrue($this->bbs->editAuthorThumbnail(1, 'Author Name', true, 'tests/fixtures/author1.jpg', 'image/jpeg'));
         $this->assertTrue(file_exists(self::DATA.'/authors/author_1_thm.png'));
         $result2 = $this->bbs->getCalibreThing(DataConstants::CALIBRE_AUTHOR_TYPE, 1);
@@ -229,7 +246,8 @@ class BicBucStriimTest extends TestCase
         $this->assertEquals(self::DATA.'/authors/author_1_thm.png', $result->url);
     }
 
-    function testGetAuthorThumbnail() {
+    public function testGetAuthorThumbnail()
+    {
         $this->assertTrue($this->bbs->editAuthorThumbnail(1, 'Author Name', true, 'tests/fixtures/author1.jpg', 'image/jpeg'));
         $this->assertTrue($this->bbs->editAuthorThumbnail(2, 'Author Name', true, 'tests/fixtures/author1.jpg', 'image/jpeg'));
         $result = $this->bbs->getAuthorThumbnail(1);
@@ -240,7 +258,8 @@ class BicBucStriimTest extends TestCase
         $this->assertNotNull($result);
     }
 
-    function testDeleteAuthorThumbnail() {
+    public function testDeleteAuthorThumbnail()
+    {
         $this->assertTrue($this->bbs->editAuthorThumbnail(1, 'Author Name', true, 'tests/fixtures/author1.jpg', 'image/jpeg'));
         $this->assertNotNull($this->bbs->getAuthorThumbnail(1));
         $this->assertTrue($this->bbs->deleteAuthorThumbnail(1));
@@ -250,7 +269,8 @@ class BicBucStriimTest extends TestCase
         $this->assertEquals(0, R::count('calibrething'));
     }
 
-    function testAuthorLinks() {
+    public function testAuthorLinks()
+    {
         $this->assertCount(0, $this->bbs->authorLinks(1));
         $this->bbs->addAuthorLink(2, 'Author 1', 'google', 'http://google.com/1');
         $this->bbs->addAuthorLink(1, 'Author 2', 'amazon', 'http://amazon.com/2');
@@ -266,7 +286,8 @@ class BicBucStriimTest extends TestCase
         $this->assertEquals(1, R::count('link'));
     }
 
-    function testAuthorNote() {
+    public function testAuthorNote()
+    {
         $this->assertNull($this->bbs->authorNote(1));
         $this->bbs->editAuthorNote(2, 'Author 1', 'text/plain', 'Goodbye, goodbye!');
         $this->bbs->editAuthorNote(1, 'Author 2', 'text/plain', 'Hello again!');
@@ -284,14 +305,16 @@ class BicBucStriimTest extends TestCase
         $this->assertEquals(1, R::count('note'));
     }
 
-    function testIsTitleThumbnailAvailable() {
+    public function testIsTitleThumbnailAvailable()
+    {
         $this->assertNotNull($this->bbs->titleThumbnail(1, 'tests/fixtures/author1.jpg', true));
         $this->assertTrue($this->bbs->isTitleThumbnailAvailable(1));
         $this->assertFalse($this->bbs->isTitleThumbnailAvailable(2));
     }
 
 
-    function testClearThumbnail() {
+    public function testClearThumbnail()
+    {
         $result = $this->bbs->titleThumbnail(3, 'tests/fixtures/author1.jpg', true);
         $this->assertNotNull($result);
         $this->assertTrue($this->bbs->isTitleThumbnailAvailable(3));

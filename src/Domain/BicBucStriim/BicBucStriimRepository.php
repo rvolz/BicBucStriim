@@ -10,9 +10,9 @@ use RedBeanPHP\OODBBean;
 interface BicBucStriimRepository
 {
     # Name to the bbs db
-    const DBNAME = 'data.db';
+    public const DBNAME = 'data.db';
     # Thumbnail dimension (they are square)
-    const THUMB_RES = 160;
+    public const THUMB_RES = 160;
 
     /**
     * Create an empty BBS DB, just with the initial admin user account, so that login is possible.

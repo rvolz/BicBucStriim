@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Application\Actions\Tags;
-
 
 use App\Application\Actions\CalibreOpdsAction;
 use App\Domain\DomainException\DomainRecordNotFoundException;
@@ -11,7 +9,6 @@ use Psr\Http\Message\ResponseInterface as Response;
 
 class ViewOpdsTagNames4Initial extends CalibreOpdsAction
 {
-
     /**
      * @inheritDoc
      */

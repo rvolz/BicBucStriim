@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Application\Actions\Statics;
@@ -21,7 +22,6 @@ use Slim\Views\Twig;
  */
 abstract class StaticsAction extends CalibreHtmlAction
 {
-
     /**
      * @var CacheProvider HTTP-Caching codes
      */
@@ -36,13 +36,14 @@ abstract class StaticsAction extends CalibreHtmlAction
      * @param Twig $twig
      * @param L10n $l10n
      */
-    public function __construct(LoggerInterface $logger,
-                                BicBucStriimRepository $bbs,
-                                CalibreRepository $calibre,
-                                Configuration $config,
-                                Twig $twig,
-                                L10n $l10n)
-    {
+    public function __construct(
+        LoggerInterface $logger,
+        BicBucStriimRepository $bbs,
+        CalibreRepository $calibre,
+        Configuration $config,
+        Twig $twig,
+        L10n $l10n
+    ) {
         parent::__construct($logger, $bbs, $calibre, $config, $twig, $l10n);
         $this->cache = new CacheProvider();
     }
@@ -52,7 +53,7 @@ abstract class StaticsAction extends CalibreHtmlAction
      * @param string $fname path to file resource
      * @return string MD5 Hash
      */
-    function calcEtag(string $fname): string
+    public function calcEtag(string $fname): string
     {
         $mtime = filemtime($fname);
         return md5("{$fname}-{$mtime}");
@@ -65,7 +66,8 @@ abstract class StaticsAction extends CalibreHtmlAction
      * @param string $type
      * @return Response
      */
-    public function respondWithArtefact(Stream $stream, string $etag, string $type): Response {
+    public function respondWithArtefact(Stream $stream, string $etag, string $type): Response
+    {
         $responseE = $this->cache->withEtag($this->response, $etag);
         $responseC = $this->cache->allowCache($responseE, 'private', time()+60, true);
 
@@ -74,8 +76,8 @@ abstract class StaticsAction extends CalibreHtmlAction
             ->withHeader('Content-Transfer-Encoding', 'binary')
             ->withBody($stream)
             ->withStatus(200);
-            // will be done by middleware
-            //->withHeader('Content-Length', $stream->getSize())
+        // will be done by middleware
+        //->withHeader('Content-Length', $stream->getSize())
     }
 
     /**
@@ -85,15 +87,16 @@ abstract class StaticsAction extends CalibreHtmlAction
      * @param string $type
      * @return Response
      */
-    public function respondWithDownload(LazyOpenStream $stream, string $filename, string $type): Response {
+    public function respondWithDownload(LazyOpenStream $stream, string $filename, string $type): Response
+    {
         return $this->response
             ->withHeader('Content-Type', $type)
-            ->withHeader('Content-Disposition',  "attachment; filename=\"${$filename}\"")
+            ->withHeader('Content-Disposition', "attachment; filename=\"${$filename}\"")
             ->withHeader('Content-Description', 'File Transfer')
             ->withHeader('Content-Transfer-Encoding', 'binary')
             ->withBody($stream)
             ->withStatus(200);
-            // will be done by middleware
-            // ->withHeader('Content-Length', $stream->getSize())
+        // will be done by middleware
+        // ->withHeader('Content-Length', $stream->getSize())
     }
 }

@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Application\Actions\Statics;
-
 
 use App\Domain\BicBucStriim\AppConstants;
 use App\Domain\Calibre\TitleNotFoundException;
@@ -13,7 +11,6 @@ use Psr\Http\Message\ResponseInterface as Response;
 
 class ViewTitleFile extends StaticsAction
 {
-
     /**
      * @inheritDoc
      */
@@ -34,10 +31,11 @@ class ViewTitleFile extends StaticsAction
                 " with metadata update = " . $this->config[AppConstants::METADATA_UPDATE]);
 
         if ($contentType == Utilities::MIME_EPUB && $this->config[AppConstants::METADATA_UPDATE]) {
-            if ($details['book']->has_cover == 1)
+            if ($details['book']->has_cover == 1) {
                 $cover = $this->calibre->titleCover($id);
-            else
+            } else {
                 $cover = null;
+            }
             // If an EPUB update the metadata
             $mdep = new MetadataEpub($real_bookpath);
             $mdep->updateMetadata($details, $cover);

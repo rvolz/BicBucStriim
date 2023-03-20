@@ -19,19 +19,19 @@ use App\Domain\Calibre\Utilities;
 class BicBucStriim implements BicBucStriimRepository
 {
     # bbs sqlite db
-    var ?PDO $mydb = NULL;
+    public ?PDO $mydb = null;
     # calibre library dir
-    var string $calibre_dir = '';
+    public string $calibre_dir = '';
     # calibre library file, last modified date
-    var $calibre_last_modified;
+    public $calibre_last_modified;
     # last sqlite error
-    var $last_error = 0;
+    public $last_error = 0;
     # dir for bbs db
-    var string $data_dir = '';
+    public string $data_dir = '';
     # dir for generated title thumbs
-    var string $thumb_dir = '';
+    public string $thumb_dir = '';
     # dir for generated title thumbs
-    var string $authors_dir = '';
+    public string $authors_dir = '';
 
     /**
      * Try to open the BBS DB. If the DB file does not exist we do nothing.
@@ -45,14 +45,14 @@ class BicBucStriim implements BicBucStriimRepository
      * 								else RedBeanPHP adapt the schema
      * 								default = true
      */
-    function __construct($dataPath = '../../data/data.db', $freeze = true)
+    public function __construct($dataPath = '../../data/data.db', $freeze = true)
     {
         $rp = realpath($dataPath);
         $this->data_dir = dirname($rp);
         $this->thumb_dir = $this->data_dir . '/thumbnails/titles';
         $this->authors_dir = $this->data_dir . '/thumbnails/authors';
         if (file_exists($rp) && is_writeable($rp)) {
-            $this->mydb = new PDO('sqlite:' . $rp, NULL, NULL, array());
+            $this->mydb = new PDO('sqlite:' . $rp, null, null, []);
             $this->mydb->setAttribute(1002, 'SET NAMES utf8');
             $this->mydb->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $this->mydb->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
@@ -63,24 +63,27 @@ class BicBucStriim implements BicBucStriimRepository
             R::setAutoResolve(true);
             //R::getRedBean()->setBeanHelper(new BbsBeanHelper());
             R::freeze($freeze);
-            if (!file_exists($this->thumb_dir))
+            if (!file_exists($this->thumb_dir)) {
                 mkdir($this->thumb_dir, 0777, true);
-            if (!file_exists($this->authors_dir))
+            }
+            if (!file_exists($this->authors_dir)) {
                 mkdir($this->authors_dir, 0777, true);
+            }
         } else {
-            $this->mydb = NULL;
+            $this->mydb = null;
         }
     }
 
     public function createDataDb($dataPath = 'data/data.db')
     {
         $schema = file(dirname($dataPath) . '/schema.sql');
-        $this->mydb = new PDO('sqlite:' . $dataPath, null, null, array());
+        $this->mydb = new PDO('sqlite:' . $dataPath, null, null, []);
         $this->mydb->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $this->mydb->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
         for ($i = 0; $i < count($schema); $i++) {
-            if (strpos($schema[$i], '--') == false)
+            if (strpos($schema[$i], '--') == false) {
                 $this->mydb->exec($schema[$i]);
+            }
         }
         $mdp = password_hash('admin', PASSWORD_BCRYPT);
         $this->mydb->exec(sprintf("insert into user (username, password, role) values (\"admin\", \"%s\",1)", $mdp));
@@ -99,7 +102,7 @@ class BicBucStriim implements BicBucStriimRepository
         return $this->mydb;
     }
 
-    var array $globalSettings = array();
+    public array $globalSettings = [];
 
     public function initSettings(): array
     {
@@ -123,7 +126,7 @@ class BicBucStriim implements BicBucStriimRepository
         return $globalSettings;
     }
 
-    var array $knownConfigs = array(
+    public array $knownConfigs = [
         AppConstants::CALIBRE_DIR,
         AppConstants::DB_VERSION,
         AppConstants::KINDLE,
@@ -140,8 +143,8 @@ class BicBucStriim implements BicBucStriimRepository
         AppConstants::METADATA_UPDATE,
         AppConstants::LOGIN_REQUIRED,
         AppConstants::TITLE_TIME_SORT,
-        AppConstants::RELATIVE_URLS
-    );
+        AppConstants::RELATIVE_URLS,
+    ];
 
 
     public function configs(): array
@@ -152,7 +155,7 @@ class BicBucStriim implements BicBucStriimRepository
 
     public function config(string $name)
     {
-        return R::findOne('config', ' name = :name', array(':name' => $name));
+        return R::findOne('config', ' name = :name', [':name' => $name]);
     }
 
     public function saveConfigs(array $configs)
@@ -166,8 +169,9 @@ class BicBucStriim implements BicBucStriimRepository
             } else {
                 $config->val = $val;
             }
-            if ($config->getMeta('tainted'))
+            if ($config->getMeta('tainted')) {
                 R::store($config);
+            }
         }
     }
 
@@ -179,24 +183,27 @@ class BicBucStriim implements BicBucStriimRepository
     public function user(string $userid): ?object
     {
         $user = R::load('user', $userid);
-        if (!$user->id)
+        if (!$user->id) {
             return null;
-        else
+        } else {
             return $user;
+        }
     }
 
     public function userByName(string $username): ?object
     {
-        return R::findOne('user', ' username = :name', array(':name' => $username));
+        return R::findOne('user', ' username = :name', [':name' => $username]);
     }
 
     public function addUser(string $username, string $password): ?object
     {
-        if (empty($username) || empty($password))
+        if (empty($username) || empty($password)) {
             return null;
-        $other = R::findOne('user', ' username = :name', array(':name' => $username));
-        if (!is_null($other))
+        }
+        $other = R::findOne('user', ' username = :name', [':name' => $username]);
+        if (!is_null($other)) {
             return null;
+        }
         $mdp = password_hash($password, PASSWORD_BCRYPT);
         $user = R::dispense('user');
         $user->username = $username;
@@ -210,13 +217,13 @@ class BicBucStriim implements BicBucStriimRepository
 
     public function deleteUser(int $userid): bool
     {
-        if ($userid == 1)
+        if ($userid == 1) {
             return false;
-        else {
+        } else {
             $user = R::load('user', $userid);
-            if (!$user->id)
+            if (!$user->id) {
                 return false;
-            else {
+            } else {
                 R::trash($user);
                 return true;
             }
@@ -226,20 +233,23 @@ class BicBucStriim implements BicBucStriimRepository
     public function changeUser(int $userid, string $password, string $languages, string $tags, string $role): ?object
     {
         $user = $this->user($userid);
-        if (is_null($user))
+        if (is_null($user)) {
             return null;
-        if (empty($password))
+        }
+        if (empty($password)) {
             return null;
-        else {
+        } else {
             $mdp = password_hash($password, PASSWORD_BCRYPT);
-            if ($password != $user->password)
+            if ($password != $user->password) {
                 $user->password = $mdp;
+            }
             $user->languages = $languages;
             $user->tags = $tags;
-            if (strcasecmp($role, "admin") == 0)
+            if (strcasecmp($role, "admin") == 0) {
                 $user->role = "1";
-            else
+            } else {
                 $user->role = "0";
+            }
             try {
                 $id = R::store($user);
                 return $user;
@@ -256,7 +266,7 @@ class BicBucStriim implements BicBucStriimRepository
 
     public function idTemplate(string $name): ?object
     {
-        return R::findOne('idtemplate', ' name = :name', array(':name' => $name));
+        return R::findOne('idtemplate', ' name = :name', [':name' => $name]);
     }
 
     public function addIdTemplate(string $name, string $value, string $label): object
@@ -275,8 +285,9 @@ class BicBucStriim implements BicBucStriimRepository
         if (!is_null($template)) {
             R::trash($template);
             return true;
-        } else
+        } else {
             return false;
+        }
     }
 
     public function changeIdTemplate($name, $value, $label)
@@ -298,12 +309,13 @@ class BicBucStriim implements BicBucStriimRepository
 
     public function getCalibreThing($calibreType, $calibreId): ?object
     {
-        return R::findOne('calibrething',
+        return R::findOne(
+            'calibrething',
             ' ctype = :type and cid = :id',
-            array(
+            [
                 ':type' => $calibreType,
-                'id' => $calibreId
-            )
+                'id' => $calibreId,
+            ]
         );
     }
 
@@ -313,7 +325,7 @@ class BicBucStriim implements BicBucStriimRepository
         $calibreThing->ctype = $calibreType;
         $calibreThing->cid = $calibreId;
         $calibreThing->cname = $calibreName;
-        $calibreThing->ownArtefact = array();
+        $calibreThing->ownArtefact = [];
         $calibreThing->refctr = 0;
         $id = R::store($calibreThing);
         return $calibreThing;
@@ -330,10 +342,11 @@ class BicBucStriim implements BicBucStriimRepository
                 unset($calibreThing->ownArtefact[$artefact->id]);
                 $calibreThing->refctr -= 1;
                 R::trash($artefact);
-                if ($calibreThing->refctr == 0)
+                if ($calibreThing->refctr == 0) {
                     R::trash($calibreThing);
-                else
+                } else {
                     R::store($calibreThing);
+                }
             }
         }
         return $ret;
@@ -344,10 +357,11 @@ class BicBucStriim implements BicBucStriimRepository
         $artefacts = array_values(array_filter($calibreThing->ownArtefact, function ($artefact) {
             return ($artefact->atype == DataConstants::AUTHOR_THUMBNAIL_ARTEFACT);
         }));
-        if (empty($artefacts))
+        if (empty($artefacts)) {
             return null;
-        else
+        } else {
             return $artefacts[0];
+        }
     }
 
     public function getAuthorThumbnail($authorId): ?OODBBean
@@ -363,24 +377,28 @@ class BicBucStriim implements BicBucStriimRepository
     public function editAuthorThumbnail($authorId, $authorName, $clipped, $file, $mime)
     {
         $calibreThing = $this->getCalibreThing(DataConstants::CALIBRE_AUTHOR_TYPE, $authorId);
-        if (is_null($calibreThing))
+        if (is_null($calibreThing)) {
             $calibreThing = $this->addCalibreThing(DataConstants::CALIBRE_AUTHOR_TYPE, $authorId, $authorName);
+        }
 
         if (($mime == 'image/jpeg')
             || ($mime == "image/jpg")
-            || ($mime == "image/pjpeg"))
+            || ($mime == "image/pjpeg")) {
             $png = false;
-        else
+        } else {
             $png = true;
+        }
 
         $fname = $this->authors_dir . '/author_' . $calibreThing->id . '_thm.png';
-        if (file_exists($fname))
+        if (file_exists($fname)) {
             unlink($fname);
+        }
 
-        if ($clipped)
+        if ($clipped) {
             $created = $this->thumbnailClipped($file, $png, self::THUMB_RES, self::THUMB_RES, $fname);
-        else
+        } else {
             $created = $this->thumbnailStuffed($file, $png, self::THUMB_RES, self::THUMB_RES, $fname);
+        }
 
         $artefact = $this->getFirstArtefact($calibreThing);
         if (is_null($artefact)) {
@@ -426,15 +444,17 @@ class BicBucStriim implements BicBucStriimRepository
         $thumb_name = 'thumb_'.$id.'.png';
         $thumb_path = $this->thumb_dir.'/'.$thumb_name;
         if (!file_exists($thumb_path)) {
-            if (is_null($cover))
+            if (is_null($cover)) {
                 $thumb_path = null;
-            else {
-                if ($clipped)
+            } else {
+                if ($clipped) {
                     $created = $this->thumbnailClipped($cover, false, self::THUMB_RES, self::THUMB_RES, $thumb_path);
-                else
+                } else {
                     $created = $this->thumbnailStuffed($cover, false, self::THUMB_RES, self::THUMB_RES, $thumb_path);
-                if (!$created)
+                }
+                if (!$created) {
                     throw new NoThumbnailException();
+                }
             }
         }
         return $thumb_path;
@@ -454,8 +474,9 @@ class BicBucStriim implements BicBucStriimRepository
                 }
             }
             closedir($dh);
-        } else
+        } else {
             $cleared = false;
+        }
         return $cleared;
     }
 
@@ -468,7 +489,7 @@ class BicBucStriim implements BicBucStriimRepository
 
     public function authorLinks($authorId): array
     {
-        $links = array();
+        $links = [];
         $calibreThing = $this->getCalibreThing(DataConstants::CALIBRE_AUTHOR_TYPE, $authorId);
         if (!is_null($calibreThing)) {
             $links = $this->getLinks($calibreThing);
@@ -479,8 +500,9 @@ class BicBucStriim implements BicBucStriimRepository
     public function addAuthorLink($authorId, $authorName, $label, $url)
     {
         $calibreThing = $this->getCalibreThing(DataConstants::CALIBRE_AUTHOR_TYPE, $authorId);
-        if (is_null($calibreThing))
+        if (is_null($calibreThing)) {
             $calibreThing = $this->addCalibreThing(DataConstants::CALIBRE_AUTHOR_TYPE, $authorId, $authorName);
+        }
         $link = R::dispense('link');
         $link->ltype = DataConstants::AUTHOR_LINK;
         $link->label = $label;
@@ -505,10 +527,11 @@ class BicBucStriim implements BicBucStriimRepository
                 unset($calibreThing->ownLink[$link->id]);
                 R::trash($link);
                 $calibreThing->refctr -= 1;
-                if ($calibreThing->refctr == 0)
+                if ($calibreThing->refctr == 0) {
                     R::trash($calibreThing);
-                else
+                } else {
                     R::store($calibreThing);
+                }
                 $ret = true;
             }
         }
@@ -520,10 +543,11 @@ class BicBucStriim implements BicBucStriimRepository
         $notes = array_values(array_filter($calibreThing->ownNote, function ($note) {
             return ($note->ntype == DataConstants::AUTHOR_NOTE);
         }));
-        if (empty($notes))
+        if (empty($notes)) {
             return null;
-        else
+        } else {
             return $notes[0];
+        }
     }
 
     public function authorNote($authorId): ?OODBBean
@@ -539,8 +563,9 @@ class BicBucStriim implements BicBucStriimRepository
     public function editAuthorNote($authorId, $authorName, $mime, $noteText)
     {
         $calibreThing = $this->getCalibreThing(DataConstants::CALIBRE_AUTHOR_TYPE, $authorId);
-        if (is_null($calibreThing))
+        if (is_null($calibreThing)) {
             $calibreThing = $this->addCalibreThing(DataConstants::CALIBRE_AUTHOR_TYPE, $authorId, $authorName);
+        }
         $note = $this->getFirstNote($calibreThing);
         if (is_null($note)) {
             $note = R::dispense('note');
@@ -568,10 +593,11 @@ class BicBucStriim implements BicBucStriimRepository
                 unset($calibreThing->ownNote[$note->id]);
                 $calibreThing->refctr -= 1;
                 R::trash($note);
-                if ($calibreThing->refctr == 0)
+                if ($calibreThing->refctr == 0) {
                     R::trash($calibreThing);
-                else
+                } else {
                     R::store($calibreThing);
+                }
             }
             $ret = true;
         }
@@ -592,13 +618,14 @@ class BicBucStriim implements BicBucStriimRepository
      */
     private function thumbnailClipped($cover, $png, $newwidth, $newheight, $thumb_path): bool
     {
-        list($width, $height) = getimagesize($cover);
+        [$width, $height] = getimagesize($cover);
         $thumb = imagecreatetruecolor($newwidth, $newheight);
-        if ($png)
+        if ($png) {
             $source = imagecreatefrompng($cover);
-        else
+        } else {
             $source = imagecreatefromjpeg($cover);
-        $minwh = min(array($width, $height));
+        }
+        $minwh = min([$width, $height]);
         $newx = ($width / 2) - ($minwh / 2);
         $newy = ($height / 2) - ($minwh / 2);
         $inbetween = imagecreatetruecolor($minwh, $minwh);
@@ -619,15 +646,16 @@ class BicBucStriim implements BicBucStriimRepository
      */
     private function thumbnailStuffed($cover, $png, $newwidth, $newheight, $thumb_path): bool
     {
-        list($width, $height) = getimagesize($cover);
+        [$width, $height] = getimagesize($cover);
         $thumb = $this->transparentImage($newwidth, $newheight);
-        if ($png)
+        if ($png) {
             $source = imagecreatefrompng($cover);
-        else
+        } else {
             $source = imagecreatefromjpeg($cover);
+        }
         $dstx = 0;
         $dsty = 0;
-        $maxwh = max(array($width, $height));
+        $maxwh = max([$width, $height]);
         if ($height > $width) {
             $diff = $maxwh - $width;
             $dstx = (int)$diff / 2;

@@ -15,22 +15,20 @@ class BookTransformer extends TransformerAbstract
 {
     /**
      * List of resources that could be included
-     * @var array
      */
-    protected $availableIncludes = [
+    protected array $availableIncludes = [
         'series',
         'tags',
         'formats',
         'identifiers',
-        'comment'
+        'comment',
     ];
 
     /**
      * List of resources that will always be included
-     * @var array
      */
-    protected $defaultIncludes = [
-        'authors'
+    protected array $defaultIncludes = [
+        'authors',
     ];
 
 
@@ -60,7 +58,7 @@ class BookTransformer extends TransformerAbstract
             'links' => [
                 'rel' => 'self',
                 'uri' => '/titles/' . $book->id,
-            ]
+            ],
         ];
     }
 
@@ -72,7 +70,7 @@ class BookTransformer extends TransformerAbstract
     public function includeAuthors($details)
     {
         $authors = $details['authors'];
-        return $this->collection($authors, new AuthorTransformer, 'authors');
+        return $this->collection($authors, new AuthorTransformer(), 'authors');
     }
 
     /**
@@ -83,9 +81,10 @@ class BookTransformer extends TransformerAbstract
     public function includeSeries($details)
     {
         $series = $details['series'];
-        if (empty($series))
+        if (empty($series)) {
             return null;
-        return $this->item($series[0], new SeriesTransformer, 'series');
+        }
+        return $this->item($series[0], new SeriesTransformer(), 'series');
     }
 
     /**
@@ -96,7 +95,7 @@ class BookTransformer extends TransformerAbstract
     public function includeTags($details)
     {
         $tags = $details['tags'];
-        return $this->collection($tags, new TagTransformer, 'tags');
+        return $this->collection($tags, new TagTransformer(), 'tags');
     }
 
     /**
@@ -107,7 +106,7 @@ class BookTransformer extends TransformerAbstract
     public function includeFormats($details)
     {
         $formats = $details['formats'];
-        return $this->collection($formats, new FormatTransformer, 'formats');
+        return $this->collection($formats, new FormatTransformer(), 'formats');
     }
 
     /**
@@ -118,7 +117,7 @@ class BookTransformer extends TransformerAbstract
     public function includeIdentifiers($details)
     {
         $identifiers = $details['ids'];
-        return $this->collection($identifiers, new IdentifierTransformer, 'identifiers');
+        return $this->collection($identifiers, new IdentifierTransformer(), 'identifiers');
     }
 
     /**
@@ -129,8 +128,9 @@ class BookTransformer extends TransformerAbstract
     public function includeComment($details)
     {
         $comment = $details['comment'];
-        if (empty($comment))
+        if (empty($comment)) {
             return null;
-        return $this->item($comment, new commentTransformer, 'comment');
+        }
+        return $this->item($comment, new CommentTransformer(), 'comment');
     }
 }

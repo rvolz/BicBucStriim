@@ -13,10 +13,10 @@ use League\Fractal\Pagination\PaginatorInterface;
  */
 class SimplePaginator implements PaginatorInterface
 {
-
     private $total = 0;
     private $pageSize = 30;
     private $currentPage = 0;
+    private $count = 0;
     private $url;
     private $sortOrder;
     private $search;
@@ -24,54 +24,46 @@ class SimplePaginator implements PaginatorInterface
 
     /**
      * Get the current page.
-     *
-     * @return int
      */
-    public function getCurrentPage()
+    public function getCurrentPage(): int
     {
         return $this->currentPage;
     }
 
     /**
      * Get the last page.
-     *
-     * @return int
      */
-    public function getLastPage()
+    public function getLastPage(): int
     {
         $lp = (int)$this->total / $this->pageSize;
         $rest = $this->total % $this->pageSize;
-        if ($rest)
+        if ($rest) {
             $lp += 1;
+        }
         return $lp;
     }
 
     /**
      * Get the total.
-     *
-     * @return int
      */
-    public function getTotal()
+    public function getTotal(): int
     {
         return $this->total;
     }
 
     /**
      * Get the count.
-     *
-     * @return int
      */
-    public function getCount()
+    public function getCount(): int
     {
         // TODO: Implement getCount() method.
+        return $this->count;
     }
 
     /**
      * Get the number per page.
-     *
-     * @return int
      */
-    public function getPerPage()
+    public function getPerPage(): int
     {
         return $this->pageSize;
     }
@@ -80,10 +72,8 @@ class SimplePaginator implements PaginatorInterface
      * Get the url for the given page.
      *
      * @param int $page
-     *
-     * @return string
      */
-    public function getUrl($page)
+    public function getUrl($page): string
     {
         if ($this->sortOrder) {
             $sort = "&sort=$this->sortOrder";

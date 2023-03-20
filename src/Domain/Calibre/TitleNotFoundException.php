@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Domain\Calibre;
-
 
 use App\Domain\DomainException\DomainRecordNotFoundException;
 

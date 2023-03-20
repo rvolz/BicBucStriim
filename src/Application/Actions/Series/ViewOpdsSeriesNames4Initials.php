@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Application\Actions\Series;
-
 
 use App\Domain\DomainException\DomainRecordNotFoundException;
 use App\Domain\Opds\OpdsGenerator;
@@ -10,7 +8,6 @@ use Psr\Http\Message\ResponseInterface as Response;
 
 class ViewOpdsSeriesNames4Initials extends \App\Application\Actions\CalibreOpdsAction
 {
-
     /**
      * @inheritDoc
      */

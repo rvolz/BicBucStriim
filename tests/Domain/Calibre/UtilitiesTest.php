@@ -7,14 +7,18 @@ use PHPUnit\Framework\TestCase;
 
 class UtilitiesTest extends TestCase
 {
-    const FIXT = __DIR__ . '/../../fixtures';
+    public const FIXT = __DIR__ . '/../../fixtures';
 
-    function testBookPath() {
-        $this->assertEquals('tests/fixtures/lib2/Gotthold Ephraim Lessing/Lob der Faulheit (1)/Lob der Faulheit - Gotthold Ephraim Lessing.epub',
-            Utilities::bookPath('tests/fixtures/lib2','Gotthold Ephraim Lessing/Lob der Faulheit (1)', 'Lob der Faulheit - Gotthold Ephraim Lessing.epub'));
+    public function testBookPath()
+    {
+        $this->assertEquals(
+            'tests/fixtures/lib2/Gotthold Ephraim Lessing/Lob der Faulheit (1)/Lob der Faulheit - Gotthold Ephraim Lessing.epub',
+            Utilities::bookPath('tests/fixtures/lib2', 'Gotthold Ephraim Lessing/Lob der Faulheit (1)', 'Lob der Faulheit - Gotthold Ephraim Lessing.epub')
+        );
     }
 
-    function testTitleMimeType() {
+    public function testTitleMimeType()
+    {
         $this->assertEquals('application/epub+zip', Utilities::titleMimeType('x/y/test.epub'));
         $this->assertEquals('application/x-mobi8-ebook', Utilities::titleMimeType('test.azw3'));
         $this->assertEquals('application/x-mobipocket-ebook', Utilities::titleMimeType('test.mobi'));

@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Domain\BicBucStriim;
-
 
 /**
  * Class ConfigMailer, a dummy class for configuration
