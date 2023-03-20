@@ -23,6 +23,7 @@ require_once 'login_middleware.php';
 require_once 'caching_middleware.php';
 require_once 'mailer.php';
 require_once 'metadata_epub.php';
+require_once 'deprecated.php';
 
 use dflydev\markdown\MarkdownExtraParser;
 use Aura\Auth as Auth;
