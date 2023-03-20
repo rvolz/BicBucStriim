@@ -17,7 +17,7 @@ class DoLoginAction extends LoginAction
     {
         if ($this->user->isValid()) {
             return $this->response
-                ->withHeader('Location', '/')
+                ->withHeader('Location', BBS_BASE_PATH . '/')
                 ->withStatus(302);
             /*
              * TODO use urlFor for redirect

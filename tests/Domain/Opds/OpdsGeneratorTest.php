@@ -81,8 +81,9 @@ class OpdsGeneratorTest extends TestCase
         if ($res != '') {
             echo 'OPDS validation error: '.$res;
             return false;
-        } else
+        } else {
             return true;
+        }
         */
     }
 

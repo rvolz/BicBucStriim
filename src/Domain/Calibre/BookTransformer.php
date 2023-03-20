@@ -15,9 +15,8 @@ class BookTransformer extends TransformerAbstract
 {
     /**
      * List of resources that could be included
-     * @var array
      */
-    protected $availableIncludes = [
+    protected array $availableIncludes = [
         'series',
         'tags',
         'formats',
@@ -27,9 +26,8 @@ class BookTransformer extends TransformerAbstract
 
     /**
      * List of resources that will always be included
-     * @var array
      */
-    protected $defaultIncludes = [
+    protected array $defaultIncludes = [
         'authors',
     ];
 

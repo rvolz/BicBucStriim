@@ -16,9 +16,8 @@ class TagTransformer extends TransformerAbstract
     // TODO include related information, so that tags can navigate to books etc
     /**
      * List of resources that could be included
-     * @var array
      */
-    protected $availableIncludes = [];
+    protected array $availableIncludes = [];
 
     public function transform($tag)
     {

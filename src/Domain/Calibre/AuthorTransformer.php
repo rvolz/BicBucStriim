@@ -15,9 +15,8 @@ class AuthorTransformer extends TransformerAbstract
 {
     /**
      * List of resources that could be included
-     * @var array
      */
-    protected $availableIncludes = [];
+    protected array $availableIncludes = [];
 
     // TODO include related information, so that authors can navigate to books etc
     public function transform($author)

@@ -76,6 +76,9 @@ class AuthMiddleware implements Middleware
         $this->try_resume($auth_factory, $pdo_adapter, $auth);
         // TODO check if we have to subtract a base path here
         $path = $request->getUri()->getPath();
+        if (!empty(BBS_BASE_PATH)) {
+            $path = str_replace(BBS_BASE_PATH, '', $path);
+        }
         if ($auth->isValid()) {
             $ud = $auth->getUserData();
             if (!is_array($ud) || !array_key_exists('role', $ud) || !array_key_exists('id', $ud)) {
@@ -169,7 +172,7 @@ class AuthMiddleware implements Middleware
 
             return new \GuzzleHttp\Psr7\Response(
                 302,
-                ['Location' => '/login/', 'Turbolinks-Location' => '/login/'],
+                ['Location' => BBS_BASE_PATH . '/login/', 'Turbolinks-Location' => BBS_BASE_PATH . '/login/'],
                 null,
                 '1.1',
                 $msg
@@ -262,7 +265,7 @@ class AuthMiddleware implements Middleware
                 "exp" => $exp,
                 "uid" => $uid,
             ];
-        $encoded = JWT::encode($payload, $this->jwtKey);
+        $encoded = JWT::encode($payload, $this->jwtKey, 'HS256');
         $this->logger->debug('setting auth cookie', [__FILE__, $uid, $domain, $dt]);
         // TODO get base path for cookie
         return FigResponseCookies::set(

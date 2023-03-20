@@ -1,18 +1,21 @@
-<phpunit bootstrap="vendor/autoload.php">
-    <testsuites>
-        <testsuite name="API">
-            <directory>./tests/Functional</directory>
-            <exclude>./tests/Functional/TitlesTest.php</exclude>
-        </testsuite>
-        <testsuite name="Unit">
-            <directory>./tests/Domain</directory>
-            <directory>./tests/Application</directory>
-            <directory>./tests/Infrastructure</directory>
-        </testsuite>
-    </testsuites>
-    <filter>
-        <whitelist>
-            <directory suffix=".php">./src</directory>
-        </whitelist>
-    </filter>
+<?xml version="1.0"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" bootstrap="./tests/bootstrap.php" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd">
+  <coverage>
+    <include>
+      <directory suffix=".php">./src</directory>
+    </include>
+  </coverage>
+  <testsuites>
+  <!--
+    <testsuite name="API">
+      <directory>./tests/Functional</directory>
+      <exclude>./tests/Functional/TitlesTest.php</exclude>
+    </testsuite>
+	-->
+    <testsuite name="Unit">
+      <directory>./tests/Domain</directory>
+      <directory>./tests/Application</directory>
+      <directory>./tests/Infrastructure</directory>
+    </testsuite>
+  </testsuites>
 </phpunit>

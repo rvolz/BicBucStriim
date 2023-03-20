@@ -487,7 +487,7 @@ class Calibre implements CalibreRepository
         }
     }
 
-    public function last30Books($lang, $nrOfTitles = 30, $filter)
+    public function last30Books($lang, $nrOfTitles = 30, $filter = null)
     {
         $queryParams = $this->mkQueryParams(null, $filter, null, $nrOfTitles, null);
         $books = $this->findPrepared(Book::class, 'SELECT * FROM ' . $filter->getBooksFilter() . ' ORDER BY timestamp DESC LIMIT :length', $queryParams);
@@ -561,7 +561,7 @@ class Calibre implements CalibreRepository
         return ['author' => $author, 'books' => $books];
     }
 
-    public function authorDetailsSlice($lang, $id, $index = 0, $length = 100, $filter)
+    public function authorDetailsSlice($lang, $id, $index = 0, $length = 100, $filter = null)
     {
         $author = $this->findOne(Author::class, 'SELECT * FROM authors WHERE id=:id', ['id' => $id]);
         if (is_null($author)) {
@@ -660,7 +660,7 @@ class Calibre implements CalibreRepository
         return ['tag' => $tag, 'books' => $books];
     }
 
-    public function tagDetailsSlice(string $lang, int $id, $index = 0, $length = 100, $filter): array
+    public function tagDetailsSlice(string $lang, int $id, $index = 0, $length = 100, $filter = null): array
     {
         $tag = $this->findOne(Tag::class, 'SELECT * FROM tags WHERE id=:id', ['id' => $id]);
         if (is_null($tag)) {
@@ -693,21 +693,21 @@ class Calibre implements CalibreRepository
         );
     }
 
-    public function pubdateOrderedTitlesSlice($lang, $index = 0, $length = 100, $filter, $search = null): array
+    public function pubdateOrderedTitlesSlice($lang, $index = 0, $length = 100, $filter = null, $search = null)
     {
         $books = $this->findSliceFiltered(CalibreSearchType::PubDateOrderedBook, $index, $length, $filter, $search);
         $this->addBookDetails($lang, $books['entries']);
         return $books;
     }
 
-    public function lastmodifiedOrderedTitlesSlice($lang, $index = 0, $length = 100, $filter, $search = null): array
+    public function lastmodifiedOrderedTitlesSlice($lang, $index = 0, $length = 100, $filter = null, $search = null)
     {
         $books = $this->findSliceFiltered(CalibreSearchType::LastModifiedOrderedBook, $index, $length, $filter, $search);
         $this->addBookDetails($lang, $books['entries']);
         return $books;
     }
 
-    public function timestampOrderedTitlesSlice($lang, $index = 0, $length = 100, $filter, $search = null): array
+    public function timestampOrderedTitlesSlice($lang, $index = 0, $length = 100, $filter = null, $search = null)
     {
         $books = $this->findSliceFiltered(CalibreSearchType::TimestampOrderedBook, $index, $length, $filter, $search);
         $this->addBookDetails($lang, $books['entries']);
@@ -1237,7 +1237,7 @@ class Calibre implements CalibreRepository
         return ['series' => $series, 'books' => $books];
     }
 
-    public function seriesDetailsSlice($lang, $id, $index = 0, $length = 100, $filter)
+    public function seriesDetailsSlice($lang, $id, $index = 0, $length = 100, $filter = null)
     {
         $series = $this->findOne(Series::class, 'SELECT * FROM series WHERE id=:id', ['id' => $id]);
         if (is_null($series)) {

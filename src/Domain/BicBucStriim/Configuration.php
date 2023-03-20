@@ -61,7 +61,7 @@ class Configuration implements ArrayAccess
      */
     public function load()
     {
-        if ($this->bbs->dbOk()) {
+        if (!is_null($this->bbs) && $this->bbs->dbOk()) {
             $this->logger->debug("loading configuration");
             $css = $this->bbs->configs();
             foreach ($css as $cs) {
