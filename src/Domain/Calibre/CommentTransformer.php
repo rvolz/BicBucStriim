@@ -17,8 +17,7 @@ class CommentTransformer
     {
         return [
             'id' => (int)$comment->id,
-            'text' => $comment->text
+            'text' => $comment->text,
         ];
     }
-
 }

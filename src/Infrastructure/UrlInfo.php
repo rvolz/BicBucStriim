@@ -1,35 +1,39 @@
 <?php
 
-
 namespace App\Infrastructure;
-
 
 /**
  * Class UrlInfo contains information on how to construct URLs
  */
-class UrlInfo {
+class UrlInfo
+{
     /**
      * @var $protocol - protocol used for access, default 'http'
      */
-    var $protocol = 'http';
+    public $protocol = 'http';
     /**
      * @var $host - hostname or ip address used for access
      */
-    var $host;
+    public $host;
 
-    public function __construct() {
+    public function __construct()
+    {
         $na = func_num_args();
         if ($na == 2) {
             $fhost = func_get_arg(0);
-            if (!is_null($fhost) && $fhost != 'unknown') { $this->host = $fhost; }
+            if (!is_null($fhost) && $fhost != 'unknown') {
+                $this->host = $fhost;
+            }
             $fproto = func_get_arg(1);
-            if (!is_null($fproto)) { $this->protocol = $fproto; }
+            if (!is_null($fproto)) {
+                $this->protocol = $fproto;
+            }
         } else {
             $ffw = func_get_arg(0);
-            $ffws = preg_split('/;/',$ffw, -1, PREG_SPLIT_NO_EMPTY);
-            $opts = array();
+            $ffws = preg_split('/;/', $ffw, -1, PREG_SPLIT_NO_EMPTY);
+            $opts = [];
             foreach ($ffws as $ffwi) {
-                $ffwis = preg_split('/=/',$ffwi, -1);
+                $ffwis = preg_split('/=/', $ffwi, -1);
                 $opts[$ffwis[0]] = $ffwis[1];
             }
             if (isset($opts['by'])) {
@@ -46,7 +50,8 @@ class UrlInfo {
         return "UrlInfo{ protocol: $this->protocol, host: $this->host}";
     }
 
-    function is_valid() {
+    public function is_valid()
+    {
         return (!empty($this->host));
     }
 }

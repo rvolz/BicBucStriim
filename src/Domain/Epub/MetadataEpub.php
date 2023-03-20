@@ -13,7 +13,6 @@ namespace App\Domain\Epub;
 use Exception;
 use Locale;
 
-
 /**
  * Update the metadata of an EPUB file. Creates temporary copies
  * of the orginal files, updates them and deletes them after use.
@@ -37,14 +36,16 @@ class MetadataEpub
      */
     public function __construct($file, $tmpdir = null)
     {
-        if (is_null($tmpdir))
+        if (is_null($tmpdir)) {
             $tmp = sys_get_temp_dir();
-        else
+        } else {
             $tmp = $tmpdir;
+        }
         $new_epub = tempnam($tmp, $this->prefix);
         $status = copy($file, $new_epub);
-        if (!$status)
+        if (!$status) {
             throw new Exception('Couldn\'t copy epub file');
+        }
         $this->converter = new EPub($new_epub);
     }
 
@@ -55,8 +56,9 @@ class MetadataEpub
     public function __destruct()
     {
         $fname = $this->converter->file();
-        if (!is_null($fname) && file_exists($fname))
+        if (!is_null($fname) && file_exists($fname)) {
             unlink($fname);
+        }
     }
 
     /**
@@ -80,12 +82,13 @@ class MetadataEpub
      */
     public function updateMetadata($metadata = null, $cover = null)
     {
-        if (is_null($metadata))
+        if (is_null($metadata)) {
             return;
+        }
         // replace title
         $this->converter->Title($metadata['book']->title);
         // replace authors
-        $authors = array();
+        $authors = [];
         foreach ($metadata['authors'] as $author) {
             $authors[$author->sort] = $author->name;
         }
@@ -98,12 +101,15 @@ class MetadataEpub
         }
         // replace IDs
         $ids = $metadata['ids'];
-        if (!empty($ids['isbn']))
+        if (!empty($ids['isbn'])) {
             $this->converter->ISBN($ids['isbn']);
-        if (!empty($ids['google']))
+        }
+        if (!empty($ids['google'])) {
             $this->converter->Google($ids['google']);
-        if (!empty($ids['amazon']))
+        }
+        if (!empty($ids['amazon'])) {
             $this->converter->Amazon($ids['amazon']);
+        }
         // replace subject tags
         $tags = array_map(function ($tag) {
             return $tag->name;
@@ -118,4 +124,3 @@ class MetadataEpub
         $this->converter->save();
     }
 }
-

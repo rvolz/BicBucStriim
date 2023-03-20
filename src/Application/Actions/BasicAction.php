@@ -1,8 +1,8 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Application\Actions;
-
 
 use App\Domain\BicBucStriim\BicBucStriimRepository;
 use App\Domain\BicBucStriim\Configuration;
@@ -20,9 +20,11 @@ abstract class BasicAction extends Action
      * @param BicBucStriimRepository $bbs
      * @param Configuration $config
      */
-    public function __construct(LoggerInterface $logger,
-                                BicBucStriimRepository $bbs,
-                                Configuration $config)
+    public function __construct(
+        LoggerInterface $logger,
+        BicBucStriimRepository $bbs,
+        Configuration $config
+    )
     {
         parent::__construct($logger);
         $this->bbs = $bbs;
@@ -61,15 +63,18 @@ abstract class BasicAction extends Action
     protected function checkAndGenSearchOptions(): ?SearchOptions
     {
         $search = '';
-        if ($this->hasQueryParam('search'))
+        if ($this->hasQueryParam('search')) {
             $search = trim($this->resolveQueryParam('search'));
+        }
         $options = 0;
-        if ($this->hasQueryParam('options'))
+        if ($this->hasQueryParam('options')) {
             $options = (int) $this->resolveQueryParam('option');
-        if (!empty($search))
+        }
+        if (!empty($search)) {
             return SearchOptions::fromParams($search, $options);
-        else
+        } else {
             return SearchOptions::genEmpty();
+        }
     }
 
     /**
@@ -81,7 +86,6 @@ abstract class BasicAction extends Action
     {
         $book->thumbnail = $this->bbs->isTitleThumbnailAvailable($book->id);
         return $book;
-
     }
 
     /**
@@ -104,8 +108,9 @@ abstract class BasicAction extends Action
     protected function getIndexParam(string $actionName): int
     {
         $index = 0;
-        if ($this->hasQueryParam('index'))
+        if ($this->hasQueryParam('index')) {
             $index = (int) $this->resolveQueryParam('index');
+        }
         if ($index < 0) {
             $this->logger->warning('invalid page id ' . $index, [$actionName]);
             throw new HttpBadRequestException($this->request);
@@ -116,8 +121,9 @@ abstract class BasicAction extends Action
     protected function getJumpTargetParam(string $actionName): string
     {
         $jumpTarget = '';
-        if ($this->hasQueryParam('jumpTarget'))
+        if ($this->hasQueryParam('jumpTarget')) {
             $jumpTarget = $this->resolveQueryParam('jumpTarget');
+        }
         return $jumpTarget;
     }
 
@@ -128,10 +134,11 @@ abstract class BasicAction extends Action
      */
     protected function getNextSearchPage(array $tl): int
     {
-        if ($tl['page'] < $tl['pages'] - 1)
+        if ($tl['page'] < $tl['pages'] - 1) {
             $nextPage = $tl['page'] + 1;
-        else
+        } else {
             $nextPage = 0;
+        }
         return $nextPage;
     }
 
@@ -142,12 +149,11 @@ abstract class BasicAction extends Action
      */
     protected function getLastSearchPage(array $tl): int
     {
-        if ($tl['pages'] == 0)
+        if ($tl['pages'] == 0) {
             $lastPage = 0;
-        else
+        } else {
             $lastPage = $tl['pages'] - 1;
+        }
         return $lastPage;
     }
-
-
 }

@@ -15,19 +15,19 @@ use Slim\Exception\HttpBadRequestException;
  */
 class DoAuthorAction extends AuthorsAction
 {
-
     /**
      * @inheritdoc
      */
     protected function action(): Response
     {
-        if (!$this->is_admin())
+        if (!$this->is_admin()) {
             return $this->refuseNonAdmin();
-        $flash = array();
+        }
+        $flash = [];
         $id = (int) $this->resolveArg('id');
         // parameter checking
         if (!is_object($this->calibre->author($id))) {
-            $msg = sprintf("no author data found for id %d",$id);
+            $msg = sprintf("no author data found for id %d", $id);
             $this->logger->error($msg, [__FILE__]);
             throw new DomainRecordNotFoundException($msg);
         }
@@ -36,7 +36,7 @@ class DoAuthorAction extends AuthorsAction
 
         // TODO replace with https://www.slimframework.com/docs/v4/cookbook/uploading-files.html?
         if (array_key_exists('file', $_FILES)) {
-            $allowedExts = array("jpeg", "jpg", "png");
+            $allowedExts = ["jpeg", "jpg", "png"];
             #$temp = explode(".", $_FILES["file"]["name"]);
             #$extension = end($temp);
             $extension = pathinfo($_FILES["file"]["name"], PATHINFO_EXTENSION);
@@ -55,11 +55,13 @@ class DoAuthorAction extends AuthorsAction
                     $flash['error'] = $this->getMessageString('author_thumbnail_upload_error1' . ': ' . $_FILES["file"]["error"]);
                 } else {
                     $this->logger->debug('upload ok, converting', [__FILE__]);
-                    $created = $this->bbs->editAuthorThumbnail($id,
+                    $created = $this->bbs->editAuthorThumbnail(
+                        $id,
                         $author->name,
                         $this->config[AppConstants::THUMB_GEN_CLIPPED],
                         $_FILES["file"]["tmp_name"],
-                        $_FILES["file"]["type"]);
+                        $_FILES["file"]["type"]
+                    );
                     $this->logger->debug('converted', [__FILE__]);
                     $flash['info'] = $this->getMessageString('admin_modified');
                 }
@@ -73,10 +75,11 @@ class DoAuthorAction extends AuthorsAction
                 case 'deleteImage':
                     $this->logger->debug('DeleteAuthorThumbnail:author ' . $id, [__FILE__]);
                     $del = $this->bbs->deleteAuthorThumbnail($id);
-                    if ($del)
+                    if ($del) {
                         $flash['info'] = $this->getMessageString('admin_modified');
-                    else
+                    } else {
                         $flash['error'] = $this->getMessageString('admin_modify_error');
+                    }
                     break;
                 case 'createLink':
                     $this->logger->debug('CreateAuthorLink: ' . var_export($post_data, true), [__FILE__]);
@@ -90,7 +93,7 @@ class DoAuthorAction extends AuthorsAction
                         if (str_starts_with($k, 'link-')) {
                             $del = $this->bbs->deleteAuthorLink($id, $v);
                             if (!$del) {
-                                $this->logger->debug('DeleteAuthorLinks: deleting link faild, ID=' . $v , [__FILE__]);
+                                $this->logger->debug('DeleteAuthorLinks: deleting link faild, ID=' . $v, [__FILE__]);
                                 $worked = false;
                             }
                         }
@@ -114,21 +117,22 @@ class DoAuthorAction extends AuthorsAction
             $id,
             $index,
             $this->config[AppConstants::PAGE_SIZE],
-            $filter);
+            $filter
+        );
         if (empty($tl)) {
             $msg = sprintf("ViewAuthorAction: no title data found for id %d", $id);
             $this->logger->error($msg);
             throw new DomainRecordNotFoundException($msg);
         }
 
-        $books = array_map(array($this, 'checkThumbnail'), $tl['entries']);
+        $books = array_map([$this, 'checkThumbnail'], $tl['entries']);
 
         $series = $this->calibre->authorSeries($id, $books);
 
         $author = $tl['author'];
         $author->thumbnail = $this->bbs->getAuthorThumbnail($id);
         $author->links = $this->bbs->authorLinks($id);
-        return $this->respondWithPage('author_detail.twig', array(
+        return $this->respondWithPage('author_detail.twig', [
             'page' => $this->mkPage($this->getMessageString('author_details'), 3, 2),
             'url' => 'authors/' . $id,
             'author' => $tl['author'],
@@ -137,6 +141,6 @@ class DoAuthorAction extends AuthorsAction
             'curpage' => $tl['page'],
             'pages' => $tl['pages'],
             'flash' => $flash,
-            'isadmin' => $this->is_admin()));
+            'isadmin' => $this->is_admin()]);
     }
 }

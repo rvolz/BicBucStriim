@@ -18,34 +18,38 @@ use SimpleXMLElement;
 
 class OpdsGeneratorTest extends TestCase
 {
-    const OPDS_RNG = __DIR__ . '/../../fixtures/opds_catalog_1_1.rng';
-    const DATA = __DIR__ . '/../../data';
-    const DB2 = __DIR__ . '/../../fixtures/data2.db';
-    const CDB2 = __DIR__ . '/../../fixtures/lib2/metadata.db';
-    const DATADB = __DIR__ . '/../../data/data.db';
+    public const OPDS_RNG = __DIR__ . '/../../fixtures/opds_catalog_1_1.rng';
+    public const DATA = __DIR__ . '/../../data';
+    public const DB2 = __DIR__ . '/../../fixtures/data2.db';
+    public const CDB2 = __DIR__ . '/../../fixtures/lib2/metadata.db';
+    public const DATADB = __DIR__ . '/../../data/data.db';
 
-    var ?BicBucStriimRepository $bbs;
-    var OpdsGenerator $gen;
-    var ?CalibreRepository $calibre;
+    public ?BicBucStriimRepository $bbs;
+    public OpdsGenerator $gen;
+    public ?CalibreRepository $calibre;
 
-    function setUp(): void
+    public function setUp(): void
     {
         global $langen;
-        if (file_exists(self::DATA))
+        if (file_exists(self::DATA)) {
             system("rm -rf ".self::DATA);
+        }
         mkdir(self::DATA);
-        chmod(self::DATA,0777);
+        chmod(self::DATA, 0777);
         copy(self::DB2, self::DATADB);
         $this->bbs = new BicBucStriim(self::DATADB);
         $this->calibre = new Calibre(self::CDB2);
         $l10n = new L10n('en');
-        $this->gen = new OpdsGenerator('/bbs', '0.9.0',
+        $this->gen = new OpdsGenerator(
+            '/bbs',
+            '0.9.0',
             $this->calibre->calibre_dir,
             date(DATE_ATOM, strtotime('2012-01-01T11:59:59')),
-            $l10n);
+            $l10n
+        );
     }
 
-    function tearDown(): void
+    public function tearDown(): void
     {
         $this->calibre = null;
         R::nuke();
@@ -55,19 +59,20 @@ class OpdsGeneratorTest extends TestCase
     }
 
     # Validation helper: validate relaxng
-    function opdsValidateSchema($feed): bool
+    public function opdsValidateSchema($feed): bool
     {
         $res = system('java -jar /usr/share/java/jing.jar '.self::OPDS_RNG.' '.$feed);
         if ($res != '') {
             echo 'RelaxNG validation error: '.$res;
             return false;
-        } else
+        } else {
             return true;
+        }
     }
 
     // Validation helper: validate opds
     // TODO find validator jar, doesn't build
-    function opdsValidate($feed, $version): bool
+    public function opdsValidate($feed, $version): bool
     {
         return true;
         /*
@@ -83,8 +88,9 @@ class OpdsGeneratorTest extends TestCase
 
     # Timestamp helper: generate proper timezone offsets
     # see http://www.php.net/manual/en/datetimezone.getoffset.php
-    function genTimestampOffset($phpTime) {
-        if(date_default_timezone_get() == 'UTC') {
+    public function genTimestampOffset($phpTime)
+    {
+        if (date_default_timezone_get() == 'UTC') {
             $offsetString = '+00:00'; // No need to calculate offset, as default timezone is already UTC
         } else {
             $millis = strtotime($phpTime); // Convert time to milliseconds since 1970, using default timezone
@@ -100,18 +106,20 @@ class OpdsGeneratorTest extends TestCase
         return $offsetString;
     }
 
-    function testRootCatalogValidation() {
+    public function testRootCatalogValidation()
+    {
         $feed = self::DATA.'/feed.xml';
         $xml = $this->gen->rootCatalog($feed);
         $this->assertTrue(file_exists($feed));
         $this->assertTrue($this->opdsValidateSchema($feed));
-        $this->assertTrue($this->opdsValidate($feed,'1.0'));
-        $this->assertTrue($this->opdsValidate($feed,'1.1'));
+        $this->assertTrue($this->opdsValidate($feed, '1.0'));
+        $this->assertTrue($this->opdsValidate($feed, '1.1'));
     }
 
 
 
-    function testPartialAcquisitionEntry() {
+    public function testPartialAcquisitionEntry()
+    {
         self::markTestSkipped('re-enable when fixing OPDS');
         $expected = '<entry>
  <id>urn:bicbucstriim:/bbs/opds/titles/2</id>
@@ -140,7 +148,8 @@ class OpdsGeneratorTest extends TestCase
         $this->assertEquals($expected, $result);
     }
 
-    function testPartialAcquisitionEntryWithProtection() {
+    public function testPartialAcquisitionEntryWithProtection()
+    {
         self::markTestSkipped('re-enable when fixing OPDS');
         $expected = '<entry>
  <id>urn:bicbucstriim:/bbs/opds/titles/2</id>
@@ -172,133 +181,156 @@ class OpdsGeneratorTest extends TestCase
         $this->assertEquals($expected, $result);
     }
 
-    function testNewestCatalogValidation() {
+    public function testNewestCatalogValidation()
+    {
         $feed = self::DATA.'/feed.xml';
         $just_books = $this->calibre->last30Books('en', 30, new CalibreFilter());
         $books = $this->calibre->titleDetailsFilteredOpds($just_books);
-        $xml = $this->gen->newestCatalog($feed,$books,false);
+        $xml = $this->gen->newestCatalog($feed, $books, false);
         $this->assertTrue(file_exists($feed));
         $this->assertTrue($this->opdsValidateSchema($feed));
-        $this->assertTrue($this->opdsValidate($feed,'1.0'));
-        $this->assertTrue($this->opdsValidate($feed,'1.1'));
+        $this->assertTrue($this->opdsValidate($feed, '1.0'));
+        $this->assertTrue($this->opdsValidate($feed, '1.1'));
     }
 
-    function testTitlesCatalogValidation() {
+    public function testTitlesCatalogValidation()
+    {
         $feed = self::DATA.'/feed.xml';
         $tl = $this->calibre->titlesSlice('en', 0, 2, new CalibreFilter());
         $books = $this->calibre->titleDetailsFilteredOpds($tl['entries']);
-        $xml = $this->gen->titlesCatalog($feed,$books,false,
-            $tl['page'],$tl['page']+1,$tl['pages']-1);
+        $xml = $this->gen->titlesCatalog(
+            $feed,
+            $books,
+            false,
+            $tl['page'],
+            $tl['page']+1,
+            $tl['pages']-1
+        );
         $this->assertTrue(file_exists($feed));
         $this->assertTrue($this->opdsValidateSchema($feed));
-        $this->assertTrue($this->opdsValidate($feed,'1.0'));
-        $this->assertTrue($this->opdsValidate($feed,'1.1'));
+        $this->assertTrue($this->opdsValidate($feed, '1.0'));
+        $this->assertTrue($this->opdsValidate($feed, '1.1'));
     }
 
-    function testTitlesCatalogOpenSearch() {
+    public function testTitlesCatalogOpenSearch()
+    {
         $tl = $this->calibre->titlesSlice('en', 0, 2, new CalibreFilter());
         $books = $this->calibre->titleDetailsFilteredOpds($tl['entries']);
-        $xml = $this->gen->titlesCatalog(null,$books,false,
-            $tl['page'],$tl['page']+1,$tl['pages']-1);
+        $xml = $this->gen->titlesCatalog(
+            null,
+            $books,
+            false,
+            $tl['page'],
+            $tl['page']+1,
+            $tl['pages']-1
+        );
         $feed = new SimpleXMLElement($xml);
-        $this->assertEquals(7,count($feed->link));
+        $this->assertEquals(7, count($feed->link));
         $oslnk = $feed->link[0];
-        $this->assertEquals(OpdsGenerator::OPENSEARCH_MIME,(string)$oslnk['type']);
-        $this->assertTrue(strpos((string)$oslnk['href'],'opensearch.xml')>0);
+        $this->assertEquals(OpdsGenerator::OPENSEARCH_MIME, (string)$oslnk['type']);
+        $this->assertTrue(strpos((string)$oslnk['href'], 'opensearch.xml')>0);
     }
 
 
-    function testAuthorsInitialCatalogValidation() {
+    public function testAuthorsInitialCatalogValidation()
+    {
         $feed = self::DATA.'/feed.xml';
         $tl = $this->calibre->authorsInitials(SearchOptions::genEmpty());
-        $xml = $this->gen->authorsRootCatalog($feed,$tl);
+        $xml = $this->gen->authorsRootCatalog($feed, $tl);
         $this->assertTrue(file_exists($feed));
         $this->assertTrue($this->opdsValidateSchema($feed));
-        $this->assertTrue($this->opdsValidate($feed,'1.0'));
-        $this->assertTrue($this->opdsValidate($feed,'1.1'));
+        $this->assertTrue($this->opdsValidate($feed, '1.0'));
+        $this->assertTrue($this->opdsValidate($feed, '1.1'));
     }
 
-    function testAuthorsNamesForInitialCatalogValidation() {
+    public function testAuthorsNamesForInitialCatalogValidation()
+    {
         $feed = self::DATA.'/feed.xml';
         $tl = $this->calibre->authorsNamesForInitial('R');
-        $xml = $this->gen->authorsNamesForInitialCatalog($feed,$tl, 'R');
+        $xml = $this->gen->authorsNamesForInitialCatalog($feed, $tl, 'R');
         $this->assertTrue(file_exists($feed));
         $this->assertTrue($this->opdsValidateSchema($feed));
-        $this->assertTrue($this->opdsValidate($feed,'1.0'));
-        $this->assertTrue($this->opdsValidate($feed,'1.1'));
+        $this->assertTrue($this->opdsValidate($feed, '1.0'));
+        $this->assertTrue($this->opdsValidate($feed, '1.1'));
     }
 
-    function testAuthorsBooksForAuthorCatalogValidation() {
+    public function testAuthorsBooksForAuthorCatalogValidation()
+    {
         $feed = self::DATA.'/feed.xml';
         $adetails = $this->calibre->authorDetails(5);
         $books = $this->calibre->titleDetailsFilteredOpds($adetails['books']);
         $xml = $this->gen->booksForAuthorCatalog($feed, $books, 'E', $adetails['author'], false, 0, 1, 2);
         $this->assertTrue(file_exists($feed));
         $this->assertTrue($this->opdsValidateSchema($feed));
-        $this->assertTrue($this->opdsValidate($feed,'1.0'));
-        $this->assertTrue($this->opdsValidate($feed,'1.1'));
+        $this->assertTrue($this->opdsValidate($feed, '1.0'));
+        $this->assertTrue($this->opdsValidate($feed, '1.1'));
     }
 
-    function testTagsInitialCatalogValidation() {
+    public function testTagsInitialCatalogValidation()
+    {
         $feed = self::DATA.'/feed.xml';
         $tl = $this->calibre->tagsInitials(SearchOptions::genEmpty());
-        $xml = $this->gen->tagsRootCatalog($feed,$tl);
+        $xml = $this->gen->tagsRootCatalog($feed, $tl);
         $this->assertTrue(file_exists($feed));
         $this->assertTrue($this->opdsValidateSchema($feed));
-        $this->assertTrue($this->opdsValidate($feed,'1.0'));
-        $this->assertTrue($this->opdsValidate($feed,'1.1'));
+        $this->assertTrue($this->opdsValidate($feed, '1.0'));
+        $this->assertTrue($this->opdsValidate($feed, '1.1'));
     }
 
-    function testTagsNamesForInitialCatalogValidation() {
+    public function testTagsNamesForInitialCatalogValidation()
+    {
         $feed = self::DATA.'/feed.xml';
         $tl = $this->calibre->tagsNamesForInitial('B');
-        $xml = $this->gen->tagsNamesForInitialCatalog($feed,$tl, 'B');
+        $xml = $this->gen->tagsNamesForInitialCatalog($feed, $tl, 'B');
         $this->assertTrue(file_exists($feed));
         $this->assertTrue($this->opdsValidateSchema($feed));
-        $this->assertTrue($this->opdsValidate($feed,'1.0'));
-        $this->assertTrue($this->opdsValidate($feed,'1.1'));
+        $this->assertTrue($this->opdsValidate($feed, '1.0'));
+        $this->assertTrue($this->opdsValidate($feed, '1.1'));
     }
 
-    function testTagsBooksForTagCatalogValidation() {
+    public function testTagsBooksForTagCatalogValidation()
+    {
         $feed = self::DATA.'/feed.xml';
         $adetails = $this->calibre->tagDetails(9);
         $books = $this->calibre->titleDetailsFilteredOpds($adetails['books']);
-        $xml = $this->gen->booksForTagCatalog($feed,$books, 'B', $adetails['tag'], false, 0, 1, 2);
+        $xml = $this->gen->booksForTagCatalog($feed, $books, 'B', $adetails['tag'], false, 0, 1, 2);
         $this->assertTrue(file_exists($feed));
         $this->assertTrue($this->opdsValidateSchema($feed));
-        $this->assertTrue($this->opdsValidate($feed,'1.0'));
-        $this->assertTrue($this->opdsValidate($feed,'1.1'));
+        $this->assertTrue($this->opdsValidate($feed, '1.0'));
+        $this->assertTrue($this->opdsValidate($feed, '1.1'));
     }
 
-    function testSeriesInitialCatalogValidation() {
+    public function testSeriesInitialCatalogValidation()
+    {
         $feed = self::DATA.'/feed.xml';
         $tl = $this->calibre->seriesInitials(SearchOptions::genEmpty());
-        $xml = $this->gen->seriesRootCatalog($feed,$tl);
+        $xml = $this->gen->seriesRootCatalog($feed, $tl);
         $this->assertTrue(file_exists($feed));
         $this->assertTrue($this->opdsValidateSchema($feed));
-        $this->assertTrue($this->opdsValidate($feed,'1.0'));
-        $this->assertTrue($this->opdsValidate($feed,'1.1'));
+        $this->assertTrue($this->opdsValidate($feed, '1.0'));
+        $this->assertTrue($this->opdsValidate($feed, '1.1'));
     }
 
-    function testSeriesNamesForInitialCatalogValidation() {
+    public function testSeriesNamesForInitialCatalogValidation()
+    {
         $feed = self::DATA.'/feed.xml';
         $tl = $this->calibre->seriesNamesForInitial('S');
-        $xml = $this->gen->seriesNamesForInitialCatalog($feed,$tl, 'S');
+        $xml = $this->gen->seriesNamesForInitialCatalog($feed, $tl, 'S');
         $this->assertTrue(file_exists($feed));
         $this->assertTrue($this->opdsValidateSchema($feed));
-        $this->assertTrue($this->opdsValidate($feed,'1.0'));
-        $this->assertTrue($this->opdsValidate($feed,'1.1'));
+        $this->assertTrue($this->opdsValidate($feed, '1.0'));
+        $this->assertTrue($this->opdsValidate($feed, '1.1'));
     }
 
-    function testSeriesBooksForSeriesCatalogValidation() {
+    public function testSeriesBooksForSeriesCatalogValidation()
+    {
         $feed = self::DATA.'/feed.xml';
         $adetails = $this->calibre->seriesDetails(1);
         $books = $this->calibre->titleDetailsFilteredOpds($adetails['books']);
-        $xml = $this->gen->booksForSeriesCatalog($feed,$books, 'S', $adetails['series'], false, 0, 1, 2);
+        $xml = $this->gen->booksForSeriesCatalog($feed, $books, 'S', $adetails['series'], false, 0, 1, 2);
         $this->assertTrue(file_exists($feed));
         $this->assertTrue($this->opdsValidateSchema($feed));
-        $this->assertTrue($this->opdsValidate($feed,'1.0'));
-        $this->assertTrue($this->opdsValidate($feed,'1.1'));
+        $this->assertTrue($this->opdsValidate($feed, '1.0'));
+        $this->assertTrue($this->opdsValidate($feed, '1.1'));
     }
-
 }

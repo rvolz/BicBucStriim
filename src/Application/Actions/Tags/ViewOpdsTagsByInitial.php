@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Application\Actions\Tags;
-
 
 use App\Domain\DomainException\DomainRecordNotFoundException;
 use App\Domain\Opds\OpdsGenerator;
@@ -11,7 +9,6 @@ use Slim\Exception\HttpBadRequestException;
 
 class ViewOpdsTagsByInitial extends \App\Application\Actions\CalibreOpdsAction
 {
-
     /**
      * @inheritDoc
      */

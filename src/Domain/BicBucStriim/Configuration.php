@@ -1,6 +1,6 @@
 <?php
-declare(strict_types=1);
 
+declare(strict_types=1);
 
 namespace App\Domain\BicBucStriim;
 
@@ -20,7 +20,7 @@ class Configuration implements ArrayAccess
      */
     protected LoggerInterface $logger;
 
-    protected array $config = array(
+    protected array $config = [
         AppConstants::CALIBRE_DIR => '',
         AppConstants::DB_VERSION => AppConstants::DB_SCHEMA_VERSION,
         AppConstants::DISPLAY_APP_NAME => 'BicBucStriim',
@@ -42,7 +42,7 @@ class Configuration implements ArrayAccess
         AppConstants::SMTP_ENCRYPTION => 0,
         AppConstants::THUMB_GEN_CLIPPED => 1,
         AppConstants::TITLE_TIME_SORT => AppConstants::TITLE_TIME_SORT_TIMESTAMP,
-    );
+    ];
 
     /**
      * Configuration constructor.
@@ -59,7 +59,8 @@ class Configuration implements ArrayAccess
     /**
      * Load existing configuration data
      */
-    public function load() {
+    public function load()
+    {
         if ($this->bbs->dbOk()) {
             $this->logger->debug("loading configuration");
             $css = $this->bbs->configs();
@@ -120,7 +121,7 @@ class Configuration implements ArrayAccess
      */
     public function offsetGet($offset)
     {
-        return isset($this->config[$offset]) ? $this->config[$offset] : null;
+        return $this->config[$offset] ?? null;
     }
 
     /**
@@ -157,5 +158,4 @@ class Configuration implements ArrayAccess
     {
         unset($this->config[$offset]);
     }
-
 }

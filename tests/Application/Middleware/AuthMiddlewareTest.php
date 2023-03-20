@@ -20,7 +20,7 @@ use App\Application\Middleware\AuthMiddleware;
 class AuthMiddlewareTest extends Own_TestCase
 {
     private $prophet;
-    var Container $container;
+    public Container $container;
 
     public static function setUpBeforeClass(): void
     {
@@ -33,18 +33,18 @@ class AuthMiddlewareTest extends Own_TestCase
 
     protected function setUp(): void
     {
-        $this->prophet = new \Prophecy\Prophet;
+        $this->prophet = new \Prophecy\Prophet();
         $cb = new ContainerBuilder();
         $cb->addDefinitions([
             'settings' => [
                 'idleTime' => 1440,
-                'rememberme_cookie_name' => 'bbs'
+                'rememberme_cookie_name' => 'bbs',
             ],
             Configuration::class => [
                 AppConstants::REMEMBER_COOKIE_ENABLED => false,
                 AppConstants::REMEMBER_COOKIE_KEY => '',
-                AppConstants::REMEMBER_COOKIE_DURATION => 1
-            ]
+                AppConstants::REMEMBER_COOKIE_DURATION => 1,
+            ],
         ]);
         $this->container = $cb->build();
     }
@@ -80,17 +80,17 @@ class AuthMiddlewareTest extends Own_TestCase
         $bbs = $this->prophet->prophesize(BicBucStriimRepository::class);
         $logger = new Logger("test");
         $instance = new AuthMiddleware($logger, $bbs->reveal(), $this->container);
-        $request = $this->createRequest("GET", "/",['PHP_AUTH_USER' => 'user', 'PHP_AUTH_PW' => 'password'],[],[]);
+        $request = $this->createRequest("GET", "/", ['PHP_AUTH_USER' => 'user', 'PHP_AUTH_PW' => 'password'], [], []);
         $ad = $instance->checkRequest4Auth($request);
         $this->assertNotNull($ad);
         $this->assertEquals(['user', 'password'], $ad);
-        $request = $this->createRequest("GET", "/",['HTTP_AUTHORIZATION' => 'Basic ' . base64_encode('user:password')],[],[]);
+        $request = $this->createRequest("GET", "/", ['HTTP_AUTHORIZATION' => 'Basic ' . base64_encode('user:password')], [], []);
         $ad = $instance->checkRequest4Auth($request);
         $this->assertNotNull($ad);
         $this->assertEquals(['user', 'password'], $ad);
-        $request = $this->createRequest("GET", "/",[],[],[]);
+        $request = $this->createRequest("GET", "/", [], [], []);
         $this->assertNull($instance->checkRequest4Auth($request));
-        $request = $this->createRequest("GET", "/",['HTTP_AUTHORIZATION' => 'Basic ' . 'bla'],[],[]);
+        $request = $this->createRequest("GET", "/", ['HTTP_AUTHORIZATION' => 'Basic ' . 'bla'], [], []);
         $ad = $instance->checkRequest4Auth($request);
         $this->assertNull($ad);
     }
@@ -101,11 +101,10 @@ class AuthMiddlewareTest extends Own_TestCase
         $logger = new Logger("test");
         $bbs = $this->prophet->prophesize(BicBucStriimRepository::class);
         $instance = new AuthMiddleware($logger, $bbs->reveal(), $this->container);
-        $request = $this->createRequest("GET", "/",['PHP_AUTH_USER' => 'user', 'PHP_AUTH_PW' => 'password'],[],[]);
+        $request = $this->createRequest("GET", "/", ['PHP_AUTH_USER' => 'user', 'PHP_AUTH_PW' => 'password'], [], []);
         $response = $instance->process($request, $this->createRequestHandler());
         $this->assertEquals(401, $response->getStatusCode());
         $this->assertEquals('', $response->getBody()->getContents());
-
     }
 
     public function test___invoke2()
@@ -114,8 +113,8 @@ class AuthMiddlewareTest extends Own_TestCase
         $logger = new Logger("test");
         $bbs = $this->prophet->prophesize(BicBucStriimRepository::class);
         $instance = new AuthMiddleware($logger, $bbs->reveal(), $this->container);
-        $request = $this->createRequest("GET", "/",['PHP_AUTH_USER' => 'admin', 'PHP_AUTH_PW' => 'admin'],[],[]);
-        $response = $instance->process($request,$this->createRequestHandler());
+        $request = $this->createRequest("GET", "/", ['PHP_AUTH_USER' => 'admin', 'PHP_AUTH_PW' => 'admin'], [], []);
+        $response = $instance->process($request, $this->createRequestHandler());
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('', $response->getBody()->getContents());
     }

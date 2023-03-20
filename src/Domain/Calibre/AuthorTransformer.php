@@ -30,7 +30,7 @@ class AuthorTransformer extends TransformerAbstract
             'links' => [
                 'rel' => 'self',
                 'uri' => '/authors/' . $author->id,
-            ]
+            ],
         ];
     }
 }

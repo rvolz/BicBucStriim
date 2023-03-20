@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Domain\Calibre;
-
 
 class SearchOptions
 {
@@ -33,7 +31,7 @@ class SearchOptions
      */
     public static function genEmpty(): SearchOptions
     {
-        return new SearchOptions('',false, false);
+        return new SearchOptions('', false, false);
     }
 
     /**
@@ -54,10 +52,12 @@ class SearchOptions
     public function toMask(): int
     {
         $mask = 0;
-        if ($this->isRespectCase())
+        if ($this->isRespectCase()) {
             $mask |= self::MASK_CASE;
-        if ($this->isUseAsciiTransliteration())
+        }
+        if ($this->isUseAsciiTransliteration()) {
             $mask |= self::MASK_TRANSLIT;
+        }
         return $mask;
     }
 
@@ -89,5 +89,4 @@ class SearchOptions
     {
         return empty($this->searchTerm);
     }
-
 }

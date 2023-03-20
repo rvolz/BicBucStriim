@@ -7,7 +7,6 @@ use PHPUnit\Framework\TestCase;
 
 class SearchOptionsTest extends TestCase
 {
-
     public function testToMask()
     {
         $so = new SearchOptions("Test", true, true);

@@ -1,8 +1,8 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Application\Actions;
-
 
 use App\Domain\BicBucStriim\AppConstants;
 use App\Domain\BicBucStriim\BicBucStriimRepository;
@@ -42,11 +42,13 @@ abstract class RenderHtmlAction extends BasicAction
      * @param Twig $twig
      * @param L10n $l10n
      */
-    public function __construct(LoggerInterface $logger,
-                                BicBucStriimRepository $bbs,
-                                Configuration $config,
-                                Twig $twig,
-                                L10n $l10n)
+    public function __construct(
+        LoggerInterface $logger,
+        BicBucStriimRepository $bbs,
+        Configuration $config,
+        Twig $twig,
+        L10n $l10n
+    )
     {
         parent::__construct($logger, $bbs, $config);
         $this->twig = $twig;
@@ -63,7 +65,7 @@ abstract class RenderHtmlAction extends BasicAction
      * @throws RuntimeError
      * @throws SyntaxError
      */
-    protected function respondWithPage(string $templateName, array $data=array(), int $statusCode=200): Response
+    protected function respondWithPage(string $templateName, array $data=[], int $statusCode=200): Response
     {
         return $this->twig->render($this->response->withStatus($statusCode), $templateName, $data);
     }
@@ -78,15 +80,15 @@ abstract class RenderHtmlAction extends BasicAction
         //$rot = 'http://localhost:8081';
         $auth = true;
         $adm = $this->user->getRole() == 1;
-        $page = array('title' => $title,
+        $page = ['title' => $title,
             'rot' => $rot,
             'h1' => $subtitle,
             'version' => APP_VERSION,
-            'glob' => array('l10n' => $this->l10n),
+            'glob' => ['l10n' => $this->l10n],
             'menu' => $menu,
             'level' => $level,
             'auth' => $auth,
-            'admin' => $adm);
+            'admin' => $adm];
         return $page;
     }
 
@@ -115,10 +117,12 @@ abstract class RenderHtmlAction extends BasicAction
         $lang = null;
         $tag = null;
         $user = $this->user;
-        if (!empty($user->getLanguages()))
+        if (!empty($user->getLanguages())) {
             $lang = $this->calibre->getLanguageId($user->getLanguages());
-        if (!empty($user->getTags()))
+        }
+        if (!empty($user->getTags())) {
             $tag = $this->calibre->getTagId($user->getTags());
+        }
         return new CalibreFilter($lang, $tag);
     }
 
@@ -130,7 +134,7 @@ abstract class RenderHtmlAction extends BasicAction
      *
      * @deprecated deprecated, is this method still required?
      */
-    function mkRootUrl(ServerRequestInterface $request, string $basePath, $relativeUrls = true): string
+    public function mkRootUrl(ServerRequestInterface $request, string $basePath, $relativeUrls = true): string
     {
         $uri = $request->getUri();
         if ($relativeUrls) {
@@ -140,5 +144,4 @@ abstract class RenderHtmlAction extends BasicAction
         }
         return $root;
     }
-
 }

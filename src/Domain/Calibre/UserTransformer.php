@@ -18,7 +18,7 @@ class UserTransformer extends TransformerAbstract
             'links' => [
                 'rel' => 'self',
                 'uri' => '/admin/users/' . $user->id,
-            ]
+            ],
         ];
     }
 }

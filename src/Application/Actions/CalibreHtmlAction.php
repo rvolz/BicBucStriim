@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Application\Actions;
-
 
 use App\Domain\BicBucStriim\BicBucStriimRepository;
 use App\Domain\BicBucStriim\Configuration;
@@ -14,7 +12,6 @@ use Slim\Views\Twig;
 
 abstract class CalibreHtmlAction extends RenderHtmlAction
 {
-
     /**
      * @var CalibreRepository
      */
@@ -28,12 +25,14 @@ abstract class CalibreHtmlAction extends RenderHtmlAction
      * @param Twig $twig
      * @param L10n $l10n
      */
-    public function __construct(LoggerInterface $logger,
-                                BicBucStriimRepository $bbs,
-                                CalibreRepository $calibre,
-                                Configuration $config,
-                                Twig $twig,
-                                L10n $l10n)
+    public function __construct(
+        LoggerInterface $logger,
+        BicBucStriimRepository $bbs,
+        CalibreRepository $calibre,
+        Configuration $config,
+        Twig $twig,
+        L10n $l10n
+    )
     {
         parent::__construct($logger, $bbs, $config, $twig, $l10n);
         $this->calibre = $calibre;
@@ -45,8 +44,8 @@ abstract class CalibreHtmlAction extends RenderHtmlAction
     protected function refuseNonAdmin(): Response
     {
         // TODO
-        return $this->respondWithPage('error.twig', array(
+        return $this->respondWithPage('error.twig', [
             'page' => $this->mkPage($this->getMessageString('error'), 0, 2),
-            'error' => $this->getMessageString('admin_no_permission')));
+            'error' => $this->getMessageString('admin_no_permission')]);
     }
 }

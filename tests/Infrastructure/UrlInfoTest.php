@@ -7,7 +7,8 @@ use PHPUnit\Framework\TestCase;
 
 class UrlInfoTest extends TestCase
 {
-    function testConstructUrlInfoSimple() {
+    public function testConstructUrlInfoSimple()
+    {
         $gen = new UrlInfo('host.org', null);
         $this->assertTrue($gen->is_valid());
         $this->assertEquals('host.org', $gen->host);
@@ -17,10 +18,10 @@ class UrlInfoTest extends TestCase
         $this->assertTrue($gen->is_valid());
         $this->assertEquals('host.org', $gen->host);
         $this->assertEquals('https', $gen->protocol);
-
     }
 
-    function testConstructUrlInfoForwarded() {
+    public function testConstructUrlInfoForwarded()
+    {
         $input1 = "for=192.0.2.60;proto=http;by=203.0.113.43";
         $input2 = "for=192.0.2.60;proto=https;by=203.0.113.43";
         $input3 = "for=192.0.2.60;by=203.0.113.43;proto=https";

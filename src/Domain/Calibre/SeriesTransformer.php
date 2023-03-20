@@ -29,7 +29,7 @@ class SeriesTransformer extends TransformerAbstract
             'links' => [
                 'rel' => 'self',
                 'uri' => '/series/' . $series->id,
-            ]
+            ],
         ];
     }
 }

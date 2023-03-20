@@ -39,8 +39,9 @@ $settings($containerBuilder);
 
 /** @var bool $debugMode */
 $debugMode = $_ENV['BBS_DEBUG_MODE'];
-if (!$debugMode)
+if (!$debugMode) {
     $containerBuilder->enableCompilation(__DIR__ . '/../var/cache');
+}
 
 // Set up dependencies
 $dependencies = require __DIR__ . '/../app/dependencies.php';
@@ -93,10 +94,12 @@ $logger = $app->getContainer()->get(LoggerInterface::class);
 $logger->info(
     $app->getContainer()->get(Configuration::class)[AppConstants::DISPLAY_APP_NAME] .
     ' ' .
-    $appVersion);
+    $appVersion
+);
 $logger->info('Running on PHP: ' . PHP_VERSION);
-if ($debugMode)
+if ($debugMode) {
     $logger->info('DEBUG mode is enabled');
+}
 
 $app->setBasePath($basePath);
 

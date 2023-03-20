@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Application\Actions\Titles;
-
 
 use App\Domain\DomainException\DomainRecordNotFoundException;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -10,7 +8,6 @@ use Slim\Exception\HttpBadRequestException;
 
 abstract class TitlesAction extends \App\Application\Actions\CalibreHtmlAction
 {
-
     /**
      * Creates a human readable filesize string
      * @param string $bytes
@@ -19,7 +16,7 @@ abstract class TitlesAction extends \App\Application\Actions\CalibreHtmlAction
      */
     protected function human_filesize(string $bytes, $decimals = 0): string
     {
-        $size = array('B','KB','MB','GB','TB','PB','EB','ZB','YB');
+        $size = ['B','KB','MB','GB','TB','PB','EB','ZB','YB'];
         $factor = floor((strlen($bytes) - 1) / 3);
         return sprintf("%.{$decimals}f", $bytes / pow(1024, $factor)) . @$size[$factor];
     }

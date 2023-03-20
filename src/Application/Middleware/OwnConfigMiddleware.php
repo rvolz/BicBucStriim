@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Application\Middleware;
@@ -13,7 +14,7 @@ use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
 use Psr\Log\LoggerInterface;
 use GuzzleHttp\Psr7\Response;
 
-class OwnConfigMiddleware  implements Middleware
+class OwnConfigMiddleware implements Middleware
 {
     /**
      * @var LoggerInterface
@@ -74,4 +75,3 @@ class OwnConfigMiddleware  implements Middleware
         }
     }
 }
-

@@ -5,7 +5,6 @@
 
 namespace App\Domain\Calibre;
 
-
 use League\Fractal\TransformerAbstract;
 
 /**
@@ -29,7 +28,7 @@ class TagTransformer extends TransformerAbstract
             'links' => [
                 'rel' => 'self',
                 'uri' => '/tags/' . $tag->id,
-            ]
+            ],
         ];
     }
 }

@@ -13,7 +13,6 @@ use League\Fractal\Pagination\PaginatorInterface;
  */
 class SimplePaginator implements PaginatorInterface
 {
-
     private $total = 0;
     private $pageSize = 30;
     private $currentPage = 0;
@@ -41,8 +40,9 @@ class SimplePaginator implements PaginatorInterface
     {
         $lp = (int)$this->total / $this->pageSize;
         $rest = $this->total % $this->pageSize;
-        if ($rest)
+        if ($rest) {
             $lp += 1;
+        }
         return $lp;
     }
 
