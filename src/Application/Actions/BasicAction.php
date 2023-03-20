@@ -24,8 +24,7 @@ abstract class BasicAction extends Action
         LoggerInterface $logger,
         BicBucStriimRepository $bbs,
         Configuration $config
-    )
-    {
+    ) {
         parent::__construct($logger);
         $this->bbs = $bbs;
         $this->config = $config;

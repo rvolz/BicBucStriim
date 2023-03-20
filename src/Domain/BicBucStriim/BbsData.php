@@ -10,6 +10,10 @@
 require_once 'data_constants.php';
 require_once 'calibre_thing.php';
 
+use App\Domain\BicBucStriim\DataConstants;
+use App\Domain\Calibre\Utilities;
+use RedBeanPHP\R;
+
 class BbsData
 {
     # Thumbnail dimension (they are square)

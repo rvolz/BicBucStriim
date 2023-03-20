@@ -31,8 +31,7 @@ abstract class CalibreOpdsAction extends BasicAction
         CalibreRepository $calibre,
         Configuration $config,
         L10n $l10n
-    )
-    {
+    ) {
         parent::__construct($logger, $bbs, $config);
         $this->calibre = $calibre;
         $this->l10n = $l10n;

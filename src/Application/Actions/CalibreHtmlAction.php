@@ -32,8 +32,7 @@ abstract class CalibreHtmlAction extends RenderHtmlAction
         Configuration $config,
         Twig $twig,
         L10n $l10n
-    )
-    {
+    ) {
         parent::__construct($logger, $bbs, $config, $twig, $l10n);
         $this->calibre = $calibre;
     }

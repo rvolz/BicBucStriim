@@ -261,8 +261,7 @@ class OpdsGenerator
         int $page,
         int $next,
         int $last
-    ): ?string
-    {
+    ): ?string {
         $this->openStream($of);
         $url = '/authors/' . $initial . '/' . $author->id . '/';
         $this->header(
@@ -381,8 +380,7 @@ class OpdsGenerator
         int $page,
         int $next,
         int $last
-    ): ?string
-    {
+    ): ?string {
         $this->openStream($of);
         $url = '/tags/' . $initial . '/' . $tag->id . '/';
         $this->header(
@@ -509,8 +507,7 @@ class OpdsGenerator
         int $page,
         int $next,
         int $last
-    ): ?string
-    {
+    ): ?string {
         $this->openStream($of);
         $url = '/series/' . $initial . '/' . $series->id . '/';
         $this->header(
@@ -618,8 +615,7 @@ class OpdsGenerator
         string $search,
         int $total,
         int $page_size
-    ): ?string
-    {
+    ): ?string {
         $this->openStream($of);
         $this->header(
             'opds_by_search1',

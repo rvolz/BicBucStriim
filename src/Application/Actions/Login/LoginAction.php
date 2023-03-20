@@ -49,8 +49,7 @@ abstract class LoginAction extends BasicAction
         User $user,
         L10n $l10n,
         Twig $twig
-    )
-    {
+    ) {
         parent::__construct($logger, $bbs, $config, $user);
         $this->l10n = $l10n;
         $this->twig = $twig;

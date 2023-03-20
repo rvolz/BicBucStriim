@@ -44,8 +44,7 @@ abstract class StaticsAction extends CalibreHtmlAction
         Configuration $config,
         Twig $twig,
         L10n $l10n
-    )
-    {
+    ) {
         parent::__construct($logger, $bbs, $calibre, $config, $twig, $l10n);
         $this->cache = new CacheProvider();
     }

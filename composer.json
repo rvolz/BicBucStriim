@@ -41,7 +41,8 @@
         "phpunit/phpunit": "^9.6",
         "nategood/httpful": "^0.3",
         "phpstan/phpstan": "^1.8",
-        "slim/psr7": "^1.6"
+        "slim/psr7": "^1.6",
+        "phpspec/prophecy": "^1.17"
     },
     "scripts": {
         "genl10n": "yarn genl10n",

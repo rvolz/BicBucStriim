@@ -817,11 +817,11 @@ class Calibre implements CalibreRepository
     {
         switch ($sort) {
             case AppConstants::TITLE_TIME_SORT_LASTMODIFIED: $field = 'last_modified';
-            break;
+                break;
             case AppConstants::TITLE_TIME_SORT_PUBDATE: $field = 'pubdate';
-            break;
+                break;
             default: $field = 'timestamp';
-            break;
+                break;
         }
         $table = 'books';
         $where = $this->searchOption2Where($searchOptions, $field);
@@ -915,11 +915,11 @@ class Calibre implements CalibreRepository
         $table = 'books';
         switch ($timeSortOption) {
             case AppConstants::TITLE_TIME_SORT_LASTMODIFIED: $field = 'last_modified';
-            break;
+                break;
             case AppConstants::TITLE_TIME_SORT_PUBDATE:  $field = 'pubdate';
-            break;
+                break;
             case AppConstants::TITLE_TIME_SORT_TIMESTAMP:  $field = 'timestamp';
-            break;
+                break;
             default: $field = 'pubdate';
         }
         $where = $this->searchOption2Where($searchOptions, $field);

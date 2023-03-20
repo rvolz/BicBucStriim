@@ -48,8 +48,7 @@ abstract class RenderHtmlAction extends BasicAction
         Configuration $config,
         Twig $twig,
         L10n $l10n
-    )
-    {
+    ) {
         parent::__construct($logger, $bbs, $config);
         $this->twig = $twig;
         $this->l10n = $l10n;

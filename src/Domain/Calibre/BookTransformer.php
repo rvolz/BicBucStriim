@@ -131,6 +131,6 @@ class BookTransformer extends TransformerAbstract
         if (empty($comment)) {
             return null;
         }
-        return $this->item($comment, new commentTransformer(), 'comment');
+        return $this->item($comment, new CommentTransformer(), 'comment');
     }
 }
