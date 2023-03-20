@@ -84,7 +84,8 @@ abstract class LoginAction extends BasicAction
 
         // TODO mkRootUrl
         // $rot = mkRootUrl();
-        $rot = 'http://localhost:8081';
+        // $rot = 'http://localhost:8081';
+        $rot = BBS_BASE_PATH;
         $auth = true;
         $adm = $this->user->getRole() == 1;
         $page = array('title' => $title,

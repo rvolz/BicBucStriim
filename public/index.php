@@ -52,6 +52,11 @@ $container = $containerBuilder->build();
 // Instantiate the app
 AppFactory::setContainer($container);
 $app = AppFactory::create();
+
+// @todo replace with basePath in app settings
+$basePath = BBS_BASE_PATH;
+$app->setBasePath($basePath);
+
 $callableResolver = $app->getCallableResolver();
 
 // Register middleware
@@ -93,9 +98,6 @@ $logger->info(
     ' ' .
     APP_VERSION);
 $logger->info('Running on PHP: ' . PHP_VERSION);
-
-$basePath = BBS_BASE_PATH;
-$app->setBasePath($basePath);
 
 $response = $app->handle($request);
 $responseEmitter = new ResponseEmitter();

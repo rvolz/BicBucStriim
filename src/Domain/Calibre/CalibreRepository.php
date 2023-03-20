@@ -56,7 +56,7 @@ interface CalibreRepository
      * @return array of books
      * @deprecated
      */
-    function last30Books($lang, $nrOfTitles = 30, $filter);
+    function last30Books($lang, $nrOfTitles = 30, $filter = null);
 
     /**
      * Return just the pure author information.
@@ -83,7 +83,7 @@ interface CalibreRepository
      * @return array           array with elements: author data, current page,
      *                               no. of pages, $length entries
      */
-    function authorDetailsSlice($lang, $id, $index = 0, $length = 100, $filter);
+    function authorDetailsSlice($lang, $id, $index = 0, $length = 100, $filter = null);
 
     /**
      * Search a list of authors defined by the parameters $index and $length.
@@ -157,7 +157,7 @@ interface CalibreRepository
      * @return array           array with elements: tag data, current page,
      *                               no. of pages, $length entries
      */
-    function tagDetailsSlice(string $lang, int $id, $index = 0, $length = 100, $filter): array;
+    function tagDetailsSlice(string $lang, int $id, $index = 0, $length = 100, $filter = null): array;
 
     function tagsSlice($index = 0, $length = 100, $search = null);
 
@@ -187,7 +187,7 @@ interface CalibreRepository
      * @param string $search search phrase, default null
      * @return  array               an array with elements: current page, no. of pages, $length entries
      */
-    function pubdateOrderedTitlesSlice($lang, $index = 0, $length = 100, $filter, $search = NULL);
+    function pubdateOrderedTitlesSlice($lang, $index = 0, $length = 100, $filter = null, $search = NULL);
 
     /**
      * Search a list of books in last modified order, defined by the parameters $index and $length.
@@ -199,7 +199,7 @@ interface CalibreRepository
      * @param string $search search phrase, default null
      * @return  array               an array with elements: current page, no. of pages, $length entries
      */
-    function lastmodifiedOrderedTitlesSlice($lang, $index = 0, $length = 100, $filter, $search = NULL);
+    function lastmodifiedOrderedTitlesSlice($lang, $index = 0, $length = 100, $filter = null, $search = NULL);
 
     /**
      * Search a list of books in timestamp order, defined by the parameters $index and $length.
@@ -211,7 +211,7 @@ interface CalibreRepository
      * @param string $search search phrase, default null
      * @return  array               an array with elements: current page, no. of pages, $length entries
      */
-    function timestampOrderedTitlesSlice($lang, $index = 0, $length = 100, $filter, $search = NULL);
+    function timestampOrderedTitlesSlice($lang, $index = 0, $length = 100, $filter = null, $search = NULL);
 
     /**
      * Search a list of books defined by the parameters $index and $length.
@@ -358,7 +358,7 @@ interface CalibreRepository
      * @return array           array with elements: series data, current page,
      *                               no. of pages, $length entries
      */
-    function seriesDetailsSlice($lang, $id, $index = 0, $length = 100, $filter);
+    function seriesDetailsSlice($lang, $id, $index = 0, $length = 100, $filter = null);
 
     /**
      * Search a list of books defined by the parameters $index and $length.
