@@ -7,6 +7,7 @@
  */
 
 namespace BicBucStriim;
+use Aura\Session\Session;
 
 /**
  *

@@ -922,6 +922,7 @@ function edit_author_notes($id)
         $author = $app->calibre->author($id);
         $note = $app->bbs->editAuthorNote($id, $author->name, $note_data['mime'], $note_data['ntext']);
     } catch (Exception $e) {
+        $html = null;
         $note = null;
     }
     $resp = $app->response();
@@ -1510,7 +1511,7 @@ function author($id)
  *
  * @param  integer $id author id
  * @param  integer $index page index for book list
- * @return HTML page
+ * @return void HTML page
  */
 function authorDetailsSlice($id, $index = 0)
 {
@@ -1737,7 +1738,7 @@ function tag($id)
  *
  * @param  integer $id series id
  * @param  integer $index page index for books
- * @return HTML page
+ * @return void HTML page
  */
 function tagDetailsSlice($id, $index = 0)
 {
@@ -1882,9 +1883,9 @@ function opdsByAuthorNamesForInitial($initial)
 
 /**
  * Return a feed with partial acquisition entries for the author's books
- * @param  string    initial initial character
- * @param  int        id      author id
- * @param  int        page    page number
+ * @param  string    $initial initial character
+ * @param  int       $id      author id
+ * @param  int       $page    page number
  */
 function opdsByAuthor($initial, $id, $page)
 {
@@ -2018,9 +2019,9 @@ function opdsBySeriesNamesForInitial($initial)
 
 /**
  * Return a feed with partial acquisition entries for the series' books
- * @param  string    initial initial character
- * @param  int        id        tag id
- * @param  int        page    page index
+ * @param  string    $initial initial character
+ * @param  int       $id        tag id
+ * @param  int       $page    page index
  */
 function opdsBySeries($initial, $id, $page)
 {
@@ -2247,8 +2248,8 @@ function mkPage($subtitle = '', $menu = 0, $level = 0)
 
 /**
  * Checks if a title is available to the current users
- * @param details    output of BicBucStriim::title_details()
- * @return        true if the title is not availble for the user, else false
+ * @param array $book_details  output of BicBucStriim::title_details()
+ * @return  bool      true if the title is not availble for the user, else false
  */
 function title_forbidden($book_details)
 {
@@ -2307,7 +2308,7 @@ function getMessageString($id)
 }
 
 /**
- * Calcluate the next page number for search results
+ * Calculate the next page number for search results
  * @param  array $tl search result
  * @return int       page index or NULL
  */
@@ -2322,7 +2323,7 @@ function getNextSearchPage($tl)
 }
 
 /**
- * Caluclate the last page numberfor search results
+ * Calculate the last page numberfor search results
  * @param  array $tl search result
  * @return int            page index
  */
@@ -2419,7 +2420,7 @@ function is_admin()
     global $app;
     if (is_authenticated()) {
         $user = $app->auth->getUserData();
-        return ($user['role'] === '1');
+        return (intval($user['role']) === 1);
     } else {
         return false;
     }

@@ -52,7 +52,7 @@ class Calibre
         if (file_exists($rp) && is_readable($rp)) {
             $this->calibre_last_modified = filemtime($rp);
             $this->calibre = new PDO('sqlite:' . $rp, null, null, []);
-            $this->calibre->setAttribute(1002, 'SET NAMES utf8');
+            //$this->calibre->setAttribute(1002, 'SET NAMES utf8');
             $this->calibre->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $this->calibre->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
             $this->last_error = $this->calibre->errorCode();
@@ -92,9 +92,9 @@ class Calibre
      * Execute a query $sql on the Calibre DB and return the result
      * as an array of objects of class $class
      *
-     * @param  [type] $class [description]
-     * @param  [type] $sql   [description]
-     * @return [type]        [description]
+     * @param  mixed $class [description]
+     * @param  string $sql   [description]
+     * @return array        [description]
      * @deprecated
      */
     protected function find($class, $sql)
@@ -129,8 +129,8 @@ class Calibre
      * Return a single object or NULL if not found
      * @param  string $class Calibre Item class
      * @param  string $sql SQL statement
-     * @param string $params array of query parameters
-     * @return object                instance of class $class or NULL
+     * @param array $params array of query parameters
+     * @return ?object                instance of class $class or NULL
      */
     protected function findOne($class, $sql, $params = [])
     {
@@ -191,12 +191,12 @@ class Calibre
      * If $search is defined it is used to filter the titles, ignoring case.
      * Return an array with elements: current page, no. of pages, $length entries
      *
-     * @param  integer          searchType      index of search type to use, see CalibreSearchType
-     * @param  integer          index=0         page index
-     * @param  integer          length=100      length of page
-     * @param  CalibreFilter    filter          filter expression
-     * @param  string           search=NULL     search pattern for sort/name fields
-     * @param  integer          id=NULL         optional author/tag/series ID     *
+     * @param  integer          $searchType      index of search type to use, see CalibreSearchType
+     * @param  integer          $index=0         page index
+     * @param  integer          $length=100      length of page
+     * @param  CalibreFilter    $filter          filter expression
+     * @param  string           $search=NULL     search pattern for sort/name fields
+     * @param  integer          $id=NULL         optional author/tag/series ID     *
      * @return array                            an array with current page (key 'page'),
      *                                          number of pages (key 'pages'),
      *                                          an array of $class instances (key 'entries') or NULL
@@ -204,7 +204,7 @@ class Calibre
      * Changed thanks to QNAP who insist on publishing outdated libraries in their firmware
      * TODO revert back to real SQL, not the outdated-QNAP stlyle
  */
-    protected function findSliceFiltered($searchType, $index = 0, $length = 100, $filter, $search = null, $id = null)
+    protected function findSliceFiltered($searchType, $index = 0, $length = 100, $filter = null, $search = null, $id = null)
     {
         if ($index < 0 || $length < 1 || $searchType < CalibreSearchType::Author || $searchType > CalibreSearchType::LastModifiedOrderedBook) {
             return ['page' => 0, 'pages' => 0, 'entries' => null];
@@ -284,6 +284,8 @@ class Calibre
                 $count = $this->mkBooksCount($queryFilter, $searching);
                 $query = $this->mkBooksQuery($searchType, false, $queryFilter, $searching);
                 break;
+            default:
+                throw new Exception('Invalid search type');
         }
         $query = $query . ' limit :length offset :offset';
         $no_entries = $this->count($count, $countParams);
@@ -302,9 +304,9 @@ class Calibre
 
     /**
      * Generate a SQL query for selecting books ordered by various fields
-     * @param CalibreSearchType $searchType
+     * @param int $searchType CalibreSearchType
      * @param boolean $sortAscending ASC, result should be sorted ASC or DESC?
-     * @param CalibreFilter $queryFilter
+     * @param string $queryFilter CalibreFilter
      * @param bool $search false, a query with a search filter?
      * @return string                               SQL query
      */
@@ -323,6 +325,8 @@ class Calibre
             case CalibreSearchType::LastModifiedOrderedBook:
                 $sortField = 'last_modified';
                 break;
+            default:
+                throw new Exception('Invalid search type');
         }
         if ($sortAscending) {
             $sortModifier = " ASC";
@@ -400,7 +404,7 @@ class Calibre
     /**
      * Return the ID for a language code from the Calibre languages table
      * @param string $languageCode ISO 639-2 code, e.g. 'deu', 'eng'
-     * @return          integer         ID or null
+     * @return          ?integer         ID or null
      */
     public function getLanguageId($languageCode)
     {
@@ -414,8 +418,8 @@ class Calibre
 
     /**
      * Return the ID for a tag  from the Calibre tags table
-     * @param string    tagName     textual tag name
-     * @return          integer     ID or null
+     * @param string    $tagName     textual tag name
+     * @return          ?integer     ID or null
      */
     public function getTagId($tagName)
     {
@@ -435,7 +439,7 @@ class Calibre
      * @return array of books
      * @deprecated
      */
-    public function last30Books($lang, $nrOfTitles = 30, $filter)
+    public function last30Books($lang, $nrOfTitles = 30, $filter = null)
     {
         $queryParams = $this->mkQueryParams(null, $filter, null, $nrOfTitles, null);
         $books = $this->findPrepared('Book', 'SELECT * FROM ' . $filter->getBooksFilter() . ' ORDER BY timestamp DESC LIMIT :length', $queryParams);
@@ -472,6 +476,7 @@ class Calibre
                 $book->language = join(',', $langtexts);
             }
         }
+        /** @var Book $book */
         foreach ((array)$books as $book) {
             if (empty($book->formats) && !isset($book->language)) {
                 $book->addInfo = '';
@@ -498,7 +503,7 @@ class Calibre
     /**
      * Find a single author and return the details plus all books.
      * @param  integer $id author id
-     * @return array            array with elements: author data, books
+     * @return ?array            array with elements: author data, books
      */
     public function authorDetails($id)
     {
@@ -522,7 +527,7 @@ class Calibre
     /**
     * Gets a unique list of all series from the author.
     * @param integer $id author id
-    * @param array array of all books from the author
+    * @param array $books array of all books from the author
     */
     public function authorSeries($id, $books)
     {
@@ -550,10 +555,10 @@ class Calibre
      * @param  integer $index page index
      * @param  integer $length page length
      * @param  object $filter CalibreFilter
-     * @return array           array with elements: author data, current page,
+     * @return ?array           array with elements: author data, current page,
      *                               no. of pages, $length entries
      */
-    public function authorDetailsSlice($lang, $id, $index = 0, $length = 100, $filter)
+    public function authorDetailsSlice($lang, $id, $index = 0, $length = 100, $filter = null)
     {
         $author = $this->findOne('Author', 'SELECT * FROM authors WHERE id=:id', ['id' => $id]);
         if (is_null($author)) {
@@ -652,7 +657,7 @@ class Calibre
     /**
      * Returns a tag and the related books
      * @param  integer $id tag id
-     * @return array            array with elements: tag data, books
+     * @return ?array            array with elements: tag data, books
      */
     public function tagDetails($id)
     {
@@ -677,10 +682,10 @@ class Calibre
      * @param  integer $index page index
      * @param  integer $length page length
      * @param  object $filter CalibreFilter
-     * @return array           array with elements: tag data, current page,
+     * @return ?array           array with elements: tag data, current page,
      *                               no. of pages, $length entries
      */
-    public function tagDetailsSlice($lang, $id, $index = 0, $length = 100, $filter)
+    public function tagDetailsSlice($lang, $id, $index = 0, $length = 100, $filter = null)
     {
         $tag = $this->findOne('Tag', 'SELECT * FROM tags WHERE id=:id', ['id' => $id]);
         if (is_null($tag)) {
@@ -748,7 +753,7 @@ class Calibre
      * @param string $search search phrase, default null
      * @return  array               an array with elements: current page, no. of pages, $length entries
      */
-    public function pubdateOrderedTitlesSlice($lang, $index = 0, $length = 100, $filter, $search = null)
+    public function pubdateOrderedTitlesSlice($lang, $index = 0, $length = 100, $filter = null, $search = null)
     {
         $books = $this->findSliceFiltered(CalibreSearchType::PubDateOrderedBook, $index, $length, $filter, $search);
         $this->addBookDetails($lang, $books['entries']);
@@ -765,7 +770,7 @@ class Calibre
      * @param string $search search phrase, default null
      * @return  array               an array with elements: current page, no. of pages, $length entries
      */
-    public function lastmodifiedOrderedTitlesSlice($lang, $index = 0, $length = 100, $filter, $search = null)
+    public function lastmodifiedOrderedTitlesSlice($lang, $index = 0, $length = 100, $filter = null, $search = null)
     {
         $books = $this->findSliceFiltered(CalibreSearchType::LastModifiedOrderedBook, $index, $length, $filter, $search);
         $this->addBookDetails($lang, $books['entries']);
@@ -782,7 +787,7 @@ class Calibre
      * @param string $search search phrase, default null
      * @return  array               an array with elements: current page, no. of pages, $length entries
      */
-    public function timestampOrderedTitlesSlice($lang, $index = 0, $length = 100, $filter, $search = null)
+    public function timestampOrderedTitlesSlice($lang, $index = 0, $length = 100, $filter = null, $search = null)
     {
         $books = $this->findSliceFiltered(CalibreSearchType::TimestampOrderedBook, $index, $length, $filter, $search);
         $this->addBookDetails($lang, $books['entries']);
@@ -798,7 +803,7 @@ class Calibre
      * @param string $search    search phrase, default null
      * @return  array          an array with elements: current page, no. of pages, $length entries
      */
-    public function titlesSlice($lang, $index = 0, $length = 100, $filter, $search = null)
+    public function titlesSlice($lang, $index = 0, $length = 100, $filter = null, $search = null)
     {
         $books = $this->findSliceFiltered(CalibreSearchType::Book, $index, $length, $filter, $search);
         $this->addBookDetails($lang, $books['entries']);
@@ -866,7 +871,7 @@ class Calibre
      * Find a single book plus all kinds of details.
      * @param  string   $lang   the user's language code
      * @param  int      $id     the Calibre book ID
-     * @return array            the book, its authors, series, tags, formats, languages, ids and comment.
+     * @return ?array            the book, its authors, series, tags, formats, languages, ids and comment.
      */
     public function titleDetails($lang, $id)
     {
@@ -947,7 +952,7 @@ class Calibre
     /**
      * Find a single book, its tags and languages. Mainly used for restriction checks.
      * @param  int $id the Calibre book ID
-     * @return array            the book, its tags and languages
+     * @return ?array            the book, its tags and languages
      */
     public function titleDetailsMini($id)
     {
@@ -1038,7 +1043,7 @@ class Calibre
      * partial acquisition feed. The function assumes that the book record has
      * already been loaded.
      * @param  Book $book complete book record from title()
-     * @return array        the book and its authors, tags and formats
+     * @return ?array        the book and its authors, tags and formats
      */
     public function titleDetailsOpds($book)
     {
@@ -1108,7 +1113,7 @@ class Calibre
      * Returns the path to the file of a book or NULL.
      * @param  int $id book id
      * @param  string $file file name
-     * @return string       full path to image file or NULL
+     * @return ?string       full path to image file or NULL
      */
     public function titleFile($id, $file)
     {
@@ -1135,7 +1140,7 @@ class Calibre
      * We always return the best of the available formats supported by Kindle devices
      * E.g. when there is both a Mobi and a PDF file for a given book, we always return the Mobi
      * @param  int $id book id
-     * @return object   $format    the kindle format object for the book or NULL
+     * @return ?object   $format    the kindle format object for the book or NULL
      */
     public function titleGetKindleFormat($id)
     {
@@ -1160,7 +1165,7 @@ class Calibre
     /**
      * Find a single series and return the details plus all books.
      * @param  int $id series id
-     * @return array  an array with series details (key 'series') and
+     * @return ?array  an array with series details (key 'series') and
      *                the related books (key 'books')
      * @deprecated since 0.9.3
      */
@@ -1186,10 +1191,10 @@ class Calibre
      * @param  integer $index page index
      * @param  integer $length page length
      * @param  object $filter CalibreFilter
-     * @return array           array with elements: series data, current page,
+     * @return ?array           array with elements: series data, current page,
      *                               no. of pages, $length entries
      */
-    public function seriesDetailsSlice($lang, $id, $index = 0, $length = 100, $filter)
+    public function seriesDetailsSlice($lang, $id, $index = 0, $length = 100, $filter = null)
     {
         $series = $this->findOne('Series', 'SELECT * FROM series WHERE id=:id', ['id' => $id]);
         if (is_null($series)) {

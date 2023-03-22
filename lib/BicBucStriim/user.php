@@ -8,8 +8,9 @@
  *
  */
 
-class Model_User extends RedBean_SimpleModel
+class Model_User extends RedBean_OODBBean
 {
+    public $id;
     public function to_json()
     {
         $props = self::getProperties();

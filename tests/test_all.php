@@ -6,9 +6,9 @@ require 'autoload.php';
 require 'simpletest/simpletest/autorun.php';
 class TestsAll extends TestSuite
 {
-    public function TestsAll()
+    public function __construct(string $label = 'All Tests')
     {
-        $this->TestSuite('All Tests');
+        parent::__construct($label);
         $this->addFile('test_bicbucstriim.php');
         $this->addFile('test_calibre.php');
         $this->addFile('test_calibre_filter.php');

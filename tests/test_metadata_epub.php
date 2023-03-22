@@ -35,7 +35,7 @@ class TestOfMetadataEpub extends UnitTestCase
 
     public function compareCover($bookFile, $imageFile)
     {
-        $conv2 = new Epub($bookFile);
+        $conv2 = new EPub($bookFile);
         $imageData = $conv2->Cover();
         $byteArray = unpack("C*", $imageData['data']);
         $dsize = count($byteArray);
@@ -93,7 +93,7 @@ class TestOfMetadataEpub extends UnitTestCase
         $conv->updateMetadata($md);
 
         $tmpfile = $conv->getUpdatedFile();
-        $check = new Epub($tmpfile);
+        $check = new EPub($tmpfile);
         $this->assertEqual($new_title, $check->Title());
     }
 
@@ -109,7 +109,7 @@ class TestOfMetadataEpub extends UnitTestCase
         $conv->updateMetadata($md);
 
         $tmpfile = $conv->getUpdatedFile();
-        $check = new Epub($tmpfile);
+        $check = new EPub($tmpfile);
         $authors_check = $check->Authors();
         $this->assertEqual(2, count($authors_check));
         $this->assertEqual('Firstname Lastname', $authors_check['Lastname, Firstname']);
@@ -126,7 +126,7 @@ class TestOfMetadataEpub extends UnitTestCase
         $conv->updateMetadata($md);
 
         $tmpfile = $conv->getUpdatedFile();
-        $check = new Epub($tmpfile);
+        $check = new EPub($tmpfile);
         if (extension_loaded('intl')) {
             $this->assertEqual('en', $check->Language());
         } else {
@@ -144,7 +144,7 @@ class TestOfMetadataEpub extends UnitTestCase
         $conv->updateMetadata($md);
 
         $tmpfile = $conv->getUpdatedFile();
-        $check = new Epub($tmpfile);
+        $check = new EPub($tmpfile);
         if (extension_loaded('intl')) {
             $this->assertEqual('en', $check->Language());
         } else {
@@ -163,7 +163,7 @@ class TestOfMetadataEpub extends UnitTestCase
         $conv->updateMetadata($md);
 
         $tmpfile = $conv->getUpdatedFile();
-        $check = new Epub($tmpfile);
+        $check = new EPub($tmpfile);
         $this->assertEqual('000000', $check->ISBN());
         $this->assertEqual('111111', $check->Google());
         $this->assertEqual('222222', $check->Amazon());
@@ -182,7 +182,7 @@ class TestOfMetadataEpub extends UnitTestCase
         $conv->updateMetadata($md);
 
         $tmpfile = $conv->getUpdatedFile();
-        $check = new Epub($tmpfile);
+        $check = new EPub($tmpfile);
         $subjects_check = $check->Subjects();
         $this->assertEqual(2, count($subjects_check));
         $this->assertEqual('Subject 1', $subjects_check[0]);
@@ -212,7 +212,7 @@ class TestOfMetadataEpub extends UnitTestCase
         $conv->updateMetadata($md);
 
         $tmpfile = $conv->getUpdatedFile();
-        $check = new Epub($tmpfile);
+        $check = new EPub($tmpfile);
         $this->assertEqual($new_desc, $check->Description());
     }
 }

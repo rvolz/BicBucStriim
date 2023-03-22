@@ -46,7 +46,7 @@ class OpdsGenerator
     /**
      * Create the root OPDS catalog, which is a navigation catalog
      * mentioning all available catalogs.
-     * @param  string $output   a URI or NULL
+     * @param  string $of   a URI or NULL
      * @return string           if $output is a URI NULL, else the XML is returned as a string.
      */
     public function rootCatalog($of=null)
@@ -106,7 +106,7 @@ class OpdsGenerator
      * @param  array    $entries   an array of Book
      * @param  boolean  $protected true = we need password authentication before a download
      */
-    public function newestCatalog($of=null, $entries, $protected)
+    public function newestCatalog($of, $entries, $protected)
     {
         $this->openStream($of);
         $this->header(
@@ -135,7 +135,7 @@ class OpdsGenerator
      * @param  int      $next      number of the next page to show, or NULL
      * @param  int      $last      number of the last page
      */
-    public function titlesCatalog($of=null, $entries, $protected, $page, $next, $last)
+    public function titlesCatalog($of, $entries, $protected, $page, $next, $last)
     {
         $this->openStream($of);
         $this->header(
@@ -168,7 +168,7 @@ class OpdsGenerator
      * @param  string   $of=NULL   output URI or NULL for string output
      * @param  array    $entries   an array of Items
      */
-    public function authorsRootCatalog($of=null, $entries)
+    public function authorsRootCatalog($of, $entries)
     {
         $this->openStream($of);
         $this->header(
@@ -200,7 +200,7 @@ class OpdsGenerator
      * @param  array    $entries   an array of Authors
      * @param  string   $initial   the initial character
      */
-    public function authorsNamesForInitialCatalog($of=null, $entries, $initial)
+    public function authorsNamesForInitialCatalog($of, $entries, $initial)
     {
         $this->openStream($of);
         $url= '/authorslist/'.$initial.'/';
@@ -235,13 +235,13 @@ class OpdsGenerator
      * @param  string   $of=NULL    output URI or NULL for string output
      * @param  array    $entries    an array of Books
      * @param  string   $initial    the initial character
-     * @param  string   $author     the author
+     * @param  object   $author     the author
      * @param  bool     $protected  download protection y/n?
      * @param  int      $page      number of page to show, minimum 0
      * @param  int      $next      number of the next page to show, or NULL
      * @param  int      $last      number of the last page
      */
-    public function booksForAuthorCatalog($of=null, $entries, $initial, $author, $protected, $page, $next, $last)
+    public function booksForAuthorCatalog($of, $entries, $initial, $author, $protected, $page, $next, $last)
     {
         $this->openStream($of);
         $url= '/authorslist/'.$initial.'/'.$author->id.'/';
@@ -276,7 +276,7 @@ class OpdsGenerator
      * @param  string   $of=NULL   output URI or NULL for string output
      * @param  array    $entries   an array of Items
      */
-    public function tagsRootCatalog($of=null, $entries)
+    public function tagsRootCatalog($of, $entries)
     {
         $this->openStream($of);
         $this->header(
@@ -308,7 +308,7 @@ class OpdsGenerator
      * @param  array    $entries   an array of Tags
      * @param  string   $initial   the initial character
      */
-    public function tagsNamesForInitialCatalog($of=null, $entries, $initial)
+    public function tagsNamesForInitialCatalog($of, $entries, $initial)
     {
         $this->openStream($of);
         $url= '/tagslist/'.$initial.'/';
@@ -343,13 +343,13 @@ class OpdsGenerator
      * @param  string   $of=NULL    output URI or NULL for string output
      * @param  array    $entries    an array of Books
      * @param  string   $initial    the initial character
-     * @param  string   $tag        the tag
+     * @param  object   $tag        the tag
      * @param  bool     $protected  download protection y/n?
      * @param  int      $page      number of page to show, minimum 0
      * @param  int      $next      number of the next page to show, or NULL
      * @param  int      $last      number of the last page
      */
-    public function booksForTagCatalog($of=null, $entries, $initial, $tag, $protected, $page, $next, $last)
+    public function booksForTagCatalog($of, $entries, $initial, $tag, $protected, $page, $next, $last)
     {
         $this->openStream($of);
         $url= '/tagslist/'.$initial.'/'.$tag->id.'/';
@@ -384,7 +384,7 @@ class OpdsGenerator
      * @param  string   $of=NULL   output URI or NULL for string output
      * @param  array    $entries   an array of Items
      */
-    public function seriesRootCatalog($of=null, $entries)
+    public function seriesRootCatalog($of, $entries)
     {
         $this->openStream($of);
         $this->header(
@@ -424,7 +424,7 @@ class OpdsGenerator
      * @param  array    $entries   an array of Series
      * @param  string   $initial   the initial character
      */
-    public function seriesNamesForInitialCatalog($of=null, $entries, $initial)
+    public function seriesNamesForInitialCatalog($of, $entries, $initial)
     {
         $this->openStream($of);
         $url= '/serieslist/'.$initial.'/';
@@ -459,13 +459,13 @@ class OpdsGenerator
      * @param  string   $of=NULL    output URI or NULL for string output
      * @param  array    $entries    an array of Books
      * @param  string   $initial    the initial character
-     * @param  string   $tag        the series
+     * @param  object   $series     the series
      * @param  bool     $protected  download protection y/n?
      * @param  int      $page      number of page to show, minimum 0
      * @param  int      $next      number of the next page to show, or NULL
      * @param  int      $last      number of the last page
      */
-    public function booksForSeriesCatalog($of=null, $entries, $initial, $series, $protected, $page, $next, $last)
+    public function booksForSeriesCatalog($of, $entries, $initial, $series, $protected, $page, $next, $last)
     {
         $this->openStream($of);
         $url= '/serieslist/'.$initial.'/'.$series->id.'/';
@@ -497,11 +497,11 @@ class OpdsGenerator
 
     /**
      * Create an OpenSearch descriptor
-     * @param  string $of=NULL    output URI or NULL for string output
-     * @param  sringg $fragment   path fragment for search operation
-     * @return XML stream         the OpenSearch descriptor
+     * @param  ?string $of=NULL    output URI or NULL for string output
+     * @param  string $fragment   path fragment for search operation
+     * @return string XML stream         the OpenSearch descriptor
      */
-    public function searchDescriptor($of=null, $fragment)
+    public function searchDescriptor($of, $fragment)
     {
         $this->openStream($of);
         $this->xmlw->startDocument('1.0', 'UTF-8');
@@ -562,9 +562,9 @@ class OpdsGenerator
      * @param  string   $search    search terms
      * @param  int      $total     total number of search results
      * @param  int      $page_size number of entries per search page
-     * @return XML stream          the search result feed
+     * @return string XML stream          the search result feed
      */
-    public function searchCatalog($of=null, $entries, $protected, $page, $next, $last, $search, $total, $page_size)
+    public function searchCatalog($of, $entries, $protected, $page, $next, $last, $search, $total, $page_size)
     {
         $this->openStream($of);
         $this->header(
@@ -663,7 +663,7 @@ class OpdsGenerator
      * @param  string $id      id detail, appended to 'urn:bicbucstriim:nav-'
      * @param  string $content content description (text)
      * @param  string $url     catalog url, appended to bbs_root.'/opds'
-     * @param  string type     navigation or acquisition feed
+     * @param  string $type     navigation or acquisition feed
      * @param  string $rel     optional relation according to OPDS spec
      */
     public function navigationEntry($title, $id, $content, $url, $type, $rel='subsection')
@@ -750,7 +750,7 @@ class OpdsGenerator
     /**
      * Link to an OPDS navigation catalog
      * @param  string $href   link URL
-     * @param  string $type   link type
+     * @param  string $rel   link type
      * @param  string $title  link title, optional
      */
     public function navigationCatalogLink($href, $rel=null, $title=null)
@@ -761,7 +761,7 @@ class OpdsGenerator
     /**
      * Link to an OPDS acquisition catalog
      * @param  string $href   link URL
-     * @param  string $type   link type
+     * @param  string $rel   link type
      * @param  string $title  link title, optional
      */
     public function acquisitionCatalogLink($href, $rel=null, $title=null)
@@ -819,7 +819,7 @@ class OpdsGenerator
 
     /**
      * Link to the OpenSearch document
-     * @return xml    XML link to OpenSearch
+     * @return void xml    XML link to OpenSearch
      */
     public function searchLink()
     {
@@ -849,7 +849,7 @@ class OpdsGenerator
     /**
      * Close the XML stream and output the result
      * @param  string $of=NULL Proper URI or NULL
-     * @return string          The XML string or NULL if output is sent to the URI
+     * @return ?string          The XML string or NULL if output is sent to the URI
      */
     public function closeStream($of=null)
     {

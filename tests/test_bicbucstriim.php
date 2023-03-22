@@ -300,7 +300,7 @@ class TestOfBicBucStriim extends UnitTestCase
         $note = $this->bbs->editAuthorNote(1, 'Author 2', 'text/markdown', '*Hello again!*');
         $this->assertEqual('text/markdown', $note->mime);
         $this->assertEqual('*Hello again!*', $note->ntext);
-        $this->assertTrue($this->bbs->deleteAuthorNote(1, 2));
+        $this->assertTrue($this->bbs->deleteAuthorNote(1));
         $this->assertEqual(1, R::count('note'));
     }
 
@@ -322,5 +322,3 @@ class TestOfBicBucStriim extends UnitTestCase
         $this->assertFalse(file_exists($result));
     }
 }
-?>
-

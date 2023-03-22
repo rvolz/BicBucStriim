@@ -16,6 +16,7 @@ class TestOfCustomColumns extends UnitTestCase
     public const DATADB = './tests/data/data.db';
 
     public $bbs;
+    public $calibre;
 
     public function setUp()
     {

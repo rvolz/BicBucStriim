@@ -155,7 +155,7 @@ class RedBean_Driver_PDO implements RedBean_Driver {
 		if ($dsn instanceof PDO) {
 			$this->pdo = $dsn;
 			$this->isConnected = true;
-			$this->pdo->setAttribute(1002, 'SET NAMES utf8');
+			//$this->pdo->setAttribute(1002, 'SET NAMES utf8');
 			$this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			$this->pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 			// make sure that the dsn at least contains the type
@@ -183,7 +183,7 @@ class RedBean_Driver_PDO implements RedBean_Driver {
 					  $this->dsn,
 					  $user,
 					  $pass,
-					  array(1002 => 'SET NAMES utf8',
+					  array(//1002 => 'SET NAMES utf8',
 								 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
 								 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
 					  )
@@ -523,7 +523,7 @@ class RedBean_OODBBean implements IteratorAggregate, ArrayAccess, Countable {
 	 *
 	 * @return ArrayIterator $arrayIt an array iterator instance with $properties
 	 */
-	public function getIterator() {
+	public function getIterator(): Traversable {
 		return new ArrayIterator($this->properties);
 	}
 	/**
@@ -1015,7 +1015,7 @@ class RedBean_OODBBean implements IteratorAggregate, ArrayAccess, Countable {
 	 *
 	 * @return void
 	 */
-	public function offsetSet($offset, $value) {
+	public function offsetSet($offset, $value): void {
 		$this->__set($offset, $value);
 	}
 	/**
@@ -1026,7 +1026,7 @@ class RedBean_OODBBean implements IteratorAggregate, ArrayAccess, Countable {
 	 *
 	 * @return
 	 */
-	public function offsetExists($offset) {
+	public function offsetExists($offset): bool {
 		return isset($this->properties[$offset]);
 	}
 	/**
@@ -1038,7 +1038,7 @@ class RedBean_OODBBean implements IteratorAggregate, ArrayAccess, Countable {
 	 *
 	 * @return
 	 */
-	public function offsetUnset($offset) {
+	public function offsetUnset($offset): void {
 		unset($this->properties[$offset]);
 	}
 	/**
@@ -1050,7 +1050,7 @@ class RedBean_OODBBean implements IteratorAggregate, ArrayAccess, Countable {
 	 *
 	 * @return
 	 */
-	public function offsetGet($offset) {
+	public function offsetGet($offset): mixed {
 		return $this->__get($offset);
 	}
 	/**
@@ -1084,7 +1084,7 @@ class RedBean_OODBBean implements IteratorAggregate, ArrayAccess, Countable {
 	 * 
 	 * @return integer $numberOfProperties number of properties in the bean. 
 	 */
-	public function count() {
+	public function count(): int {
 		return count($this->properties);
 	}
 	/**

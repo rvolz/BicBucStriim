@@ -42,6 +42,7 @@ class BbsData
 
     public function addCalibreThing($calibreType, $calibreId, $calibreName)
     {
+        /** @var Model_CalibreThing $calibreThing */
         $calibreThing = R::dispense('calibrething');
         $calibreThing->ctype = $calibreType;
         $calibreThing->cid = $calibreId;
@@ -82,6 +83,7 @@ class BbsData
 
         $artefact = $calibreThing->getAuthorThumbnail();
         if (is_null($artefact)) {
+            /** @var RedBean_SimpleModel $artefact */
             $artefact = R::dispense('artefact');
             $artefact->atype = DataConstants::AUTHOR_THUMBNAIL_ARTEFACT;
             $artefact->url = $fname;
@@ -165,7 +167,7 @@ class BbsData
      *
      * @param  int 	$width
      * @param  int 	$height
-     * @return image
+     * @return object|resource image
      */
     private function transparentImage($width, $height)
     {

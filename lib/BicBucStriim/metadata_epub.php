@@ -25,8 +25,8 @@ class MetadataEpub
      * Constructor that copies the original file to a temporary location,
      * the system's 'tmp' directory, and initializes the metadata update
      * process.
-     * @param string 	path to file for update
-     * @param string 	optional, directory for temporary files;
+     * @param string $file	path to file for update
+     * @param string $tmpdir	optional, directory for temporary files;
      *					if not defined the systems TEMP directory
      * 					will be used (see sys_get_temp_dir())
      */
@@ -42,7 +42,7 @@ class MetadataEpub
         if (!$status) {
             throw new Exception('Couldn\'t copy epub file');
         }
-        $this->converter = new Epub($new_epub);
+        $this->converter = new EPub($new_epub);
     }
 
     /**
@@ -72,8 +72,8 @@ class MetadataEpub
      * Due to limitations in the EPUB library only the first language is
      * used.
      *
-     * @param array 	Calibre metadata
-     * @param string 	path to new cover image
+     * @param array $metadata	Calibre metadata
+     * @param string $cover	path to new cover image
      */
     public function updateMetadata($metadata=null, $cover = null)
     {

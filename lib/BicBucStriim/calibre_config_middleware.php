@@ -10,7 +10,7 @@ class CalibreConfigMiddleware extends \Slim\Middleware
     /**
      * Initialize the configuration
      *
-     * @param array $config
+     * @param string $calibreDir
      */
     public function __construct($calibreDir)
     {

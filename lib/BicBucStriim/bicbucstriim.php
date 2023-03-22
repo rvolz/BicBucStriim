@@ -40,8 +40,8 @@ class BicBucStriim
      * We open it first as PDO, because we need that for the
      * authentication library, then we initialize RedBean.
      *
-     * @param string  	dataPath 	Path to BBS DB, default = data/data.db
-     * @param boolean	freeze 		if true the DB schema is fixed,
+     * @param string  	$dataPath 	Path to BBS DB, default = data/data.db
+     * @param boolean	$freeze 	if true the DB schema is fixed,
      * 								else RedBeanPHP adapt the schema
      * 								default = true
      */
@@ -59,7 +59,7 @@ class BicBucStriim
         }
         if (file_exists($rp) && is_writeable($rp)) {
             $this->mydb = new PDO('sqlite:'.$rp, null, null, []);
-            $this->mydb->setAttribute(1002, 'SET NAMES utf8');
+            //$this->mydb->setAttribute(1002, 'SET NAMES utf8');
             $this->mydb->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $this->mydb->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
             $this->last_error = $this->mydb->errorCode();
@@ -78,7 +78,7 @@ class BicBucStriim
     {
         $schema = file($this->data_dir.'/schema.sql');
         $this->mydb = new PDO('sqlite:'.$dataPath, null, null, []);
-        $this->mydb->setAttribute(1002, 'SET NAMES utf8');
+        //$this->mydb->setAttribute(1002, 'SET NAMES utf8');
         $this->mydb->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $this->mydb->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
         for ($i=0; $i < count($schema); $i++) {
@@ -113,8 +113,8 @@ class BicBucStriim
 
     /**
      * Find a specific configuration value by name
-     * @param string 	name 	configuration parameter name
-     * @return 			config paramter or null
+     * @param string 	$name 	configuration parameter name
+     * @return RedBean_OODBBean	config paramter or null
      */
     public function config($name)
     {
@@ -123,13 +123,14 @@ class BicBucStriim
 
     /**
      * Save all configuration values in the settings DB
-     * @param  array 	configs 	array of configuration values
+     * @param  array 	$configs 	array of configuration values
      */
     public function saveConfigs($configs)
     {
         foreach ($configs as $name => $val) {
             $config = $this->config($name);
             if (is_null($config)) {
+                /** @var Model_Config @config */
                 $config = R::dispense('config');
                 $config->name = $name;
                 $config->val = $val;
@@ -152,10 +153,11 @@ class BicBucStriim
 
     /**
      * Find a specific user in the settings DB
-     * @return user data or NULL if not found
+     * @return ?object user data or NULL if not found
      */
     public function user($userid)
     {
+        /** @var Model_User $user */
         $user = R::load('user', $userid);
         if (!$user->id) {
             return null;
@@ -169,7 +171,7 @@ class BicBucStriim
      * The username must be unique. Name and password must not be empty.
      * @param $username string login name for the account, must be unique
      * @param $password string clear text password
-     * @return user account or null if the user exists or one of the parameters is empty
+     * @return ?object user account or null if the user exists or one of the parameters is empty
      * @throws Exception if the DB operation failed
      */
     public function addUser($username, $password)
@@ -182,6 +184,7 @@ class BicBucStriim
             return null;
         }
         $mdp = password_hash($password, PASSWORD_BCRYPT);
+        /** @var Model_User $user */
         $user = R::dispense('user');
         $user->username = $username;
         $user->password = $mdp;
@@ -196,13 +199,14 @@ class BicBucStriim
      * Delete a user account from the database.
      * The admin account (ID 1) can't be deleted.
      * @param $userid integer
-     * @return true if a user was deleted else false
+     * @return bool true if a user was deleted else false
      */
     public function deleteUser($userid)
     {
         if ($userid == 1) {
             return false;
         } else {
+            /** @var Model_User $user */
             $user = R::load('user', $userid);
             if (!$user->id) {
                 return false;
@@ -216,12 +220,12 @@ class BicBucStriim
     /**
      * Update an existing user account.
      * The username cannot be changed and the password must not be empty.
-     * @param integer 	userid 		integer
-     * @param string 	password 	new clear text password or old encrypted password
-     * @param string 	languages 	comma-delimited set of language identifiers
-     * @param string 	tags 		string comma-delimited set of tags
-     * @param string 	role        "1" for admin "0" for normal user
-     * @return updated user account or null if there was an error
+     * @param integer 	$userid 	integer
+     * @param string 	$password 	new clear text password or old encrypted password
+     * @param string 	$languages 	comma-delimited set of language identifiers
+     * @param string 	$tags 		string comma-delimited set of tags
+     * @param string 	$role       "1" for admin "0" for normal user
+     * @return ?object updated user account or null if there was an error
      */
     public function changeUser($userid, $password, $languages, $tags, $role)
     {
@@ -263,8 +267,8 @@ class BicBucStriim
 
     /**
      * Find a specific ID template in the settings DB
-     * @param string name 	template name
-     * @return 				IdTemplate or null
+     * @param string $name 	template name
+     * @return ?object		IdTemplate or null
      */
     public function idTemplate($name)
     {
@@ -273,13 +277,14 @@ class BicBucStriim
 
     /**
      * Add a new ID template
-     * @param string name 		unique template name
-     * @param string value 		URL template
-     * @param string label 		display label
-     * @return template record or null if there was an error
+     * @param string $name 		unique template name
+     * @param string $value 	URL template
+     * @param string $label 	display label
+     * @return object   template record or null if there was an error
      */
     public function addIdTemplate($name, $value, $label)
     {
+        /** @var IdUrlTemplate $template */
         $template = R::dispense('idtemplate');
         $template->name = $name;
         $template->val = $value;
@@ -290,8 +295,8 @@ class BicBucStriim
 
     /**
      * Delete an ID template from the database
-     * @param string name 	template namne
-     * @return true if template was deleted else false
+     * @param string $name 	template namne
+     * @return bool true if template was deleted else false
      */
     public function deleteIdTemplate($name)
     {
@@ -306,10 +311,10 @@ class BicBucStriim
 
     /**
      * Update an existing ID template. The name cannot be changed.
-     * @param string name 		template name
-     * @param string value 		URL template
-     * @param string label 		display label
-     * @return updated template or null if there was an error
+     * @param string $name 		template name
+     * @param string $value 	URL template
+     * @param string $label 	display label
+     * @return ?object updated template or null if there was an error
      */
     public function changeIdTemplate($name, $value, $label)
     {
@@ -330,9 +335,9 @@ class BicBucStriim
 
     /**
      * Find a Calibre item.
-     * @param int 	calibreType
-     * @param int 	calibreId
-     * @return 		object, the Calibre item
+     * @param int 	$calibreType
+     * @param int 	$calibreId
+     * @return 		?object, the Calibre item
      */
     public function getCalibreThing($calibreType, $calibreId)
     {
@@ -352,13 +357,14 @@ class BicBucStriim
      * Calibre items are identified by type, ID and name. ID and name
      * are used to find items that can be renamed, like authors.
      *
-     * @param int 		calibreType
-     * @param int 		calibreId
-     * @param string 	calibreName
+     * @param int 		$calibreType
+     * @param int 		$calibreId
+     * @param string 	$calibreName
      * @return 			object, the Calibre item
      */
     public function addCalibreThing($calibreType, $calibreId, $calibreName)
     {
+        /** @var Model_CalibreThing $calibreThing */
         $calibreThing = R::dispense('calibrething');
         $calibreThing->ctype = $calibreType;
         $calibreThing->cid = $calibreId;
@@ -375,8 +381,8 @@ class BicBucStriim
      * Deletes the thumbnail artefact, and then the CalibreThing if that
      * has no further references.
      *
-     * @param int 	authorId 	Calibre ID of the author
-     * @return 		true if deleted, else false
+     * @param int 	$authorId 	Calibre ID of the author
+     * @return 	bool	true if deleted, else false
      */
     public function deleteAuthorThumbnail($authorId)
     {
@@ -402,12 +408,12 @@ class BicBucStriim
     /**
      * Change the thumbnail image for an author.
      *
-     * @param int 		authorId 	Calibre ID of the author
-     * @param string 	authorName 	Calibre name of the author
-     * @param boolean 	clipped 	true = image should be clipped, else stuffed
-     * @param string 	file 		File name of the input image
-     * @param string 	mime 		Mime type of the image
-     * @return 			string, file name of the thumbnail image, or null
+     * @param int 		$authorId 	Calibre ID of the author
+     * @param string 	$authorName Calibre name of the author
+     * @param boolean 	$clipped 	true = image should be clipped, else stuffed
+     * @param string 	$file 		File name of the input image
+     * @param string 	$mime 		Mime type of the image
+     * @return 			bool file name of the thumbnail image, or null
      */
     public function editAuthorThumbnail($authorId, $authorName, $clipped, $file, $mime)
     {
@@ -435,6 +441,7 @@ class BicBucStriim
             $created = $this->thumbnailStuffed($file, $png, self::THUMB_RES, self::THUMB_RES, $fname);
         }
 
+        /** @var RedBean_SimpleModel $artefact */
         $artefact = $calibreThing->getAuthorThumbnail();
         if (is_null($artefact)) {
             $artefact = R::dispense('artefact');
@@ -449,8 +456,8 @@ class BicBucStriim
 
     /**
      * Get the file name of an author's thumbnail image.
-     * @param int 	authorId 	Calibre ID of the author
-     * @return 		string, file name of the thumbnail image, or null
+     * @param int 	$authorId 	Calibre ID of the author
+     * @return 		?RedBean_SimpleModel file name of the thumbnail image, or null
      */
     public function getAuthorThumbnail($authorId)
     {
@@ -464,8 +471,8 @@ class BicBucStriim
 
     /**
      * Checks if the thumbnail for a book was already generated.
-     * @param int 	id 	Calibre book ID
-     * @return 		true if the thumbnail fiel exists, else false
+     * @param int 	$id 	Calibre book ID
+     * @return 	bool	true if the thumbnail fiel exists, else false
      */
     public function isTitleThumbnailAvailable($id)
     {
@@ -484,10 +491,10 @@ class BicBucStriim
      *
      * The function expects the input file to be a JPEG.
      *
-     * @param  int 		id 		book id
-     * @param  string 	cover 	path to cover image
-     * @param  bool  	clipped	true = clip the thumbnail, else stuff it
-     * @return string, thumbnail path or NULL
+     * @param  int 		$id 		book id
+     * @param  string 	$cover 	    path to cover image
+     * @param  bool  	$clipped	true = clip the thumbnail, else stuff it
+     * @return string thumbnail path or NULL
      */
     public function titleThumbnail($id, $cover, $clipped)
     {
@@ -536,7 +543,7 @@ class BicBucStriim
 
     /**
      * Return all links defined for an author.
-     * @param int 	authorId 	Calibre ID for the author
+     * @param int 	$authorId 	Calibre ID for the author
      * @return array 	author links
      */
     public function authorLinks($authorId)
@@ -551,10 +558,10 @@ class BicBucStriim
 
     /**
      * Add a link for an author.
-     * @param int 		authorId 	Calibre ID for author
-     * @param string 	authorName 	Calibre name for author
-     * @param string 	label 		link label
-     * @param string 	url 		link url
+     * @param int 		$authorId 	Calibre ID for author
+     * @param string 	$authorName 	Calibre name for author
+     * @param string 	$label 		link label
+     * @param string 	$url 		link url
      * @return object 	created author link
      */
     public function addAuthorLink($authorId, $authorName, $label, $url)
@@ -575,8 +582,8 @@ class BicBucStriim
 
     /**
      * Delete a link from the collection defined for an author.
-     * @param int 	authorId 	Calibre ID for author
-     * @param int 	linkId 		ID of the author link
+     * @param int 	$authorId 	Calibre ID for author
+     * @param int 	$linkId 		ID of the author link
      * @return boolean 			true if the link was deleted, else false
      */
     public function deleteAuthorLink($authorId, $linkId)
@@ -606,8 +613,8 @@ class BicBucStriim
 
     /**
      * Get the note text fro an author.
-     * @param int 	authorId 	Calibre ID of the author
-     * @return 		string 		note text or null
+     * @param int 	$authorId 	Calibre ID of the author
+     * @return 		?object 		note text or null
      */
     public function authorNote($authorId)
     {
@@ -621,10 +628,10 @@ class BicBucStriim
 
     /**
      * Set the note text for an author.
-     * @param int 		authorId 	Calibre ID for author
-     * @param string 	authorName 	Calibre name for author
-     * @param string 	mime 		mime type for the note's content
-     * @param string 	noteText	note content
+     * @param int 		$authorId 	Calibre ID for author
+     * @param string 	$authorName 	Calibre name for author
+     * @param string 	$mime 		mime type for the note's content
+     * @param string 	$noteText	note content
      * @return object 	created/edited note
      */
     public function editAuthorNote($authorId, $authorName, $mime, $noteText)
@@ -652,7 +659,7 @@ class BicBucStriim
 
     /**
      * Delete the note for an author
-     * @param int 	authorId 	Calibre ID for author
+     * @param int 	$authorId 	Calibre ID for author
      * @return boolean 			true if the note was deleted, else false
      */
     public function deleteAuthorNote($authorId)
@@ -681,11 +688,11 @@ class BicBucStriim
 
     /**
      * Create a square thumbnail by clipping the largest possible square from the cover
-     * @param  string 	cover      	path to input image
-     * @param  bool 	png      	true if the input is a PNG file, false = JPEG
-     * @param  int 	 	newwidth   	required thumbnail width
-     * @param  int 		newheight  	required thumbnail height
-     * @param  string 	thumb_path 	path for thumbnail storage
+     * @param  string 	$cover      path to input image
+     * @param  bool 	$png      	true if the input is a PNG file, false = JPEG
+     * @param  int 	 	$newwidth   required thumbnail width
+     * @param  int 		$newheight  required thumbnail height
+     * @param  string 	$thumb_path path for thumbnail storage
      * @return bool             	true = thumbnail created, else false
      */
     private function thumbnailClipped($cover, $png, $newwidth, $newheight, $thumb_path)
@@ -709,11 +716,11 @@ class BicBucStriim
 
     /**
      * Create a square thumbnail by stuffing the cover at the edges
-     * @param  string 	cover      	path to input image
-     * @param  bool 	png      	true if the input is a PNG file, false = JPEG
-     * @param  int 	 	newwidth   	required thumbnail width
-     * @param  int 		newheight  	required thumbnail height
-     * @param  string 	thumb_path 	path for thumbnail storage
+     * @param  string 	$cover      path to input image
+     * @param  bool 	$png      	true if the input is a PNG file, false = JPEG
+     * @param  int 	 	$newwidth   required thumbnail width
+     * @param  int 		$newheight  required thumbnail height
+     * @param  string 	$thumb_path path for thumbnail storage
      * @return bool             	true = thumbnail created, else false
      */
     private function thumbnailStuffed($cover, $png, $newwidth, $newheight, $thumb_path)
@@ -752,7 +759,7 @@ class BicBucStriim
      *
      * @param  int 	$width
      * @param  int 	$height
-     * @return image
+     * @return object|resource image
      */
     private function transparentImage($width, $height)
     {

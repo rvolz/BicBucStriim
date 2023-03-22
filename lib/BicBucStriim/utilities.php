@@ -11,12 +11,15 @@ class Item
 # Utiliy classes for Calibre DB items
 class Author extends Item
 {
+    public $sort;
+    public $name;
 }
 class AuthorBook extends Item
 {
 }
 class Book extends Item
 {
+    public $id;
 }
 class BookAuthorLink extends Item
 {
@@ -47,6 +50,8 @@ class Data extends Item
 }
 class Language extends Item
 {
+    public $lang_code;
+    public $key;
 }
 class Series extends Item
 {
@@ -56,6 +61,8 @@ class SeriesBook extends Item
 }
 class Tag extends Item
 {
+    public $name;
+    public $key;
 }
 class TagBook extends Item
 {
@@ -83,15 +90,24 @@ abstract class CalibreSearchType
 # Configuration utilities for BBS
 class Encryption extends Item
 {
+    public $key;
+    public $text;
 }
 class ConfigMailer extends Item
 {
+    public $key;
+    public $text;
 }
 class ConfigTtsOption extends Item
 {
+    public $key;
+    public $text;
 }
 class IdUrlTemplate extends Item
 {
+    public $name;
+    public $val;
+    public $label;
 }
 
 /**
@@ -100,11 +116,11 @@ class IdUrlTemplate extends Item
 class UrlInfo
 {
     /**
-     * @var $protocol - protocol used for access, default 'http'
+     * @var string $protocol - protocol used for access, default 'http'
      */
     public $protocol = 'http';
     /**
-     * @var $host - hostname or ip address used for access
+     * @var string $host - hostname or ip address used for access
      */
     public $host;
 
@@ -247,7 +263,7 @@ class Utilities
      *
      * @param  int  $width
      * @param  int  $height
-     * @return image
+     * @return object image
      */
     public static function transparentImage($width, $height)
     {

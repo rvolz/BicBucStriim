@@ -10,6 +10,10 @@
 
 class Model_CalibreThing extends RedBean_SimpleModel
 {
+    public $ownLink;
+    public $ownNote;
+    public $ownArtefact;
+
     /**
      * Return author links releated to this Calibre entitiy.
      * @return array 	all available author links
@@ -23,7 +27,7 @@ class Model_CalibreThing extends RedBean_SimpleModel
 
     /**
      * Return the author note text related to this Calibre entitiy.
-     * @return string 	text or null
+     * @return ?RedBean_SimpleModel 	text or null
      */
     public function getAuthorNote()
     {
@@ -39,7 +43,7 @@ class Model_CalibreThing extends RedBean_SimpleModel
 
     /**
      * Return the author thumbnail file related to this Calibre entitiy.
-     * @return string 	Path to thumbnail file or null
+     * @return ?RedBean_SimpleModel 	Path to thumbnail file or null
      */
     public function getAuthorThumbnail()
     {

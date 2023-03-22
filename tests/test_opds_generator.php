@@ -23,6 +23,7 @@ class TestOfOpdsGenerator extends UnitTestCase
 
     public $bbs;
     public $gen;
+    public $calibre;
 
     public function setUp()
     {

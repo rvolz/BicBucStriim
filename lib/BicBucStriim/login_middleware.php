@@ -22,7 +22,8 @@ class LoginMiddleware extends \Slim\Middleware
      * Initialize the PDO connection and merge user
      * config with defaults.
      *
-     * @param array $config
+     * @param string $realm
+     * @param array $statics
      */
     public function __construct($realm, $statics)
     {
@@ -87,7 +88,7 @@ class LoginMiddleware extends \Slim\Middleware
     protected function is_static_resource($resource)
     {
         $path_parts = preg_split('/\//', $resource);
-        if (isset($path_parts)) {
+        if (!empty($path_parts)) {
             # Some OPDS clients like Aldiko don't send auth information for image resources so we have to handle them here
             # FIXME better solution for resources
             if (sizeof($path_parts) == 5 && ($path_parts[3] == 'cover' || $path_parts[3] == 'thumbnail')) {
@@ -106,7 +107,7 @@ class LoginMiddleware extends \Slim\Middleware
      * Check if the access request is authorized by a user. A request must either contain session data from
      * a previous login or contain a HTTP Basic authorization info, which is then used to
      * perform a login against the users table in the database.
-     * @return true if authorized else false
+     * @return bool true if authorized else false
      */
     protected function is_authorized()
     {
@@ -168,7 +169,7 @@ class LoginMiddleware extends \Slim\Middleware
     /**
      * Look for PHP authorization headers
      * @param $request HTTP request
-     * @return array with username and pasword, or null
+     * @return ?array with username and pasword, or null
      */
     protected function checkPhpAuth($request)
     {
@@ -184,14 +185,14 @@ class LoginMiddleware extends \Slim\Middleware
     /**
      * Look for a HTTP Authorization header and decode it
      * @param $request HTTP request
-     * @return array with username and pasword, or null
+     * @return ?array with username and pasword, or null
      */
     protected function checkHttpAuth($request)
     {
         $b64auth = $request->headers('Authorization');
         if (!empty($b64auth)) {
             $auth_array1 = preg_split('/ /', $b64auth);
-            if (!isset($auth_array1) || strcasecmp('Basic', $auth_array1[0]) != 0) {
+            if (empty($auth_array1) || strcasecmp('Basic', $auth_array1[0]) != 0) {
                 return null;
             }
             if (sizeof($auth_array1) != 2 || !isset($auth_array1[1])) {

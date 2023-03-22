@@ -1,6 +1,6 @@
 <?php
 
-require 'vendor/autoload.php';
+require_once 'vendor/autoload.php';
 require_once 'lib/BicBucStriim/bicbucstriim.php';
 
 class OwnConfigMiddleware extends \Slim\Middleware
@@ -10,7 +10,7 @@ class OwnConfigMiddleware extends \Slim\Middleware
     /**
      * Initialize the configuration
      *
-     * @param array $config
+     * @param array $knownConfigs
      */
     public function __construct($knownConfigs)
     {
@@ -38,6 +38,7 @@ class OwnConfigMiddleware extends \Slim\Middleware
     {
         global $globalSettings, $we_have_config;
         $we_have_config = 0;
+        /** @var Slim\Slim $app */
         $app = $this->app;
         if ($app->bbs->dbOk()) {
             $we_have_config = 1;
@@ -69,9 +70,10 @@ class OwnConfigMiddleware extends \Slim\Middleware
         } else {
             $app->getLog()->info("own_config_middleware: no config db found - creating a new one with default values");
             $app->bbs->createDataDb();
-            $app->bbs = new BicBucStriim('data/data.db', 'data');
+            $app->bbs = new BicBucStriim('data/data.db', true);
             $cnfs = [];
             foreach ($this->knownConfigs as $name) {
+                /** @var Model_Config $cnf */
                 $cnf = R::dispense('config');
                 $cnf->name = $name;
                 $cnf->val = $globalSettings[$name];

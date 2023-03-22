@@ -8,6 +8,8 @@
  *
  */
 
-class Model_Config extends RedBean_SimpleModel
+class Model_Config extends RedBean_OODBBean
 {
+    public $name;
+    public $val;
 }
