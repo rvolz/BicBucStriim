@@ -43,6 +43,7 @@
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+
 namespace Slim\Extras\Log;
 
 class DateTimeFileWriter
@@ -69,7 +70,7 @@ class DateTimeFileWriter
      * (string) The log file name format; parsed with `date()`.
      *
      * extension:
-     * (string) The file extention to append to the filename`.     
+     * (string) The file extention to append to the filename`.
      *
      * message_format:
      * (string) The log message format; available tokens are...
@@ -80,15 +81,15 @@ class DateTimeFileWriter
      * @param   array $settings
      * @return  void
      */
-    public function __construct($settings = array())
+    public function __construct($settings = [])
     {
         //Merge user settings
-        $this->settings = array_merge(array(
+        $this->settings = array_merge([
             'path' => './logs',
             'name_format' => 'Y-m-d',
             'extension' => 'log',
-            'message_format' => '%label% - %date% - %message%'
-        ), $settings);
+            'message_format' => '%label% - %date% - %message%',
+        ], $settings);
 
         //Remove trailing slash from log path
         $this->settings['path'] = rtrim($this->settings['path'], DIRECTORY_SEPARATOR);
@@ -121,15 +122,15 @@ class DateTimeFileWriter
         }
 
         //Get formatted log message
-        $message = str_replace(array(
+        $message = str_replace([
             '%label%',
             '%date%',
-            '%message%'
-        ), array(
+            '%message%',
+        ], [
             $label,
             date('c'),
-            (string)$object
-        ), $this->settings['message_format']);
+            (string)$object,
+        ], $this->settings['message_format']);
 
         //Open resource handle to log file
         if (!$this->resource) {
@@ -145,4 +146,3 @@ class DateTimeFileWriter
         fwrite($this->resource, $message . PHP_EOL);
     }
 }
-?>

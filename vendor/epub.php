@@ -4,7 +4,8 @@
  *
  * @author Andreas Gohr <andi@splitbrain.org>
  */
-class EPub {
+class EPub
+{
     public $xml; //FIXME change to protected, later
     protected $xpath;
     protected $file;
@@ -18,21 +19,22 @@ class EPub {
      * @param string $file path to epub file to work on
      * @throws Exception if metadata could not be loaded
      */
-    public function __construct($file){
+    public function __construct($file)
+    {
         // open file
         $this->file = $file;
         $zip = new ZipArchive();
-        if(!@$zip->open($this->file)){
+        if (!@$zip->open($this->file)) {
             throw new Exception('Failed to read epub file');
         }
 
         // read container data
         $data = $zip->getFromName('META-INF/container.xml');
-        if($data == false){
+        if ($data == false) {
             throw new Exception('Failed to access epub container data');
         }
         $xml = new DOMDocument();
-        $xml->registerNodeClass('DOMElement','EPubDOMElement');
+        $xml->registerNodeClass('DOMElement', 'EPubDOMElement');
         $xml->loadXML($data);
         $xpath = new EPubDOMXPath($xml);
         $nodes = $xpath->query('//n:rootfiles/n:rootfile[@media-type="application/oebps-package+xml"]');
@@ -40,11 +42,11 @@ class EPub {
 
         // load metadata
         $data = $zip->getFromName($this->meta);
-        if(!$data){
+        if (!$data) {
             throw new Exception('Failed to access epub metadata');
         }
         $this->xml =  new DOMDocument();
-        $this->xml->registerNodeClass('DOMElement','EPubDOMElement');
+        $this->xml->registerNodeClass('DOMElement', 'EPubDOMElement');
         $this->xml->loadXML($data);
         $this->xml->formatOutput = true;
         $this->xpath = new EPubDOMXPath($this->xml);
@@ -55,26 +57,28 @@ class EPub {
     /**
      * file name getter
      */
-    public function file(){
+    public function file()
+    {
         return $this->file;
     }
 
     /**
      * Writes back all meta data changes
      */
-    public function save(){
+    public function save()
+    {
         $zip = new ZipArchive();
         $res = @$zip->open($this->file, ZipArchive::CREATE);
-        if($res === false){
+        if ($res === false) {
             throw new Exception('Failed to write back metadata');
         }
-        $zip->addFromString($this->meta,$this->xml->saveXML());
+        $zip->addFromString($this->meta, $this->xml->saveXML());
         // add the cover image
-        if($this->imagetoadd){
+        if ($this->imagetoadd) {
             $path = dirname('/'.$this->meta).'/php-epub-meta-cover.img'; // image path is relative to meta file
-            $path = ltrim($path,'/');
+            $path = ltrim($path, '/');
 
-            $zip->addFromString($path,file_get_contents($this->imagetoadd));
+            $zip->addFromString($path, file_get_contents($this->imagetoadd));
             $this->imagetoadd='';
         }
         $zip->close();
@@ -95,28 +99,33 @@ class EPub {
      *
      * @params array $authors
      */
-    public function Authors($authors=false){
+    public function Authors($authors=false)
+    {
         // set new data
-        if($authors !== false){
+        if ($authors !== false) {
             // Author where given as a comma separated list
-            if(is_string($authors)){
-                if($authors == ''){
-                    $authors = array();
-                }else{
-                    $authors = explode(',',$authors);
-                    $authors = array_map('trim',$authors);
+            if (is_string($authors)) {
+                if ($authors == '') {
+                    $authors = [];
+                } else {
+                    $authors = explode(',', $authors);
+                    $authors = array_map('trim', $authors);
                 }
             }
 
             // delete existing nodes
             $nodes = $this->xpath->query('//opf:metadata/dc:creator[@opf:role="aut"]');
-            foreach($nodes as $node) $node->delete();
+            foreach ($nodes as $node) {
+                $node->delete();
+            }
 
             // add new nodes
             $parent = $this->xpath->query('//opf:metadata')->item(0);
-            foreach($authors as $as => $name){
-                if(is_int($as)) $as = $name; //numeric array given
-                $node = $parent->newChild('dc:creator',$name);
+            foreach ($authors as $as => $name) {
+                if (is_int($as)) {
+                    $as = $name;
+                } //numeric array given
+                $node = $parent->newChild('dc:creator', $name);
                 $node->attr('opf:role', 'aut');
                 $node->attr('opf:file-as', $as);
             }
@@ -126,22 +135,22 @@ class EPub {
 
         // read current data
         $rolefix = false;
-        $authors = array();
+        $authors = [];
         $nodes = $this->xpath->query('//opf:metadata/dc:creator[@opf:role="aut"]');
-        if($nodes->length == 0){
+        if ($nodes->length == 0) {
             // no nodes where found, let's try again without role
             $nodes = $this->xpath->query('//opf:metadata/dc:creator');
             $rolefix = true;
         }
-        foreach($nodes as $node){
+        foreach ($nodes as $node) {
             $name = $node->nodeValue;
             $as   = $node->attr('opf:file-as');
-            if(!$as){
+            if (!$as) {
                 $as = $name;
-                $node->attr('opf:file-as',$as);
+                $node->attr('opf:file-as', $as);
             }
-            if($rolefix){
-                $node->attr('opf:role','aut');
+            if ($rolefix) {
+                $node->attr('opf:role', 'aut');
             }
             $authors[$as] = $name;
         }
@@ -153,8 +162,9 @@ class EPub {
      *
      * @param string $title
      */
-    public function Title($title=false){
-        return $this->getset('dc:title',$title);
+    public function Title($title=false)
+    {
+        return $this->getset('dc:title', $title);
     }
 
     /**
@@ -162,8 +172,9 @@ class EPub {
      *
      * @param string $lang
      */
-    public function Language($lang=false){
-        return $this->getset('dc:language',$lang);
+    public function Language($lang=false)
+    {
+        return $this->getset('dc:language', $lang);
     }
 
     /**
@@ -171,8 +182,9 @@ class EPub {
      *
      * @param string $publisher
      */
-    public function Publisher($publisher=false){
-        return $this->getset('dc:publisher',$publisher);
+    public function Publisher($publisher=false)
+    {
+        return $this->getset('dc:publisher', $publisher);
     }
 
     /**
@@ -180,8 +192,9 @@ class EPub {
      *
      * @param string $rights
      */
-    public function Copyright($rights=false){
-        return $this->getset('dc:rights',$rights);
+    public function Copyright($rights=false)
+    {
+        return $this->getset('dc:rights', $rights);
     }
 
     /**
@@ -189,8 +202,9 @@ class EPub {
      *
      * @param string $description
      */
-    public function Description($description=false){
-        return $this->getset('dc:description',$description);
+    public function Description($description=false)
+    {
+        return $this->getset('dc:description', $description);
     }
 
     /**
@@ -198,8 +212,9 @@ class EPub {
      *
      * @param string $isbn
      */
-    public function ISBN($isbn=false){
-        return $this->getset('dc:identifier',$isbn,'opf:scheme','ISBN');
+    public function ISBN($isbn=false)
+    {
+        return $this->getset('dc:identifier', $isbn, 'opf:scheme', 'ISBN');
     }
 
     /**
@@ -207,8 +222,9 @@ class EPub {
      *
      * @param string $google
      */
-    public function Google($google=false){
-        return $this->getset('dc:identifier',$google,'opf:scheme','GOOGLE');
+    public function Google($google=false)
+    {
+        return $this->getset('dc:identifier', $google, 'opf:scheme', 'GOOGLE');
     }
 
     /**
@@ -216,8 +232,9 @@ class EPub {
      *
      * @param string $amazon
      */
-    public function Amazon($amazon=false){
-        return $this->getset('dc:identifier',$amazon,'opf:scheme','AMAZON');
+    public function Amazon($amazon=false)
+    {
+        return $this->getset('dc:identifier', $amazon, 'opf:scheme', 'AMAZON');
     }
 
     /**
@@ -228,27 +245,28 @@ class EPub {
      *
      * @param array $subjects
      */
-    public function Subjects($subjects=false){
+    public function Subjects($subjects=false)
+    {
         // setter
-        if($subjects !== false){
-            if(is_string($subjects)){
-                if($subjects === ''){
-                    $subjects = array();
-                }else{
-                    $subjects = explode(',',$subjects);
-                    $subjects = array_map('trim',$subjects);
+        if ($subjects !== false) {
+            if (is_string($subjects)) {
+                if ($subjects === '') {
+                    $subjects = [];
+                } else {
+                    $subjects = explode(',', $subjects);
+                    $subjects = array_map('trim', $subjects);
                 }
             }
 
             // delete previous
             $nodes = $this->xpath->query('//opf:metadata/dc:subject');
-            foreach($nodes as $node){
+            foreach ($nodes as $node) {
                 $node->delete();
             }
             // add new ones
             $parent = $this->xpath->query('//opf:metadata')->item(0);
-            foreach($subjects as $subj){
-                $node = $this->xml->createElement('dc:subject',htmlspecialchars($subj));
+            foreach ($subjects as $subj) {
+                $node = $this->xml->createElement('dc:subject', htmlspecialchars($subj));
                 $node = $parent->appendChild($node);
             }
 
@@ -256,9 +274,9 @@ class EPub {
         }
 
         //getter
-        $subjects = array();
+        $subjects = [];
         $nodes = $this->xpath->query('//opf:metadata/dc:subject');
-        foreach($nodes as $node){
+        foreach ($nodes as $node) {
             $subjects[] =  $node->nodeValue;
         }
         return $subjects;
@@ -284,29 +302,34 @@ class EPub {
      * @param  string $mime mime type of the given file
      * @return array
      */
-    public function Cover($path=false, $mime=false){
+    public function Cover($path=false, $mime=false)
+    {
         // set cover
-        if($path !== false){
+        if ($path !== false) {
             // remove current pointer
             $nodes = $this->xpath->query('//opf:metadata/opf:meta[@name="cover"]');
-            foreach($nodes as $node) $node->delete();
+            foreach ($nodes as $node) {
+                $node->delete();
+            }
             // remove previous manifest entries if they where made by us
             $nodes = $this->xpath->query('//opf:manifest/opf:item[@id="php-epub-meta-cover"]');
-            foreach($nodes as $node) $node->delete();
+            foreach ($nodes as $node) {
+                $node->delete();
+            }
 
-            if($path){
+            if ($path) {
                 // add pointer
                 $parent = $this->xpath->query('//opf:metadata')->item(0);
                 $node = $parent->newChild('opf:meta');
-                $node->attr('opf:name','cover');
-                $node->attr('opf:content','php-epub-meta-cover');
+                $node->attr('opf:name', 'cover');
+                $node->attr('opf:content', 'php-epub-meta-cover');
 
                 // add manifest
                 $parent = $this->xpath->query('//opf:manifest')->item(0);
                 $node = $parent->newChild('opf:item');
-                $node->attr('id','php-epub-meta-cover');
-                $node->attr('opf:href','php-epub-meta-cover.img');
-                $node->attr('opf:media-type',$mime);
+                $node->attr('id', 'php-epub-meta-cover');
+                $node->attr('opf:href', 'php-epub-meta-cover.img');
+                $node->attr('opf:media-type', $mime);
 
                 // remember path for save action
                 $this->imagetoadd = $path;
@@ -317,28 +340,34 @@ class EPub {
 
         // load cover
         $nodes = $this->xpath->query('//opf:metadata/opf:meta[@name="cover"]');
-        if(!$nodes->length) return $this->no_cover();
-        $coverid = (String) $nodes->item(0)->attr('opf:content');
-        if(!$coverid) return $this->no_cover();
+        if (!$nodes->length) {
+            return $this->no_cover();
+        }
+        $coverid = (string) $nodes->item(0)->attr('opf:content');
+        if (!$coverid) {
+            return $this->no_cover();
+        }
 
         $nodes = $this->xpath->query('//opf:manifest/opf:item[@id="'.$coverid.'"]');
-        if(!$nodes->length) return $this->no_cover();
+        if (!$nodes->length) {
+            return $this->no_cover();
+        }
         $mime = $nodes->item(0)->attr('opf:media-type');
         $path = $nodes->item(0)->attr('opf:href');
         $path = dirname('/'.$this->meta).'/'.$path; // image path is relative to meta file
-        $path = ltrim($path,'/');
+        $path = ltrim($path, '/');
 
         $zip = new ZipArchive();
-        if(!@$zip->open($this->file)){
+        if (!@$zip->open($this->file)) {
             throw new Exception('Failed to read epub file');
         }
         $data = $zip->getFromName($path);
 
-        return array(
+        return [
             'mime'  => $mime,
             'data'  => $data,
-            'found' => $path
-        );
+            'found' => $path,
+        ];
     }
 
     /**
@@ -351,36 +380,41 @@ class EPub {
      * @param string $att    Attribute name
      * @param string $aval   Attribute value
      */
-    protected function getset($item,$value=false,$att=false,$aval=false){
+    protected function getset($item, $value=false, $att=false, $aval=false)
+    {
         // construct xpath
         $xpath = '//opf:metadata/'.$item;
-        if($att){
+        if ($att) {
             $xpath .= "[@$att=\"$aval\"]";
         }
 
         // set value
-        if($value !== false){
+        if ($value !== false) {
             $value = htmlspecialchars($value);
             $nodes = $this->xpath->query($xpath);
-            if($nodes->length == 1 ){
-                if($value === ''){
+            if ($nodes->length == 1) {
+                if ($value === '') {
                     // the user want's to empty this value -> delete the node
                     $nodes->item(0)->delete();
-                }else{
+                } else {
                     // replace value
                     $nodes->item(0)->nodeValue = $value;
                 }
-            }else{
+            } else {
                 // if there are multiple matching nodes for some reason delete
                 // them. we'll replace them all with our own single one
-                foreach($nodes as $n) $n->delete();
+                foreach ($nodes as $n) {
+                    $n->delete();
+                }
                 // readd them
-                if($value){
+                if ($value) {
                     $parent = $this->xpath->query('//opf:metadata')->item(0);
-                    $node   = $this->xml->createElement($item,$value);
+                    $node   = $this->xml->createElement($item, $value);
                     $node   = $parent->appendChild($node);
                     //if($att) $node->attr($att,$aval);
-                    if($att) $node->setAttribute($att,$aval);
+                    if ($att) {
+                        $node->setAttribute($att, $aval);
+                    }
                 }
             }
 
@@ -389,9 +423,9 @@ class EPub {
 
         // get value
         $nodes = $this->xpath->query($xpath);
-        if($nodes->length){
+        if ($nodes->length) {
             return $nodes->item(0)->nodeValue;
-        }else{
+        } else {
             return '';
         }
     }
@@ -399,12 +433,13 @@ class EPub {
     /**
      * Return a not found response for Cover()
      */
-    protected function no_cover(){
-        return array(
+    protected function no_cover()
+    {
+        return [
             'data'  => base64_decode('R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAEALAAAAAABAAEAAAIBTAA7'),
             'mime'  => 'image/gif',
-            'found' => false
-        );
+            'found' => false,
+        ];
     }
 
     /**
@@ -413,36 +448,41 @@ class EPub {
      * I had to rely on this because otherwise xpath failed to find the newly
      * added nodes
      */
-    protected function reparse() {
+    protected function reparse()
+    {
         $this->xml->loadXML($this->xml->saveXML());
         $this->xpath = new EPubDOMXPath($this->xml);
     }
 }
 
-class EPubDOMXPath extends DOMXPath {
-    public function __construct(DOMDocument $doc){
+class EPubDOMXPath extends DOMXPath
+{
+    public function __construct(DOMDocument $doc)
+    {
         parent::__construct($doc);
 
-        if(is_a($doc->documentElement, 'EPubDOMElement')){
-            foreach($doc->documentElement->namespaces as $ns => $url){
-                $this->registerNamespace($ns,$url);
+        if (is_a($doc->documentElement, 'EPubDOMElement')) {
+            foreach ($doc->documentElement->namespaces as $ns => $url) {
+                $this->registerNamespace($ns, $url);
             }
         }
     }
 }
 
-class EPubDOMElement extends DOMElement {
-    public $namespaces = array(
+class EPubDOMElement extends DOMElement
+{
+    public $namespaces = [
         'n'   => 'urn:oasis:names:tc:opendocument:xmlns:container',
         'opf' => 'http://www.idpf.org/2007/opf',
-        'dc'  => 'http://purl.org/dc/elements/1.1/'
-    );
+        'dc'  => 'http://purl.org/dc/elements/1.1/',
+    ];
 
 
-    public function __construct($name, $value='', $namespaceURI=''){
-        list($ns,$name) = $this->splitns($name);
+    public function __construct($name, $value='', $namespaceURI='')
+    {
+        [$ns, $name] = $this->splitns($name);
         $value = htmlspecialchars($value);
-        if(!$namespaceURI && $ns){
+        if (!$namespaceURI && $ns) {
             $namespaceURI = $this->namespaces[$ns];
         }
         parent::__construct($name, $value, $namespaceURI);
@@ -454,18 +494,19 @@ class EPubDOMElement extends DOMElement {
      *
      * Works with our epub namespaces and omits default namespaces
      */
-    public function newChild($name, $value=''){
-        list($ns,$local) = $this->splitns($name);
-        if($ns){
+    public function newChild($name, $value='')
+    {
+        [$ns, $local] = $this->splitns($name);
+        if ($ns) {
             $nsuri = $this->namespaces[$ns];
-            if($this->isDefaultNamespace($nsuri)){
+            if ($this->isDefaultNamespace($nsuri)) {
                 $name  = $local;
                 $nsuri = '';
             }
         }
 
         // this doesn't call the construcor: $node = $this->ownerDocument->createElement($name,$value);
-        $node = new EPubDOMElement($name,$value,$nsuri);
+        $node = new EPubDOMElement($name, $value, $nsuri);
         return $this->appendChild($node);
     }
 
@@ -475,51 +516,55 @@ class EPubDOMElement extends DOMElement {
      * @param  string $name
      * @return array  (namespace, name)
      */
-    public function splitns($name){
-        $list = explode(':',$name,2);
-        if(count($list) < 2) array_unshift($list,'');
+    public function splitns($name)
+    {
+        $list = explode(':', $name, 2);
+        if (count($list) < 2) {
+            array_unshift($list, '');
+        }
         return $list;
     }
 
     /**
      * Simple EPub namespace aware attribute accessor
      */
-    public function attr($attr,$value=null){
-        list($ns,$attr) = $this->splitns($attr);
+    public function attr($attr, $value=null)
+    {
+        [$ns, $attr] = $this->splitns($attr);
 
         $nsuri = '';
-        if($ns){
+        if ($ns) {
             $nsuri = $this->namespaces[$ns];
-            if(!$this->namespaceURI){
-                if($this->isDefaultNamespace($nsuri)){
+            if (!$this->namespaceURI) {
+                if ($this->isDefaultNamespace($nsuri)) {
                     $nsuri = '';
                 }
-            } elseif($this->namespaceURI == $nsuri){
-                 $nsuri = '';
+            } elseif ($this->namespaceURI == $nsuri) {
+                $nsuri = '';
             }
         }
 
-        if(!is_null($value)){
-            if($value === false){
+        if (!is_null($value)) {
+            if ($value === false) {
                 // delete if false was given
-                if($nsuri){
-                    $this->removeAttributeNS($nsuri,$attr);
-                }else{
+                if ($nsuri) {
+                    $this->removeAttributeNS($nsuri, $attr);
+                } else {
                     $this->removeAttribute($attr);
                 }
-            }else{
+            } else {
                 // modify if value was given
-                if($nsuri){
-                    $this->setAttributeNS($nsuri,$attr,$value);
-                }else{
-                    $this->setAttribute($attr,$value);
+                if ($nsuri) {
+                    $this->setAttributeNS($nsuri, $attr, $value);
+                } else {
+                    $this->setAttribute($attr, $value);
                 }
             }
-        }else{
+        } else {
             // return value if none was given
-            if($nsuri){
-                return $this->getAttributeNS($nsuri,$attr);
-            }else{
+            if ($nsuri) {
+                return $this->getAttributeNS($nsuri, $attr);
+            } else {
                 return $this->getAttribute($attr);
             }
         }
@@ -528,10 +573,8 @@ class EPubDOMElement extends DOMElement {
     /**
      * Remove this node from the DOM
      */
-    public function delete(){
+    public function delete()
+    {
         $this->parentNode->removeChild($this);
     }
-
 }
-
-

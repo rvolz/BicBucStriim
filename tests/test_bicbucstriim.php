@@ -1,4 +1,5 @@
 <?php
+
 set_include_path("tests:vendor");
 require_once 'simpletest/simpletest/autorun.php';
 require_once 'rb.php';
