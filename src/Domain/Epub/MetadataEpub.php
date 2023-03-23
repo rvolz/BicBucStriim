@@ -77,8 +77,8 @@ class MetadataEpub
      * Due to limitations in the EPUB library only the first language is
      * used.
      *
-     * @param array    Calibre metadata
-     * @param string    path to new cover image
+     * @param array  $metadata  Calibre metadata
+     * @param string $cover   path to new cover image
      */
     public function updateMetadata($metadata = null, $cover = null)
     {

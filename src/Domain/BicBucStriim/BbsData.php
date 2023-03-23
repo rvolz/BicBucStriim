@@ -169,7 +169,7 @@ class BbsData
      *
      * @param  int 	$width
      * @param  int 	$height
-     * @return image
+     * @return object|resource image
      */
     private function transparentImage($width, $height)
     {

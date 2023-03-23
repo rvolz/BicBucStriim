@@ -5,6 +5,7 @@ namespace App\Application\Actions;
 use App\Domain\BicBucStriim\BicBucStriimRepository;
 use App\Domain\BicBucStriim\Configuration;
 use App\Domain\BicBucStriim\L10n;
+use App\Domain\Calibre\CalibreFilter;
 use App\Domain\Calibre\CalibreRepository;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Log\LoggerInterface;
@@ -46,5 +47,24 @@ abstract class CalibreHtmlAction extends RenderHtmlAction
         return $this->respondWithPage('error.twig', [
             'page' => $this->mkPage($this->getMessageString('error'), 0, 2),
             'error' => $this->getMessageString('admin_no_permission')]);
+    }
+
+    /**
+     * Create a Calibre Filter according to the current user's
+     * language and tag settings.
+     * @return CalibreFilter
+     */
+    protected function getFilter(): CalibreFilter
+    {
+        $lang = null;
+        $tag = null;
+        $user = $this->user;
+        if (!empty($user->getLanguages())) {
+            $lang = $this->calibre->getLanguageId($user->getLanguages());
+        }
+        if (!empty($user->getTags())) {
+            $tag = $this->calibre->getTagId($user->getTags());
+        }
+        return new CalibreFilter($lang, $tag);
     }
 }

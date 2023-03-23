@@ -49,7 +49,7 @@ class OwnConfigMiddleware implements Middleware
             $we_have_config = 1;
             if ($currentConfig[AppConstants::DB_VERSION] != AppConstants::DB_SCHEMA_VERSION) {
                 $this->logger->warning("own_config_middleware: different db schema detected, should be " .
-                    AppConstants::DB_SCHEMA_VERSION . ", is {$currentConfig[DB_VERSION]}. please check");
+                    AppConstants::DB_SCHEMA_VERSION . ", is {$currentConfig[AppConstants::DB_VERSION]}. please check");
                 $we_have_config = 2;
             }
         } else {

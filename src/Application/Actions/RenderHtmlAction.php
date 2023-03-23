@@ -8,9 +8,6 @@ use App\Domain\BicBucStriim\AppConstants;
 use App\Domain\BicBucStriim\BicBucStriimRepository;
 use App\Domain\BicBucStriim\Configuration;
 use App\Domain\BicBucStriim\L10n;
-use App\Domain\Calibre\CalibreFilter;
-use App\Domain\Calibre\CalibreRepository;
-use App\Domain\User\User;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
@@ -104,25 +101,6 @@ abstract class RenderHtmlAction extends BasicAction
     protected function getMessageString($id): string
     {
         return $this->l10n->message($id);
-    }
-
-    /**
-     * Create a Calibre Filter according to the current user's
-     * language and tag settings.
-     * @return CalibreFilter
-     */
-    protected function getFilter(): CalibreFilter
-    {
-        $lang = null;
-        $tag = null;
-        $user = $this->user;
-        if (!empty($user->getLanguages())) {
-            $lang = $this->calibre->getLanguageId($user->getLanguages());
-        }
-        if (!empty($user->getTags())) {
-            $tag = $this->calibre->getTagId($user->getTags());
-        }
-        return new CalibreFilter($lang, $tag);
     }
 
     /**

@@ -18,6 +18,7 @@ use Dflydev\FigCookies\Modifier\SameSite;
 use Dflydev\FigCookies\SetCookie;
 use Firebase\JWT\ExpiredException;
 use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
 use PDO;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -232,7 +233,7 @@ class AuthMiddleware implements Middleware
             return null;
         }
         try {
-            $decoded = JWT::decode($cookie->getValue(), $this->jwtKey, ['HS256']);
+            $decoded = JWT::decode($cookie->getValue(), new Key($this->jwtKey, 'HS256'));
             $payload = (array)$decoded;
             return [$payload['uid']];
         } catch(ExpiredException $ex) {
