@@ -37,7 +37,7 @@ interface CalibreRepository
     /**
      * Return the ID for a language code from the Calibre languages table
      * @param string $languageCode ISO 639-2 code, e.g. 'deu', 'eng'
-     * @return          integer         ID or null
+     * @return          ?integer         ID or null
      */
     public function getLanguageId($languageCode);
 
@@ -68,7 +68,7 @@ interface CalibreRepository
     /**
      * Find a single author and return the details plus all books.
      * @param integer $id author id
-     * @return array            array with elements: author data, books
+     * @return ?array            array with elements: author data, books
      */
     public function authorDetails($id);
 
@@ -80,7 +80,7 @@ interface CalibreRepository
      * @param integer $index page index
      * @param integer $length page length
      * @param object $filter CalibreFilter
-     * @return array           array with elements: author data, current page,
+     * @return ?array           array with elements: author data, current page,
      *                               no. of pages, $length entries
      */
     public function authorDetailsSlice($lang, $id, $index = 0, $length = 100, $filter = null);
@@ -119,7 +119,7 @@ interface CalibreRepository
     /**
      * Gets a unique list of all series from the author.
      * @param integer $id author id
-     * @param array array of all books from the author
+     * @param array $books array of all books from the author
      */
     public function authorSeries($id, $books);
 
@@ -142,7 +142,7 @@ interface CalibreRepository
     /**
      * Returns a tag and the related books
      * @param integer $id tag id
-     * @return array            array with elements: tag data, books
+     * @return ?array            array with elements: tag data, books
      */
     public function tagDetails($id);
 
@@ -271,7 +271,7 @@ interface CalibreRepository
     /**
      * Find a single book, its tags and languages. Mainly used for restriction checks.
      * @param int $id the Calibre book ID
-     * @return array            the book, its tags and languages
+     * @return ?array            the book, its tags and languages
      */
     public function titleDetailsMini($id);
 
@@ -290,7 +290,7 @@ interface CalibreRepository
      * partial acquisition feed. The function assumes that the book record has
      * already been loaded.
      * @param Book $book complete book record from title()
-     * @return array        the book and its authors, tags and formats
+     * @return ?array        the book and its authors, tags and formats
      */
     public function titleDetailsOpds($book);
 
@@ -310,7 +310,7 @@ interface CalibreRepository
      * Returns the path to the file of a book or NULL.
      * @param int $id book id
      * @param string $file file name
-     * @return string       full path to image file or NULL
+     * @return ?string       full path to image file or NULL
      */
     public function titleFile($id, $file);
 
@@ -318,7 +318,7 @@ interface CalibreRepository
      * Returns the path to the file of a book or NULL.
      * @param int $id book id
      * @param string $format format name
-     * @return string       full path to image file or NULL
+     * @return ?string       full path to image file or NULL
      */
     public function titleFileByFormat($id, $format);
 
@@ -334,14 +334,14 @@ interface CalibreRepository
      * We always return the best of the available formats supported by Kindle devices
      * E.g. when there is both a Mobi and a PDF file for a given book, we always return the Mobi
      * @param int $id book id
-     * @return object   $format    the kindle format object for the book or NULL
+     * @return ?object   $format    the kindle format object for the book or NULL
      */
     public function titleGetKindleFormat($id);
 
     /**
      * Find a single series and return the details plus all books.
      * @param int $id series id
-     * @return array  an array with series details (key 'series') and
+     * @return ?array  an array with series details (key 'series') and
      *                the related books (key 'books')
      * @deprecated since 0.9.3
      */

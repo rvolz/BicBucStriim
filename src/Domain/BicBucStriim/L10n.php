@@ -71,7 +71,7 @@ class L10n extends ArrayObject
      * @param $id
      * @return bool
      */
-    public function offsetExists($id)
+    public function offsetExists($id): bool
     {
         return true;
     }
@@ -84,7 +84,7 @@ class L10n extends ArrayObject
      * @param $id
      * @return string
      */
-    public function offsetGet($id)
+    public function offsetGet($id): string
     {
         return $this->message($id);
     }

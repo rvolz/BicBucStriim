@@ -12,9 +12,9 @@ class ViewOpdsByAuthorAction extends \App\Application\Actions\CalibreOpdsAction
 {
     /**
      * Return a feed with partial acquisition entries for an author's books
-     * @param  string    initial initial character
-     * @param  int        id      author id
-     * @param  int        page    page number
+     * @args  string    $initial initial character
+     * @args  int       $id      author id
+     * @args  int       $page    page number
      * @return Response
      */
     protected function action(): Response

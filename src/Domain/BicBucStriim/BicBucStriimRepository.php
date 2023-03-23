@@ -138,17 +138,17 @@ interface BicBucStriimRepository
 
     /**
      * Update an existing ID template. The name cannot be changed.
-     * @param string name        template name
-     * @param string value        URL template
-     * @param string label        display label
-     * @return updated template or null if there was an error
+     * @param string $name        template name
+     * @param string $value        URL template
+     * @param string $label        display label
+     * @return ?object updated template or null if there was an error
      */
     public function changeIdTemplate($name, $value, $label);
 
     /**
      * Find a Calibre item.
-     * @param int    calibreType
-     * @param int    calibreId
+     * @param int    $calibreType
+     * @param int    $calibreId
      * @return ?object
      */
     public function getCalibreThing($calibreType, $calibreId): ?object;
@@ -159,9 +159,9 @@ interface BicBucStriimRepository
      * Calibre items are identified by type, ID and name. ID and name
      * are used to find items that can be renamed, like authors.
      *
-     * @param int        calibreType
-     * @param int        calibreId
-     * @param string    calibreName
+     * @param int       $calibreType
+     * @param int       $calibreId
+     * @param string    $calibreName
      * @return            object, the Calibre item
      */
     public function addCalibreThing($calibreType, $calibreId, $calibreName);
@@ -172,46 +172,46 @@ interface BicBucStriimRepository
      * Deletes the thumbnail artefact, and then the CalibreThing if that
      * has no further references.
      *
-     * @param int    authorId    Calibre ID of the author
-     * @return        true if deleted, else false
+     * @param int    $authorId    Calibre ID of the author
+     * @return   bool     true if deleted, else false
      */
     public function deleteAuthorThumbnail($authorId);
 
     /**
      * Return the author thumbnail file related to this Calibre entitiy.
-     * @return string    Path to thumbnail file or null
+     * @return ?object    Path to thumbnail file or null
      */
     public function getFirstArtefact($calibreThing);
 
     /**
      * Get the file name of an author's thumbnail image.
-     * @param int    authorId    Calibre ID of the author
-     * @return        string, file name of the thumbnail image, or null
+     * @param int    $authorId    Calibre ID of the author
+     * @return        ?object file name of the thumbnail image, or null
      */
     public function getAuthorThumbnail($authorId);
 
     /**
      * Change the thumbnail image for an author.
      *
-     * @param int        authorId    Calibre ID of the author
-     * @param string    authorName    Calibre name of the author
-     * @param boolean    clipped    true = image should be clipped, else stuffed
-     * @param string    file        File name of the input image
-     * @param string    mime        Mime type of the image
-     * @return            string, file name of the thumbnail image, or null
+     * @param int       $authorId    Calibre ID of the author
+     * @param string    $authorName    Calibre name of the author
+     * @param boolean   $clipped    true = image should be clipped, else stuffed
+     * @param string    $file        File name of the input image
+     * @param string    $mime        Mime type of the image
+     * @return            bool file name of the thumbnail image, or null
      */
     public function editAuthorThumbnail($authorId, $authorName, $clipped, $file, $mime);
 
     /**
      * Get the thumbnail for a book was already generated.
-     * @param int    id    Calibre book ID
+     * @param int    $id    Calibre book ID
      * @return string      The path to the file
      */
     public function getExistingTitleThumbnail(int $id): string;
 
     /**
      * Checks if the thumbnail for a book was already generated.
-     * @param int    id    Calibre book ID
+     * @param int    $id    Calibre book ID
      * @return bool        true if the thumbnail file exists, else false
      */
     public function isTitleThumbnailAvailable(int $id): bool;
@@ -224,9 +224,9 @@ interface BicBucStriimRepository
      *
      * The function expects the input file to be a JPEG.
      *
-     * @param int        id        book id
-     * @param string    cover    path to cover image
-     * @param bool    clipped    true = clip the thumbnail, else stuff it
+     * @param int     $id       book id
+     * @param string  $cover    path to cover image
+     * @param bool    $clipped  true = clip the thumbnail, else stuff it
      * @return string, thumbnail path
      * @throws NoThumbnailException if the thumbnail could not be created
      */
@@ -240,7 +240,7 @@ interface BicBucStriimRepository
 
     /**
      * Return author links releated to this Calibre entitiy.
-     * @param OODBeans $calibreThing
+     * @param OODBBean $calibreThing
      * @return array    all available author links
      */
     public function getLinks($calibreThing);
@@ -254,49 +254,49 @@ interface BicBucStriimRepository
 
     /**
      * Add a link for an author.
-     * @param int        authorId    Calibre ID for author
-     * @param string    authorName    Calibre name for author
-     * @param string    label        link label
-     * @param string    url        link url
+     * @param int       $authorId    Calibre ID for author
+     * @param string    $authorName    Calibre name for author
+     * @param string    $label        link label
+     * @param string    $url        link url
      * @return object    created author link
      */
     public function addAuthorLink($authorId, $authorName, $label, $url);
 
     /**
      * Delete a link from the collection defined for an author.
-     * @param int    authorId    Calibre ID for author
-     * @param int    linkId        ID of the author link
+     * @param int    $authorId    Calibre ID for author
+     * @param int    $linkId        ID of the author link
      * @return boolean            true if the link was deleted, else false
      */
     public function deleteAuthorLink($authorId, $linkId);
 
     /**
      * Return the author note text related to this Calibre entitiy.
-     * @param OODBean $calibreThing
-     * @return string    text or null
+     * @param OODBBean $calibreThing
+     * @return ?object    text or null
      */
     public function getFirstNote($calibreThing);
 
     /**
      * Get the note text fro an author.
-     * @param int    authorId    Calibre ID of the author
-     * @return        string        note text or null
+     * @param int    $authorId    Calibre ID of the author
+     * @return ?object        note text or null
      */
     public function authorNote($authorId);
 
     /**
      * Set the note text for an author.
-     * @param int        authorId    Calibre ID for author
-     * @param string    authorName    Calibre name for author
-     * @param string    mime        mime type for the note's content
-     * @param string    noteText    note content
-     * @return object    created/edited note
+     * @param int       $authorId    Calibre ID for author
+     * @param string    $authorName  Calibre name for author
+     * @param string    $mime        mime type for the note's content
+     * @param string    $noteText    note content
+     * @return object   created/edited note
      */
     public function editAuthorNote($authorId, $authorName, $mime, $noteText);
 
     /**
      * Delete the note for an author
-     * @param int    authorId    Calibre ID for author
+     * @param int    $authorId    Calibre ID for author
      * @return boolean            true if the note was deleted, else false
      */
     public function deleteAuthorNote($authorId);

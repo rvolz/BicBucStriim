@@ -65,7 +65,7 @@ class Configuration implements ArrayAccess
                     $this->logger->debug("configuring value {$cs->val} for {$cs->name}");
                     $this->config[$cs->name] = $cs->val;
                 } else {
-                    $this->logger->warn("ignoring unknown configuration, name: {$cs->name}, value: {$cs->val}");
+                    $this->logger->warning("ignoring unknown configuration, name: {$cs->name}, value: {$cs->val}");
                 }
             }
         } else {
@@ -112,10 +112,10 @@ class Configuration implements ArrayAccess
      * @param mixed $offset <p>
      * The offset to retrieve.
      * </p>
-     * @return mixed Can return all value types.
+     * @return string|int|null Can return all value types.
      * @since 5.0.0
      */
-    public function offsetGet($offset)
+    public function offsetGet($offset): string|int|null
     {
         return $this->config[$offset] ?? null;
     }
@@ -132,7 +132,7 @@ class Configuration implements ArrayAccess
      * @return void
      * @since 5.0.0
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         if (is_null($offset)) {
             $this->config[] = $value;
@@ -150,7 +150,7 @@ class Configuration implements ArrayAccess
      * @return void
      * @since 5.0.0
      */
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         unset($this->config[$offset]);
     }

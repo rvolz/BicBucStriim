@@ -16,8 +16,9 @@ class ViewOpdsTagNames4Initial extends CalibreOpdsAction
     {
         $initial = $this->resolveArg('initial');
         if (!(ctype_upper($initial))) {
-            $this->logger->warning('opdsByTagNamesForInitial: invalid initial ' . $initial);
-            throw new DomainRecordNotFoundException($this->request);
+            $msg = 'opdsByTagNamesForInitial: invalid initial ' . $initial;
+            $this->logger->warning($msg);
+            throw new DomainRecordNotFoundException($msg);
         }
 
         $tags = $this->calibre->tagsNamesForInitial($initial);

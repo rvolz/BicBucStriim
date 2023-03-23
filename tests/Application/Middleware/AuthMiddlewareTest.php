@@ -10,13 +10,20 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Tests\TestCase as Own_TestCase;
+use App\Domain\BicBucStriim\BicBucStriim;
 use App\Application\Middleware\AuthMiddleware;
+
+// @todo get rid of this
+if (!defined('BBS_BASE_PATH')) {
+    define('BBS_BASE_PATH', '');
+}
 
 class AuthMiddlewareTest extends Own_TestCase
 {
     public const DB2 = __DIR__ . '/../../fixtures/data2.db';
     public const DATA = __DIR__ . '/../twork/data';
     public const DATADB = __DIR__ . '/../twork/data/data.db';
+    public $bbs;
 
     public static function setUpBeforeClass(): void
     {
@@ -34,6 +41,7 @@ class AuthMiddlewareTest extends Own_TestCase
         }
         mkdir(self::DATA, 0777, true);
         copy(self::DB2, self::DATADB);
+        $this->bbs = new BicBucStriim(self::DATADB, false);
     }
 
     protected function tearDown(): void
@@ -65,9 +73,9 @@ class AuthMiddlewareTest extends Own_TestCase
     public function test_checkRequest4Auth()
     {
         $logger = new Logger("test");
-        $pdo = new \PDO('sqlite:'.self::DATADB);
+        //$pdo = new \PDO('sqlite:'.self::DATADB);
         $container = new Container();
-        $instance = new AuthMiddleware($logger, $pdo, $container);
+        $instance = new AuthMiddleware($logger, $this->bbs, $container);
         $request = $this->createRequest("GET", "/", ['PHP_AUTH_USER' => 'user', 'PHP_AUTH_PW' => 'password'], [], []);
         $ad = $instance->checkRequest4Auth($request);
         $this->assertNotNull($ad);
@@ -86,12 +94,13 @@ class AuthMiddlewareTest extends Own_TestCase
     public function test___invoke1()
     {
         $logger = new Logger("test");
-        $pdo = new \PDO('sqlite:'.self::DATADB);
+        //$pdo = new \PDO('sqlite:'.self::DATADB);
         $container = new Container();
 
-        $instance = new AuthMiddleware($logger, $pdo, $container);
+        $instance = new AuthMiddleware($logger, $this->bbs, $container);
         $request = $this->createRequest("GET", "/", ['PHP_AUTH_USER' => 'user', 'PHP_AUTH_PW' => 'password'], [], []);
         $response = $instance->process($request, $this->createRequestHandler());
+        // @checkme this actually sends a 302 Redirect to /login/
         $this->assertEquals(401, $response->getStatusCode());
         $this->assertEquals('', $response->getBody()->getContents());
     }
@@ -100,9 +109,9 @@ class AuthMiddlewareTest extends Own_TestCase
     {
         $this->markTestSkipped('fails with "session_start(): Cannot start session when headers already sent"');
         $logger = new Logger("test");
-        $pdo = new \PDO('sqlite:'.self::DATADB);
+        //$pdo = new \PDO('sqlite:'.self::DATADB);
         $container = new Container();
-        $instance = new AuthMiddleware($logger, $pdo, $container);
+        $instance = new AuthMiddleware($logger, $this->bbs, $container);
         $request = $this->createRequest("GET", "/", ['PHP_AUTH_USER' => 'admin', 'PHP_AUTH_PW' => 'admin'], [], []);
         $response = $instance->process($request, $this->createRequestHandler());
         $this->assertEquals(200, $response->getStatusCode());

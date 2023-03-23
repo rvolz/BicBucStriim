@@ -109,7 +109,7 @@ class Utilities
      *
      * @param  int $width
      * @param  int $height
-     * @return image
+     * @return object|resource image
      */
     public static function transparentImage($width, $height)
     {

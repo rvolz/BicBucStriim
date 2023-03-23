@@ -9,6 +9,10 @@ use RedBeanPHP\SimpleModel;
 
 class CalibreThing extends SimpleModel
 {
+    public $ownLink;
+    public $ownNote;
+    public $ownArtefact;
+
     /**
      * Return author links releated to this Calibre entitiy.
      * @return array 	all available author links

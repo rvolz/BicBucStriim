@@ -301,7 +301,7 @@ class BicBucStriimTest extends TestCase
         $note = $this->bbs->editAuthorNote(1, 'Author 2', 'text/markdown', '*Hello again!*');
         $this->assertEquals('text/markdown', $note->mime);
         $this->assertEquals('*Hello again!*', $note->ntext);
-        $this->assertTrue($this->bbs->deleteAuthorNote(1, 2));
+        $this->assertTrue($this->bbs->deleteAuthorNote(1));
         $this->assertEquals(1, R::count('note'));
     }
 

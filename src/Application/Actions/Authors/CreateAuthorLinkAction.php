@@ -32,7 +32,7 @@ class CreateAuthorLinkAction extends AuthorsAction
         $link_data = $this->request->getParsedBody();
         $this->logger->debug('CreateAuthorLinkAction: ' . var_export($link_data, true));
         $ret = $this->bbs->addAuthorLink($id, $author->name, $link_data['label'], $link_data['url']);
-        if (ret) {
+        if ($ret) {
             $ap = new ActionPayload(200, [
                 'msg' => $this->getMessageString('admin_modified'),
             ]);

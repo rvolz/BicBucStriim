@@ -53,7 +53,7 @@ class BicBucStriim implements BicBucStriimRepository
         $this->authors_dir = $this->data_dir . '/thumbnails/authors';
         if (file_exists($rp) && is_writeable($rp)) {
             $this->mydb = new PDO('sqlite:' . $rp, null, null, []);
-            $this->mydb->setAttribute(1002, 'SET NAMES utf8');
+            //$this->mydb->setAttribute(1002, 'SET NAMES utf8');
             $this->mydb->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $this->mydb->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
             $this->last_error = $this->mydb->errorCode();
@@ -609,11 +609,11 @@ class BicBucStriim implements BicBucStriimRepository
 
     /**
      * Create a square thumbnail by clipping the largest possible square from the cover
-     * @param  string    cover        path to input image
-     * @param  bool    png        true if the input is a PNG file, false = JPEG
-     * @param  int        newwidth    required thumbnail width
-     * @param  int        newheight    required thumbnail height
-     * @param  string    thumb_path    path for thumbnail storage
+     * @param  string  $cover        path to input image
+     * @param  bool    $png        true if the input is a PNG file, false = JPEG
+     * @param  int     $newwidth    required thumbnail width
+     * @param  int     $newheight    required thumbnail height
+     * @param  string  $thumb_path    path for thumbnail storage
      * @return bool                true = thumbnail created, else false
      */
     private function thumbnailClipped($cover, $png, $newwidth, $newheight, $thumb_path): bool
@@ -637,11 +637,11 @@ class BicBucStriim implements BicBucStriimRepository
 
     /**
      * Create a square thumbnail by stuffing the cover at the edges
-     * @param  string    cover        path to input image
-     * @param  bool    png        true if the input is a PNG file, false = JPEG
-     * @param  int        newwidth    required thumbnail width
-     * @param  int        newheight    required thumbnail height
-     * @param  string    thumb_path    path for thumbnail storage
+     * @param  string  $cover        path to input image
+     * @param  bool    $png        true if the input is a PNG file, false = JPEG
+     * @param  int     $newwidth    required thumbnail width
+     * @param  int     $newheight    required thumbnail height
+     * @param  string  $thumb_path    path for thumbnail storage
      * @return bool                true = thumbnail created, else false
      */
     private function thumbnailStuffed($cover, $png, $newwidth, $newheight, $thumb_path): bool
@@ -680,7 +680,7 @@ class BicBucStriim implements BicBucStriimRepository
      *
      * @param int $width
      * @param int $height
-     * @return resource
+     * @return object|resource
      */
     private function transparentImage(int $width, int $height)
     {

@@ -29,6 +29,7 @@ use App\Domain\Calibre\SeriesBook;
 use App\Domain\Calibre\Tag;
 use App\Domain\Calibre\TagBook;
 use App\Domain\Calibre\Utilities;
+use Exception;
 use PDO;
 use Locale;
 use AnyAscii;
@@ -79,7 +80,7 @@ class Calibre implements CalibreRepository
             if (file_exists($rp) && is_readable($rp)) {
                 $this->calibre_last_modified = filemtime($rp) ? filemtime($rp) : 0;
                 $this->calibre = new PDO('sqlite:' . $rp, null, null, []);
-                $this->calibre->setAttribute(1002, 'SET NAMES utf8');
+                //$this->calibre->setAttribute(1002, 'SET NAMES utf8');
                 $this->calibre->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
                 $this->calibre->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
                 $this->last_error = $this->calibre->errorCode();
@@ -116,9 +117,9 @@ class Calibre implements CalibreRepository
      * Execute a query $sql on the Calibre DB and return the result
      * as an array of objects of class $class
      *
-     * @param  [type] $class [description]
-     * @param  [type] $sql   [description]
-     * @return [type]        [description]
+     * @param  mixed $class [description]
+     * @param  string $sql   [description]
+     * @return array        [description]
      * @deprecated
      */
     protected function find($class, $sql)
@@ -215,13 +216,13 @@ class Calibre implements CalibreRepository
      * If $search is defined it is used to filter the titles, ignoring case.
      * Return an array with elements: current page, no. of pages, $length entries
      *
-     * @param  integer          searchType      index of search type to use, see CalibreSearchType
-     * @param  integer          index           page index
-     * @param  integer          length          length of page
-     * @param  CalibreFilter    filter          filter expression
-     * @param  string           search=null     search pattern for sort/name fields
-     * @param  integer          id=null         optional author/tag/series ID
-     * @param  bool             translit=false  set to true to use transliteration
+     * @param  integer          $searchType      index of search type to use, see CalibreSearchType
+     * @param  integer          $index           page index
+     * @param  integer          $length          length of page
+     * @param  CalibreFilter    $filter          filter expression
+     * @param  string           $search=null     search pattern for sort/name fields
+     * @param  integer          $id=null         optional author/tag/series ID
+     * @param  bool             $translit=false  set to true to use transliteration
      * @return array                            an array with current page (key 'page'),
      *                                          number of pages (key 'pages'),
      *                                          an array of $class instances (key 'entries') or NULL
@@ -324,6 +325,8 @@ class Calibre implements CalibreRepository
                 $count = $this->mkBooksCount($queryFilter, $searching);
                 $query = $this->mkBooksQuery($searchType, false, $queryFilter, $searching);
                 break;
+            default:
+                throw new Exception('Invalid search type');
         }
         $query = $query . ' limit :length offset :offset';
         $no_entries = $this->count($count, $countParams);
@@ -342,9 +345,9 @@ class Calibre implements CalibreRepository
 
     /**
      * Generate a SQL query for selecting books ordered by various fields
-     * @param CalibreSearchType $searchType
+     * @param integer $searchType CalibreSearchType
      * @param boolean $sortAscending ASC, result should be sorted ASC or DESC?
-     * @param CalibreFilter $queryFilter
+     * @param string $queryFilter CalibreFilter
      * @param ?string $search optional search string
      * @param bool $translit if true use transliteration for search term
      * @return string                               SQL query
@@ -364,6 +367,8 @@ class Calibre implements CalibreRepository
             case CalibreSearchType::LastModifiedOrderedBook:
                 $sortField = 'last_modified';
                 break;
+            default:
+                throw new Exception('Invalid search type');
         }
         if ($sortAscending) {
             $sortModifier = " ASC";
@@ -376,7 +381,7 @@ class Calibre implements CalibreRepository
             } else {
                 $where = 'lower(title) LIKE :search_l OR lower(title) LIKE :search_t';
             }
-            $query = 'SELECT * FROM ' . $queryFilter . " WHERE ${where} ORDER BY " . $sortField . ' ' . $sortModifier;
+            $query = 'SELECT * FROM ' . $queryFilter . " WHERE {$where} ORDER BY " . $sortField . ' ' . $sortModifier;
         } else {
             $query = 'SELECT * FROM ' . $queryFilter . ' ORDER BY ' . $sortField . ' ' . $sortModifier;
         }

@@ -8,11 +8,11 @@ namespace App\Infrastructure;
 class UrlInfo
 {
     /**
-     * @var $protocol - protocol used for access, default 'http'
+     * @var string $protocol - protocol used for access, default 'http'
      */
     public $protocol = 'http';
     /**
-     * @var $host - hostname or ip address used for access
+     * @var string $host - hostname or ip address used for access
      */
     public $host;
 
