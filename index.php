@@ -5,6 +5,7 @@
  * Copyright 2012-2016 Rainer Volz
  * Licensed under MIT License, see LICENSE
  *
+ * @deprecated 2.0.0 to be removed
  */
 
 require 'vendor/autoload.php';

@@ -104,7 +104,7 @@ class EPub
      *      'Simpson, Jacqeline' => 'Jacqueline Simpson',
      * )
      *
-     * @params array $authors
+     * @param string|array|false $authors
      */
     public function Authors($authors=false)
     {

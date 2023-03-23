@@ -201,12 +201,12 @@ parameters:
 			path: src/Domain/Opds/OpdsGenerator.php
 
 		-
-			message: "#^Cannot access property \\$languages on array\\.$#"
+			message: "#^Access to private property App\\\\Domain\\\\User\\\\User\\:\\:\\$languages\\.$#"
 			count: 1
 			path: src/helpers.php
 
 		-
-			message: "#^Cannot access property \\$tags on array\\.$#"
+			message: "#^Access to private property App\\\\Domain\\\\User\\\\User\\:\\:\\$tags\\.$#"
 			count: 1
 			path: src/helpers.php
 
