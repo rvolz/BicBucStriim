@@ -15,3 +15,4 @@ worklib
 /.phpunit.result.cache
 vendor
 .env
+.vscode/
