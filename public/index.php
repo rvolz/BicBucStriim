@@ -12,6 +12,8 @@ use Slim\Factory\AppFactory;
 use Slim\Factory\ServerRequestCreatorFactory;
 use Slim\ResponseEmitter;
 
+ini_set('session.gc_maxlifetime', 3600);
+
 // Load a .env file if available in the public directory.
 // Note: existing environment variables will not be overwritten by this call
 $dotenv = Dotenv::createImmutable(__DIR__);
@@ -38,7 +40,7 @@ $settings = require __DIR__ . '/../app/settings.php';
 $settings($containerBuilder);
 
 /** @var bool $debugMode */
-$debugMode = $_ENV['BBS_DEBUG_MODE'];
+$debugMode = $_ENV['BBS_DEBUG_MODE'] ?? false;
 if (!$debugMode) {
     $containerBuilder->enableCompilation(__DIR__ . '/../var/cache');
 }
@@ -61,8 +63,6 @@ $basePath = $container->get('settings')['basePath'];
 AppFactory::setContainer($container);
 $app = AppFactory::create();
 
-// @todo replace with basePath in app settings
-$basePath = BBS_BASE_PATH;
 $app->setBasePath($basePath);
 
 $callableResolver = $app->getCallableResolver();

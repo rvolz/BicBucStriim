@@ -16,7 +16,7 @@ abstract class CalibreHtmlAction extends RenderHtmlAction
     /**
      * @var CalibreRepository
      */
-    protected CalibreRepository $calibre;
+    protected ?CalibreRepository $calibre;
 
     /**
      * @param LoggerInterface $logger
@@ -29,7 +29,7 @@ abstract class CalibreHtmlAction extends RenderHtmlAction
     public function __construct(
         LoggerInterface $logger,
         BicBucStriimRepository $bbs,
-        CalibreRepository $calibre,
+        ?CalibreRepository $calibre,
         Configuration $config,
         Twig $twig,
         L10n $l10n

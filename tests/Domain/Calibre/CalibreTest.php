@@ -480,13 +480,13 @@ class CalibreTest extends TestCase
         $this->assertEquals("WHERE lower(title) LIKE '%search_'", $result, 'case insensitive search option not properly transformed');
     }
 
-    public function testTitleInitials()
+    public function testTitlesInitials()
     {
-        $result = $this->calibre->titleInitials(SearchOptions::genEmpty());
+        $result = $this->calibre->titlesInitials(SearchOptions::genEmpty());
         $this->assertCount(6, $result);
         $this->assertEquals('G', $result[0]->initial);
         $this->assertEquals(1, $result[0]->ctr);
-        $result = $this->calibre->titleInitials(new SearchOptions('*Spring*', false, false));
+        $result = $this->calibre->titlesInitials(new SearchOptions('*Spring*', false, false));
         $this->assertCount(1, $result);
         $this->assertEquals('S', $result[0]->initial);
         $this->assertEquals(1, $result[0]->ctr);

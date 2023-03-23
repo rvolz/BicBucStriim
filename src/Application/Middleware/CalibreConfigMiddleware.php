@@ -12,6 +12,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\MiddlewareInterface as Middleware;
 use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
+use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 use GuzzleHttp\Psr7\Response;
 use Slim\Exception\HttpBadRequestException;
@@ -37,6 +38,7 @@ class CalibreConfigMiddleware implements Middleware
      * @var Configuration
      */
     protected Configuration $config;
+    private string $basePath;
 
     /**
      * Create the instance.
@@ -44,12 +46,15 @@ class CalibreConfigMiddleware implements Middleware
      * @param LoggerInterface $logger Logger
      * @param CalibreRepository|null $calibre Calibre instance
      * @param Configuration $config App configuration
+     * @param ContainerInterface $container
      */
-    public function __construct(LoggerInterface $logger, ?CalibreRepository $calibre, Configuration $config)
+    public function __construct(LoggerInterface $logger, ?CalibreRepository $calibre, Configuration $config, ContainerInterface $container)
     {
         $this->logger = $logger;
         $this->calibre = $calibre;
         $this->config = $config;
+        $settings = $container->get('settings');
+        $this->basePath = $settings['basePath'];
     }
 
     /**
@@ -61,8 +66,8 @@ class CalibreConfigMiddleware implements Middleware
     {
         // TODO check if we have to subtract a base path here
         $path = $request->getUri()->getPath();
-        if (!empty(BBS_BASE_PATH)) {
-            $path = str_replace(BBS_BASE_PATH, '', $path);
+        if (!empty($this->basePath)) {
+            $path = str_replace($this->basePath, '', $path);
         }
         // TODO Move exception path configuration to settings
         if (substr_compare($path, '/login', 0, 6) == 0 ||
@@ -102,7 +107,7 @@ class CalibreConfigMiddleware implements Middleware
                 throw new HttpBadRequestException($r, $msg);
             } else {
                 $this->logger->debug("AuthMiddleware::answer: HTML request %s", [$msg]);
-                return new Response(302, ['Location' => BBS_BASE_PATH . '/admin/configuration/'], null, '1.1', $msg);
+                return new Response(302, ['Location' => $this->basePath . '/admin/configuration/'], null, '1.1', $msg);
             }
         } else {
             $this->logger->debug("CalibreConfigMiddleware::answer: api request %s", [$msg]);

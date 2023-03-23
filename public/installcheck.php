@@ -8,7 +8,7 @@ require __DIR__ . '/../vendor/autoload.php';
 require __DIR__ . '/../src/Infrastructure/InstUtils.php';
 require __DIR__ . '/../src/Application/Version.php';
 
-$loader = new FilesystemLoader(__DIR__ . '/../app/templates');
+$loader = new FilesystemLoader(__DIR__ . '/../templates');
 $twig = new Environment($loader, [ 'cache' => __DIR__ . '/../var/cache']);
 
 function check_php_version(int $version): bool

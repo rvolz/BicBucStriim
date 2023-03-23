@@ -127,6 +127,7 @@ class EPub
             }
 
             // add new nodes
+            /** @var EPubDOMElement $parent */
             $parent = $this->xpath->query('//opf:metadata')->item(0);
             foreach ($authors as $as => $name) {
                 if (is_int($as)) {
@@ -326,12 +327,14 @@ class EPub
 
             if ($path) {
                 // add pointer
+                /** @var EPubDOMElement $parent */
                 $parent = $this->xpath->query('//opf:metadata')->item(0);
                 $node = $parent->newChild('opf:meta');
                 $node->attr('opf:name', 'cover');
                 $node->attr('opf:content', 'php-epub-meta-cover');
 
                 // add manifest
+                /** @var EPubDOMElement $parent */
                 $parent = $this->xpath->query('//opf:manifest')->item(0);
                 $node = $parent->newChild('opf:item');
                 $node->attr('id', 'php-epub-meta-cover');

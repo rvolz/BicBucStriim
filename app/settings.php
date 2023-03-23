@@ -33,7 +33,7 @@ return function (ContainerBuilder $containerBuilder) {
         $realLogLevel = Logger::DEBUG;
     }
     /** @var int $idleTime; */
-    $idleTime = (int) $_ENV['BBS_IDLE_TIME'];
+    $idleTime = (int) ($_ENV['BBS_IDLE_TIME'] ?? 3600);
 
     // Global Settings Object
     $containerBuilder->addDefinitions([
@@ -42,7 +42,6 @@ return function (ContainerBuilder $containerBuilder) {
             // mode
             'debug' => $debugMode,
 
-            // @todo replace BBS_BASE_PATH from public/bbs-config.php + make configurable via env
             // If not installed at root, enter the path to the installation here
             'basePath' => $basePath,
 

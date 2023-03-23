@@ -109,7 +109,7 @@ interface CalibreRepository
      * @param SearchOptions $searchOptions
      * @return array an array of initials (initial) and corresponding frequency counter (ctr)
      */
-    public function authorsInitials(SearchOptions $searchOptions): array;
+    public function authorsInitials(SearchOptions $searchOptions = null): array;
 
     /**
      * Find all authors with a given initial and return their names and book count
@@ -182,7 +182,7 @@ interface CalibreRepository
      * Find the initials of all tags and their frequencies
      * @return array an array of Items with initial character and tag count
      */
-    public function tagsInitials(SearchOptions $searchOptions);
+    public function tagsInitials(SearchOptions $searchOptions = null);
 
     /**
      * Find all authors with a given initial and return their names and book count
@@ -354,7 +354,7 @@ interface CalibreRepository
      * @param SearchOptions $searchOptions restrict the titles processed
      * @return array an array of initials (initial) and corresponding frequency counter (ctr)
      */
-    public function titlesInitials(SearchOptions $searchOptions): array;
+    public function titlesInitials(SearchOptions $searchOptions = null): array;
 
     /**
      * Find the pub/mod/etc years of titles and their frequency
@@ -432,7 +432,7 @@ interface CalibreRepository
      * Find the initials of all series and their frequencies
      * @return array an array of Items with initial character and series count
      */
-    public function seriesInitials(SearchOptions $searchOptions): array;
+    public function seriesInitials(SearchOptions $searchOptions = null): array;
 
     /**
      * Find all series with a given initial and return their names and book count

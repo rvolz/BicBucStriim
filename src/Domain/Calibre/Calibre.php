@@ -223,9 +223,8 @@ class Calibre implements CalibreRepository
      * @param  integer          $index           page index
      * @param  integer          $length          length of page
      * @param  CalibreFilter    $filter          filter expression
-     * @param  string           $search=null     search pattern for sort/name fields
+     * @param  SearchOptions    $searchOptions=null     search pattern for sort/name fields
      * @param  integer          $id=null         optional author/tag/series ID
-     * @param  bool             $translit=false  set to true to use transliteration
      * @return array                            an array with current page (key 'page'),
      *                                          number of pages (key 'pages'),
      *                                          an array of $class instances (key 'entries') or NULL
@@ -595,7 +594,7 @@ class Calibre implements CalibreRepository
     /**
      * @inheritdoc
      */
-    public function authorsInitials(SearchOptions $searchOptions): array
+    public function authorsInitials(SearchOptions $searchOptions = null): array
     {
         return $this->mkInitialsQuery('authors', 'sort', $searchOptions);
     }
@@ -685,7 +684,7 @@ class Calibre implements CalibreRepository
         return $this->findSliceFiltered(CalibreSearchType::Tag, $index, $length, new CalibreFilter(), $searchOptions, null);
     }
 
-    public function tagsInitials(SearchOptions $searchOptions): array
+    public function tagsInitials(SearchOptions $searchOptions = null): array
     {
         return $this->mkInitialsQuery('tags', 'name', $searchOptions);
     }
@@ -907,7 +906,7 @@ class Calibre implements CalibreRepository
     /**
      * @inheritdoc
      */
-    public function titlesInitials(SearchOptions $searchOptions): array
+    public function titlesInitials(SearchOptions $searchOptions = null): array
     {
         $field = 'sort'; // title or sort?
         return $this->mkInitialsQuery('books', $field, $searchOptions);
@@ -1259,7 +1258,7 @@ class Calibre implements CalibreRepository
         return $this->findSliceFiltered(CalibreSearchType::Series, $index, $length, new CalibreFilter(), $searchOptions, null);
     }
 
-    public function seriesInitials(SearchOptions $searchOptions): array
+    public function seriesInitials(SearchOptions $searchOptions = null): array
     {
         return $this->mkInitialsQuery('series', 'name', $searchOptions);
     }
@@ -1328,7 +1327,7 @@ class Calibre implements CalibreRepository
 
     /**
      * @param int $id
-     * @return object|null
+     * @return ?array
      */
     public function series4Book(int $id): ?array
     {

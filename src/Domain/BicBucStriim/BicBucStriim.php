@@ -78,7 +78,7 @@ class BicBucStriim implements BicBucStriimRepository
     {
         $schema = file(dirname($dataPath) . '/schema.sql');
         $this->mydb = new PDO('sqlite:' . $dataPath, null, null, []);
-        $this->mydb->setAttribute(1002, 'SET NAMES utf8');
+        //$this->mydb->setAttribute(1002, 'SET NAMES utf8');
         $this->mydb->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $this->mydb->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
         for ($i = 0; $i < count($schema); $i++) {
@@ -365,17 +365,17 @@ class BicBucStriim implements BicBucStriimRepository
         }
     }
 
-    public function getAuthorThumbnail($authorId): string
+    public function getAuthorThumbnail($authorId): ?object
     {
         $calibreThing = $this->getCalibreThing(DataConstants::CALIBRE_AUTHOR_TYPE, $authorId);
         if (is_null($calibreThing)) {
-            return '';
+            return null;
         } else {
             $artefact = $this->getFirstArtefact($calibreThing);
             if (is_null($artefact)) {
-                return '';
+                return null;
             } else {
-                return $this->authors_dir . '/' . $artefact->url;
+                return $artefact;
             }
         }
     }

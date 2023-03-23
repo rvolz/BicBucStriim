@@ -37,6 +37,7 @@ class AuthMiddleware implements Middleware
     private ?PDO $pdo;
     private ContainerInterface $container;
     private int $idleTime;
+    private string $basePath;
     private string $jwtKey;
     private string $jwtCookieName;
     private int $jwtDuration;
@@ -58,10 +59,11 @@ class AuthMiddleware implements Middleware
         $settings = $this->container->get('settings');
         $config = $this->container->get(Configuration::class);
         $this->idleTime = $settings['idleTime'];
+        $this->basePath = $settings['basePath'];
         $this->rememberMeEnabled = (bool) $config[AppConstants::REMEMBER_COOKIE_ENABLED];
         $this->jwtKey = (string) $config[AppConstants::REMEMBER_COOKIE_KEY];
         $this->jwtCookieName = $settings['rememberme_cookie_name'];
-        $this->jwtDuration =  24 * 3600 * $config[AppConstants::REMEMBER_COOKIE_DURATION] ;
+        $this->jwtDuration =  24 * 3600 * (int) $config[AppConstants::REMEMBER_COOKIE_DURATION] ;
     }
 
     /**
@@ -77,8 +79,8 @@ class AuthMiddleware implements Middleware
         $this->try_resume($auth_factory, $pdo_adapter, $auth);
         // TODO check if we have to subtract a base path here
         $path = $request->getUri()->getPath();
-        if (!empty(BBS_BASE_PATH)) {
-            $path = str_replace(BBS_BASE_PATH, '', $path);
+        if (!empty($this->basePath)) {
+            $path = str_replace($this->basePath, '', $path);
         }
         if ($auth->isValid()) {
             $ud = $auth->getUserData();
@@ -173,7 +175,7 @@ class AuthMiddleware implements Middleware
 
             return new \GuzzleHttp\Psr7\Response(
                 302,
-                ['Location' => BBS_BASE_PATH . '/login/', 'Turbolinks-Location' => BBS_BASE_PATH . '/login/'],
+                ['Location' => $this->basePath . '/login/', 'Turbolinks-Location' => $this->basePath . '/login/'],
                 null,
                 '1.1',
                 $msg

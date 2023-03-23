@@ -33,7 +33,7 @@ return function (App $app) {
     // TODO Add base path to middlewares for path handling
     $app->getBasePath();
 
-    $app->add(new CalibreConfigMiddleware($logger, $calibre, $config));
+    $app->add(new CalibreConfigMiddleware($logger, $calibre, $config, $app->getContainer()));
     $app->add(new OwnConfigMiddleware($logger, $bbs, $config));
     // TODO Add proxy detection middleware?
     //$app->add(new \RKA\Middleware\ProxyDetection());

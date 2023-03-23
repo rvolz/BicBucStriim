@@ -11,6 +11,7 @@ use App\Domain\BicBucStriim\L10n;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
+use Slim\Routing\RouteContext;
 use Slim\Views\Twig;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
@@ -113,6 +114,10 @@ abstract class RenderHtmlAction extends BasicAction
      */
     public function mkRootUrl(ServerRequestInterface $request, string $basePath, $relativeUrls = true): string
     {
+        $routeContext = RouteContext::fromRequest($request);
+        $basePath = $routeContext->getBasePath();
+        return $basePath;
+        /**
         $uri = $request->getUri();
         if ($relativeUrls) {
             $root = rtrim($basePath, "/");
@@ -120,5 +125,6 @@ abstract class RenderHtmlAction extends BasicAction
             $root = rtrim($basePath . $uri->getPath(), "/");
         }
         return $root;
+         */
     }
 }

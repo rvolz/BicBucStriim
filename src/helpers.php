@@ -294,7 +294,7 @@ function isEMailValid(string $mail): bool
 /**
  * Check if a title is available to the current user
  * @param bool $login_required
- * @param array $user
+ * @param User $user
  * @param array $book_details output of BicBucStriim::title_details()
  * @return  bool      true if the title is not available for the user, else false
  */

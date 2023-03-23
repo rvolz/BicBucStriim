@@ -3,10 +3,8 @@
 namespace Tests\Application\Middleware;
 
 use App\Domain\BicBucStriim\AppConstants;
-use App\Domain\BicBucStriim\BicBucStriim;
 use App\Domain\BicBucStriim\BicBucStriimRepository;
 use App\Domain\BicBucStriim\Configuration;
-use Aura\Auth\AuthFactory;
 use DI\Container;
 use DI\ContainerBuilder;
 use Monolog\Logger;
@@ -15,13 +13,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Tests\TestCase as Own_TestCase;
-use App\Domain\BicBucStriim\BicBucStriim;
 use App\Application\Middleware\AuthMiddleware;
-
-// @todo get rid of this
-if (!defined('BBS_BASE_PATH')) {
-    define('BBS_BASE_PATH', '');
-}
 
 class AuthMiddlewareTest extends Own_TestCase
 {
@@ -54,6 +46,7 @@ class AuthMiddlewareTest extends Own_TestCase
         $cb->addDefinitions([
             'settings' => [
                 'idleTime' => 1440,
+                'basePath' => '',
                 'rememberme_cookie_name' => 'bbs',
             ],
             Configuration::class => [
