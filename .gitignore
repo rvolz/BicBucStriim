@@ -11,3 +11,15 @@ composer.phar
 .kobalt
 node_modules
 *.log
+work
+worklib
+/.phpunit.result.cache
+vendor
+!vendor/rb.php
+!vendor/epub.php
+!vendor/DateTimeFileWriter.php
+.env
+.vscode/
+.yarn/
+.yarnrc.yml
+
