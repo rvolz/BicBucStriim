@@ -1,0 +1,12 @@
+FROM webdevops/php-nginx:8.2-alpine AS build
+COPY . /app
+RUN composer install --no-dev -o -d /app
+# Change database owner and group to uid=1000(application) gid=1000(application)
+RUN chown 1000:1000 /app/data/data.db
+# Running slim/slim 2.x on PHP 8.2 needs php error_reporting set to E_ALL & ~E_DEPRECATED & ~E_STRICT (= production default)
+RUN echo 'error_reporting=E_ALL & ~E_DEPRECATED & ~E_STRICT' >> /opt/docker/etc/php/php.ini
+
+FROM build as dev-envs
+RUN composer update -o -d /app
+#RUN apk --no-cache add nodejs yarn
+#RUN yarn

@@ -1,0 +1,17 @@
+.git/
+assets/
+features/
+scripts/
+tests/
+# keep the test database in the image here
+!tests/fixtures/lib2/
+# remove docker files
+docker/
+docker-compose.yaml
+docker-compose-dev.yaml
+# remove development files
+.vscode/
+.yarn/
+#!.yarn/releases
+#!.yarn/plugins
+.pnp.*

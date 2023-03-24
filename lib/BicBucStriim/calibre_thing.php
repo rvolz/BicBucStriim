@@ -20,7 +20,7 @@ class Model_CalibreThing extends RedBean_SimpleModel
      */
     public function getAuthorLinks()
     {
-        return array_values(array_filter($this->ownLink, function ($link) {
+        return array_values(array_filter($this->ownLink ?? [], function ($link) {
             return($link->ltype == DataConstants::AUTHOR_LINK);
         }));
     }
@@ -31,7 +31,7 @@ class Model_CalibreThing extends RedBean_SimpleModel
      */
     public function getAuthorNote()
     {
-        $notes = array_values(array_filter($this->ownNote, function ($note) {
+        $notes = array_values(array_filter($this->ownNote ?? [], function ($note) {
             return($note->ntype == DataConstants::AUTHOR_NOTE);
         }));
         if (empty($notes)) {
@@ -47,7 +47,7 @@ class Model_CalibreThing extends RedBean_SimpleModel
      */
     public function getAuthorThumbnail()
     {
-        $artefacts = array_values(array_filter($this->ownArtefact, function ($artefact) {
+        $artefacts = array_values(array_filter($this->ownArtefact ?? [], function ($artefact) {
             return($artefact->atype == DataConstants::AUTHOR_THUMBNAIL_ARTEFACT);
         }));
         if (empty($artefacts)) {
