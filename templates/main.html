@@ -26,13 +26,14 @@
     <link rel="icon" href="{{page.rot}}/favicon.ico" type="image/x-icon">
     <link rel="apple-touch-icon" href="{{page.rot}}/bbs-icon.png">
     <script src="{{page.rot}}/js/libs/modernizr-2.6.2-custom.min.js"></script>
+	<script src="{{page.rot}}/js/libs/cssua.min.js"></script>
 </head>
 <body>
 <!--[if lt IE 7]><p class=chromeframe>Your browser is <em>ancient!</em> <a href="http://browsehappy.com/">Upgrade to a
     different browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a>
     to experience this site.</p><![endif]-->
 
-<div data-role="page" data-title="{{ page.title }}" {% block pid %}{% endblock %}>
+<div data-role="page" data-title="{% if subsubtitle %}{{subsubtitle}} - {% endif %}{{ page.title }}" {% block pid %}{% endblock %}>
 
     <div data-role="header" data-position="fixed">
         {% block leftpanel %}{% endblock %}
@@ -90,6 +91,9 @@
     <div data-role="content">
         {% block content %}{% endblock %}
     </div>
+        {% if page.dialog==false %}
+        {% include "paginate.html" %}
+        {% endif %}
     <div data-role="footer" class="footer">
         {% include "footer.html" %}
     </div>

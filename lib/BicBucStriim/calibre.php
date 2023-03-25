@@ -457,13 +457,21 @@ class Calibre
      */
     protected function addBookDetails($lang, $books)
     {
+		$prettyfmtnames=array(
+			"MOBI"=>"Mobi",
+			"EPUB"=>"ePub",
+			"TXT"=>"Text",
+			/*"LIT"=>"Lit",*/
+			"ZIP"=>"Zip",
+		);
         foreach ((array)$books as $book) {
             $fmts = $this->titleGetFormats($book->id);
             $fmtnames = [];
             foreach ($fmts as $format) {
-                array_push($fmtnames, $format->format);
+                array_push($fmtnames, isset($prettyfmtnames[$format->format]) ? $prettyfmtnames[$format->format] : $format->format);
+				/* array_push($fmtnames, $format->format); */
             }
-            $book->formats = join(',', $fmtnames);
+            $book->formats = join(', ', $fmtnames);
         }
         if (extension_loaded('intl')) {
             foreach ($books as $book) {

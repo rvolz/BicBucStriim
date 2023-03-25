@@ -7,9 +7,11 @@
 		{% endif %}
 		
 		<h3>
-			{% if series %}{{book.series_index}} - {% endif %}
-			{{ book.sort }} ({{ book.pubdate|date("Y") }})
+			{{ book.title }}
+			{% if book.series %}
+				({% if not series_detail_view %}{{book.series.name}}, {% endif %}#{{book.series_index | round(1) }})
+			{% endif %}
 		</h3>
-		<p>{{book.author_sort}} {{book.addInfo}}</p>
+		<p>{{book.author_sort}}, {{book.pubdate|date("Y")}} {{book.addInfo}}</p>
 	</a>
 </li>

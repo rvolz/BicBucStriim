@@ -1,1 +1,155 @@
 body{padding-top:60px;padding-bottom:40px}#passwordform #pw_dlg_status{text-align:center;background-color:orange;font-size:large;display:none}.title_detail header h1{margin-top:2px;margin-bottom:2px}.title_detail header p{margin-top:2px;margin-bottom:2px}.title_detail .title_detail_image{width:40%;float:left}.title_detail .title_detail_image img{max-width:90%}.title_detail .title_details{width:55%;float:right;padding-left:1%}.author-thmb-breakpoint.ui-grid-a .ui-block-a{width:200px}section.author-detail-row header{min-height:70px}section.author-detail-row header a#author_edit{float:right}section.author-detail-row header div#author-metadata{margin-top:10px;margin-bottom:10px}table#custom_columns_table tbody th{border-bottom:1px dotted gray;border-right:1px dotted gray;text-align:right;vertical-align:top;padding:10px}table#custom_columns_table td{border-bottom:1px dotted gray;padding:10px}div.footer p{text-align:center;font-size:80%}fieldset p{font-size:80%}div#flash{color:white}div#flash p{padding:5px}div#flash .success{background-color:green}div#flash .error{background-color:red}div.filler{margin-bottom:20px}@media (max-width:768px){.title_detail .title_detail_image{float:none;margin-left:auto;margin-right:auto}.title_detail .title_detail_image img{display:block}.title_detail .title_details{margin-left:auto;margin-right:auto;width:100%;float:none}.author-thmb-breakpoint.ui-grid-a .ui-block-a{width:100%}.author-thmb-breakpoint.ui-grid-a .ui-block-b{width:100%}}
+
+/* for normal desktop web browsers */
+@media (min-width: 981px) {
+
+.ui-listview > li.ui-li-has-thumb a {
+	height: 7em;
+}
+
+.ui-listview > li.ui-li-has-thumb img {
+	height: 8em;
+}
+
+
+.ui-listview .ui-li-has-thumb>img:first-child,
+.ui-listview .ui-li-has-thumb>.ui-btn>img:first-child,
+.ui-listview .ui-li-has-thumb .ui-li-thumb {
+    top: 0.25em;
+    left: -1em;
+	max-height: 8em;
+    max-width: 8em;
+}
+
+.ui-li-count {
+	font-size: inherit;
+}
+
+.ui-listview > li h1,
+.ui-listview > li h2,
+.ui-listview > li h3,
+.ui-listview > li h4,
+.ui-listview > li h5,
+.ui-listview > li h6
+{
+    white-space: normal;
+}
+
+
+} /* end @media 981px */
+
+/*
+.title_detail .title_detail_image {
+	width: 40%;
+	max-width: 300px;
+}
+*/
+
+/* makes it usable on Kindle experimental browser */
+@media (min-width: 981px) and (max-width: 1072px) {
+
+body, input, select, textarea, button, .ui-btn {
+    font-size: 1.2em;
+    line-height: 1.35;
+}
+
+.ui-page-theme-a,
+.ui-page-theme-a .ui-btn,
+.ui-page-theme-a .ui-btn:hover,
+.ui-page-theme-a .ui-btn:visited,
+.ui-page-theme-a a,
+.ui-page-theme-a a:visited,
+.ui-page-theme-a a:hover
+{
+	color: #000;
+	background-color: #fff;
+	border-color: #000;
+}
+
+.ui-btn-icon-top:after,
+.ui-btn-icon-left:after,
+.ui-btn-icon-right:after,
+.ui-btn-icon-bottom:after,
+.ui-btn-icon-notext:after
+{
+	background-color: #222;
+}
+
+.ui-header .ui-btn.ui-btn-b,
+.ui-header .ui-btn.ui-btn-b:visited
+{
+	font-size: 2em;
+	background-color: #999;
+	color: #000;
+	text-shadow: 0 1px 0 #eee;
+}
+
+.ui-header .ui-btn-icon-notext::after {
+	width: 50px;
+	height: 50px;
+	background-size: 30px;
+	margin-left: -26px;
+	margin-top: -26px;
+}
+
+.ui-content>h2+ul li {
+	display: inline;
+}
+
+.ui-content>h2+ul li::after {
+	content: ", ";
+}
+
+.ui-content>h2+ul li:last-child::after {
+	content: ".";
+}
+
+.ui-btn-icon-top {
+    padding-top: 2.5em;
+}
+.ui-navbar li .ui-btn {
+    font-size: inherit;
+}
+/*.ui-btn-icon-top::after {
+    width: 40px;
+    height: 22px;
+}*/
+.ui-btn-icon-top::after,
+.ui-btn-icon-left::after {
+    width: 40px;
+    height: 40px;
+    background-size: 25px;
+}
+.ui-btn-icon-top:after {
+	margin-left: -21px;
+}
+.ui-btn-icon-left:after  {
+	margin-top: -21px;
+}
+.ui-icon-home::after {
+    width: 40px;
+    height: 40px;
+}
+
+/* high contrast stuff */
+/*
+.ui-btn,
+.ui-btn:hover,
+.ui-btn:visited {
+	border-color: #000;
+	color: #000;
+}
+.ui-btn,
+.ui-btn:hover,
+.ui-btn:visited {
+	border-color: #000;
+	color: #000;
+}
+*/
+.ui-page-theme-a .ui-bar-inherit {
+	border-color: #000;
+	color: #000
+}
+
+} /* end media min 981 max 1072 */
+
