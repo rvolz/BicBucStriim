@@ -132,7 +132,7 @@ $template = $twig->loadTemplate('installcheck.html');
 echo $template->render([
     'page' => [
         'rot' => '',
-        'version' => '1.5.3',
+        'version' => '1.6.4',
     ],
     'is_a' => $is_a,
     'srv' => $srv,

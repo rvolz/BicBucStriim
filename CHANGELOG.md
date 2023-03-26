@@ -4,8 +4,30 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.6.4] - 2023-03-26
+### Added
+- Added placeholders in data/titles and data/authors
 ## Changed
+- Adapted Dockerfile for permissions
+- Updated version and changelog
+
+## [1.6.3] - 2023-03-25
+### Added
+- Added docker files
+
+## [1.6.2] - 2023-03-22
+## Changed
+- Added fixes for PHP 8.2
+
+## [1.6.1] - 2023-03-20
+## Changed
+- Run php-cs-fixer with PHP80Migration rule
+
+## [1.6.0] - 2023-03-20
+### Added
+- Added deprecated.php file for get_magic_quotes_gpc()
+## Changed
+- Updated package versions in composer.json
 - Replaced JS packaging library with PHP version due to packaging error, #369
 
 ## [1.5.3] - 2021-07-01

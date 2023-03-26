@@ -1,5 +1,6 @@
 services:
   dev:
+    image: mikespub/rvolz-bicbucstriim:dev
     build:
       context: . 
       dockerfile: docker/Dockerfile.php82
