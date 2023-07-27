@@ -10,48 +10,50 @@ use PHPUnit\Framework\TestCase;
 
 class CalibreTest extends TestCase
 {
-    const CDB1 = __DIR__ . '/../../fixtures/metadata_empty.db';
-    const CDB2 = __DIR__ . '/../../fixtures/lib2/metadata.db';
-    const CDB3 = __DIR__ . '/../../fixtures/lib3/metadata.db';
+    public const CDB1 = __DIR__ . '/../../fixtures/metadata_empty.db';
+    public const CDB2 = __DIR__ . '/../../fixtures/lib2/metadata.db';
+    public const CDB3 = __DIR__ . '/../../fixtures/lib3/metadata.db';
 
-    var Calibre $calibre;
+    public Calibre $calibre;
 
-    function setUp(): void
+    public function setUp(): void
     {
         $this->calibre = new Calibre(self::CDB2);
     }
 
-    function tearDown(): void
+    public function tearDown(): void
     {
         //$this->calibre = (Calibre) null;
     }
 
-    function testOpenCalibreEmptyDb()
+    public function testOpenCalibreEmptyDb()
     {
         $this->assertEquals(0, $this->calibre->last_error);
         $this->assertTrue($this->calibre->libraryOk());
     }
 
-    function testOpenCalibreNotExistingDb()
+    public function testOpenCalibreNotExistingDb()
     {
         $this->calibre = new Calibre(self::CDB3);
         $this->assertFalse($this->calibre->libraryOk());
         $this->assertEquals(0, $this->calibre->last_error);
     }
 
-    function testGetTagId() {
+    public function testGetTagId()
+    {
         $this->assertEquals(21, $this->calibre->getTagId('Architecture'));
         // Note: Changed!
         //$this->assertNull($this->calibre->getTagId('Nothing'));
         $this->assertEquals(0, $this->calibre->getTagId('Nothing'));
     }
 
-    function testGetLanguageId() {
+    public function testGetLanguageId()
+    {
         $this->assertEquals(3, $this->calibre->getLanguageId('eng'));
         $this->assertNull($this->calibre->getLanguageId('Nothing'));
     }
 
-    function testLibraryStatsEmptyFilter()
+    public function testLibraryStatsEmptyFilter()
     {
         $result = $this->calibre->libraryStats(new CalibreFilter());
         $this->assertEquals(7, $result["titles"]);
@@ -60,25 +62,25 @@ class CalibreTest extends TestCase
         $this->assertEquals(3, $result["series"]);
     }
 
-    function testLibraryStatsLanguageFilter()
+    public function testLibraryStatsLanguageFilter()
     {
-        $result = $this->calibre->libraryStats(new CalibreFilter($lang=3,$tag=null));
+        $result = $this->calibre->libraryStats(new CalibreFilter($lang=3, $tag=null));
         $this->assertEquals(1, $result["titles"]);
         $this->assertEquals(6, $result["authors"]);
         $this->assertEquals(6, $result["tags"]);
         $this->assertEquals(3, $result["series"]);
     }
 
-    function testLibraryStatsLanguageAndTagFilter()
+    public function testLibraryStatsLanguageAndTagFilter()
     {
-        $result = $this->calibre->libraryStats(new CalibreFilter($lang=1,$tag=3));
+        $result = $this->calibre->libraryStats(new CalibreFilter($lang=1, $tag=3));
         $this->assertEquals(1, $result["titles"]);
         $this->assertEquals(6, $result["authors"]);
         $this->assertEquals(6, $result["tags"]);
         $this->assertEquals(3, $result["series"]);
     }
 
-    function testLast30()
+    public function testLast30()
     {
         $result = $this->calibre->last30Books('en', 30, new CalibreFilter());
         $this->assertEquals(0, $this->calibre->last_error);
@@ -100,7 +102,7 @@ class CalibreTest extends TestCase
         $this->assertEquals(1, count($result4));
     }
 
-    function testAuthorsSlice()
+    public function testAuthorsSlice()
     {
         $result0 = $this->calibre->authorsSlice(0, 2);
         $this->assertEquals(0, $this->calibre->last_error);
@@ -121,7 +123,7 @@ class CalibreTest extends TestCase
         $this->assertEquals(3, $no_result['pages']);
     }
 
-    function testAuthorsSliceSearch()
+    public function testAuthorsSliceSearch()
     {
         $result0 = $this->calibre->authorsSlice(0, 2, 'I');
         $this->assertEquals(0, $this->calibre->last_error);
@@ -137,7 +139,7 @@ class CalibreTest extends TestCase
         $this->assertEquals("Paul Heyse", $result4['entries'][0]->name);
     }
 
-    function testAuthorDetailsSlice()
+    public function testAuthorDetailsSlice()
     {
         $result0 = $this->calibre->authorDetailsSlice('en', 6, 0, 1, new CalibreFilter());
         $this->assertEquals(0, $this->calibre->last_error);
@@ -150,7 +152,7 @@ class CalibreTest extends TestCase
         $this->assertEquals(2, $result1['pages']);
     }
 
-    function testAuthorDetailsSliceWithFilter()
+    public function testAuthorDetailsSliceWithFilter()
     {
         $result0 = $this->calibre->authorDetailsSlice('en', 7, 0, 1, new CalibreFilter());
         $this->assertEquals(0, $this->calibre->last_error);
@@ -167,7 +169,7 @@ class CalibreTest extends TestCase
         $this->assertEquals(0, $result2['pages']);
     }
 
-    function testAuthorsInitials()
+    public function testAuthorsInitials()
     {
         $result = $this->calibre->authorsInitials();
         $this->assertEquals(0, $this->calibre->last_error);
@@ -178,7 +180,7 @@ class CalibreTest extends TestCase
         $this->assertEquals(2, $result[4]->ctr);
     }
 
-    function testAuthorsNamesForInitial()
+    public function testAuthorsNamesForInitial()
     {
         $result = $this->calibre->authorsNamesForInitial('R');
         $this->assertEquals(0, $this->calibre->last_error);
@@ -187,7 +189,7 @@ class CalibreTest extends TestCase
         $this->assertEquals('Rilke, Rainer Maria', $result[0]->sort);
     }
 
-    function testTagsSlice()
+    public function testTagsSlice()
     {
         $result0 = $this->calibre->tagsSlice(0, 2);
         $this->assertEquals(0, $this->calibre->last_error);
@@ -208,7 +210,7 @@ class CalibreTest extends TestCase
         $this->assertEquals(3, $no_result['pages']);
     }
 
-    function testTagsSliceSearch()
+    public function testTagsSliceSearch()
     {
         $result0 = $this->calibre->tagsSlice(0, 2, 'I');
         $this->assertEquals(0, $this->calibre->last_error);
@@ -221,7 +223,7 @@ class CalibreTest extends TestCase
         $this->assertEquals(1, count($result3['entries']));
     }
 
-    function testTagDetailsSlice()
+    public function testTagDetailsSlice()
     {
         $result0 = $this->calibre->tagDetailsSlice('en', 3, 0, 1, new CalibreFilter());
         $this->assertEquals(0, $this->calibre->last_error);
@@ -234,7 +236,7 @@ class CalibreTest extends TestCase
         $this->assertEquals(2, $result1['pages']);
     }
 
-    function testTagsInitials()
+    public function testTagsInitials()
     {
         $result = $this->calibre->tagsInitials();
         $this->assertEquals(0, $this->calibre->last_error);
@@ -245,7 +247,7 @@ class CalibreTest extends TestCase
         $this->assertEquals(1, $result[4]->ctr);
     }
 
-    function testTagsNamesForInitial()
+    public function testTagsNamesForInitial()
     {
         $result = $this->calibre->tagsNamesForInitial('B');
         $this->assertEquals(0, $this->calibre->last_error);
@@ -254,7 +256,7 @@ class CalibreTest extends TestCase
         $this->assertEquals('Belletristik & Literatur', $result[0]->name);
     }
 
-    function testTimestampOrderedTitlesSlice()
+    public function testTimestampOrderedTitlesSlice()
     {
         $result0 = $this->calibre->timestampOrderedTitlesSlice('en', 0, 2, new CalibreFilter());
         $this->assertEquals(0, $this->calibre->last_error);
@@ -294,7 +296,7 @@ class CalibreTest extends TestCase
         $this->assertEquals(1, $result0['pages']);
     }
 
-    function testPubdateOrderedTitlesSlice()
+    public function testPubdateOrderedTitlesSlice()
     {
         $result0 = $this->calibre->pubdateOrderedTitlesSlice('en', 0, 2, new CalibreFilter());
         $this->assertEquals(0, $this->calibre->last_error);
@@ -310,7 +312,7 @@ class CalibreTest extends TestCase
         $this->assertEquals(5, $result1['entries'][0]->id);
     }
 
-    function testLastmodifiedOrderedTitlesSlice()
+    public function testLastmodifiedOrderedTitlesSlice()
     {
         $result0 = $this->calibre->lastmodifiedOrderedTitlesSlice('en', 0, 2, new CalibreFilter());
         $this->assertEquals(0, $this->calibre->last_error);
@@ -327,7 +329,7 @@ class CalibreTest extends TestCase
         $this->assertEquals(1, $result1['entries'][1]->id);
     }
 
-    function testTitlesSlice()
+    public function testTitlesSlice()
     {
         $result0 = $this->calibre->titlesSlice('en', 0, 2, new CalibreFilter());
         $this->assertEquals(0, $this->calibre->last_error);
@@ -362,15 +364,15 @@ class CalibreTest extends TestCase
         $this->assertEquals(1, $result0['pages']);
     }
 
-    function testCount()
+    public function testCount()
     {
         $count = 'select count(*) from books where lower(title) like :search';
-        $params = array('search' => '%i%');
+        $params = ['search' => '%i%'];
         $result = $this->calibre->count($count, $params);
         $this->assertEquals(6, $result);
     }
 
-    function testTitlesSliceSearch()
+    public function testTitlesSliceSearch()
     {
         $result0 = $this->calibre->titlesSlice('en', 0, 2, new CalibreFilter(), 'I');
         $this->assertEquals(0, $this->calibre->last_error);
@@ -383,7 +385,7 @@ class CalibreTest extends TestCase
         $this->assertEquals(2, count($result3['entries']));
     }
 
-    function testAuthorDetails()
+    public function testAuthorDetails()
     {
         $result = $this->calibre->authorDetails(7);
         $this->assertEquals(0, $this->calibre->last_error);
@@ -391,7 +393,7 @@ class CalibreTest extends TestCase
         $this->assertEquals('Lessing, Gotthold Ephraim', $result['author']->sort);
     }
 
-    function testTagDetails()
+    public function testTagDetails()
     {
         $result = $this->calibre->tagDetails(3);
         $this->assertEquals(0, $this->calibre->last_error);
@@ -400,7 +402,7 @@ class CalibreTest extends TestCase
         $this->assertEquals(2, count($result['books']));
     }
 
-    function testTitle()
+    public function testTitle()
     {
         $result = $this->calibre->title(3);
         $this->assertEquals(0, $this->calibre->last_error);
@@ -411,7 +413,7 @@ class CalibreTest extends TestCase
         $this->calibre->title(99999);
     }
 
-    function testTitleCover()
+    public function testTitleCover()
     {
         $result = $this->calibre->titleCover(3);
         $this->assertEquals(0, $this->calibre->last_error);
@@ -419,7 +421,7 @@ class CalibreTest extends TestCase
         $this->assertEquals('cover.jpg', basename($result));
     }
 
-    function testTitleFile()
+    public function testTitleFile()
     {
         $result = $this->calibre->titleFile(3, 'Der seltzame Springinsfeld - Hans Jakob Christoffel von Grimmelshausen.epub');
         $this->assertEquals(0, $this->calibre->last_error);
@@ -427,7 +429,7 @@ class CalibreTest extends TestCase
         $this->assertEquals('Der seltzame Springinsfeld - Hans Jakob Christoffel von Grimmelshausen.epub', basename($result));
     }
 
-    function testTitleDetails()
+    public function testTitleDetails()
     {
         $result = $this->calibre->titleDetails('en', 3);
         $this->assertEquals(0, $this->calibre->last_error);
@@ -437,7 +439,7 @@ class CalibreTest extends TestCase
         $this->assertEquals('Serie Grimmelshausen', $result['series'][0]->name);
     }
 
-    function testTitleDetailsOpds()
+    public function testTitleDetailsOpds()
     {
         $book = $this->calibre->title(3);
         $result = $this->calibre->titleDetailsOpds($book);
@@ -447,7 +449,7 @@ class CalibreTest extends TestCase
         $this->assertEquals('Fachbücher', $result['tags'][0]->name);
     }
 
-    function testTitleDetailsFilteredOpds()
+    public function testTitleDetailsFilteredOpds()
     {
         $books = $this->calibre->titlesSlice('en', 1, 2, new CalibreFilter());
         $this->assertEquals(2, count($books['entries']));
@@ -457,7 +459,7 @@ class CalibreTest extends TestCase
         $this->assertEquals(1, count($result));
     }
 
-    function testSeriesSlice()
+    public function testSeriesSlice()
     {
         $result0 = $this->calibre->seriesSlice(0, 2);
         $this->assertEquals(0, $this->calibre->last_error);
@@ -470,7 +472,7 @@ class CalibreTest extends TestCase
         $this->assertEquals(2, $result1['pages']);
     }
 
-    function testSeriesSliceSearch()
+    public function testSeriesSliceSearch()
     {
         $result0 = $this->calibre->seriesSlice(0, 2, 'I');
         $this->assertEquals(0, $this->calibre->last_error);
@@ -481,7 +483,7 @@ class CalibreTest extends TestCase
         $this->assertEquals(1, count($result1['entries']));
     }
 
-    function testSeriesDetailsSlice()
+    public function testSeriesDetailsSlice()
     {
         $result0 = $this->calibre->seriesDetailsSlice('en', 1, 0, 1, new CalibreFilter());
         $this->assertEquals(0, $this->calibre->last_error);
@@ -494,7 +496,7 @@ class CalibreTest extends TestCase
         $this->assertEquals(2, $result1['pages']);
     }
 
-    function testSeriesDetails()
+    public function testSeriesDetails()
     {
         $result = $this->calibre->seriesDetails(5);
         $this->assertEquals(0, $this->calibre->last_error);
@@ -503,7 +505,7 @@ class CalibreTest extends TestCase
         $this->assertEquals(1, count($result['books']));
     }
 
-    function testSeriesInitials()
+    public function testSeriesInitials()
     {
         $result = $this->calibre->seriesInitials();
         $this->assertEquals(0, $this->calibre->last_error);
@@ -512,7 +514,7 @@ class CalibreTest extends TestCase
         $this->assertEquals(3, $result[0]->ctr);
     }
 
-    function testSeriesNamesForInitial()
+    public function testSeriesNamesForInitial()
     {
         $result = $this->calibre->seriesNamesForInitial('S');
         $this->assertEquals(0, $this->calibre->last_error);
@@ -520,5 +522,4 @@ class CalibreTest extends TestCase
         $this->assertEquals(2, $result[0]->anzahl);
         $this->assertEquals('Serie Grimmelshausen', $result[0]->name);
     }
-
 }

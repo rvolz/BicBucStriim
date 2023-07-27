@@ -6,7 +6,7 @@ use App\Domain\BicBucStriim\BicBucStriim;
 use App\Domain\BicBucStriim\AppConstants;
 use App\Domain\BicBucStriim\BicBucStriimRepository;
 use App\Domain\BicBucStriim\Configuration;
-use \App\Domain\BicBucStriim\L10n;
+use App\Domain\BicBucStriim\L10n;
 use App\Domain\Calibre\Calibre;
 use App\Domain\Calibre\CalibreRepository;
 use App\Domain\User\User;
@@ -93,4 +93,3 @@ return function (ContainerBuilder $containerBuilder) {
         },
     ]);
 };
-

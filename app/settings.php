@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 use DI\ContainerBuilder;
@@ -11,6 +12,7 @@ return function (ContainerBuilder $containerBuilder) {
             // mode
             'debug' => true,
 
+            // @todo replace BBS_BASE_PATH from public/bbs-config.php + make configurable via env
             // If not installed at root, enter the path to the installation here
             'basePath' => '',
 
@@ -34,7 +36,7 @@ return function (ContainerBuilder $containerBuilder) {
                 'public' => __DIR__ . '/../public',
                 // TODO get version from outside
                 'version' => '2.0.0-alpha.1',
-                'langs' => array('de', 'en', 'es', 'fr', 'gl', 'hu', 'it', 'nl', 'pl'),
+                'langs' => ['de', 'en', 'es', 'fr', 'gl', 'hu', 'it', 'nl', 'pl'],
             ],
         ],
     ]);

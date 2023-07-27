@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Application\Actions\Authors;
-
 
 use App\Domain\BicBucStriim\AppConstants;
 use App\Domain\DomainException\DomainRecordNotFoundException;
@@ -12,12 +10,11 @@ use Slim\Exception\HttpBadRequestException;
 
 class ViewOpdsByAuthorAction extends \App\Application\Actions\CalibreOpdsAction
 {
-
     /**
      * Return a feed with partial acquisition entries for an author's books
-     * @param  string    initial initial character
-     * @param  int        id      author id
-     * @param  int        page    page number
+     * @args  string    $initial initial character
+     * @args  int       $id      author id
+     * @args  int       $page    page number
      * @return Response
      */
     protected function action(): Response
@@ -25,8 +22,9 @@ class ViewOpdsByAuthorAction extends \App\Application\Actions\CalibreOpdsAction
         $initial = $this->resolveArg('initial');
         $id = (int) $this->resolveArg('id');
         $index = 0;
-        if ($this->hasQueryParam('page'))
+        if ($this->hasQueryParam('page')) {
             $index = (int) $this->resolveQueryParam('page');
+        }
         // parameter checking
         if ($index < 0) {
             $this->logger->warning('ViewOpdsByAuthorAction: invalid page id ' . $index);
@@ -38,16 +36,25 @@ class ViewOpdsByAuthorAction extends \App\Application\Actions\CalibreOpdsAction
             $id,
             $index,
             $this->config[AppConstants::PAGE_SIZE],
-            $filter);
+            $filter
+        );
         if (empty($tl)) {
             $msg = sprintf("ViewOpdsByAuthorAction: no title data found for id %d", $id);
             $this->logger->error($msg);
             throw new DomainRecordNotFoundException($msg);
         }
         $books1 = $this->calibre->titleDetailsFilteredOpds($tl['entries']);
-        $books = array_map(array($this, 'checkThumbnailOpds'), $books1);
-        $cat = $this->gen->booksForAuthorCatalog(null, $books, $initial, $tl['author'], false,
-            $tl['page'], getNextSearchPage($tl), getLastSearchPage($tl));
+        $books = array_map([$this, 'checkThumbnailOpds'], $books1);
+        $cat = $this->gen->booksForAuthorCatalog(
+            null,
+            $books,
+            $initial,
+            $tl['author'],
+            false,
+            $tl['page'],
+            getNextSearchPage($tl),
+            getLastSearchPage($tl)
+        );
         return $this->respondWithOpds($cat, OpdsGenerator::OPDS_MIME_ACQ);
     }
 }

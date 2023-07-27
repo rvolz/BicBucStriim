@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Application\Actions\Series;
-
 
 use App\Domain\DomainException\DomainRecordNotFoundException;
 use App\Domain\Opds\OpdsGenerator;
@@ -10,7 +8,6 @@ use Psr\Http\Message\ResponseInterface as Response;
 
 class ViewOpdsSeriesNames4Initials extends \App\Application\Actions\CalibreOpdsAction
 {
-
     /**
      * @inheritDoc
      */
@@ -18,8 +15,9 @@ class ViewOpdsSeriesNames4Initials extends \App\Application\Actions\CalibreOpdsA
     {
         $initial = $this->resolveArg('initial');
         if (!($initial == 'all' || ctype_upper($initial))) {
-            $this->logger->warning('opdsBySeriesNamesForInitial: invalid initial ' . $initial);
-            throw new DomainRecordNotFoundException($this->request);
+            $msg = 'opdsBySeriesNamesForInitial: invalid initial ' . $initial;
+            $this->logger->warning($msg);
+            throw new DomainRecordNotFoundException($msg);
         }
 
         $tags = $this->calibre->seriesNamesForInitial($initial);

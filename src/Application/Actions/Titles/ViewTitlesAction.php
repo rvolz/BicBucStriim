@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Application\Actions\Titles;
-
 
 use App\Domain\BicBucStriim\AppConstants;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -10,15 +8,15 @@ use Slim\Exception\HttpBadRequestException;
 
 class ViewTitlesAction extends TitlesAction
 {
-
     /**
      * @inheritdoc
      */
     protected function action(): Response
     {
         $index = 0;
-        if ($this->hasQueryParam('index'))
+        if ($this->hasQueryParam('index')) {
             $index = (int) $this->resolveQueryParam('index');
+        }
         // parameter checking
         if ($index < 0) {
             $this->logger->warning('ViewAuthorsAction: invalid page id ' . $index);
@@ -26,8 +24,9 @@ class ViewTitlesAction extends TitlesAction
         }
 
         $search = '';
-        if ($this->hasQueryParam('search'))
+        if ($this->hasQueryParam('search')) {
             $search = $this->resolveQueryParam('search');
+        }
         $lang = $this->l10n->user_lang;
         $pg_size = $this->config[AppConstants::PAGE_SIZE];
         $filter = $this->getFilter();
@@ -54,16 +53,17 @@ class ViewTitlesAction extends TitlesAction
             } else {
                 $tl = $this->calibre->titlesSlice($lang, $index, $pg_size, $filter, $search);
             }
-        } else
+        } else {
             $tl = $this->calibre->titlesSlice($lang, $index, $pg_size, $filter, $search);
-        $books = array_map(array($this, 'checkThumbnail'), $tl['entries']);
-        return $this->respondWithPage('titles.html', array(
+        }
+        $books = array_map([$this, 'checkThumbnail'], $tl['entries']);
+        return $this->respondWithPage('titles.html', [
             'page' => $this->mkPage($this->getMessageString('titles'), 2, 1),
             'url' => 'titles',
             'books' => $books,
             'curpage' => $tl['page'],
             'pages' => $tl['pages'],
             'search' => $search,
-            'sort' => $sort));
+            'sort' => $sort]);
     }
 }

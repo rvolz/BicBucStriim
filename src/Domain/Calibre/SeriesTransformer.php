@@ -16,9 +16,8 @@ class SeriesTransformer extends TransformerAbstract
     // TODO include related information, so that series can navigate to books etc
     /**
      * List of resources that could be included
-     * @var array
      */
-    protected $availableIncludes = [];
+    protected array $availableIncludes = [];
 
     public function transform($series)
     {
@@ -29,7 +28,7 @@ class SeriesTransformer extends TransformerAbstract
             'links' => [
                 'rel' => 'self',
                 'uri' => '/series/' . $series->id,
-            ]
+            ],
         ];
     }
 }

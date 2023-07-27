@@ -1,7 +1,8 @@
 <?php
-declare(strict_types=1);
-namespace App\Application\Middleware;
 
+declare(strict_types=1);
+
+namespace App\Application\Middleware;
 
 use App\Domain\BicBucStriim\BicBucStriimRepository;
 use App\Domain\User\User;
@@ -16,20 +17,20 @@ use Dflydev\FigCookies\Modifier\SameSite;
 use Dflydev\FigCookies\SetCookie;
 use Firebase\JWT\ExpiredException;
 use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
 use PDO;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
 use Psr\Http\Server\MiddlewareInterface as Middleware;
 use Psr\Log\LoggerInterface;
-use \Psr\Http\Message\ServerRequestInterface;
-use \Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface as Response;
 use Slim\Exception\HttpUnauthorizedException;
 
-class AuthMiddleware  implements Middleware
+class AuthMiddleware implements Middleware
 {
-
     private LoggerInterface $logger;
     private BicBucStriimRepository $bbs;
     private ?PDO $pdo;
@@ -72,12 +73,15 @@ class AuthMiddleware  implements Middleware
         $this->try_resume($auth_factory, $pdo_adapter, $auth);
         // TODO check if we have to subtract a base path here
         $path = $request->getUri()->getPath();
+        if (!empty(BBS_BASE_PATH)) {
+            $path = str_replace(BBS_BASE_PATH, '', $path);
+        }
         if ($auth->isValid()) {
             $ud = $auth->getUserData();
             if (!is_array($ud) || !array_key_exists('role', $ud) || !array_key_exists('id', $ud)) {
                 $this->logger->error('Login error: invalid user data received. Killing session ...');
                 $this->logout($auth_factory, $pdo_adapter, $auth, true);
-                return $this->answer401($request,'Invalid authorization data, please login again');
+                return $this->answer401($request, 'Invalid authorization data, please login again');
             }
             $this->logger->debug("Authentication valid, resuming for user " . $auth->getUserName());
             if (substr_compare($path, '/logout', 0, 7) == 0) {
@@ -86,53 +90,55 @@ class AuthMiddleware  implements Middleware
                 $this->container->set(User::class, User::emptyUser());
                 $request = $request->withAttribute('user', User::emptyUser());
                 $response = $handler->handle($request);
-                if ($this->rememberMeEnabled)
+                if ($this->rememberMeEnabled) {
                     return FigResponseCookies::expire($response, $this->jwtCookieName);
-                else
+                } else {
                     return $response;
+                }
             }
             // TODO find another method for setting or a different interface
-            $this->container->set(User::class, User::fromArray($ud, array($auth->getUserName(),'')));
-            $request = $request->withAttribute('user', User::fromArray($ud, array($auth->getUserName(),'')));
+            $this->container->set(User::class, User::fromArray($ud, [$auth->getUserName(),'']));
+            $request = $request->withAttribute('user', User::fromArray($ud, [$auth->getUserName(),'']));
             return $handler->handle($request);
         } else {
             if (substr_compare($path, '/login', 0, 6) == 0) {
                 if ($request->getMethod() == 'POST') {
                     $form_data = $request->getParsedBody();
                     if (isset($form_data['username']) && isset($form_data['password'])) {
-                        $auth_data = array($form_data['username'], $form_data['password']);
+                        $auth_data = [$form_data['username'], $form_data['password']];
                     } else {
-                        $auth_data = array('', '');
+                        $auth_data = ['', ''];
                     }
                     $ud = $this->try_login($auth_factory, $pdo_adapter, $auth, $auth_data);
                     if (is_null($ud)) {
                         $this->container->set(User::class, User::emptyUser());
                         return $handler->handle($request);
                     } else {
-                        $user = User::fromArray($ud, array($auth->getUserName(),''));
+                        $user = User::fromArray($ud, [$auth->getUserName(),'']);
                         $this->container->set(User::class, $user);
                         $request = $request->withAttribute('user', $user);
                         $response = $handler->handle($request);
-                        if ($this->rememberMeEnabled)
+                        if ($this->rememberMeEnabled) {
                             return $this->setCookieAuth($user->getId(), $request, $response);
-                        else
+                        } else {
                             return $response;
+                        }
                     }
-
                 } else {
                     return $handler->handle($request);
                 }
             } else {
                 $this->logger->debug("Authentication required, status is ".$auth->getStatus());
                 $auth_data = $this->checkRequest4Auth($request);
-                if (is_null($auth_data))
-                    return $this->answer401($request,'Authentication required');
+                if (is_null($auth_data)) {
+                    return $this->answer401($request, 'Authentication required');
+                }
                 $this->logger->debug("Authentication data found in headers");
                 $ud = $this->try_login($auth_factory, $pdo_adapter, $auth, $auth_data);
                 if (is_null($ud)) {
                     return $this->answer401($request, 'Authentication required.');
                 } else {
-                    $user = User::fromArray($ud, array($auth->getUserName(),''));
+                    $user = User::fromArray($ud, [$auth->getUserName(),'']);
                     $this->container->set(User::class, $user);
                     $request = $request->withAttribute('user', $user);
                     return $handler->handle($request);
@@ -156,18 +162,18 @@ class AuthMiddleware  implements Middleware
         if ($this->isApiRequest($r)) {
             $this->logger->debug("AuthMiddleware::answer401: unauthorized API request");
             //$response =  $response->withStatus(401, 'Authentication required');
-            throw new HttpUnauthorizedException($r,$msg);
+            throw new HttpUnauthorizedException($r, $msg);
         } else {
             $this->logger->debug("AuthMiddleware::answer401: unauthorized HTML request");
 
             return new \GuzzleHttp\Psr7\Response(
                 302,
-                ['Location' => '/login/', 'Turbolinks-Location' => '/login/'],
+                ['Location' => BBS_BASE_PATH . '/login/', 'Turbolinks-Location' => BBS_BASE_PATH . '/login/'],
                 null,
                 '1.1',
-                $msg);
+                $msg
+            );
         }
-
     }
 
 
@@ -179,15 +185,15 @@ class AuthMiddleware  implements Middleware
     protected function createPdoAuthenticator(AuthFactory $auth_factory): Auth\Adapter\PdoAdapter
     {
         $hash = new PasswordVerifier(PASSWORD_BCRYPT);
-        $cols = array(
+        $cols = [
             'username', // "AS username" is added by the adapter
             'password', // "AS password" is added by the adapter
             'id',
             'email',
             'languages',
             'tags',
-            'role'
-        );
+            'role',
+        ];
         return $auth_factory->newPdoAdapter($this->pdo, $hash, $cols, 'user');
     }
 
@@ -218,12 +224,13 @@ class AuthMiddleware  implements Middleware
     protected function checkCookieAuth(ServerRequestInterface $request): ?array
     {
         $cookie = FigRequestCookies::get($request, $this->jwtCookieName);
-        if (is_null($cookie->getValue()))
+        if (is_null($cookie->getValue())) {
             return null;
+        }
         try {
-            $decoded = JWT::decode($cookie->getValue(), $this->jwtKey, array('HS256'));
+            $decoded = JWT::decode($cookie->getValue(), new Key($this->jwtKey, 'HS256'));
             $payload = (array)$decoded;
-            return array($payload['uid']);
+            return [$payload['uid']];
         } catch(ExpiredException $ex) {
             return null; // Token expired, must login again
         } catch (\UnexpectedValueException $ex) {
@@ -246,19 +253,21 @@ class AuthMiddleware  implements Middleware
         $exp = $now + $this->jwtDuration;
         $dt = new DateTime();
         $dt->setTimestamp($exp);
-        $payload = array(
+        $payload = [
                 "iss" => $domain,
                 "aud" => $domain,
                 "iat" => $now,
                 "nbf" => $now,
                 "exp" => $exp,
-                "uid" => $uid
-            );
-        $encoded = JWT::encode($payload, $this->jwtKey);
+                "uid" => $uid,
+            ];
+        $encoded = JWT::encode($payload, $this->jwtKey, 'HS256');
         $cookie = Cookie::create($this->jwtCookieName, $encoded);
-        $this->logger->debug('setting auth cookie',[__FILE__, $uid, $domain, $dt]);
+        $this->logger->debug('setting auth cookie', [__FILE__, $uid, $domain, $dt]);
         // TODO get base path for cookie
-        return FigResponseCookies::set($response, SetCookie::create($this->jwtCookieName)
+        return FigResponseCookies::set(
+            $response,
+            SetCookie::create($this->jwtCookieName)
             ->withValue($encoded)
             ->withDomain($domain)
             ->withExpires($dt->format(DATE_COOKIE))
@@ -276,10 +285,11 @@ class AuthMiddleware  implements Middleware
     {
         $authUser = $request->getHeader('PHP_AUTH_USER');
         $authPass = $request->getHeader('PHP_AUTH_PW');
-        if (!empty($authUser) && !empty($authPass))
-            return array($authUser[0], $authPass[0]);
-        else
+        if (!empty($authUser) && !empty($authPass)) {
+            return [$authUser[0], $authPass[0]];
+        } else {
             return null;
+        }
     }
 
     /**
@@ -292,19 +302,22 @@ class AuthMiddleware  implements Middleware
         $b64auth = $request->getHeader('Authorization');
         if (!empty($b64auth)) {
             $auth_array1 = preg_split('/ /', $b64auth[0]);
-            if (strcasecmp('Basic', $auth_array1[0]) != 0)
+            if (strcasecmp('Basic', $auth_array1[0]) != 0) {
                 return null;
-            if (sizeof($auth_array1) != 2 || !isset($auth_array1[1]))
+            }
+            if (sizeof($auth_array1) != 2 || !isset($auth_array1[1])) {
                 return null;
+            }
             $auth = base64_decode($auth_array1[1]);
             $auth_data = preg_split('/:/', $auth);
-            if (sizeof($auth_data) != 2)
+            if (sizeof($auth_data) != 2) {
                 return null;
-            else
+            } else {
                 return $auth_data;
-
-        } else
+            }
+        } else {
             return null;
+        }
     }
 
     /**
@@ -321,8 +334,9 @@ class AuthMiddleware  implements Middleware
         //    return true;
         $ct = $r->getHeaderLine('Content-Type');
         foreach (['application/xml', 'application/atom+xml', 'application/json'] as $item) {
-            if (strstr($ct, $item))
+            if (strstr($ct, $item)) {
                 return true;
+            }
         }
         return false;
     }
@@ -357,8 +371,7 @@ class AuthMiddleware  implements Middleware
         if ($force) {
             $this->logger->debug("forcing logout", [__FILE__, $auth->getUserName()]);
             $logout_service->forceLogout($auth);
-        }
-        else {
+        } else {
             $this->logger->debug("user logged out", [__FILE__, $auth->getUserName()]);
             $logout_service->logout($auth);
         }
@@ -380,9 +393,10 @@ class AuthMiddleware  implements Middleware
                 $login_service->forceLogin(
                     $auth,
                     $user->username,
-                    array('id' => $user->id, 'email' => $user->email, 'languages' => $user->languages, 'tags' => $user->tags, 'role' => $user->role));
+                    ['id' => $user->id, 'email' => $user->email, 'languages' => $user->languages, 'tags' => $user->tags, 'role' => $user->role]
+                );
             } else {
-                $login_service->login($auth, array('username' => $auth_data[0], 'password' => $auth_data[1]));
+                $login_service->login($auth, ['username' => $auth_data[0], 'password' => $auth_data[1]]);
             }
             if ($auth->isValid()) {
                 $this->logger->debug("Login succeeded for user ".$auth->getUserName());
@@ -393,7 +407,7 @@ class AuthMiddleware  implements Middleware
                 return null;
             }
         } catch (Auth\Exception $e) {
-            $this->logger->error('Login error: '.var_export(get_class($e),true));
+            $this->logger->error('Login error: '.var_export(get_class($e), true));
             return null;
         }
     }

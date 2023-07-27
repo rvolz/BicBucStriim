@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Application\Actions\Authors;
-
 
 use App\Domain\Opds\OpdsGenerator;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -10,7 +8,6 @@ use Slim\Exception\HttpBadRequestException;
 
 class ViewOpdsByAuthorNamesForInitialAction extends \App\Application\Actions\CalibreOpdsAction
 {
-
     /**
      * Return a catalog with author names for an initial.
      */

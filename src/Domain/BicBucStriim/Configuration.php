@@ -1,6 +1,6 @@
 <?php
-declare(strict_types=1);
 
+declare(strict_types=1);
 
 namespace App\Domain\BicBucStriim;
 
@@ -20,7 +20,7 @@ class Configuration implements ArrayAccess
      */
     protected LoggerInterface $logger;
 
-    protected array $config = array(
+    protected array $config = [
         AppConstants::CALIBRE_DIR => '',
         AppConstants::DB_VERSION => AppConstants::DB_SCHEMA_VERSION,
         AppConstants::KINDLE => 0,
@@ -38,7 +38,7 @@ class Configuration implements ArrayAccess
         AppConstants::LOGIN_REQUIRED => 1,
         AppConstants::TITLE_TIME_SORT => AppConstants::TITLE_TIME_SORT_TIMESTAMP,
         AppConstants::RELATIVE_URLS => 1,
-    );
+    ];
 
     /**
      * Configuration constructor.
@@ -55,7 +55,8 @@ class Configuration implements ArrayAccess
     /**
      * Load existing configuration data
      */
-    public function load() {
+    public function load()
+    {
         if (!is_null($this->bbs) && $this->bbs->dbOk()) {
             $this->logger->debug("loading configuration");
             $css = $this->bbs->configs();
@@ -64,7 +65,7 @@ class Configuration implements ArrayAccess
                     $this->logger->debug("configuring value {$cs->val} for {$cs->name}");
                     $this->config[$cs->name] = $cs->val;
                 } else {
-                    $this->logger->warn("ignoring unknown configuration, name: {$cs->name}, value: {$cs->val}");
+                    $this->logger->warning("ignoring unknown configuration, name: {$cs->name}, value: {$cs->val}");
                 }
             }
         } else {
@@ -111,12 +112,12 @@ class Configuration implements ArrayAccess
      * @param mixed $offset <p>
      * The offset to retrieve.
      * </p>
-     * @return mixed Can return all value types.
+     * @return string|int|null Can return all value types.
      * @since 5.0.0
      */
-    public function offsetGet($offset)
+    public function offsetGet($offset): string|int|null
     {
-        return isset($this->config[$offset]) ? $this->config[$offset] : null;
+        return $this->config[$offset] ?? null;
     }
 
     /**
@@ -131,7 +132,7 @@ class Configuration implements ArrayAccess
      * @return void
      * @since 5.0.0
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         if (is_null($offset)) {
             $this->config[] = $value;
@@ -149,7 +150,7 @@ class Configuration implements ArrayAccess
      * @return void
      * @since 5.0.0
      */
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         unset($this->config[$offset]);
     }

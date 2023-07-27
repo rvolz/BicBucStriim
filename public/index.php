@@ -9,6 +9,7 @@ use Psr\Log\LoggerInterface;
 use Slim\Factory\AppFactory;
 use Slim\Factory\ServerRequestCreatorFactory;
 use Slim\ResponseEmitter;
+
 require __DIR__ . '/../src/Application/Version.php';
 
 require __DIR__ . '/bbs-config.php';
@@ -52,6 +53,11 @@ $container = $containerBuilder->build();
 // Instantiate the app
 AppFactory::setContainer($container);
 $app = AppFactory::create();
+
+// @todo replace with basePath in app settings
+$basePath = BBS_BASE_PATH;
+$app->setBasePath($basePath);
+
 $callableResolver = $app->getCallableResolver();
 
 // Register middleware
@@ -91,11 +97,9 @@ $logger = $app->getContainer()->get(LoggerInterface::class);
 $logger->info(
     $app->getContainer()->get(Configuration::class)[AppConstants::DISPLAY_APP_NAME] .
     ' ' .
-    APP_VERSION);
+    APP_VERSION
+);
 $logger->info('Running on PHP: ' . PHP_VERSION);
-
-$basePath = BBS_BASE_PATH;
-$app->setBasePath($basePath);
 
 $response = $app->handle($request);
 $responseEmitter = new ResponseEmitter();

@@ -24,7 +24,7 @@ class BookTransformerShort extends TransformerAbstract
             'links' => [
                 'rel' => 'self',
                 'uri' => '/titles/' . $book->id,
-            ]
+            ],
         ];
     }
 }

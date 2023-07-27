@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Application\Actions;
@@ -146,5 +147,4 @@ abstract class Action
     {
         return isset($this->qargs[$name]);
     }
-
 }

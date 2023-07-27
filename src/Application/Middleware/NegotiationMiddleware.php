@@ -1,11 +1,12 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Application\Middleware;
 
 use App\Domain\BicBucStriim\L10n;
 use App\Domain\User\UserLanguage;
-use \Aura\Accept\AcceptFactory;
+use Aura\Accept\AcceptFactory;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface;
@@ -14,9 +15,8 @@ use Psr\Http\Server\MiddlewareInterface as Middleware;
 use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
 use Psr\Log\LoggerInterface;
 
-class NegotiationMiddleware  implements Middleware
+class NegotiationMiddleware implements Middleware
 {
-
     /**
      * @var LoggerInterface
      */

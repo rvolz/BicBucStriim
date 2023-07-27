@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Application\Middleware;
@@ -60,6 +61,9 @@ class CalibreConfigMiddleware implements Middleware
     {
         // TODO check if we have to subtract a base path here
         $path = $request->getUri()->getPath();
+        if (!empty(BBS_BASE_PATH)) {
+            $path = str_replace(BBS_BASE_PATH, '', $path);
+        }
         // TODO Move exception path configuration to settings
         if (substr_compare($path, '/login', 0, 6) == 0 ||
             substr_compare($path, '/admin', 0, 6) == 0) {
@@ -95,16 +99,15 @@ class CalibreConfigMiddleware implements Middleware
             if ($this->isApiRequest($r)) {
                 $this->logger->debug("CalibreConfigMiddleware::answer: api request %s", [$msg]);
 
-                throw new HttpBadRequestException($r,$msg);
+                throw new HttpBadRequestException($r, $msg);
             } else {
                 $this->logger->debug("AuthMiddleware::answer: HTML request %s", [$msg]);
-                return new Response(302, ['Location' => '/admin/configuration/'], null, '1.1', $msg);
+                return new Response(302, ['Location' => BBS_BASE_PATH . '/admin/configuration/'], null, '1.1', $msg);
             }
         } else {
             $this->logger->debug("CalibreConfigMiddleware::answer: api request %s", [$msg]);
-            throw new HttpInternalServerErrorException($r,$msg);
+            throw new HttpInternalServerErrorException($r, $msg);
         }
-
     }
     /**
      * Find out if the request is an API call, OPDS or JSON. Uses the X-Requested-With or
@@ -120,10 +123,10 @@ class CalibreConfigMiddleware implements Middleware
         //    return true;
         $ct = $r->getHeaderLine('Content-Type');
         foreach (['application/xml', 'application/atom+xml', 'application/json'] as $item) {
-            if (strstr($ct, $item))
+            if (strstr($ct, $item)) {
                 return true;
+            }
         }
         return false;
     }
 }
-

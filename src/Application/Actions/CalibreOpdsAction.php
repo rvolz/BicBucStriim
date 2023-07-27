@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Application\Actions;
-
 
 use App\Domain\BicBucStriim\AppConstants;
 use App\Domain\BicBucStriim\BicBucStriimRepository;
@@ -27,12 +25,13 @@ abstract class CalibreOpdsAction extends BasicAction
      * @param Configuration $config
      * @param L10n $l10n
      */
-    public function __construct(LoggerInterface $logger,
-                                BicBucStriimRepository $bbs,
-                                CalibreRepository $calibre,
-                                Configuration $config,
-                                L10n $l10n)
-    {
+    public function __construct(
+        LoggerInterface $logger,
+        BicBucStriimRepository $bbs,
+        CalibreRepository $calibre,
+        Configuration $config,
+        L10n $l10n
+    ) {
         parent::__construct($logger, $bbs, $config);
         $this->calibre = $calibre;
         $this->l10n = $l10n;
@@ -41,7 +40,8 @@ abstract class CalibreOpdsAction extends BasicAction
             APP_VERSION,
             $this->config[AppConstants::CALIBRE_DIR],
             date(DATE_ATOM, $this->calibre->getModTime()),
-            $this->l10n);
+            $this->l10n
+        );
     }
 
 
@@ -66,10 +66,12 @@ abstract class CalibreOpdsAction extends BasicAction
         $lang = null;
         $tag = null;
         $user = $this->user;
-        if (!empty($user->getLanguages()))
+        if (!empty($user->getLanguages())) {
             $lang = $this->calibre->getLanguageId($user->getLanguages());
-        if (!empty($user->getTags()))
+        }
+        if (!empty($user->getTags())) {
             $tag = $this->calibre->getTagId($user->getTags());
+        }
         return new CalibreFilter($lang, $tag);
     }
 

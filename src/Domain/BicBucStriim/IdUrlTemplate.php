@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Domain\BicBucStriim;
-
 
 /**
  * Class IdUrlTemplate, a dummy class for configuration

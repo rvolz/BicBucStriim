@@ -54,7 +54,7 @@ function mod_rewrite_enabled(): bool
 
 function queryValue(string $query): string
 {
-    $mydb = new PDO('sqlite::memory:', null, null, array());
+    $mydb = new PDO('sqlite::memory:', null, null, []);
     $stmt = $mydb->query($query);
     $stmt->execute();
     $result = $stmt->fetch();
@@ -109,7 +109,7 @@ function check_modules(array $modules): array
 function check_calibre($dir): array
 {
     clearstatcache();
-    $ret = array('status' => 2, 'dir_exists' => false, 'dir_is_readable' => false, 'dir_is_executable' => false, 'realpath' => '', 'library_ok' => false);
+    $ret = ['status' => 2, 'dir_exists' => false, 'dir_is_readable' => false, 'dir_is_executable' => false, 'realpath' => '', 'library_ok' => false];
     if (file_exists($dir)) {
         $ret['dir_exists'] = true;
         if (is_readable($dir)) {
@@ -120,7 +120,7 @@ function check_calibre($dir): array
             if (file_exists($mdb)) {
                 $ret['status'] = 1;
                 try {
-                    $mydb = new PDO('sqlite:' . $mdb, null, null, array());
+                    $mydb = new PDO('sqlite:' . $mdb, null, null, []);
                     $ret['library_ok'] = true;
                 } catch (PDOException $e) {
                     ;
@@ -142,10 +142,11 @@ if (isset($_POST['calibre_dir'])) {
 
 $srv = $_SERVER['SERVER_SOFTWARE'];
 $is_a = is_apache($srv);
-if ($is_a)
+if ($is_a) {
     $mre = mod_rewrite_enabled();
-else
+} else {
     $mre = false;
+}
 $is_n = is_ngnix($srv);
 
 $gdv = get_gd_version();
@@ -153,38 +154,30 @@ $gde = ($gdv >= 2);
 
 // TODO check, probably too many
 // php7-sodium necessary?
-$php_modules = [
-    'apache2', // really?
-    'common', // not loaded?
-    'gd',
-    'intl',
-    'json',
-    'mbstring',
-    'pdo',
-    'pdo_sqlite',
-    'session',
-    'sqlite3',
-    'xml',
-    'xmlwriter',
-    'zip'
-];
+$composerData = json_decode(file_get_contents(__DIR__ . '/../composer.json'));
+$php_modules = [];
+foreach ($composerData->require as $dependency => $version) {
+    if (substr($dependency, 0, 4) === 'ext-') {
+        $php_modules[] = substr($dependency, 4);
+    }
+}
 
 
 $template = $twig->load('installcheck.twig');
 $template->display(
-    array(
-        'page' => array(
+    [
+        'page' => [
             'rot' => '',
-            'version' => APP_VERSION
-        ),
-        'sqlite' => array(
+            'version' => APP_VERSION,
+        ],
+        'sqlite' => [
             'hsql' => has_sqlite_version('3.'),
             'hfts5' => has_sqlite_fts5(),
-        ),
-        'php' => array(
+        ],
+        'php' => [
             'php' => check_php_version(70400),
             'phpv' => phpversion(),
-        ),
+        ],
         'is_a' => $is_a,
         'srv' => $srv,
         'mre' => $mre,
@@ -197,7 +190,7 @@ $template->display(
         'modules' => check_modules($php_modules),
         'mwrit' => fw(__DIR__ . '/../data/data.db'),
         'opd' => ini_get('open_basedir'),
-    )
+    ]
 );
 
 // echo phpinfo();

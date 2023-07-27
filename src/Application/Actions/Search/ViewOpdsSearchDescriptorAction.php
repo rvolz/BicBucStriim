@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Application\Actions\Search;
-
 
 use App\Application\Actions\CalibreOpdsAction;
 use App\Domain\Opds\OpdsGenerator;
@@ -10,7 +8,6 @@ use Psr\Http\Message\ResponseInterface as Response;
 
 class ViewOpdsSearchDescriptorAction extends CalibreOpdsAction
 {
-
     /**
      * @inheritDoc
      */

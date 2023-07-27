@@ -1,15 +1,12 @@
 <?php
 
-
 namespace App\Application\Actions\Authors;
-
 
 use App\Domain\Opds\OpdsGenerator;
 use Psr\Http\Message\ResponseInterface as Response;
 
 class ViewOpdsByAuthorInitialsAction extends \App\Application\Actions\CalibreOpdsAction
 {
-
     /**
      * Return a page with author names initials
      */
@@ -20,4 +17,3 @@ class ViewOpdsByAuthorInitialsAction extends \App\Application\Actions\CalibreOpd
         return $this->respondWithOpds($cat, OpdsGenerator::OPDS_MIME_NAV);
     }
 }
-
