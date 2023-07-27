@@ -1,12 +1,11 @@
 <?php
 
-
 namespace App\Application\Actions;
-
 
 use App\Domain\BicBucStriim\BicBucStriimRepository;
 use App\Domain\BicBucStriim\Configuration;
 use App\Domain\BicBucStriim\L10n;
+use App\Domain\Calibre\CalibreFilter;
 use App\Domain\Calibre\CalibreRepository;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Log\LoggerInterface;
@@ -14,11 +13,10 @@ use Slim\Views\Twig;
 
 abstract class CalibreHtmlAction extends RenderHtmlAction
 {
-
     /**
      * @var CalibreRepository
      */
-    protected CalibreRepository $calibre;
+    protected ?CalibreRepository $calibre;
 
     /**
      * @param LoggerInterface $logger
@@ -28,13 +26,14 @@ abstract class CalibreHtmlAction extends RenderHtmlAction
      * @param Twig $twig
      * @param L10n $l10n
      */
-    public function __construct(LoggerInterface $logger,
-                                BicBucStriimRepository $bbs,
-                                CalibreRepository $calibre,
-                                Configuration $config,
-                                Twig $twig,
-                                L10n $l10n)
-    {
+    public function __construct(
+        LoggerInterface $logger,
+        BicBucStriimRepository $bbs,
+        ?CalibreRepository $calibre,
+        Configuration $config,
+        Twig $twig,
+        L10n $l10n
+    ) {
         parent::__construct($logger, $bbs, $config, $twig, $l10n);
         $this->calibre = $calibre;
     }
@@ -45,8 +44,27 @@ abstract class CalibreHtmlAction extends RenderHtmlAction
     protected function refuseNonAdmin(): Response
     {
         // TODO
-        return $this->respondWithPage('error.twig', array(
+        return $this->respondWithPage('error.twig', [
             'page' => $this->mkPage($this->getMessageString('error'), 0, 2),
-            'error' => $this->getMessageString('admin_no_permission')));
+            'error' => $this->getMessageString('admin_no_permission')]);
+    }
+
+    /**
+     * Create a Calibre Filter according to the current user's
+     * language and tag settings.
+     * @return CalibreFilter
+     */
+    protected function getFilter(): CalibreFilter
+    {
+        $lang = null;
+        $tag = null;
+        $user = $this->user;
+        if (!empty($user->getLanguages())) {
+            $lang = $this->calibre->getLanguageId($user->getLanguages());
+        }
+        if (!empty($user->getTags())) {
+            $tag = $this->calibre->getTagId($user->getTags());
+        }
+        return new CalibreFilter($lang, $tag);
     }
 }

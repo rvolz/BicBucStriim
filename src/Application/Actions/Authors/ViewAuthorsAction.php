@@ -9,7 +9,6 @@ use Slim\Exception\HttpBadRequestException;
 
 class ViewAuthorsAction extends AuthorsAction
 {
-
     /**
      * @inheritdoc
      */
@@ -22,13 +21,15 @@ class ViewAuthorsAction extends AuthorsAction
 
         // Jumping overrides normal navigation
         if (!empty($jumpTarget)) {
-            [$pos, $total] = $this->calibre->authorsCalcNamePos( $jumpTarget, $search);
+            [$pos, $total] = $this->calibre->authorsCalcNamePos($jumpTarget, $search);
             $max_pgs = (int)($total / $pg_size);
-            if ($total % $pg_size > 0)
+            if ($total % $pg_size > 0) {
                 $max_pgs += 1;
+            }
             $index = (int)($pos / $pg_size);
-            if ($index >= $max_pgs)
+            if ($index >= $max_pgs) {
                 $index -= 1;
+            }
         }
 
         $tl = $this->calibre->authorsSlice($index, $pg_size, $search);
@@ -36,13 +37,13 @@ class ViewAuthorsAction extends AuthorsAction
         foreach ($tl['entries'] as $author) {
             $author->thumbnail = $this->bbs->getAuthorThumbnail($author->id);
         }
-        return $this->respondWithPage('authors.twig', array(
+        return $this->respondWithPage('authors.twig', [
             'page' => $this->mkPage($this->getMessageString('authors'), 3, 1),
             'url' => 'authors',
             'authors' => $tl['entries'],
             'curpage' => $tl['page'],
             'pages' => $tl['pages'],
             'search' => $search->getSearchTerm(),
-            'search_options' => $search->toMask()));
+            'search_options' => $search->toMask()]);
     }
 }

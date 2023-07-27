@@ -1,0 +1,236 @@
+parameters:
+	ignoreErrors:
+		-
+			message: "#^Call to an undefined method Psr\\\\Container\\\\ContainerInterface\\:\\:set\\(\\)\\.$#"
+			count: 5
+			path: src/Application/Middleware/AuthMiddleware.php
+
+		-
+			message: "#^Access to an undefined property iterable\\<RedBeanPHP\\\\OODBBean\\>&RedBeanPHP\\\\OODBBean\\:\\:\\$atype\\.$#"
+			count: 1
+			path: src/Domain/BicBucStriim/BbsData.php
+
+		-
+			message: "#^Access to an undefined property iterable\\<RedBeanPHP\\\\OODBBean\\>&RedBeanPHP\\\\OODBBean\\:\\:\\$cid\\.$#"
+			count: 1
+			path: src/Domain/BicBucStriim/BbsData.php
+
+		-
+			message: "#^Access to an undefined property iterable\\<RedBeanPHP\\\\OODBBean\\>&RedBeanPHP\\\\OODBBean\\:\\:\\$cname\\.$#"
+			count: 1
+			path: src/Domain/BicBucStriim/BbsData.php
+
+		-
+			message: "#^Access to an undefined property iterable\\<RedBeanPHP\\\\OODBBean\\>&RedBeanPHP\\\\OODBBean\\:\\:\\$ctype\\.$#"
+			count: 1
+			path: src/Domain/BicBucStriim/BbsData.php
+
+		-
+			message: "#^Access to an undefined property iterable\\<RedBeanPHP\\\\OODBBean\\>&RedBeanPHP\\\\OODBBean\\:\\:\\$ownArtefact\\.$#"
+			count: 1
+			path: src/Domain/BicBucStriim/BbsData.php
+
+		-
+			message: "#^Access to an undefined property iterable\\<RedBeanPHP\\\\OODBBean\\>&RedBeanPHP\\\\OODBBean\\:\\:\\$url\\.$#"
+			count: 1
+			path: src/Domain/BicBucStriim/BbsData.php
+
+		-
+			message: "#^Access to an undefined property RedBeanPHP\\\\OODBBean\\:\\:\\$id\\.$#"
+			count: 3
+			path: src/Domain/BicBucStriim/BicBucStriim.php
+
+		-
+			message: "#^Access to an undefined property RedBeanPHP\\\\OODBBean\\:\\:\\$mime\\.$#"
+			count: 1
+			path: src/Domain/BicBucStriim/BicBucStriim.php
+
+		-
+			message: "#^Access to an undefined property RedBeanPHP\\\\OODBBean\\:\\:\\$ntext\\.$#"
+			count: 1
+			path: src/Domain/BicBucStriim/BicBucStriim.php
+
+		-
+			message: "#^Access to an undefined property RedBeanPHP\\\\OODBBean\\:\\:\\$ownLink\\.$#"
+			count: 1
+			path: src/Domain/BicBucStriim/BicBucStriim.php
+
+		-
+			message: "#^Access to an undefined property RedBeanPHP\\\\OODBBean\\:\\:\\$ownNote\\.$#"
+			count: 1
+			path: src/Domain/BicBucStriim/BicBucStriim.php
+
+		-
+			message: "#^Access to an undefined property iterable\\<RedBeanPHP\\\\OODBBean\\>&RedBeanPHP\\\\OODBBean\\:\\:\\$atype\\.$#"
+			count: 1
+			path: src/Domain/BicBucStriim/BicBucStriim.php
+
+		-
+			message: "#^Access to an undefined property iterable\\<RedBeanPHP\\\\OODBBean\\>&RedBeanPHP\\\\OODBBean\\:\\:\\$cid\\.$#"
+			count: 1
+			path: src/Domain/BicBucStriim/BicBucStriim.php
+
+		-
+			message: "#^Access to an undefined property iterable\\<RedBeanPHP\\\\OODBBean\\>&RedBeanPHP\\\\OODBBean\\:\\:\\$cname\\.$#"
+			count: 1
+			path: src/Domain/BicBucStriim/BicBucStriim.php
+
+		-
+			message: "#^Access to an undefined property iterable\\<RedBeanPHP\\\\OODBBean\\>&RedBeanPHP\\\\OODBBean\\:\\:\\$ctype\\.$#"
+			count: 1
+			path: src/Domain/BicBucStriim/BicBucStriim.php
+
+		-
+			message: "#^Access to an undefined property iterable\\<RedBeanPHP\\\\OODBBean\\>&RedBeanPHP\\\\OODBBean\\:\\:\\$label\\.$#"
+			count: 2
+			path: src/Domain/BicBucStriim/BicBucStriim.php
+
+		-
+			message: "#^Access to an undefined property iterable\\<RedBeanPHP\\\\OODBBean\\>&RedBeanPHP\\\\OODBBean\\:\\:\\$languages\\.$#"
+			count: 1
+			path: src/Domain/BicBucStriim/BicBucStriim.php
+
+		-
+			message: "#^Access to an undefined property iterable\\<RedBeanPHP\\\\OODBBean\\>&RedBeanPHP\\\\OODBBean\\:\\:\\$ltype\\.$#"
+			count: 1
+			path: src/Domain/BicBucStriim/BicBucStriim.php
+
+		-
+			message: "#^Access to an undefined property iterable\\<RedBeanPHP\\\\OODBBean\\>&RedBeanPHP\\\\OODBBean\\:\\:\\$mime\\.$#"
+			count: 1
+			path: src/Domain/BicBucStriim/BicBucStriim.php
+
+		-
+			message: "#^Access to an undefined property iterable\\<RedBeanPHP\\\\OODBBean\\>&RedBeanPHP\\\\OODBBean\\:\\:\\$name\\.$#"
+			count: 2
+			path: src/Domain/BicBucStriim/BicBucStriim.php
+
+		-
+			message: "#^Access to an undefined property iterable\\<RedBeanPHP\\\\OODBBean\\>&RedBeanPHP\\\\OODBBean\\:\\:\\$ntext\\.$#"
+			count: 1
+			path: src/Domain/BicBucStriim/BicBucStriim.php
+
+		-
+			message: "#^Access to an undefined property iterable\\<RedBeanPHP\\\\OODBBean\\>&RedBeanPHP\\\\OODBBean\\:\\:\\$ntype\\.$#"
+			count: 1
+			path: src/Domain/BicBucStriim/BicBucStriim.php
+
+		-
+			message: "#^Access to an undefined property iterable\\<RedBeanPHP\\\\OODBBean\\>&RedBeanPHP\\\\OODBBean\\:\\:\\$ownArtefact\\.$#"
+			count: 1
+			path: src/Domain/BicBucStriim/BicBucStriim.php
+
+		-
+			message: "#^Access to an undefined property iterable\\<RedBeanPHP\\\\OODBBean\\>&RedBeanPHP\\\\OODBBean\\:\\:\\$password\\.$#"
+			count: 1
+			path: src/Domain/BicBucStriim/BicBucStriim.php
+
+		-
+			message: "#^Access to an undefined property iterable\\<RedBeanPHP\\\\OODBBean\\>&RedBeanPHP\\\\OODBBean\\:\\:\\$refctr\\.$#"
+			count: 1
+			path: src/Domain/BicBucStriim/BicBucStriim.php
+
+		-
+			message: "#^Access to an undefined property iterable\\<RedBeanPHP\\\\OODBBean\\>&RedBeanPHP\\\\OODBBean\\:\\:\\$role\\.$#"
+			count: 1
+			path: src/Domain/BicBucStriim/BicBucStriim.php
+
+		-
+			message: "#^Access to an undefined property iterable\\<RedBeanPHP\\\\OODBBean\\>&RedBeanPHP\\\\OODBBean\\:\\:\\$tags\\.$#"
+			count: 1
+			path: src/Domain/BicBucStriim/BicBucStriim.php
+
+		-
+			message: "#^Access to an undefined property iterable\\<RedBeanPHP\\\\OODBBean\\>&RedBeanPHP\\\\OODBBean\\:\\:\\$url\\.$#"
+			count: 2
+			path: src/Domain/BicBucStriim/BicBucStriim.php
+
+		-
+			message: "#^Access to an undefined property iterable\\<RedBeanPHP\\\\OODBBean\\>&RedBeanPHP\\\\OODBBean\\:\\:\\$username\\.$#"
+			count: 1
+			path: src/Domain/BicBucStriim/BicBucStriim.php
+
+		-
+			message: "#^Access to an undefined property iterable\\<RedBeanPHP\\\\OODBBean\\>&RedBeanPHP\\\\OODBBean\\:\\:\\$val\\.$#"
+			count: 2
+			path: src/Domain/BicBucStriim/BicBucStriim.php
+
+		-
+			message: "#^Access to an undefined property App\\\\Domain\\\\Calibre\\\\Book\\:\\:\\$id\\.$#"
+			count: 5
+			path: src/Domain/Calibre/Calibre.php
+
+		-
+			message: "#^Access to an undefined property object\\:\\:\\$addInfo\\.$#"
+			count: 2
+			path: src/Domain/Calibre/Calibre.php
+
+		-
+			message: "#^Access to an undefined property object\\|object\\:\\:\\$addInfo\\.$#"
+			count: 1
+			path: src/Domain/Calibre/Calibre.php
+
+		-
+			message: "#^Call to an undefined method DOMNode\\:\\:attr\\(\\)\\.$#"
+			count: 4
+			path: src/Domain/Epub/EPub.php
+
+		-
+			message: "#^Call to an undefined method DOMNode\\:\\:delete\\(\\)\\.$#"
+			count: 1
+			path: src/Domain/Epub/EPub.php
+
+		-
+			message: "#^Call to an undefined method DOMNode\\:\\:setAttribute\\(\\)\\.$#"
+			count: 1
+			path: src/Domain/Epub/EPub.php
+
+		-
+			message: "#^Access to an undefined property object\\:\\:\\$id\\.$#"
+			count: 1
+			path: src/Domain/Opds/OpdsGenerator.php
+
+		-
+			message: "#^Access to private property App\\\\Domain\\\\User\\\\User\\:\\:\\$languages\\.$#"
+			count: 1
+			path: src/helpers.php
+
+		-
+			message: "#^Access to private property App\\\\Domain\\\\User\\\\User\\:\\:\\$tags\\.$#"
+			count: 1
+			path: src/helpers.php
+
+		-
+			message: "#^Access to an undefined property RedBeanPHP\\\\OODBBean\\:\\:\\$id\\.$#"
+			count: 1
+			path: tests/Domain/BicBucStriim/BicBucStriimTest.php
+
+		-
+			message: "#^Access to an undefined property RedBeanPHP\\\\OODBBean\\:\\:\\$mime\\.$#"
+			count: 1
+			path: tests/Domain/BicBucStriim/BicBucStriimTest.php
+
+		-
+			message: "#^Access to an undefined property RedBeanPHP\\\\OODBBean\\:\\:\\$ntext\\.$#"
+			count: 1
+			path: tests/Domain/BicBucStriim/BicBucStriimTest.php
+
+		-
+			message: "#^Access to an undefined property RedBeanPHP\\\\OODBBean\\:\\:\\$ntype\\.$#"
+			count: 1
+			path: tests/Domain/BicBucStriim/BicBucStriimTest.php
+
+		-
+			message: "#^Access to an undefined property App\\\\Domain\\\\Calibre\\\\Book\\:\\:\\$title\\.$#"
+			count: 1
+			path: tests/Domain/Calibre/CalibreTest.php
+
+		-
+			message: "#^Access to an undefined property App\\\\Domain\\\\Calibre\\\\Author\\:\\:\\$name\\.$#"
+			count: 1
+			path: tests/Domain/Epub/MetadataEpubTest.php
+
+		-
+			message: "#^Access to an undefined property App\\\\Domain\\\\Calibre\\\\Author\\:\\:\\$sort\\.$#"
+			count: 1
+			path: tests/Domain/Epub/MetadataEpubTest.php

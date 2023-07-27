@@ -1,10 +1,12 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Domain\User;
+
 class User
 {
-    const InvalidID = -1;
+    public const InvalidID = -1;
 
     /**
      * @var int
@@ -64,7 +66,8 @@ class User
     /**
      * @return bool
      */
-    public function isAdmin(): bool {
+    public function isAdmin(): bool
+    {
         return $this->role == 1;
     }
 
@@ -169,11 +172,13 @@ class User
         return !($this->id == self::InvalidID);
     }
 
-    public static function emptyUser(): User {
-        return new User(User::InvalidID, '', '', null, null, null ,-1);
+    public static function emptyUser(): User
+    {
+        return new User(User::InvalidID, '', '', null, null, null, -1);
     }
 
-    public static function fromArray(array $ud, array $ud2): User {
+    public static function fromArray(array $ud, array $ud2): User
+    {
         return new User(
             (int)$ud['id'],
             $ud2[0],
@@ -181,6 +186,7 @@ class User
             $ud['email'] == null ? '' : $ud['email'],
             $ud['languages'] == null ? '' : $ud['languages'],
             $ud['tags'] == null ? '' : $ud['tags'],
-            (int)$ud['role']);
+            (int)$ud['role']
+        );
     }
 }

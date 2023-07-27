@@ -11,14 +11,13 @@ use League\Fractal\TransformerAbstract;
  * Class CommentTransformer - produces a view of a book comment
  * @package BicBucStriim
  */
-class CommentTransformer
+class CommentTransformer extends TransformerAbstract
 {
     public function transform($comment)
     {
         return [
             'id' => (int)$comment->id,
-            'text' => $comment->text
+            'text' => $comment->text,
         ];
     }
-
 }

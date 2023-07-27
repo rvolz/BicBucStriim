@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Application\Actions\Admin;
-
 
 use App\Domain\BicBucStriim\AppConstants;
 use App\Domain\Calibre\Calibre;
@@ -10,34 +8,35 @@ use Psr\Http\Message\ResponseInterface as Response;
 
 class UpdateConfigurationAction extends AdminAction
 {
-
     /**
      * @inheritDoc
      */
     protected function action(): Response
     {
-        if (!$this->is_admin())
+        if (!$this->is_admin()) {
             return $this->refuseNonAdmin();
+        }
         $this->logger->debug('admin_change: started');
-        $nconfigs = array();
+        $nconfigs = [];
         $req_configs = $this->request->getParsedBody();
-        $errors = array();
-        $messages = array();
+        $errors = [];
+        $messages = [];
         // $this->logger->debug('admin_change: ' . var_export($req_configs, true));
 
         ## Check for consistency - calibre directory
         # Calibre dir is still empty and no change in sight --> error
-        if (!$this->has_valid_calibre_dir() && empty($req_configs[AppConstants::CALIBRE_DIR]))
+        if (!$this->has_valid_calibre_dir() && empty($req_configs[AppConstants::CALIBRE_DIR])) {
             array_push($errors, 1);
+        }
         # Calibre dir changed, check it for existence, delete thumbnails of old calibre library
         elseif (array_key_exists(AppConstants::CALIBRE_DIR, $req_configs)) {
             $req_calibre_dir = $req_configs[AppConstants::CALIBRE_DIR];
             if ($req_calibre_dir != $this->config[AppConstants::CALIBRE_DIR]) {
                 if (!Calibre::checkForCalibre($req_calibre_dir)) {
                     array_push($errors, 1);
-                } elseif ($this->bbs->clearThumbnails())
+                } elseif ($this->bbs->clearThumbnails()) {
                     $this->logger->info('admin_change: Lib changed, deleted existing thumbnails.');
-                else {
+                } else {
                     $this->logger->info('admin_change: Lib changed, deletion of existing thumbnails failed.');
                 }
             }
@@ -56,9 +55,9 @@ class UpdateConfigurationAction extends AdminAction
         if ($req_configs[AppConstants::THUMB_GEN_CLIPPED] != $this->config[AppConstants::THUMB_GEN_CLIPPED]) {
             $this->logger->info('admin_change: Thumbnail generation method changed. Existing Thumbnails will be deleted.');
             # Delete old thumbnails if necessary
-            if ($this->bbs->clearThumbnails())
+            if ($this->bbs->clearThumbnails()) {
                 $this->logger->info('admin_change: Deleted exisiting thumbnails.');
-            else {
+            } else {
                 $this->logger->info('admin_change: Deletion of exisiting thumbnails failed.');
             }
         }
@@ -81,13 +80,13 @@ class UpdateConfigurationAction extends AdminAction
         # Don't save just return the error status
         if (count($errors) > 0) {
             $this->logger->error('admin_change: ended with error ' . var_export($errors, true));
-            return $this->respondWithPage('admin_configuration.twig', array(
+            return $this->respondWithPage('admin_configuration.twig', [
                 'page' => $this->mkPage($this->getMessageString('admin')),
                 'config' => array_merge($this->config->getConfig(), $nconfigs),
                 'mailers' => $this->mkMailers(),
                 'ttss' => $this->mkTitleTimeSortOptions(),
                 'isadmin' => $this->is_admin(),
-                'errors' => $errors));
+                'errors' => $errors]);
         } else {
             ## Apply changes
             foreach ($req_configs as $key => $value) {
@@ -103,14 +102,14 @@ class UpdateConfigurationAction extends AdminAction
                 $this->logger->debug('admin_change: changes saved');
             }
             $this->logger->debug('admin_change: ended');
-            return $this->respondWithPage('admin_configuration.twig', array(
+            return $this->respondWithPage('admin_configuration.twig', [
                 'page' => $this->mkPage($this->getMessageString('admin'), 0, 2),
-                'messages' => array($this->getMessageString('changes_saved')),
+                'messages' => [$this->getMessageString('changes_saved')],
                 'config' => array_merge($this->config->getConfig(), $nconfigs),
                 'mailers' => $this->mkMailers(),
                 'ttss' => $this->mkTitleTimeSortOptions(),
                 'isadmin' => $this->is_admin(),
-            ));
+            ]);
         }
     }
 
@@ -145,5 +144,4 @@ class UpdateConfigurationAction extends AdminAction
     {
         return (filter_var($mail, FILTER_VALIDATE_EMAIL) !== false);
     }
-
 }

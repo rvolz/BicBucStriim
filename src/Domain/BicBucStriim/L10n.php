@@ -1,8 +1,8 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Domain\BicBucStriim;
-
 
 use ArrayObject;
 
@@ -37,25 +37,27 @@ class L10n extends ArrayObject
         $this->loadLanguage($lang);
     }
 
-    public function loadLanguage(string $lang) {
+    public function loadLanguage(string $lang)
+    {
         global $langde, $langen, $langes, $langfr, $langgl, $langhu, $langit, $langnl;
         include("langs.php");
-        if ($lang == 'de')
+        if ($lang == 'de') {
             $this->langa = $langde;
-        elseif ($lang == 'es')
+        } elseif ($lang == 'es') {
             $this->langa = $langes;
-        elseif ($lang == 'fr')
+        } elseif ($lang == 'fr') {
             $this->langa = $langfr;
-        elseif ($lang == 'gl')
+        } elseif ($lang == 'gl') {
             $this->langa = $langgl;
-        elseif ($lang == 'hu')
+        } elseif ($lang == 'hu') {
             $this->langa = $langhu;
-        elseif ($lang == 'it')
+        } elseif ($lang == 'it') {
             $this->langa = $langit;
-        elseif ($lang == 'nl')
+        } elseif ($lang == 'nl') {
             $this->langa = $langnl;
-        else
+        } else {
             $this->langa = $langen;
+        }
         $this->langb = $langen;
         $this->user_lang = $lang;
     }
@@ -69,7 +71,7 @@ class L10n extends ArrayObject
      * @param $id
      * @return bool
      */
-    public function offsetExists($id)
+    public function offsetExists($id): bool
     {
         return true;
     }
@@ -82,7 +84,7 @@ class L10n extends ArrayObject
      * @param $id
      * @return string
      */
-    public function offsetGet($id)
+    public function offsetGet($id): string
     {
         return $this->message($id);
     }
@@ -99,17 +101,19 @@ class L10n extends ArrayObject
      * @param  string $id message id
      * @return string     localized message string
      */
-    function message($id)
+    public function message($id)
     {
-        if (empty($id)) return '';
-        if (array_key_exists($id, $this->langa))
+        if (empty($id)) {
+            return '';
+        }
+        if (array_key_exists($id, $this->langa)) {
             return $this->langa[$id];
-        else {
-            if (array_key_exists($id, $this->langb))
+        } else {
+            if (array_key_exists($id, $this->langb)) {
                 return $this->langb[$id];
-            else
+            } else {
                 return 'Undefined message!';
+            }
         }
     }
-
 }

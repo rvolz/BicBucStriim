@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Application\Actions\Titles;
-
 
 use App\Application\Actions\ActionPayload;
 use App\Domain\Calibre\SearchOptions;
@@ -12,7 +10,6 @@ use Slim\Exception\HttpBadRequestException;
 
 class ViewTitleInitialsAction extends TitlesAction
 {
-
     /**
      * Returns a Json document with a sorted list of title initials
      */
@@ -20,7 +17,9 @@ class ViewTitleInitialsAction extends TitlesAction
     {
         $search = $this->checkAndGenSearchOptions();
         $list = $this->calibre->titlesInitials($search);
-        $appData = new ActionPayload(200, array_map(function($item) { return $item->initial;}, $list));
+        $appData = new ActionPayload(200, array_map(function ($item) {
+            return $item->initial;
+        }, $list));
         return $this->respondWithData($appData);
     }
 }

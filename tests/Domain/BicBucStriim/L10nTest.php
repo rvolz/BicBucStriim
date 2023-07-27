@@ -10,7 +10,8 @@ class L10nTest extends TestCase
     ##
     # Test array functionality
     #
-    function testArrayGet() {
+    public function testArrayGet()
+    {
         global $langde;
 
         $l10n = new L10n('de');

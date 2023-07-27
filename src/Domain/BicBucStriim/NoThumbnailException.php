@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Domain\BicBucStriim;
-
 
 use App\Domain\DomainException\DomainRecordNotFoundException;
 

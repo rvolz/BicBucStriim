@@ -3,10 +3,8 @@
 namespace Tests\Application\Middleware;
 
 use App\Domain\BicBucStriim\AppConstants;
-use App\Domain\BicBucStriim\BicBucStriim;
 use App\Domain\BicBucStriim\BicBucStriimRepository;
 use App\Domain\BicBucStriim\Configuration;
-use Aura\Auth\AuthFactory;
 use DI\Container;
 use DI\ContainerBuilder;
 use Monolog\Logger;
@@ -19,8 +17,12 @@ use App\Application\Middleware\AuthMiddleware;
 
 class AuthMiddlewareTest extends Own_TestCase
 {
+    //public const DB2 = __DIR__ . '/../../fixtures/data2.db';
+    //public const DATA = __DIR__ . '/../twork/data';
+    //public const DATADB = __DIR__ . '/../twork/data/data.db';
+    //public $bbs;
     private $prophet;
-    var Container $container;
+    public Container $container;
 
     public static function setUpBeforeClass(): void
     {
@@ -33,24 +35,32 @@ class AuthMiddlewareTest extends Own_TestCase
 
     protected function setUp(): void
     {
-        $this->prophet = new \Prophecy\Prophet;
+        //if (file_exists(self::DATA)) {
+        //    system("rm -rf " . self::DATA);
+        //}
+        //mkdir(self::DATA, 0777, true);
+        //copy(self::DB2, self::DATADB);
+        //$this->bbs = new BicBucStriim(self::DATADB, false);
+        $this->prophet = new \Prophecy\Prophet();
         $cb = new ContainerBuilder();
         $cb->addDefinitions([
             'settings' => [
                 'idleTime' => 1440,
-                'rememberme_cookie_name' => 'bbs'
+                'basePath' => '',
+                'rememberme_cookie_name' => 'bbs',
             ],
             Configuration::class => [
                 AppConstants::REMEMBER_COOKIE_ENABLED => false,
                 AppConstants::REMEMBER_COOKIE_KEY => '',
-                AppConstants::REMEMBER_COOKIE_DURATION => 1
-            ]
+                AppConstants::REMEMBER_COOKIE_DURATION => 1,
+            ],
         ]);
         $this->container = $cb->build();
     }
 
     protected function tearDown(): void
     {
+        //system("rm -rf " . self::DATA);
         $this->prophet->checkPredictions();
     }
 
@@ -79,18 +89,21 @@ class AuthMiddlewareTest extends Own_TestCase
     {
         $bbs = $this->prophet->prophesize(BicBucStriimRepository::class);
         $logger = new Logger("test");
+        //$pdo = new \PDO('sqlite:'.self::DATADB);
+        //$container = new Container();
+        //$instance = new AuthMiddleware($logger, $this->bbs, $container);
         $instance = new AuthMiddleware($logger, $bbs->reveal(), $this->container);
-        $request = $this->createRequest("GET", "/",['PHP_AUTH_USER' => 'user', 'PHP_AUTH_PW' => 'password'],[],[]);
+        $request = $this->createRequest("GET", "/", ['PHP_AUTH_USER' => 'user', 'PHP_AUTH_PW' => 'password'], [], []);
         $ad = $instance->checkRequest4Auth($request);
         $this->assertNotNull($ad);
         $this->assertEquals(['user', 'password'], $ad);
-        $request = $this->createRequest("GET", "/",['HTTP_AUTHORIZATION' => 'Basic ' . base64_encode('user:password')],[],[]);
+        $request = $this->createRequest("GET", "/", ['HTTP_AUTHORIZATION' => 'Basic ' . base64_encode('user:password')], [], []);
         $ad = $instance->checkRequest4Auth($request);
         $this->assertNotNull($ad);
         $this->assertEquals(['user', 'password'], $ad);
-        $request = $this->createRequest("GET", "/",[],[],[]);
+        $request = $this->createRequest("GET", "/", [], [], []);
         $this->assertNull($instance->checkRequest4Auth($request));
-        $request = $this->createRequest("GET", "/",['HTTP_AUTHORIZATION' => 'Basic ' . 'bla'],[],[]);
+        $request = $this->createRequest("GET", "/", ['HTTP_AUTHORIZATION' => 'Basic ' . 'bla'], [], []);
         $ad = $instance->checkRequest4Auth($request);
         $this->assertNull($ad);
     }
@@ -99,23 +112,29 @@ class AuthMiddlewareTest extends Own_TestCase
     {
         self::markTestIncomplete('needs real database');
         $logger = new Logger("test");
+        //$pdo = new \PDO('sqlite:'.self::DATADB);
+        //$container = new Container();
+        //$instance = new AuthMiddleware($logger, $this->bbs, $container);
         $bbs = $this->prophet->prophesize(BicBucStriimRepository::class);
         $instance = new AuthMiddleware($logger, $bbs->reveal(), $this->container);
-        $request = $this->createRequest("GET", "/",['PHP_AUTH_USER' => 'user', 'PHP_AUTH_PW' => 'password'],[],[]);
+        $request = $this->createRequest("GET", "/", ['PHP_AUTH_USER' => 'user', 'PHP_AUTH_PW' => 'password'], [], []);
         $response = $instance->process($request, $this->createRequestHandler());
+        // @checkme this actually sends a 302 Redirect to /login/
         $this->assertEquals(401, $response->getStatusCode());
         $this->assertEquals('', $response->getBody()->getContents());
-
     }
 
     public function test___invoke2()
     {
         self::markTestIncomplete('needs real database');
         $logger = new Logger("test");
+        //$pdo = new \PDO('sqlite:'.self::DATADB);
+        //$container = new Container();
+        //$instance = new AuthMiddleware($logger, $this->bbs, $container);
         $bbs = $this->prophet->prophesize(BicBucStriimRepository::class);
         $instance = new AuthMiddleware($logger, $bbs->reveal(), $this->container);
-        $request = $this->createRequest("GET", "/",['PHP_AUTH_USER' => 'admin', 'PHP_AUTH_PW' => 'admin'],[],[]);
-        $response = $instance->process($request,$this->createRequestHandler());
+        $request = $this->createRequest("GET", "/", ['PHP_AUTH_USER' => 'admin', 'PHP_AUTH_PW' => 'admin'], [], []);
+        $response = $instance->process($request, $this->createRequestHandler());
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('', $response->getBody()->getContents());
     }

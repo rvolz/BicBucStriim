@@ -9,21 +9,21 @@ use PHPUnit\Framework\TestCase;
 
 class CalibreTranslitTest extends TestCase
 {
-    const CDB4 = __DIR__ . '/../..//fixtures/lib4/metadata.db';
+    public const CDB4 = __DIR__ . '/../..//fixtures/lib4/metadata.db';
 
-    var $calibre;
+    public $calibre;
 
-    function setUp(): void
+    public function setUp(): void
     {
         $this->calibre = new Calibre(self::CDB4);
     }
 
-    function tearDown(): void
+    public function tearDown(): void
     {
         $this->calibre = null;
     }
 
-    function testMkTransliteration()
+    public function testMkTransliteration()
     {
         $this->assertEquals('Asprin', $this->calibre->mkTransliteration('Асприн'));
         $this->assertEquals('Johann Uberlinger', $this->calibre->mkTransliteration('Johann Überlinger'));
@@ -32,7 +32,7 @@ class CalibreTranslitTest extends TestCase
     }
 
 
-    function testAuthorsSliceSearch()
+    public function testAuthorsSliceSearch()
     {
         $result = $this->calibre->authorsSlice(0, 2, new SearchOptions('Асприн'));
         $this->assertCount(1, $result['entries']);
@@ -47,7 +47,7 @@ class CalibreTranslitTest extends TestCase
         $this->assertEquals('Érasme de Lôrme', $result['entries'][0]->name);
     }
 
-    function testSeriesSliceSearch()
+    public function testSeriesSliceSearch()
     {
         $result = $this->calibre->seriesSlice(0, 2, new SearchOptions('Überserie'));
         $this->assertCount(1, $result['entries']);
@@ -59,7 +59,7 @@ class CalibreTranslitTest extends TestCase
         $this->assertEquals('Überserie', $result['entries'][0]->name);
     }
 
-    function testTagsSliceSearch()
+    public function testTagsSliceSearch()
     {
         $result = $this->calibre->tagsSlice(0, 2, new SearchOptions('Éternité'));
         $this->assertCount(1, $result['entries']);
@@ -69,10 +69,9 @@ class CalibreTranslitTest extends TestCase
         $result = $this->calibre->tagsSlice(0, 2, new SearchOptions('Eternite', false, true));
         $this->assertCount(1, $result['entries']);
         $this->assertEquals('Éternité', $result['entries'][0]->name);
-
     }
 
-    function testTitlesSliceSearch()
+    public function testTitlesSliceSearch()
     {
         $result = $this->calibre->titlesSlice('de', 0, 2, new CalibreFilter(), new SearchOptions('Phenix'));
         $this->assertCount(0, $result['entries']);

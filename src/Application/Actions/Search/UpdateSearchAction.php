@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Application\Actions\Search;
-
 
 use App\Domain\BicBucStriim\AppConstants;
 use App\Domain\Calibre\SearchOptions;
@@ -10,7 +8,6 @@ use Psr\Http\Message\ResponseInterface as Response;
 
 class UpdateSearchAction extends SearchAction
 {
-
     /**
      * @inheritDoc
      */
@@ -19,14 +16,17 @@ class UpdateSearchAction extends SearchAction
         $search_params = $this->request->getParsedBody();
         $this->logger->debug("Search params received", [__FILE__, var_export($search_params, true)]);
         $search = '';
-        if (array_key_exists('search', $search_params))
+        if (array_key_exists('search', $search_params)) {
             $search = $search_params['search'];
+        }
         $respect_case = false;
-        if (array_key_exists('case', $search_params))
+        if (array_key_exists('case', $search_params)) {
             $respect_case = true;
+        }
         $ascii_transliteration = false;
-        if (array_key_exists('transliteration', $search_params))
+        if (array_key_exists('transliteration', $search_params)) {
             $ascii_transliteration = true;
+        }
         $searchOptions = empty($search) ? null : new SearchOptions($search, $respect_case, $ascii_transliteration);
         $this->logger->debug('search params ', [var_export($searchOptions, true)]);
 
@@ -34,16 +34,16 @@ class UpdateSearchAction extends SearchAction
         $lang = $this->l10n->user_lang;
         $pg_size = $this->config[AppConstants::PAGE_SIZE];
         $tlb = $this->calibre->titlesSlice($lang, 0, $pg_size, $filter, $searchOptions);
-        $tlb_books = array_map(array($this, 'checkThumbnail'), $tlb['entries']);
+        $tlb_books = array_map([$this, 'checkThumbnail'], $tlb['entries']);
         $tla = $this->calibre->authorsSlice(0, $pg_size, $searchOptions);
-        $tla_books = array_map(array($this, 'checkAuthorThumbnail'), $tla['entries']);
+        $tla_books = array_map([$this, 'checkAuthorThumbnail'], $tla['entries']);
         $tlt = $this->calibre->tagsSlice(0, $pg_size, $searchOptions);
-        $tlt_books = array_map(array($this, 'checkThumbnail'), $tlt['entries']);
+        $tlt_books = array_map([$this, 'checkThumbnail'], $tlt['entries']);
         $tls = $this->calibre->seriesSlice(0, $pg_size, $searchOptions);
-        $tls_books = array_map(array($this, 'checkThumbnail'), $tls['entries']);
+        $tls_books = array_map([$this, 'checkThumbnail'], $tls['entries']);
 
-        $this->logger->info('found books',[__FILE__, $tlb['total']]);
-        return $this->respondWithPage('global_search_result.twig', array(
+        $this->logger->info('found books', [__FILE__, $tlb['total']]);
+        return $this->respondWithPage('global_search_result.twig', [
             'page' => $this->mkPage($this->getMessageString('pagination_search'), 0),
             'conf_transliteration' => $this->config[AppConstants::SEARCH_ASCII_TRANSLITERATION],
             'books' => $tlb_books,
@@ -61,6 +61,6 @@ class UpdateSearchAction extends SearchAction
             'search' => $search,
             'case' => $respect_case,
             'transliteration' => $ascii_transliteration,
-            'options' => $searchOptions->toMask()));
+            'options' => $searchOptions->toMask()]);
     }
 }

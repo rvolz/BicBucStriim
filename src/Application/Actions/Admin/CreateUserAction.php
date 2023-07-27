@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Application\Actions\Admin;
-
 
 use App\Application\Actions\ActionPayload;
 use Exception;
@@ -10,14 +8,14 @@ use Psr\Http\Message\ResponseInterface as Response;
 
 class CreateUserAction extends AdminAction
 {
-
     /**
      * @inheritDoc
      */
     protected function action(): Response
     {
-        if (!$this->is_admin())
+        if (!$this->is_admin()) {
             return $this->refuseNonAdmin();
+        }
         $flash = [];
         $user_data = $this->request->getParsedBody();
         if ($user_data['function'] == 'createuser') {
@@ -49,10 +47,10 @@ class CreateUserAction extends AdminAction
         }
 
         $users = $this->bbs->users();
-        return $this->respondWithPage('admin_users.twig', array(
+        return $this->respondWithPage('admin_users.twig', [
             'page' => $this->mkPage($this->getMessageString('admin_users'), 0, 2),
             'users' => $users,
             'flash' => $flash,
-            'isadmin' => $this->is_admin()));
+            'isadmin' => $this->is_admin()]);
     }
 }

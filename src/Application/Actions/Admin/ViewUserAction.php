@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Application\Actions\Admin;
-
 
 use App\Application\Actions\CalibreHtmlAction;
 use App\Domain\Calibre\Language;
@@ -16,14 +14,14 @@ use Slim\Exception\HttpBadRequestException;
  */
 class ViewUserAction extends AdminAction
 {
-
     /**
      * @inheritDoc
      */
     protected function action(): Response
     {
-        if (!$this->is_admin())
+        if (!$this->is_admin()) {
             return $this->refuseNonAdmin();
+        }
         $id = (int) $this->resolveArg('id');
         // parameter checking
         if (!is_numeric($id)) {
@@ -49,11 +47,11 @@ class ViewUserAction extends AdminAction
         $nt->key = '';
         array_unshift($tags, $nt);
         $this->logger->debug('admin_get_user: ' . var_export($user, true));
-        return $this->respondWithPage('admin_user.twig', array(
+        return $this->respondWithPage('admin_user.twig', [
             'page' => $this->mkPage($this->getMessageString('admin_users'), 0, 3),
             'user' => $user,
             'languages' => $languages,
             'tags' => $tags,
-            'isadmin' => $this->is_admin()));
+            'isadmin' => $this->is_admin()]);
     }
 }

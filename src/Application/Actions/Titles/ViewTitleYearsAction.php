@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Application\Actions\Titles;
-
 
 use App\Application\Actions\ActionPayload;
 use App\Domain\BicBucStriim\AppConstants;
@@ -13,7 +11,6 @@ use Slim\Exception\HttpBadRequestException;
 
 class ViewTitleYearsAction extends TitlesAction
 {
-
     /**
      * Returns a Json document with a sorted list of publication years
      */
@@ -22,7 +19,9 @@ class ViewTitleYearsAction extends TitlesAction
         $search = $this->checkAndGenSearchOptions();
         $timeSort = $this->config[AppConstants::TITLE_TIME_SORT];
         $list = $this->calibre->titlesYears($search, $timeSort);
-        $appData = new ActionPayload(200, array_map(function($item) { return $item->initial;}, $list));
+        $appData = new ActionPayload(200, array_map(function ($item) {
+            return $item->initial;
+        }, $list));
         return $this->respondWithData($appData);
     }
 }

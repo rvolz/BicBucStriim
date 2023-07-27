@@ -1,15 +1,12 @@
 <?php
 
-
 namespace App\Application\Actions\Series;
-
 
 use App\Domain\Opds\OpdsGenerator;
 use Psr\Http\Message\ResponseInterface as Response;
 
 class ViewOpdsSeriesByInitial extends \App\Application\Actions\CalibreOpdsAction
 {
-
     /**
      * @inheritDoc
      */

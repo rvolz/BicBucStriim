@@ -15,7 +15,6 @@ use Slim\Exception\HttpBadRequestException;
  */
 class CreateAuthorLinkAction extends AuthorsAction
 {
-
     /**
      * @inheritdoc
      */
@@ -25,7 +24,7 @@ class CreateAuthorLinkAction extends AuthorsAction
         // parameter checking
         $author = $this->calibre->author($id);
         if (!is_object($author)) {
-            $msg = sprintf("CreateAuthorLinkAction: no author data found for id %d",$id);
+            $msg = sprintf("CreateAuthorLinkAction: no author data found for id %d", $id);
             $this->logger->error($msg);
             throw new DomainRecordNotFoundException($msg);
         }
@@ -34,13 +33,14 @@ class CreateAuthorLinkAction extends AuthorsAction
         $this->logger->debug('CreateAuthorLinkAction: ' . var_export($link_data, true));
         $ret = $this->bbs->addAuthorLink($id, $author->name, $link_data['link-description'], $link_data['link-url']);
         if ($ret) {
-            $ap = new ActionPayload(200, array(
-                'msg' => $this->getMessageString('admin_modified')
-            ));;
+            $ap = new ActionPayload(200, [
+                'msg' => $this->getMessageString('admin_modified'),
+            ]);
+            ;
         } else {
-            $ap = new ActionPayload(500, array(
-                'msg' => $this->getMessageString('admin_modify_error')
-            ));
+            $ap = new ActionPayload(500, [
+                'msg' => $this->getMessageString('admin_modify_error'),
+            ]);
         }
         return $this->respondWithData($ap);
     }

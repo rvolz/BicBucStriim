@@ -1,0 +1,13 @@
+includes:
+    - phpstan-baseline.neon
+
+parameters:
+    level: 5
+    paths:
+        - .
+    bootstrapFiles:
+        - vendor/autoload.php
+    excludePaths:
+        - index.php
+        - vendor/*
+        - work/*

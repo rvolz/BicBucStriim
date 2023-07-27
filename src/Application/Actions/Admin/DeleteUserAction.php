@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Application\Actions\Admin;
-
 
 use App\Application\Actions\ActionPayload;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -10,14 +8,14 @@ use Slim\Exception\HttpBadRequestException;
 
 class DeleteUserAction extends AdminAction
 {
-
     /**
      * @inheritDoc
      */
     protected function action(): Response
     {
-        if (!$this->is_admin())
+        if (!$this->is_admin()) {
             return $this->refuseNonAdmin();
+        }
         $id = (int) $this->resolveArg('id');
         // parameter checking
         if (!is_numeric($id)) {
@@ -34,10 +32,10 @@ class DeleteUserAction extends AdminAction
             $flash['error'] = $this->getMessageString('admin_modify_error');
         }
         $users = $this->bbs->users();
-        return $this->respondWithPage('admin_users.twig', array(
+        return $this->respondWithPage('admin_users.twig', [
             'page' => $this->mkPage($this->getMessageString('admin_users'), 0, 2),
             'users' => $users,
             'flash' => $flash,
-            'isadmin' => $this->is_admin()));
+            'isadmin' => $this->is_admin()]);
     }
 }

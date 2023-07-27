@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Application\Actions\Admin;
-
 
 use Psr\Http\Message\ResponseInterface as Response;
 
@@ -14,23 +12,19 @@ use Psr\Http\Message\ResponseInterface as Response;
  */
 class ViewConfigurationAction extends AdminAction
 {
-
     /**
      * @inheritDoc
      */
     protected function action(): Response
     {
-        if (!$this->is_admin())
+        if (!$this->is_admin()) {
             return $this->refuseNonAdmin();
-        return $this->respondWithPage('admin_configuration.twig', array(
+        }
+        return $this->respondWithPage('admin_configuration.twig', [
             'page' => $this->mkPage($this->getMessageString('admin'), 0, 2),
             'config' => $this->config,
             'mailers' => $this->mkMailers(),
             'ttss' => $this->mkTitleTimeSortOptions(),
-            'isadmin' => $this->is_admin()));
+            'isadmin' => $this->is_admin()]);
     }
-
-
-
-
 }

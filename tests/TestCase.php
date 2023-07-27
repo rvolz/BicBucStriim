@@ -1,10 +1,12 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Tests;
 
 use DI\ContainerBuilder;
 use Exception;
+use GuzzleHttp\Psr7\Utils;
 use GuzzleHttp\Psr7\LazyOpenStream;
 use PHPUnit\Framework\TestCase as PHPUnit_TestCase;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -74,7 +76,8 @@ class TestCase extends PHPUnit_TestCase
     ): Request {
         $uri = new Uri('', '', 80, $path);
         $handle = fopen('php://temp', 'w+');
-        $stream = new LazyOpenStream($handle, 'r');
+        //$stream = new LazyOpenStream($handle, 'r');
+        $stream = Utils::streamFor($handle);
 
         $h = new Headers();
         foreach ($headers as $name => $value) {

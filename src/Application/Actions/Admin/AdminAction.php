@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Application\Actions\Admin;
-
 
 use App\Application\Actions\CalibreHtmlAction;
 use App\Domain\BicBucStriim\AppConstants;
@@ -15,7 +13,6 @@ use Slim\Exception\HttpBadRequestException;
 
 abstract class AdminAction extends CalibreHtmlAction
 {
-
     protected function mkMailers(): array
     {
         $e0 = new ConfigMailer();
@@ -27,7 +24,7 @@ abstract class AdminAction extends CalibreHtmlAction
         $e2 = new ConfigMailer();
         $e2->key = Mailer::MAIL;
         $e2->text = $this->getMessageString('admin_mailer_mail');
-        return array($e0, $e1, $e2);
+        return [$e0, $e1, $e2];
     }
 
 
@@ -43,7 +40,7 @@ abstract class AdminAction extends CalibreHtmlAction
         $e2 = new ConfigTtsOption();
         $e2->key = AppConstants::TITLE_TIME_SORT_LASTMODIFIED;
         $e2->text = $this->getMessageString('admin_tts_by_lastmodified');
-        return array($e0, $e1, $e2);
+        return [$e0, $e1, $e2];
     }
 
     protected function mkEncryptions(): array
@@ -57,7 +54,6 @@ abstract class AdminAction extends CalibreHtmlAction
         $e2 = new Encryption();
         $e2->key = 2;
         $e2->text =$this->getMessageString('admin_smtpenc_tls');
-        return array($e0, $e1, $e2);
+        return [$e0, $e1, $e2];
     }
-
 }

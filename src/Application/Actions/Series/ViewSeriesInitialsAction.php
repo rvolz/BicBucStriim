@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Application\Actions\Series;
-
 
 use App\Application\Actions\ActionPayload;
 use Psr\Http\Message\ResponseInterface as Response;

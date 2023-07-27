@@ -21,15 +21,16 @@ class Utilities
      * @param string $file file name
      * @return string       the filesystem path to the book file
      */
-    static function bookPath(string $cd, string $bp, string $file): ?string
+    public static function bookPath(string $cd, string $bp, string $file): ?string
     {
         try {
             $path = $cd . '/' . $bp . '/' . $file;
             if (!stat($path)) {
                 $p = explode("/", $bp);
                 $path = $cd . '/' . ucwords($p[0]) . '/' . $p[1] . '/' . $file;
-                if (!stat($path))
+                if (!stat($path)) {
                     return null;
+                }
             }
         } catch (Exception $e) {
             return null;
@@ -37,7 +38,7 @@ class Utilities
         return $path;
     }
 
-    const MIME_EPUB = 'application/epub+zip';
+    public const MIME_EPUB = 'application/epub+zip';
 
     /**
      * Check if a string starts with a substring.
@@ -50,7 +51,7 @@ class Utilities
      * @param  string $needle String to search for
      * @return boolean          true if $haystack starts with $needle, case insensitive
      */
-    static function stringStartsWith($haystack, $needle)
+    public static function stringStartsWith($haystack, $needle)
     {
         return (stripos($haystack, $needle) === 0);
     }
@@ -66,28 +67,29 @@ class Utilities
      * @param  string $file_path path to ebook file
      * @return string            MIME type
      */
-    static function titleMimeType($file_path)
+    public static function titleMimeType($file_path)
     {
         $mtype = '';
 
-        if (preg_match('/epub$/', $file_path) == 1)
+        if (preg_match('/epub$/', $file_path) == 1) {
             return Utilities::MIME_EPUB;
-        else if (preg_match('/mobi$/', $file_path) == 1)
+        } elseif (preg_match('/mobi$/', $file_path) == 1) {
             return 'application/x-mobipocket-ebook';
-        else if (preg_match('/azw[1-3]?$/', $file_path) == 1)
+        } elseif (preg_match('/azw[1-3]?$/', $file_path) == 1) {
             return 'application/vnd.amazon.ebook';
-        else if (preg_match('/pdf$/', $file_path) == 1)
+        } elseif (preg_match('/pdf$/', $file_path) == 1) {
             return 'application/pdf';
-        else if (preg_match('/txt$/', $file_path) == 1)
+        } elseif (preg_match('/txt$/', $file_path) == 1) {
             return 'text/plain';
-        else if (preg_match('/html$/', $file_path) == 1)
+        } elseif (preg_match('/html$/', $file_path) == 1) {
             return 'text/html';
-        else if (preg_match('/zip$/', $file_path) == 1)
+        } elseif (preg_match('/zip$/', $file_path) == 1) {
             return 'application/zip';
+        }
 
         if (function_exists('mime_content_type')) {
             $mtype = mime_content_type($file_path);
-        } else if (function_exists('finfo_file')) {
+        } elseif (function_exists('finfo_file')) {
             $finfo = finfo_open(FILEINFO_MIME);
             $mtype = finfo_file($finfo, $file_path);
             finfo_close($finfo);
@@ -107,9 +109,9 @@ class Utilities
      *
      * @param  int $width
      * @param  int $height
-     * @return image
+     * @return object|resource image
      */
-    static function transparentImage($width, $height)
+    public static function transparentImage($width, $height)
     {
         $img = imagecreatetruecolor($width, $height);
         imagealphablending($img, false);
@@ -118,5 +120,4 @@ class Utilities
         imagefilledrectangle($img, 0, 0, $width, $height, $backgr);
         return $img;
     }
-
 }

@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Application\Middleware;
-
 
 use Aura\Auth\Verifier\VerifierInterface;
 
@@ -47,7 +45,7 @@ class PasswordVerifier implements VerifierInterface
      * @return bool
      *
      */
-    public function verify($plaintext, $hashvalue, array $extra = array())
+    public function verify($plaintext, $hashvalue, array $extra = [])
     {
         // FIXME: workaround for https://github.com/auraphp/Aura.Auth/issues/102 and https://github.com/rvolz/BicBucStriim/issues/348
         if (PHP_VERSION_ID < 70400) {

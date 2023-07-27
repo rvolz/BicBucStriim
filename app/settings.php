@@ -1,16 +1,18 @@
 <?php
+
 declare(strict_types=1);
 
 use DI\ContainerBuilder;
 use Monolog\Logger;
+
 require __DIR__ . '/../src/Application/Version.php';
 
 return function (ContainerBuilder $containerBuilder) {
     /** @var bool $docker; */
     $docker = getenv('docker') ? true : false;
-    $debugMode = isset($_ENV['BBS_DEBUG_MODE']) ? $_ENV['BBS_DEBUG_MODE'] : false;
-    $basePath = isset($_ENV['BBS_BASE_PATH']) ? $_ENV['BBS_BASE_PATH'] : '';
-    $logLevel = isset($_ENV['BBS_LOG_LEVEL']) ? $_ENV['BBS_LOG_LEVEL'] : 'info';
+    $debugMode = $_ENV['BBS_DEBUG_MODE'] ?? false;
+    $basePath = $_ENV['BBS_BASE_PATH'] ?? '';
+    $logLevel = $_ENV['BBS_LOG_LEVEL'] ?? 'info';
     switch ($logLevel) {
         case 'debug':
             $realLogLevel = Logger::DEBUG;
@@ -27,10 +29,11 @@ return function (ContainerBuilder $containerBuilder) {
         default:
             $realLogLevel = Logger::INFO;
     }
-    if ($debugMode)
+    if ($debugMode) {
         $realLogLevel = Logger::DEBUG;
+    }
     /** @var int $idleTime; */
-    $idleTime = (int) $_ENV['BBS_IDLE_TIME'];
+    $idleTime = (int) ($_ENV['BBS_IDLE_TIME'] ?? 3600);
 
     // Global Settings Object
     $containerBuilder->addDefinitions([
@@ -43,7 +46,7 @@ return function (ContainerBuilder $containerBuilder) {
             'basePath' => $basePath,
 
             // mode
-            'idleTime' => !empty($idleTime)  ? $idleTime : 3600,
+            'idleTime' => !empty($idleTime) ? $idleTime : 3600,
 
             // path to the 'public' directory
             'publicPath' => __DIR__ . '/../public/',
@@ -75,8 +78,8 @@ return function (ContainerBuilder $containerBuilder) {
                 'dataDb' => __DIR__ . '/../data/data.db',
                 'public' => __DIR__ . '/../public',
                 'version' => APP_VERSION,
-                'langs' => array('de', 'en', 'es', 'fr', 'gl', 'hu', 'it', 'nl', 'pl'),
-            ]
+                'langs' => ['de', 'en', 'es', 'fr', 'gl', 'hu', 'it', 'nl', 'pl'],
+            ],
         ],
     ]);
 };

@@ -9,7 +9,6 @@ use Slim\Exception\HttpBadRequestException;
 
 class ViewAuthorAction extends AuthorsAction
 {
-
     /**
      * @inheritdoc
      */
@@ -17,8 +16,9 @@ class ViewAuthorAction extends AuthorsAction
     {
         $id = (int)$this->resolveArg('id');
         $index = 0;
-        if ($this->hasQueryParam('index'))
+        if ($this->hasQueryParam('index')) {
             $index = (int)$this->resolveQueryParam('index');
+        }
         // parameter checking
         if ($index < 0) {
             $this->logger->warning('ViewAuthorAction: invalid page id ' . $index);
@@ -31,21 +31,22 @@ class ViewAuthorAction extends AuthorsAction
             $id,
             $index,
             $this->config[AppConstants::PAGE_SIZE],
-            $filter);
+            $filter
+        );
         if (empty($tl)) {
             $msg = sprintf("ViewAuthorAction: no title data found for id %d", $id);
             $this->logger->error($msg);
             throw new DomainRecordNotFoundException($msg);
         }
 
-        $books = array_map(array($this, 'checkThumbnail'), $tl['entries']);
+        $books = array_map([$this, 'checkThumbnail'], $tl['entries']);
 
         $series = $this->calibre->authorSeries($id, $books);
 
         $author = $tl['author'];
         $author->thumbnail = $this->bbs->getAuthorThumbnail($id);
         $author->links = $this->bbs->authorLinks($id);
-        return $this->respondWithPage('author_detail.twig', array(
+        return $this->respondWithPage('author_detail.twig', [
             'page' => $this->mkPage($this->getMessageString('author_details'), 3, 2),
             'url' => 'authors/' . $id,
             'author' => $tl['author'],
@@ -53,6 +54,6 @@ class ViewAuthorAction extends AuthorsAction
             'series' => $series,
             'curpage' => $tl['page'],
             'pages' => $tl['pages'],
-            'isadmin' => $this->is_admin()));
+            'isadmin' => $this->is_admin()]);
     }
 }

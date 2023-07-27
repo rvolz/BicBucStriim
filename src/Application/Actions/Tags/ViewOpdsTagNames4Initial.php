@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Application\Actions\Tags;
-
 
 use App\Application\Actions\CalibreOpdsAction;
 use App\Domain\DomainException\DomainRecordNotFoundException;
@@ -11,7 +9,6 @@ use Psr\Http\Message\ResponseInterface as Response;
 
 class ViewOpdsTagNames4Initial extends CalibreOpdsAction
 {
-
     /**
      * @inheritDoc
      */
@@ -19,8 +16,9 @@ class ViewOpdsTagNames4Initial extends CalibreOpdsAction
     {
         $initial = $this->resolveArg('initial');
         if (!(ctype_upper($initial))) {
-            $this->logger->warning('opdsByTagNamesForInitial: invalid initial ' . $initial);
-            throw new DomainRecordNotFoundException($this->request);
+            $msg = 'opdsByTagNamesForInitial: invalid initial ' . $initial;
+            $this->logger->warning($msg);
+            throw new DomainRecordNotFoundException($msg);
         }
 
         $tags = $this->calibre->tagsNamesForInitial($initial);
