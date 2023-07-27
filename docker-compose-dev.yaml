@@ -1,0 +1,13 @@
+services:
+  dev:
+    image: mikespub/rvolz-bicbucstriim:dev
+    build:
+      context: . 
+      dockerfile: docker/Dockerfile.php82
+      target: dev-envs
+    ports:
+      - '8080:80'
+    volumes:
+      - ./data:/app/data
+      - ./lib:/app/lib
+      - ./tests:/app/tests

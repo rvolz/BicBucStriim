@@ -8,7 +8,6 @@
 
 namespace BicBucStriim;
 
-
 use Aura\Auth\Session\SegmentInterface;
 use Aura\Session\Segment as AuraSessionSegment;
 

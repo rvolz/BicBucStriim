@@ -53,5 +53,3 @@ const TITLE_TIME_SORT_PUBDATE = 'pubdate';
 const TITLE_TIME_SORT_LASTMODIFIED = 'lastmodified';
 # if true then relative urls will be generated
 const RELATIVE_URLS = 'relative_urls';
-
-?>

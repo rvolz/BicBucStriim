@@ -8,6 +8,8 @@
 
 namespace BicBucStriim;
 
+use Aura\Session\Session;
+
 /**
  *
  * A factory to create session segment objects.

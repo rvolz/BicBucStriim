@@ -1,5 +1,4 @@
 {
-  "dependencies": {},
   "scripts": {
     "genl10n": "node scripts/genl10n.js assets/l10n/messages.yml lib/BicBucStriim",
     "package": "node scripts/package.js"

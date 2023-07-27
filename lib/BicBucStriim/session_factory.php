@@ -32,9 +32,9 @@ class SessionFactory extends \Aura\Session\SessionFactory
      */
     public function newInstance(array $cookies, $delete_cookie = null)
     {
-        $phpfunc = new Phpfunc;
+        $phpfunc = new Phpfunc();
         return new Session(
-            new \Aura\Session\SegmentFactory,
+            new \Aura\Session\SegmentFactory(),
             new CsrfTokenFactory(new Randval($phpfunc)),
             $phpfunc,
             $cookies,

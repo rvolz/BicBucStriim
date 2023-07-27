@@ -1,0 +1,161 @@
+parameters:
+	ignoreErrors:
+		-
+			message: "#^Access to an undefined property Slim\\\\Slim\\:\\:\\$bbs\\.$#"
+			count: 1
+			path: index.php
+
+		-
+			message: "#^Access to an undefined property Slim\\\\Slim\\:\\:\\$calibre\\.$#"
+			count: 2
+			path: index.php
+
+		-
+			message: "#^Access to an undefined property object\\:\\:\\$notes\\.$#"
+			count: 2
+			path: index.php
+
+		-
+			message: "#^Access to an undefined property Model_CalibreThing\\:\\:\\$cid\\.$#"
+			count: 1
+			path: lib/BicBucStriim/bicbucstriim.php
+
+		-
+			message: "#^Access to an undefined property Model_CalibreThing\\:\\:\\$cname\\.$#"
+			count: 1
+			path: lib/BicBucStriim/bicbucstriim.php
+
+		-
+			message: "#^Access to an undefined property Model_CalibreThing\\:\\:\\$ctype\\.$#"
+			count: 1
+			path: lib/BicBucStriim/bicbucstriim.php
+
+		-
+			message: "#^Access to an undefined property Model_CalibreThing\\:\\:\\$refctr\\.$#"
+			count: 1
+			path: lib/BicBucStriim/bicbucstriim.php
+
+		-
+			message: "#^Access to an undefined property RedBean_OODBBean\\:\\:\\$val\\.$#"
+			count: 1
+			path: lib/BicBucStriim/bicbucstriim.php
+
+		-
+			message: "#^Cannot access property \\$atype on array\\|RedBean_OODBBean\\.$#"
+			count: 1
+			path: lib/BicBucStriim/bicbucstriim.php
+
+		-
+			message: "#^Cannot access property \\$label on array\\|RedBean_OODBBean\\.$#"
+			count: 1
+			path: lib/BicBucStriim/bicbucstriim.php
+
+		-
+			message: "#^Cannot access property \\$ltype on array\\|RedBean_OODBBean\\.$#"
+			count: 1
+			path: lib/BicBucStriim/bicbucstriim.php
+
+		-
+			message: "#^Cannot access property \\$mime on array\\|RedBean_OODBBean\\.$#"
+			count: 1
+			path: lib/BicBucStriim/bicbucstriim.php
+
+		-
+			message: "#^Cannot access property \\$ntext on array\\|RedBean_OODBBean\\.$#"
+			count: 1
+			path: lib/BicBucStriim/bicbucstriim.php
+
+		-
+			message: "#^Cannot access property \\$ntype on array\\|RedBean_OODBBean\\.$#"
+			count: 1
+			path: lib/BicBucStriim/bicbucstriim.php
+
+		-
+			message: "#^Cannot access property \\$url on array\\|RedBean_OODBBean\\.$#"
+			count: 2
+			path: lib/BicBucStriim/bicbucstriim.php
+
+		-
+			message: "#^Access to an undefined property Book\\:\\:\\$addInfo\\.$#"
+			count: 3
+			path: lib/BicBucStriim/calibre.php
+
+		-
+			message: "#^Access to an undefined property Book\\|Book\\:\\:\\$addInfo\\.$#"
+			count: 1
+			path: lib/BicBucStriim/calibre.php
+
+		-
+			message: "#^Access to an undefined property Item\\:\\:\\$ctr\\.$#"
+			count: 3
+			path: lib/BicBucStriim/calibre.php
+
+		-
+			message: "#^Access to an undefined property Item\\:\\:\\$initial\\.$#"
+			count: 3
+			path: lib/BicBucStriim/calibre.php
+
+		-
+			message: "#^Access to an undefined property Slim\\\\Slim\\:\\:\\$calibre\\.$#"
+			count: 1
+			path: lib/BicBucStriim/calibre_config_middleware.php
+
+		-
+			message: "#^Access to an undefined property Model_CalibreThing\\:\\:\\$cid\\.$#"
+			count: 1
+			path: lib/BicBucStriim/data.php
+
+		-
+			message: "#^Access to an undefined property Model_CalibreThing\\:\\:\\$cname\\.$#"
+			count: 1
+			path: lib/BicBucStriim/data.php
+
+		-
+			message: "#^Access to an undefined property Model_CalibreThing\\:\\:\\$ctype\\.$#"
+			count: 1
+			path: lib/BicBucStriim/data.php
+
+		-
+			message: "#^Access to an undefined property RedBean_SimpleModel\\:\\:\\$atype\\.$#"
+			count: 1
+			path: lib/BicBucStriim/data.php
+
+		-
+			message: "#^Access to an undefined property RedBean_SimpleModel\\:\\:\\$url\\.$#"
+			count: 1
+			path: lib/BicBucStriim/data.php
+
+		-
+			message: "#^Access to an undefined property Slim\\\\Slim\\:\\:\\$auth\\.$#"
+			count: 1
+			path: lib/BicBucStriim/login_middleware.php
+
+		-
+			message: "#^Access to an undefined property Slim\\\\Slim\\:\\:\\$bbs\\.$#"
+			count: 1
+			path: lib/BicBucStriim/login_middleware.php
+
+		-
+			message: "#^Access to an undefined property Slim\\\\Slim\\:\\:\\$login_service\\.$#"
+			count: 1
+			path: lib/BicBucStriim/login_middleware.php
+
+		-
+			message: "#^Access to an undefined property Slim\\\\Slim\\:\\:\\$logout_service\\.$#"
+			count: 1
+			path: lib/BicBucStriim/login_middleware.php
+
+		-
+			message: "#^Access to an undefined property object\\:\\:\\$id\\.$#"
+			count: 1
+			path: lib/BicBucStriim/opds_generator.php
+
+		-
+			message: "#^Access to an undefined property Slim\\\\Slim\\:\\:\\$bbs\\.$#"
+			count: 4
+			path: lib/BicBucStriim/own_config_middleware.php
+
+		-
+			message: "#^Access to an undefined property Slim\\\\Slim\\:\\:\\$must_login\\.$#"
+			count: 2
+			path: lib/BicBucStriim/own_config_middleware.php
